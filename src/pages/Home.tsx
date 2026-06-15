@@ -102,7 +102,6 @@ const MeteorShower: React.FC = () => {
         m.y += m.vy;
 
         // Life: fraction of tail that's fully emerged (0→1 as it enters, stays 1 mid-flight)
-        const travelled = Math.hypot(m.x, m.y); // rough
         m.life = Math.min(1, m.life + 0.018);
 
         // Remove when off-screen
