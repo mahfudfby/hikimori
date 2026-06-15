@@ -19,82 +19,170 @@ const Squiggle: React.FC<{ size?: number; rotate?: number; style?: React.CSSProp
   </svg>
 );
 
-/* ─── METEOR BACKGROUND ─── */
-interface Meteor {
-  id: number;
-  x: number;       // vw start position
-  delay: number;   // seconds before first appearance
-  duration: number;
-  size: number;    // tail length px
-  opacity: number;
+/* ─── METEOR BACKGROUND (Canvas — smooth 60fps) ─── */
+interface StarMeteor {
+  x: number;        // current head x (px)
+  y: number;        // current head y (px)
+  vx: number;       // velocity x per frame
+  vy: number;       // velocity y per frame
+  tailLen: number;  // max tail length (px)
+  life: number;     // 0 → 1, fraction of life spent
+  speed: number;    // px per frame (diagonal)
+  alpha: number;    // base opacity
+  headR: number;    // head glow radius
+  spawnDelay: number; // frames to wait before active
+  delayLeft: number;
 }
 
 const MeteorShower: React.FC = () => {
-  const [meteors, setMeteors] = useState<Meteor[]>([]);
-  const nextId = useRef(0);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const meteorsRef = useRef<StarMeteor[]>([]);
+  const rafRef = useRef<number>(0);
+  const frameRef = useRef<number>(0);
+  const nextSpawnRef = useRef<number>(0); // frame number of next spawn
 
-  const spawnMeteor = (): Meteor => ({
-    id: nextId.current++,
-    x: Math.random() * 110,          // 0–110vw
-    delay: 0,
-    duration: 0.6 + Math.random() * 0.6,
-    size: 80 + Math.random() * 120,
-    opacity: 0.5 + Math.random() * 0.5,
-  });
+  const spawnOne = (W: number, H: number, delay = 0): StarMeteor => {
+    // angle: mostly going down-right, 20°–45°
+    const angleDeg = 25 + Math.random() * 20;
+    const angleRad = (angleDeg * Math.PI) / 180;
+    const speed = 6 + Math.random() * 8;
+    return {
+      x: Math.random() * W * 1.1,
+      y: -60 - Math.random() * 200,
+      vx: Math.sin(angleRad) * speed,
+      vy: Math.cos(angleRad) * speed,
+      tailLen: 120 + Math.random() * 180,
+      life: 0,
+      speed,
+      alpha: 0.75 + Math.random() * 0.25,
+      headR: 1.8 + Math.random() * 1.6,
+      spawnDelay: delay,
+      delayLeft: delay,
+    };
+  };
 
   useEffect(() => {
-    // Initial batch — staggered delays so page doesn't look empty
-    const initial: Meteor[] = Array.from({ length: 6 }, (_, i) => ({
-      ...spawnMeteor(),
-      delay: i * 0.8,
-    }));
-    setMeteors(initial);
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d')!;
 
-    // Ongoing: add a new meteor every 900–2000 ms
-    const interval = setInterval(() => {
-      const m = spawnMeteor();
-      setMeteors(prev => [...prev.slice(-20), m]); // cap at 20
-    }, 900 + Math.random() * 1100);
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    resize();
+    window.addEventListener('resize', resize);
 
-    return () => clearInterval(interval);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    // Seed 5 staggered meteors on load
+    const W = () => canvas.width;
+    const H = () => canvas.height;
+    meteorsRef.current = Array.from({ length: 5 }, (_, i) =>
+      spawnOne(W(), H(), i * 28)
+    );
+    nextSpawnRef.current = 90; // first auto-spawn after ~1.5s
 
-  const removeMeteor = (id: number) =>
-    setMeteors(prev => prev.filter(m => m.id !== id));
+    const draw = () => {
+      frameRef.current++;
+      const w = W(), h = H();
+      ctx.clearRect(0, 0, w, h);
+
+      // Spawn new meteor on schedule
+      if (frameRef.current >= nextSpawnRef.current && meteorsRef.current.length < 12) {
+        meteorsRef.current.push(spawnOne(w, h));
+        // next spawn in 50–110 frames (~0.8–1.8s at 60fps)
+        nextSpawnRef.current = frameRef.current + 50 + Math.floor(Math.random() * 60);
+      }
+
+      meteorsRef.current = meteorsRef.current.filter(m => {
+        // Countdown delay
+        if (m.delayLeft > 0) { m.delayLeft--; return true; }
+
+        // Move
+        m.x += m.vx;
+        m.y += m.vy;
+
+        // Life: fraction of tail that's fully emerged (0→1 as it enters, stays 1 mid-flight)
+        const travelled = Math.hypot(m.x, m.y); // rough
+        m.life = Math.min(1, m.life + 0.018);
+
+        // Remove when off-screen
+        if (m.x > w + 100 || m.y > h + 100) return false;
+
+        // ── Draw tail (gradient line from tail-end → head) ──
+        const tx = m.x - m.vx / m.speed * m.tailLen;
+        const ty = m.y - m.vy / m.speed * m.tailLen;
+
+        const grad = ctx.createLinearGradient(tx, ty, m.x, m.y);
+        // Tail end: fully transparent
+        grad.addColorStop(0, `rgba(245,166,35,0)`);
+        // Mid-tail: amber glow fading in
+        grad.addColorStop(0.55, `rgba(245,166,35,${0.18 * m.alpha * m.life})`);
+        // Near head: bright amber
+        grad.addColorStop(0.82, `rgba(255,200,80,${0.75 * m.alpha * m.life})`);
+        // Just behind head: near-white hot
+        grad.addColorStop(0.96, `rgba(255,240,180,${0.95 * m.alpha * m.life})`);
+        // Head itself: pure white
+        grad.addColorStop(1, `rgba(255,255,255,0)`); // blended by head glow
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(tx, ty);
+        ctx.lineTo(m.x, m.y);
+        ctx.strokeStyle = grad;
+        ctx.lineWidth = 1.5;
+        ctx.lineCap = 'round';
+        ctx.shadowColor = 'rgba(245,166,35,0.6)';
+        ctx.shadowBlur = 6;
+        ctx.stroke();
+        ctx.restore();
+
+        // ── Draw head glow (bright nucleus) ──
+        ctx.save();
+        // Outer amber halo
+        const halo = ctx.createRadialGradient(m.x, m.y, 0, m.x, m.y, m.headR * 5);
+        halo.addColorStop(0, `rgba(255,255,255,${0.95 * m.alpha * m.life})`);
+        halo.addColorStop(0.3, `rgba(255,220,100,${0.7 * m.alpha * m.life})`);
+        halo.addColorStop(0.7, `rgba(245,166,35,${0.25 * m.alpha * m.life})`);
+        halo.addColorStop(1, `rgba(245,166,35,0)`);
+        ctx.beginPath();
+        ctx.arc(m.x, m.y, m.headR * 5, 0, Math.PI * 2);
+        ctx.fillStyle = halo;
+        ctx.fill();
+
+        // Inner white core
+        ctx.beginPath();
+        ctx.arc(m.x, m.y, m.headR, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,255,255,${m.alpha * m.life})`;
+        ctx.shadowColor = '#fff';
+        ctx.shadowBlur = 8;
+        ctx.fill();
+        ctx.restore();
+
+        return true;
+      });
+
+      rafRef.current = requestAnimationFrame(draw);
+    };
+
+    rafRef.current = requestAnimationFrame(draw);
+
+    return () => {
+      cancelAnimationFrame(rafRef.current);
+      window.removeEventListener('resize', resize);
+    };
+  }, []);
 
   return (
-    <div
+    <canvas
+      ref={canvasRef}
       aria-hidden="true"
       style={{
         position: 'fixed',
         inset: 0,
         pointerEvents: 'none',
         zIndex: 0,
-        overflow: 'hidden',
       }}
-    >
-      {meteors.map(m => (
-        <motion.div
-          key={m.id}
-          initial={{ x: `${m.x}vw`, y: '-5vh', opacity: m.opacity }}
-          animate={{ x: `${m.x + 20}vw`, y: '105vh', opacity: 0 }}
-          transition={{ duration: m.duration, delay: m.delay, ease: 'linear' }}
-          onAnimationComplete={() => removeMeteor(m.id)}
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '2px',
-            height: `${m.size}px`,
-            background: `linear-gradient(180deg, rgba(245,166,35,0) 0%, rgba(245,166,35,0.9) 60%, #fff 100%)`,
-            borderRadius: '2px',
-            filter: 'blur(0.5px)',
-            rotate: '15deg',
-            transformOrigin: 'top center',
-          }}
-        />
-      ))}
-    </div>
+    />
   );
 };
 
@@ -122,26 +210,26 @@ const skills = [
   },
 ];
 
-const experiences = [
-  {
-    role: 'HR / General Affairs',
-    company: 'UD Duta Pangan',
-    icon: '👥',
-    tasks: ['Vendor Management', 'Stock Monitoring', 'Facility Maintenance', 'Workload Analysis'],
-  },
-  {
-    role: 'Staff Administrasi',
-    company: 'UD Duta Pangan',
-    icon: '📋',
-    tasks: ['Document Processing', 'Administrative Support', 'Filing & Archiving', 'Reporting'],
-  },
-  {
-    role: 'IT Support',
-    company: 'UD Duta Pangan',
-    icon: '💻',
-    tasks: ['Hardware Troubleshooting', 'Software Installation', 'Network Setup', 'User Training'],
-  },
+const LS_ABOUT = 'hk_about_data';
+const LS_EXPS  = 'hk_exp_data';
+const LS_WA    = 'hk_wa_link';
+
+const defaultAbout = {
+  name: 'Mahfudfebry',
+  location: 'Nganjuk, Indonesia',
+  bio1: 'Halo! Nama saya Mahfudfebry, seorang profesional muda dari Nganjuk, Indonesia. Portfolio ini adalah kumpulan karya dan proyek terbaik saya yang mencerminkan keahlian, kreativitas, dan pertumbuhan profesional.',
+  bio2: 'Di setiap proyek, saya selalu berusaha memberikan hasil terbaik — dari desain visual yang kuat hingga solusi HR dan IT yang efisien dan berdampak.',
+};
+
+const defaultExps = [
+  { id: '1', role: 'HR / General Affairs', company: 'UD Duta Pangan', icon: '👥', tasks: 'Vendor Management, Stock Monitoring, Facility Maintenance, Workload Analysis' },
+  { id: '2', role: 'Staff Administrasi',   company: 'UD Duta Pangan', icon: '📋', tasks: 'Document Processing, Administrative Support, Filing & Archiving, Reporting' },
+  { id: '3', role: 'IT Support',           company: 'UD Duta Pangan', icon: '💻', tasks: 'Hardware Troubleshooting, Software Installation, Network Setup, User Training' },
 ];
+
+const readLS = <T,>(key: string, fallback: T): T => {
+  try { return JSON.parse(localStorage.getItem(key) || 'null') || fallback; } catch { return fallback; }
+};
 
 const roles = ['HR Professional', 'IT Support', 'Admin Staff', 'Creative Designer'];
 
@@ -151,6 +239,21 @@ const Home: React.FC = () => {
   const [roleIdx, setRoleIdx] = useState(0);
   const { scrollYProgress } = useScroll();
   const heroY = useTransform(scrollYProgress, [0, 0.3], [0, -60]);
+
+  // Dynamic About / Experience / WA from localStorage (updated by AdminPanel)
+  const [about, setAbout] = useState(() => readLS(LS_ABOUT, defaultAbout));
+  const [experiences, setExperiences] = useState(() => readLS(LS_EXPS, defaultExps));
+  const [waLink, setWaLink] = useState(() => localStorage.getItem(LS_WA) || 'https://wa.me/6281234567890');
+
+  useEffect(() => {
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === LS_ABOUT && e.newValue) setAbout(JSON.parse(e.newValue));
+      if (e.key === LS_EXPS  && e.newValue) setExperiences(JSON.parse(e.newValue));
+      if (e.key === LS_WA    && e.newValue) setWaLink(e.newValue);
+    };
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  }, []);
 
   // Typewriter effect
   useEffect(() => {
@@ -431,13 +534,13 @@ const Home: React.FC = () => {
               display: 'block',
               marginBottom: '1.5rem',
             }}>
-              Mahfudfebry
+              {about.name}
             </span>
             <p style={{ color: 'var(--white-dim)', lineHeight: 1.8, marginBottom: '1rem', fontSize: 'clamp(0.9rem, 2vw, 1rem)' }}>
-              Halo! Nama saya <strong style={{ color: 'var(--white)' }}>Mahfudfebry</strong>, seorang profesional muda dari Nganjuk, Indonesia. Portfolio ini adalah kumpulan karya dan proyek terbaik saya yang mencerminkan keahlian, kreativitas, dan pertumbuhan profesional.
+              {about.bio1}
             </p>
             <p style={{ color: 'var(--white-dim)', lineHeight: 1.8, fontSize: 'clamp(0.9rem, 2vw, 1rem)' }}>
-              Di setiap proyek, saya selalu berusaha memberikan hasil terbaik — dari desain visual yang kuat hingga solusi HR dan IT yang efisien dan berdampak.
+              {about.bio2}
             </p>
           </div>
         </AnimatedSection>
@@ -470,7 +573,7 @@ const Home: React.FC = () => {
               backdropFilter: 'blur(10px)',
             }}>
               <div style={{ color: 'var(--amber)', fontFamily: 'var(--font-body)', fontWeight: 700, fontSize: '0.85rem' }}>
-                📍 Nganjuk, Indonesia
+                📍 {about.location}
               </div>
             </div>
           </div>
@@ -607,7 +710,7 @@ const Home: React.FC = () => {
         </AnimatedSection>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(1rem, 2.5vw, 1.5rem)' }}>
-          {experiences.map((exp, i) => (
+          {experiences.map((exp: any, i: number) => (
             <AnimatedSection key={exp.role} direction={i % 2 === 0 ? 'left' : 'right'} delay={i * 0.15}>
               <div
                 className="float-hover exp-card"
@@ -640,7 +743,7 @@ const Home: React.FC = () => {
                     {exp.company}
                   </p>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-                    {exp.tasks.map((task) => (
+                    {(Array.isArray(exp.tasks) ? exp.tasks : exp.tasks.split(',').map((t: string) => t.trim())).map((task: string) => (
                       <span key={task} style={{
                         background: 'rgba(245,166,35,0.1)',
                         border: '1px solid rgba(245,166,35,0.3)',
@@ -712,7 +815,9 @@ const Home: React.FC = () => {
               Siap berkolaborasi untuk project Anda. Hubungi saya kapan saja, saya selalu siap memberikan yang terbaik.
             </p>
             <motion.a
-              href="mailto:mahfudfebry@hikimori.web.id"
+              href={waLink}
+              target="_blank"
+              rel="noopener noreferrer"
               whileHover={{ scale: 1.05, boxShadow: '0 10px 40px rgba(245,166,35,0.4)' }}
               whileTap={{ scale: 0.97 }}
               style={{
@@ -728,7 +833,7 @@ const Home: React.FC = () => {
                 letterSpacing: '1px',
               }}
             >
-              Kirim Pesan →
+              💬 Hubungi via WhatsApp →
             </motion.a>
           </div>
         </AnimatedSection>
