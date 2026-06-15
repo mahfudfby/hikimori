@@ -21,6 +21,40 @@ const EMPTY_FORM = {
 
 type Tab = 'dashboard' | 'portfolio' | 'settings';
 
+/* ── About Me data shape ── */
+interface AboutData {
+  name: string;
+  location: string;
+  bio1: string;
+  bio2: string;
+}
+
+/* ── Experience data shape ── */
+interface ExpItem {
+  id: string;
+  role: string;
+  company: string;
+  icon: string;
+  tasks: string; // comma-separated
+}
+
+const LS_ABOUT = 'hk_about_data';
+const LS_EXPS  = 'hk_exp_data';
+const LS_WA    = 'hk_wa_link';
+
+const defaultAbout: AboutData = {
+  name: 'Mahfudfebry',
+  location: 'Nganjuk, Indonesia',
+  bio1: 'Halo! Nama saya Mahfudfebry, seorang profesional muda dari Nganjuk, Indonesia. Portfolio ini adalah kumpulan karya dan proyek terbaik saya yang mencerminkan keahlian, kreativitas, dan pertumbuhan profesional.',
+  bio2: 'Di setiap proyek, saya selalu berusaha memberikan hasil terbaik — dari desain visual yang kuat hingga solusi HR dan IT yang efisien dan berdampak.',
+};
+
+const defaultExps: ExpItem[] = [
+  { id: '1', role: 'HR / General Affairs', company: 'UD Duta Pangan', icon: '\u{1F465}', tasks: 'Vendor Management, Stock Monitoring, Facility Maintenance, Workload Analysis' },
+  { id: '2', role: 'Staff Administrasi',   company: 'UD Duta Pangan', icon: '\u{1F4CB}', tasks: 'Document Processing, Administrative Support, Filing & Archiving, Reporting' },
+  { id: '3', role: 'IT Support',           company: 'UD Duta Pangan', icon: '\u{1F4BB}', tasks: 'Hardware Troubleshooting, Software Installation, Network Setup, User Training' },
+];
+
 const AdminPanel: React.FC = () => {
   const { logout } = useAuth();
   const { items, loading, addItem, updateItem, deleteItem } = usePortfolio();
@@ -34,6 +68,75 @@ const AdminPanel: React.FC = () => {
   const [imagePreview, setImagePreview] = useState('');
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const navigate = useNavigate();
+
+  /* ── About Me state ── */
+  const [about, setAbout] = useState<AboutData>(() => {
+    try { return JSON.parse(localStorage.getItem(LS_ABOUT) || 'null') || defaultAbout; } catch { return defaultAbout; }
+  });
+  const [aboutSaving, setAboutSaving] = useState(false);
+
+  /* ── Experience state ── */
+  const [exps, setExps] = useState<ExpItem[]>(() => {
+    try { return JSON.parse(localStorage.getItem(LS_EXPS) || 'null') || defaultExps; } catch { return defaultExps; }
+  });
+  const [expForm, setExpForm] = useState<ExpItem | null>(null);
+  const [expEditId, setExpEditId] = useState<string | null>(null);
+  const [expDeleteConfirm, setExpDeleteConfirm] = useState<string | null>(null);
+
+  /* ── WhatsApp link state ── */
+  const [waLink, setWaLink] = useState<string>(() => localStorage.getItem(LS_WA) || 'https://wa.me/6281234567890');
+  const [waSaving, setWaSaving] = useState(false);
+
+  /* ── Save helpers ── */
+  const saveAbout = () => {
+    setAboutSaving(true);
+    localStorage.setItem(LS_ABOUT, JSON.stringify(about));
+    window.dispatchEvent(new StorageEvent('storage', { key: LS_ABOUT, newValue: JSON.stringify(about) }));
+    setTimeout(() => { setAboutSaving(false); toast.success('Profil berhasil disimpan!'); }, 400);
+  };
+
+  const saveWa = () => {
+    setWaSaving(true);
+    localStorage.setItem(LS_WA, waLink);
+    window.dispatchEvent(new StorageEvent('storage', { key: LS_WA, newValue: waLink }));
+    setTimeout(() => { setWaSaving(false); toast.success('Link WhatsApp disimpan!'); }, 400);
+  };
+
+  const openAddExp = () => {
+    setExpEditId(null);
+    setExpForm({ id: Date.now().toString(), role: '', company: '', icon: '💼', tasks: '' });
+  };
+
+  const openEditExp = (exp: ExpItem) => {
+    setExpEditId(exp.id);
+    setExpForm({ ...exp });
+  };
+
+  const saveExp = () => {
+    if (!expForm || !expForm.role.trim()) { toast.error('Role wajib diisi!'); return; }
+    let updated: ExpItem[];
+    if (expEditId) {
+      updated = exps.map(e => e.id === expEditId ? expForm : e);
+      toast.success('Experience diperbarui!');
+    } else {
+      updated = [...exps, expForm];
+      toast.success('Experience ditambahkan!');
+    }
+    setExps(updated);
+    localStorage.setItem(LS_EXPS, JSON.stringify(updated));
+    window.dispatchEvent(new StorageEvent('storage', { key: LS_EXPS, newValue: JSON.stringify(updated) }));
+    setExpForm(null);
+    setExpEditId(null);
+  };
+
+  const deleteExp = (id: string) => {
+    const updated = exps.filter(e => e.id !== id);
+    setExps(updated);
+    localStorage.setItem(LS_EXPS, JSON.stringify(updated));
+    window.dispatchEvent(new StorageEvent('storage', { key: LS_EXPS, newValue: JSON.stringify(updated) }));
+    setExpDeleteConfirm(null);
+    toast.success('Experience dihapus.');
+  };
 
   const handleLogout = async () => {
     await logout();
@@ -505,39 +608,179 @@ const AdminPanel: React.FC = () => {
 
         {/* Settings */}
         {tab === 'settings' && (
-          <div>
-            <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '2.5rem', marginBottom: '2rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+            <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '2.5rem', marginBottom: '0' }}>
               PENGATURAN
             </h1>
-            <div style={{
-              background: 'var(--black-2)',
-              border: '1px solid rgba(245,166,35,0.1)',
-              borderRadius: '14px',
-              padding: '2rem',
-            }}>
+
+            {/* ── 1. ABOUT ME FORM ── */}
+            <div style={{ background: 'var(--black-2)', border: '1px solid rgba(245,166,35,0.15)', borderRadius: '16px', padding: '2rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1.5rem' }}>
+                <span style={{ fontSize: '1.4rem' }}>👤</span>
+                <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.6rem' }}>EDIT ABOUT ME</h2>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                  <div>
+                    <label style={labelStyle}>Nama</label>
+                    <input style={inputStyle} value={about.name}
+                      onChange={e => setAbout({ ...about, name: e.target.value })}
+                      placeholder="Nama lengkap" />
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Lokasi</label>
+                    <input style={inputStyle} value={about.location}
+                      onChange={e => setAbout({ ...about, location: e.target.value })}
+                      placeholder="Kota, Negara" />
+                  </div>
+                </div>
+                <div>
+                  <label style={labelStyle}>Bio Paragraf 1</label>
+                  <textarea style={{ ...inputStyle, minHeight: '90px', resize: 'vertical' }} value={about.bio1}
+                    onChange={e => setAbout({ ...about, bio1: e.target.value })}
+                    placeholder="Perkenalan diri..." />
+                </div>
+                <div>
+                  <label style={labelStyle}>Bio Paragraf 2</label>
+                  <textarea style={{ ...inputStyle, minHeight: '90px', resize: 'vertical' }} value={about.bio2}
+                    onChange={e => setAbout({ ...about, bio2: e.target.value })}
+                    placeholder="Nilai & pendekatan kerja..." />
+                </div>
+                <motion.button
+                  onClick={saveAbout}
+                  disabled={aboutSaving}
+                  whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+                  style={{
+                    alignSelf: 'flex-start',
+                    background: aboutSaving ? 'rgba(245,166,35,0.5)' : 'var(--amber)',
+                    color: 'var(--black)', border: 'none', borderRadius: '10px',
+                    padding: '12px 32px', fontFamily: 'var(--font-body)',
+                    fontWeight: 700, fontSize: '0.9rem', cursor: aboutSaving ? 'not-allowed' : 'pointer',
+                  }}
+                >
+                  {aboutSaving ? '⌛ Menyimpan...' : '💾 Simpan Profil'}
+                </motion.button>
+              </div>
+            </div>
+
+            {/* ── 2. EXPERIENCE MANAGER ── */}
+            <div style={{ background: 'var(--black-2)', border: '1px solid rgba(245,166,35,0.15)', borderRadius: '16px', padding: '2rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '0.8rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                  <span style={{ fontSize: '1.4rem' }}>💼</span>
+                  <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.6rem' }}>EXPERIENCE</h2>
+                </div>
+                <motion.button
+                  onClick={openAddExp}
+                  whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}
+                  style={{
+                    background: 'var(--amber)', color: 'var(--black)', border: 'none',
+                    borderRadius: '10px', padding: '10px 20px', fontFamily: 'var(--font-body)',
+                    fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer',
+                  }}
+                >
+                  + Tambah Experience
+                </motion.button>
+              </div>
+
+              {/* Experience list */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                {exps.map(exp => (
+                  <div key={exp.id} style={{
+                    background: 'var(--black-3)',
+                    border: '1px solid rgba(245,166,35,0.1)',
+                    borderRadius: '12px',
+                    padding: '1rem 1.2rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '1rem',
+                  }}>
+                    <span style={{ fontSize: '1.6rem', flexShrink: 0 }}>{exp.icon}</span>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontWeight: 700, fontSize: '0.95rem', marginBottom: '0.2rem' }}>{exp.role}</div>
+                      <div style={{ color: 'var(--amber)', fontSize: '0.82rem', fontWeight: 600 }}>{exp.company}</div>
+                      <div style={{ color: 'var(--white-dim)', fontSize: '0.78rem', marginTop: '0.3rem' }}>
+                        {exp.tasks}
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', gap: '0.5rem', flexShrink: 0 }}>
+                      <button onClick={() => openEditExp(exp)} style={{
+                        background: 'rgba(245,166,35,0.1)', border: '1px solid rgba(245,166,35,0.2)',
+                        color: 'var(--amber)', borderRadius: '8px', padding: '6px 12px',
+                        cursor: 'pointer', fontWeight: 600, fontSize: '0.8rem', fontFamily: 'var(--font-body)',
+                      }}>✏️ Edit</button>
+                      <button onClick={() => setExpDeleteConfirm(exp.id)} style={{
+                        background: 'rgba(255,60,60,0.1)', border: '1px solid rgba(255,60,60,0.2)',
+                        color: '#ff6b6b', borderRadius: '8px', padding: '6px 12px',
+                        cursor: 'pointer', fontWeight: 600, fontSize: '0.8rem', fontFamily: 'var(--font-body)',
+                      }}>🗑️</button>
+                    </div>
+                  </div>
+                ))}
+                {exps.length === 0 && (
+                  <p style={{ color: 'var(--white-dim)', textAlign: 'center', padding: '2rem 0', fontSize: '0.9rem' }}>
+                    Belum ada data experience.
+                  </p>
+                )}
+              </div>
+            </div>
+
+            {/* ── 3. WHATSAPP CONTACT ── */}
+            <div style={{ background: 'var(--black-2)', border: '1px solid rgba(245,166,35,0.15)', borderRadius: '16px', padding: '2rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1.5rem' }}>
+                <span style={{ fontSize: '1.4rem' }}>📱</span>
+                <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.6rem' }}>KONTAK WHATSAPP</h2>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <div>
+                  <label style={labelStyle}>Link WhatsApp (wa.me/62xxxxxxx)</label>
+                  <input
+                    style={inputStyle}
+                    value={waLink}
+                    onChange={e => setWaLink(e.target.value)}
+                    placeholder="https://wa.me/6281234567890"
+                  />
+                  <p style={{ color: 'var(--white-dim)', fontSize: '0.78rem', marginTop: '6px' }}>
+                    Format: <code style={{ color: 'var(--amber)' }}>https://wa.me/62xxxxxxxxxx</code> — gunakan kode negara 62 tanpa tanda +
+                  </p>
+                </div>
+                {waLink && (
+                  <a
+                    href={waLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
+                      color: '#25D366', fontSize: '0.85rem', fontWeight: 600,
+                    }}
+                  >
+                    ✅ Preview link →
+                  </a>
+                )}
+                <motion.button
+                  onClick={saveWa}
+                  disabled={waSaving}
+                  whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+                  style={{
+                    alignSelf: 'flex-start',
+                    background: waSaving ? 'rgba(245,166,35,0.5)' : 'var(--amber)',
+                    color: 'var(--black)', border: 'none', borderRadius: '10px',
+                    padding: '12px 32px', fontFamily: 'var(--font-body)',
+                    fontWeight: 700, fontSize: '0.9rem', cursor: waSaving ? 'not-allowed' : 'pointer',
+                  }}
+                >
+                  {waSaving ? '⌛ Menyimpan...' : '💾 Simpan Link WA'}
+                </motion.button>
+              </div>
+            </div>
+
+            {/* ── 4. INFO AKUN (readonly) ── */}
+            <div style={{ background: 'var(--black-2)', border: '1px solid rgba(245,166,35,0.1)', borderRadius: '14px', padding: '2rem' }}>
               <h3 style={{ marginBottom: '0.5rem', fontWeight: 700 }}>Informasi Akun</h3>
               <p style={{ color: 'var(--white-dim)', fontSize: '0.9rem', lineHeight: 1.7 }}>
                 Username: <strong style={{ color: 'var(--amber)' }}>Mahfudfebry</strong><br />
                 Email: <strong style={{ color: 'var(--amber)' }}>mahfudfebry@hikimori.web.id</strong><br />
                 Role: <strong style={{ color: 'var(--amber)' }}>Administrator</strong>
-              </p>
-            </div>
-            <div style={{
-              background: 'var(--black-2)',
-              border: '1px solid rgba(245,166,35,0.1)',
-              borderRadius: '14px',
-              padding: '2rem',
-              marginTop: '1rem',
-            }}>
-              <h3 style={{ marginBottom: '0.5rem', fontWeight: 700 }}>Konfigurasi API</h3>
-              <p style={{ color: 'var(--white-dim)', fontSize: '0.88rem', lineHeight: 1.7 }}>
-                Untuk mengatur Firebase, Cloudinary, dan EmailJS, edit file:<br />
-                <code style={{ color: 'var(--amber)', background: '#111', padding: '2px 8px', borderRadius: '4px' }}>
-                  src/config/firebase.ts
-                </code><br />
-                <code style={{ color: 'var(--amber)', background: '#111', padding: '2px 8px', borderRadius: '4px' }}>
-                  src/config/services.ts
-                </code>
               </p>
             </div>
           </div>
@@ -819,6 +1062,131 @@ const AdminPanel: React.FC = () => {
                 >
                   Batal
                 </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ── Experience Add/Edit Modal ── */}
+      <AnimatePresence>
+        {expForm && (
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            style={{
+              position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)',
+              backdropFilter: 'blur(6px)', zIndex: 2500,
+              display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem',
+            }}
+            onClick={e => { if (e.target === e.currentTarget) setExpForm(null); }}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 40 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 40 }}
+              style={{
+                background: 'var(--black-2)', border: '1px solid rgba(245,166,35,0.2)',
+                borderRadius: '20px', padding: '2rem', width: '100%', maxWidth: '520px',
+                maxHeight: '90vh', overflowY: 'auto',
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.8rem' }}>
+                  {expEditId ? 'EDIT EXPERIENCE' : 'TAMBAH EXPERIENCE'}
+                </h2>
+                <button onClick={() => setExpForm(null)}
+                  style={{ background: 'none', border: 'none', color: 'var(--white-dim)', fontSize: '1.3rem', cursor: 'pointer' }}>
+                  ✕
+                </button>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <div>
+                  <label style={labelStyle}>Role / Jabatan *</label>
+                  <input style={inputStyle} value={expForm.role}
+                    onChange={e => setExpForm({ ...expForm, role: e.target.value })}
+                    placeholder="Contoh: HR / General Affairs" />
+                </div>
+                <div>
+                  <label style={labelStyle}>Perusahaan</label>
+                  <input style={inputStyle} value={expForm.company}
+                    onChange={e => setExpForm({ ...expForm, company: e.target.value })}
+                    placeholder="Nama perusahaan" />
+                </div>
+                <div>
+                  <label style={labelStyle}>Icon (emoji)</label>
+                  <input style={inputStyle} value={expForm.icon}
+                    onChange={e => setExpForm({ ...expForm, icon: e.target.value })}
+                    placeholder="👥" maxLength={4} />
+                </div>
+                <div>
+                  <label style={labelStyle}>Tasks (pisahkan dengan koma)</label>
+                  <textarea
+                    style={{ ...inputStyle, minHeight: '90px', resize: 'vertical' }}
+                    value={expForm.tasks}
+                    onChange={e => setExpForm({ ...expForm, tasks: e.target.value })}
+                    placeholder="Vendor Management, Stock Monitoring, ..."
+                  />
+                </div>
+                <div style={{ display: 'flex', gap: '0.8rem', marginTop: '0.5rem' }}>
+                  <motion.button
+                    onClick={saveExp}
+                    whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+                    style={{
+                      flex: 1, background: 'var(--amber)', color: 'var(--black)',
+                      border: 'none', borderRadius: '10px', padding: '13px',
+                      fontFamily: 'var(--font-body)', fontWeight: 700, fontSize: '0.95rem', cursor: 'pointer',
+                    }}
+                  >
+                    {expEditId ? '💾 Update' : '➕ Tambah'}
+                  </motion.button>
+                  <button onClick={() => setExpForm(null)} style={{
+                    background: 'transparent', border: '1px solid rgba(255,255,255,0.15)',
+                    color: 'var(--white-dim)', borderRadius: '10px', padding: '13px 20px',
+                    cursor: 'pointer', fontFamily: 'var(--font-body)', fontWeight: 600,
+                  }}>Batal</button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ── Experience Delete Confirm ── */}
+      <AnimatePresence>
+        {expDeleteConfirm && (
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            style={{
+              position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)',
+              backdropFilter: 'blur(6px)', zIndex: 3100,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}
+          >
+            <motion.div
+              initial={{ scale: 0.8 }} animate={{ scale: 1 }} exit={{ scale: 0.8 }}
+              style={{
+                background: 'var(--black-2)', border: '1px solid rgba(255,60,60,0.3)',
+                borderRadius: '16px', padding: '2.5rem', textAlign: 'center', maxWidth: '360px',
+              }}
+            >
+              <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>⚠️</div>
+              <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', marginBottom: '0.6rem' }}>
+                HAPUS EXPERIENCE?
+              </h3>
+              <p style={{ color: 'var(--white-dim)', marginBottom: '1.5rem', fontSize: '0.9rem' }}>
+                Tindakan ini tidak dapat dibatalkan.
+              </p>
+              <div style={{ display: 'flex', gap: '0.8rem', justifyContent: 'center' }}>
+                <button onClick={() => deleteExp(expDeleteConfirm)} style={{
+                  background: '#ff4444', color: 'white', border: 'none', borderRadius: '8px',
+                  padding: '10px 24px', cursor: 'pointer', fontWeight: 700, fontFamily: 'var(--font-body)',
+                }}>Ya, Hapus</button>
+                <button onClick={() => setExpDeleteConfirm(null)} style={{
+                  background: 'transparent', border: '1px solid rgba(255,255,255,0.15)',
+                  color: 'var(--white-dim)', borderRadius: '8px', padding: '10px 24px',
+                  cursor: 'pointer', fontFamily: 'var(--font-body)', fontWeight: 600,
+                }}>Batal</button>
               </div>
             </motion.div>
           </motion.div>
