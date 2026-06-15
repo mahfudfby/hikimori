@@ -14,7 +14,7 @@ interface AboutData { name: string; location: string; bio1: string; bio2: string
 interface EduItem   { id: string; school: string; year: string; major: string; score: string; icon: string; }
 interface CertItem  { id: string; title: string; issuer: string; items: string; imageUrl: string; }
 
-const ls = <T>(key: string, fallback: T): T => {
+const ls = <T,>(key: string, fallback: T): T => {
   try { return JSON.parse(localStorage.getItem(key) || 'null') ?? fallback; } catch { return fallback; }
 };
 
