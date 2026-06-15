@@ -315,6 +315,17 @@ const AdminPanel: React.FC = () => {
           <div style={{ fontWeight: 700, fontSize: '0.85rem' }}>Mahfudfebry</div>
           <div style={{ color: 'var(--amber)', fontSize: '0.75rem' }}>Administrator</div>
         </div>
+        <button
+          onClick={() => navigate('/')}
+          style={{
+            width: '100%', background: 'rgba(245,166,35,0.07)', border: '1px solid rgba(245,166,35,0.2)',
+            borderRadius: '10px', padding: '10px 14px', color: 'var(--amber)',
+            display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer',
+            fontFamily: 'var(--font-body)', fontWeight: 700, fontSize: '0.88rem',
+            marginBottom: '10px', textAlign: 'left', transition: 'all 0.2s',
+          }}
+        >🏠 Ke Halaman Utama</button>
+        <div style={{ height: '1px', background: 'rgba(245,166,35,0.1)', marginBottom: '10px' }} />
         {([
           { id: 'dashboard', icon: '📊', label: 'Dashboard' },
           { id: 'portfolio', icon: '📁', label: 'Portfolio CMS' },
