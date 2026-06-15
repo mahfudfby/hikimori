@@ -59,9 +59,10 @@ const experiences = [
   },
 ];
 
+const roles = ['HR Professional', 'IT Support', 'Admin Staff', 'Creative Designer'];
+
 const Home: React.FC = () => {
   const [typed, setTyped] = useState('');
-  const roles = ['HR Professional', 'IT Support', 'Admin Staff', 'Creative Designer'];
   const [roleIdx, setRoleIdx] = useState(0);
   const { scrollYProgress } = useScroll();
   const heroY = useTransform(scrollYProgress, [0, 0.3], [0, -80]);
