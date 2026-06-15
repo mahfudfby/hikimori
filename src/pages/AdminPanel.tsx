@@ -22,7 +22,7 @@ const EMPTY_FORM = {
 type Tab = 'dashboard' | 'portfolio' | 'settings';
 
 const AdminPanel: React.FC = () => {
-  const { logout, currentUser } = useAuth();
+  const { logout } = useAuth();
   const { items, loading, addItem, updateItem, deleteItem } = usePortfolio();
   const [tab, setTab] = useState<Tab>('dashboard');
   const [showForm, setShowForm] = useState(false);
