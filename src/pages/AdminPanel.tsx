@@ -56,7 +56,7 @@ const defaultCerts: CertItem[] = [
   { id: '2', title: 'Surat Referensi Jabatan Sebelumnya', issuer: 'PT MAJU JAYA', items: 'Vendor Management,Stock Monitoring,Facility Maintenance', imageUrl: '' },
 ];
 
-const ls = <T>(key: string, fallback: T): T => {
+const ls = <T,>(key: string, fallback: T): T => {
   try { return JSON.parse(localStorage.getItem(key) || 'null') ?? fallback; } catch { return fallback; }
 };
 const lsStr = (key: string, fallback = '') => localStorage.getItem(key) ?? fallback;
