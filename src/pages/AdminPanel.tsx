@@ -119,6 +119,27 @@ const save = (key: string, value: unknown) => {
   window.dispatchEvent(new StorageEvent('storage', { key, newValue: JSON.stringify(value) }));
 };
 
+/* Kompres gambar ke base64 agar muat di localStorage (max ~800px, quality 0.82) */
+const compressImage = (file: File, maxPx = 800, quality = 0.82): Promise<string> =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = reject;
+    reader.onload = ev => {
+      const img = new Image();
+      img.onerror = reject;
+      img.onload = () => {
+        const scale  = Math.min(1, maxPx / Math.max(img.width, img.height));
+        const canvas = document.createElement('canvas');
+        canvas.width  = Math.round(img.width  * scale);
+        canvas.height = Math.round(img.height * scale);
+        canvas.getContext('2d')!.drawImage(img, 0, 0, canvas.width, canvas.height);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.src = ev.target!.result as string;
+    };
+    reader.readAsDataURL(file);
+  });
+
 /* ─── Sidebar Menu Items ─── */
 const MENUS = [
   { id: 'home',       label: 'Setting Home',       icon: '🏠' },
@@ -207,7 +228,7 @@ const HeroForm: React.FC = () => {
         )}
         <div onClick={() => fileRef.current?.click()} style={{ ...uploadBoxStyle, cursor: 'pointer' }}>📷 Klik untuk upload foto hero</div>
         <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }}
-          onChange={e => { const f = e.target.files?.[0]; if (!f) return; const r = new FileReader(); r.onload = ev => setData(d => ({ ...d, heroPhotoUrl: ev.target?.result as string })); r.readAsDataURL(f); }} />
+          onChange={async e => { const f = e.target.files?.[0]; if (!f) return; try { const b64 = await compressImage(f); setData(d => ({ ...d, heroPhotoUrl: b64 })); } catch { toast.error('Gagal memproses foto.'); } }} />
       </div>
       <SaveButton onClick={() => { save(LS_HOME, data); toast.success('Hero section disimpan!'); }} />
     </div>
@@ -234,7 +255,7 @@ const HomeAboutForm: React.FC = () => {
         )}
         <div onClick={() => photoRef.current?.click()} style={{ ...uploadBoxStyle, cursor: 'pointer' }}>📷 Upload foto About Me (Home)</div>
         <input ref={photoRef} type="file" accept="image/*" style={{ display: 'none' }}
-          onChange={e => { const f = e.target.files?.[0]; if (!f) return; const r = new FileReader(); r.onload = ev => setData(d => ({ ...d, photoUrl: ev.target?.result as string })); r.readAsDataURL(f); }} />
+          onChange={async e => { const f = e.target.files?.[0]; if (!f) return; try { const b64 = await compressImage(f); setData(d => ({ ...d, photoUrl: b64 })); } catch { toast.error('Gagal memproses foto.'); } }} />
       </div>
 
       {[
@@ -459,7 +480,7 @@ const SettingAbout: React.FC = () => {
         {photo && <img src={photo} alt="Profil" style={{ width: '110px', height: '110px', objectFit: 'cover', borderRadius: '50%', marginBottom: '0.8rem', display: 'block', border: '3px solid var(--amber)' }} />}
         <div onClick={() => photoRef.current?.click()} style={{ ...uploadBoxStyle, cursor: 'pointer' }}>📷 Upload foto profil (halaman About)</div>
         <input ref={photoRef} type="file" accept="image/*" style={{ display: 'none' }}
-          onChange={e => { const f = e.target.files?.[0]; if (!f) return; const r = new FileReader(); r.onload = ev => setPhoto(ev.target?.result as string); r.readAsDataURL(f); }} />
+          onChange={async e => { const f = e.target.files?.[0]; if (!f) return; try { const b64 = await compressImage(f); setPhoto(b64); } catch { toast.error('Gagal memproses foto.'); } }} />
       </div>
 
       {/* Bio */}
@@ -529,7 +550,7 @@ const SettingAbout: React.FC = () => {
             {cert.imageUrl && <img src={cert.imageUrl} alt="cert" style={{ width: '100%', maxHeight: '120px', objectFit: 'cover', borderRadius: '8px', marginBottom: '0.5rem' }} />}
             <div onClick={() => certRefs.current[cert.id]?.click()} style={{ ...uploadBoxStyle, cursor: 'pointer', padding: '0.7rem' }}>📎 Upload gambar sertifikat</div>
             <input ref={el => { certRefs.current[cert.id] = el; }} type="file" accept="image/*" style={{ display: 'none' }}
-              onChange={e => { const f = e.target.files?.[0]; if (!f) return; const r = new FileReader(); r.onload = ev => setCerts(prev => prev.map(c => c.id === cert.id ? { ...c, imageUrl: ev.target?.result as string } : c)); r.readAsDataURL(f); }} />
+              onChange={async e => { const f = e.target.files?.[0]; if (!f) return; try { const b64 = await compressImage(f); setCerts(prev => prev.map(c => c.id === cert.id ? { ...c, imageUrl: b64 } : c)); } catch { toast.error('Gagal memproses foto.'); } }} />
           </div>
         </div>
       ))}
@@ -602,7 +623,7 @@ const SettingPortfolio: React.FC = () => {
             {item.imageUrl && <img src={item.imageUrl} alt="project" style={{ width: '100%', maxHeight: '140px', objectFit: 'cover', borderRadius: '8px', marginBottom: '0.5rem' }} />}
             <div onClick={() => imgRefs.current[item.id]?.click()} style={{ ...uploadBoxStyle, cursor: 'pointer' }}>🖼️ Upload gambar project</div>
             <input ref={el => { imgRefs.current[item.id] = el; }} type="file" accept="image/*" style={{ display: 'none' }}
-              onChange={e => { const f = e.target.files?.[0]; if (!f) return; const r = new FileReader(); r.onload = ev => setItems(prev => prev.map(p => p.id === item.id ? { ...p, imageUrl: ev.target?.result as string } : p)); r.readAsDataURL(f); }} />
+              onChange={async e => { const f = e.target.files?.[0]; if (!f) return; try { const b64 = await compressImage(f); setItems(prev => prev.map(p => p.id === item.id ? { ...p, imageUrl: b64 } : p)); } catch { toast.error('Gagal memproses foto.'); } }} />
           </div>
         </div>
       ))}
