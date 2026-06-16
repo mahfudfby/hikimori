@@ -426,7 +426,8 @@ const Home: React.FC = () => {
     return () => window.removeEventListener('storage', handler);
   }, []);
 
-  const aboutPhoto = about.photoUrl     || FALLBACK_PHOTO;
+  const aboutPhoto = about.photoUrl || FALLBACK_PHOTO;
+  const heroPhoto  = hero.heroPhotoUrl  || '';
 
   return (
     <div style={{ background: 'var(--black)', minHeight: '100vh', position: 'relative' }}>
@@ -497,7 +498,7 @@ const Home: React.FC = () => {
               marginBottom: '0',
               whiteSpace: 'nowrap',
             }}>
-              {hero.heroTitle.split(' ')[0] || 'MAHFUDFEBRY'}'S
+              {hero.heroTitle || 'MAHFUD FEBRY'}'S
             </h1>
           </motion.div>
 
@@ -569,6 +570,24 @@ const Home: React.FC = () => {
             </motion.div>
           </motion.div>
         </div>
+
+        {/* Hero Photo — tampil jika diisi di admin panel */}
+        {heroPhoto && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.9, delay: 0.75, ease: [0.22, 1, 0.36, 1] }}
+            style={{ marginTop: '2.5rem', display: 'flex', justifyContent: 'center', position: 'relative', zIndex: 1 }}
+          >
+            <div style={{
+              width: '160px', height: '160px', borderRadius: '50%',
+              overflow: 'hidden', border: '3px solid var(--amber)',
+              boxShadow: '0 0 40px rgba(245,166,35,0.25)',
+            }}>
+              <img src={heroPhoto} alt={hero.heroTitle} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            </div>
+          </motion.div>
+        )}
 
         {/* Scroll indicator */}
         <motion.div
