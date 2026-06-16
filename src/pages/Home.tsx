@@ -1,6 +1,6 @@
 // src/pages/Home.tsx
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect, useRef } from 'react';
+import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import AnimatedSection from '../components/AnimatedSection';
 
@@ -426,7 +426,6 @@ const Home: React.FC = () => {
     return () => window.removeEventListener('storage', handler);
   }, []);
 
-  const heroPhoto  = hero.heroPhotoUrl  || FALLBACK_PHOTO;
   const aboutPhoto = about.photoUrl     || FALLBACK_PHOTO;
 
   return (
