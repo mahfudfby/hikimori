@@ -110,6 +110,23 @@ const defaultContact: ContactData = {
   showTiktok: false,  showWebsite: true,  showEmail: true,
 };
 
+/* ─── Cloudinary Config ─── */
+const CLOUDINARY_CLOUD  = 'dl4pyan8v';
+const CLOUDINARY_PRESET = 'clouds_hikimori';
+
+const uploadToCloudinary = async (file: File): Promise<string> => {
+  const fd = new FormData();
+  fd.append('file', file);
+  fd.append('upload_preset', CLOUDINARY_PRESET);
+  const res = await fetch(
+    `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`,
+    { method: 'POST', body: fd }
+  );
+  if (!res.ok) throw new Error('Upload gagal');
+  const json = await res.json();
+  return json.secure_url as string;
+};
+
 /* ─── Helper ─── */
 const ls = <T,>(key: string, fallback: T): T => {
   try { return JSON.parse(localStorage.getItem(key) || 'null') ?? fallback; } catch { return fallback; }
@@ -118,27 +135,6 @@ const save = (key: string, value: unknown) => {
   localStorage.setItem(key, JSON.stringify(value));
   window.dispatchEvent(new StorageEvent('storage', { key, newValue: JSON.stringify(value) }));
 };
-
-/* Kompres gambar ke base64 agar muat di localStorage (max ~800px, quality 0.82) */
-const compressImage = (file: File, maxPx = 800, quality = 0.82): Promise<string> =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onerror = reject;
-    reader.onload = ev => {
-      const img = new Image();
-      img.onerror = reject;
-      img.onload = () => {
-        const scale  = Math.min(1, maxPx / Math.max(img.width, img.height));
-        const canvas = document.createElement('canvas');
-        canvas.width  = Math.round(img.width  * scale);
-        canvas.height = Math.round(img.height * scale);
-        canvas.getContext('2d')!.drawImage(img, 0, 0, canvas.width, canvas.height);
-        resolve(canvas.toDataURL('image/jpeg', quality));
-      };
-      img.src = ev.target!.result as string;
-    };
-    reader.readAsDataURL(file);
-  });
 
 /* ─── Sidebar Menu Items ─── */
 const MENUS = [
@@ -200,7 +196,8 @@ const SettingHome: React.FC = () => {
 
 /* ── Hero Form ── */
 const HeroForm: React.FC = () => {
-  const [data, setData] = useState<HomeData>(() => ls(LS_HOME, defaultHome));
+  const [data, setData]       = useState<HomeData>(() => ls(LS_HOME, defaultHome));
+  const [uploading, setUploading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const field = (label: string, key: keyof HomeData, ph = '') => (
@@ -213,6 +210,19 @@ const HeroForm: React.FC = () => {
     </div>
   );
 
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0]; if (!f) return;
+    setUploading(true);
+    const tid = toast.loading('Mengupload foto ke Cloudinary...');
+    try {
+      const url = await uploadToCloudinary(f);
+      setData(d => ({ ...d, heroPhotoUrl: url }));
+      toast.success('Foto berhasil diupload!', { id: tid });
+    } catch {
+      toast.error('Gagal upload foto. Coba lagi.', { id: tid });
+    } finally { setUploading(false); e.target.value = ''; }
+  };
+
   return (
     <div>
       <SubTitle>Hero Utama</SubTitle>
@@ -224,11 +234,16 @@ const HeroForm: React.FC = () => {
       <div style={{ marginBottom: '1.2rem' }}>
         <label style={labelStyle}>Foto Hero</label>
         {data.heroPhotoUrl && (
-          <img src={data.heroPhotoUrl} alt="Hero" style={{ width: '100%', maxHeight: '200px', objectFit: 'cover', borderRadius: '10px', marginBottom: '0.8rem' }} />
+          <div style={{ position: 'relative', marginBottom: '0.8rem' }}>
+            <img src={data.heroPhotoUrl} alt="Hero" style={{ width: '100%', maxHeight: '200px', objectFit: 'cover', borderRadius: '10px' }} />
+            <button onClick={() => setData(d => ({ ...d, heroPhotoUrl: '' }))} style={{ position: 'absolute', top: '8px', right: '8px', background: 'rgba(220,38,38,0.9)', border: 'none', color: 'white', borderRadius: '6px', padding: '4px 10px', cursor: 'pointer', fontSize: '0.8rem' }}>✕ Hapus</button>
+          </div>
         )}
-        <div onClick={() => fileRef.current?.click()} style={{ ...uploadBoxStyle, cursor: 'pointer' }}>📷 Klik untuk upload foto hero</div>
-        <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }}
-          onChange={async e => { const f = e.target.files?.[0]; if (!f) return; try { const b64 = await compressImage(f); setData(d => ({ ...d, heroPhotoUrl: b64 })); } catch { toast.error('Gagal memproses foto.'); } }} />
+        <div onClick={() => !uploading && fileRef.current?.click()}
+          style={{ ...uploadBoxStyle, cursor: uploading ? 'not-allowed' : 'pointer', opacity: uploading ? 0.6 : 1 }}>
+          {uploading ? '⏳ Mengupload ke Cloudinary...' : '📷 Klik untuk upload foto hero'}
+        </div>
+        <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleUpload} />
       </div>
       <SaveButton onClick={() => { save(LS_HOME, data); toast.success('Hero section disimpan!'); }} />
     </div>
@@ -237,8 +252,22 @@ const HeroForm: React.FC = () => {
 
 /* ── Home About Me Form ── */
 const HomeAboutForm: React.FC = () => {
-  const [data, setData] = useState<HomeAboutData>(() => ls(LS_HOME_ABOUT, defaultHomeAbout));
+  const [data, setData]           = useState<HomeAboutData>(() => ls(LS_HOME_ABOUT, defaultHomeAbout));
+  const [uploading, setUploading] = useState(false);
   const photoRef = useRef<HTMLInputElement>(null);
+
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0]; if (!f) return;
+    setUploading(true);
+    const tid = toast.loading('Mengupload foto ke Cloudinary...');
+    try {
+      const url = await uploadToCloudinary(f);
+      setData(d => ({ ...d, photoUrl: url }));
+      toast.success('Foto berhasil diupload!', { id: tid });
+    } catch {
+      toast.error('Gagal upload foto. Coba lagi.', { id: tid });
+    } finally { setUploading(false); e.target.value = ''; }
+  };
 
   return (
     <div>
@@ -251,11 +280,16 @@ const HomeAboutForm: React.FC = () => {
       <div style={{ marginBottom: '1.2rem' }}>
         <label style={labelStyle}>Foto (About Me di Home)</label>
         {data.photoUrl && (
-          <img src={data.photoUrl} alt="About" style={{ width: '120px', height: '150px', objectFit: 'cover', borderRadius: '12px', marginBottom: '0.8rem', display: 'block', border: '2px solid var(--amber)' }} />
+          <div style={{ position: 'relative', display: 'inline-block', marginBottom: '0.8rem' }}>
+            <img src={data.photoUrl} alt="About" style={{ width: '120px', height: '150px', objectFit: 'cover', borderRadius: '12px', display: 'block', border: '2px solid var(--amber)' }} />
+            <button onClick={() => setData(d => ({ ...d, photoUrl: '' }))} style={{ position: 'absolute', top: '4px', right: '4px', background: 'rgba(220,38,38,0.9)', border: 'none', color: 'white', borderRadius: '6px', padding: '2px 8px', cursor: 'pointer', fontSize: '0.75rem' }}>✕</button>
+          </div>
         )}
-        <div onClick={() => photoRef.current?.click()} style={{ ...uploadBoxStyle, cursor: 'pointer' }}>📷 Upload foto About Me (Home)</div>
-        <input ref={photoRef} type="file" accept="image/*" style={{ display: 'none' }}
-          onChange={async e => { const f = e.target.files?.[0]; if (!f) return; try { const b64 = await compressImage(f); setData(d => ({ ...d, photoUrl: b64 })); } catch { toast.error('Gagal memproses foto.'); } }} />
+        <div onClick={() => !uploading && photoRef.current?.click()}
+          style={{ ...uploadBoxStyle, cursor: uploading ? 'not-allowed' : 'pointer', opacity: uploading ? 0.6 : 1 }}>
+          {uploading ? '⏳ Mengupload ke Cloudinary...' : '📷 Upload foto About Me (Home)'}
+        </div>
+        <input ref={photoRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleUpload} />
       </div>
 
       {[
@@ -455,12 +489,14 @@ const ExperienceForm: React.FC = () => {
    SUB-PANEL: SETTING ABOUT
 ══════════════════════════════════ */
 const SettingAbout: React.FC = () => {
-  const [about, setAbout]   = useState<AboutData>(() => ls(LS_ABOUT, defaultAbout));
-  const [photo, setPhoto]   = useState<string>(() => localStorage.getItem(LS_ABOUT_PHOTO) || '');
-  const [edus, setEdus]     = useState<EduItem[]>(() => ls(LS_EDU, defaultEdus));
-  const [certs, setCerts]   = useState<CertItem[]>(() => ls(LS_CERT, defaultCerts));
-  const photoRef            = useRef<HTMLInputElement>(null);
-  const certRefs            = useRef<Record<string, HTMLInputElement | null>>({});
+  const [about, setAbout]         = useState<AboutData>(() => ls(LS_ABOUT, defaultAbout));
+  const [photo, setPhoto]         = useState<string>(() => localStorage.getItem(LS_ABOUT_PHOTO) || '');
+  const [edus, setEdus]           = useState<EduItem[]>(() => ls(LS_EDU, defaultEdus));
+  const [certs, setCerts]         = useState<CertItem[]>(() => ls(LS_CERT, defaultCerts));
+  const [uploadingPhoto, setUploadingPhoto]           = useState(false);
+  const [uploadingCert, setUploadingCert]             = useState<string | null>(null);
+  const photoRef  = useRef<HTMLInputElement>(null);
+  const certRefs  = useRef<Record<string, HTMLInputElement | null>>({});
 
   const handleSave = () => {
     save(LS_ABOUT, about);
@@ -470,6 +506,32 @@ const SettingAbout: React.FC = () => {
     toast.success('Setting About disimpan!');
   };
 
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0]; if (!f) return;
+    setUploadingPhoto(true);
+    const tid = toast.loading('Mengupload foto profil...');
+    try {
+      const url = await uploadToCloudinary(f);
+      setPhoto(url);
+      toast.success('Foto profil berhasil diupload!', { id: tid });
+    } catch {
+      toast.error('Gagal upload. Coba lagi.', { id: tid });
+    } finally { setUploadingPhoto(false); e.target.value = ''; }
+  };
+
+  const handleCertUpload = async (certId: string, e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0]; if (!f) return;
+    setUploadingCert(certId);
+    const tid = toast.loading('Mengupload gambar sertifikat...');
+    try {
+      const url = await uploadToCloudinary(f);
+      setCerts(prev => prev.map(c => c.id === certId ? { ...c, imageUrl: url } : c));
+      toast.success('Gambar sertifikat berhasil diupload!', { id: tid });
+    } catch {
+      toast.error('Gagal upload. Coba lagi.', { id: tid });
+    } finally { setUploadingCert(null); e.target.value = ''; }
+  };
+
   return (
     <div>
       <SectionTitle icon="👤" title="Setting About" desc="Kelola halaman About (profil, pendidikan, sertifikasi)" />
@@ -477,10 +539,17 @@ const SettingAbout: React.FC = () => {
       {/* Foto Profil */}
       <SubTitle>Foto Profil</SubTitle>
       <div style={{ marginBottom: '1.4rem' }}>
-        {photo && <img src={photo} alt="Profil" style={{ width: '110px', height: '110px', objectFit: 'cover', borderRadius: '50%', marginBottom: '0.8rem', display: 'block', border: '3px solid var(--amber)' }} />}
-        <div onClick={() => photoRef.current?.click()} style={{ ...uploadBoxStyle, cursor: 'pointer' }}>📷 Upload foto profil (halaman About)</div>
-        <input ref={photoRef} type="file" accept="image/*" style={{ display: 'none' }}
-          onChange={async e => { const f = e.target.files?.[0]; if (!f) return; try { const b64 = await compressImage(f); setPhoto(b64); } catch { toast.error('Gagal memproses foto.'); } }} />
+        {photo && (
+          <div style={{ position: 'relative', display: 'inline-block', marginBottom: '0.8rem' }}>
+            <img src={photo} alt="Profil" style={{ width: '110px', height: '110px', objectFit: 'cover', borderRadius: '50%', display: 'block', border: '3px solid var(--amber)' }} />
+            <button onClick={() => setPhoto('')} style={{ position: 'absolute', top: '0', right: '0', background: 'rgba(220,38,38,0.9)', border: 'none', color: 'white', borderRadius: '50%', width: '22px', height: '22px', cursor: 'pointer', fontSize: '0.7rem' }}>✕</button>
+          </div>
+        )}
+        <div onClick={() => !uploadingPhoto && photoRef.current?.click()}
+          style={{ ...uploadBoxStyle, cursor: uploadingPhoto ? 'not-allowed' : 'pointer', opacity: uploadingPhoto ? 0.6 : 1 }}>
+          {uploadingPhoto ? '⏳ Mengupload ke Cloudinary...' : '📷 Upload foto profil (halaman About)'}
+        </div>
+        <input ref={photoRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handlePhotoUpload} />
       </div>
 
       {/* Bio */}
@@ -547,10 +616,18 @@ const SettingAbout: React.FC = () => {
           ))}
           <div style={{ marginBottom: '0.7rem' }}>
             <label style={labelSmStyle}>Gambar Sertifikat</label>
-            {cert.imageUrl && <img src={cert.imageUrl} alt="cert" style={{ width: '100%', maxHeight: '120px', objectFit: 'cover', borderRadius: '8px', marginBottom: '0.5rem' }} />}
-            <div onClick={() => certRefs.current[cert.id]?.click()} style={{ ...uploadBoxStyle, cursor: 'pointer', padding: '0.7rem' }}>📎 Upload gambar sertifikat</div>
+            {cert.imageUrl && (
+              <div style={{ position: 'relative', marginBottom: '0.5rem' }}>
+                <img src={cert.imageUrl} alt="cert" style={{ width: '100%', maxHeight: '120px', objectFit: 'cover', borderRadius: '8px' }} />
+                <button onClick={() => setCerts(prev => prev.map(c => c.id === cert.id ? { ...c, imageUrl: '' } : c))} style={{ position: 'absolute', top: '6px', right: '6px', background: 'rgba(220,38,38,0.9)', border: 'none', color: 'white', borderRadius: '6px', padding: '2px 8px', cursor: 'pointer', fontSize: '0.75rem' }}>✕</button>
+              </div>
+            )}
+            <div onClick={() => uploadingCert !== cert.id && certRefs.current[cert.id]?.click()}
+              style={{ ...uploadBoxStyle, cursor: uploadingCert === cert.id ? 'not-allowed' : 'pointer', padding: '0.7rem', opacity: uploadingCert === cert.id ? 0.6 : 1 }}>
+              {uploadingCert === cert.id ? '⏳ Mengupload...' : '📎 Upload gambar sertifikat'}
+            </div>
             <input ref={el => { certRefs.current[cert.id] = el; }} type="file" accept="image/*" style={{ display: 'none' }}
-              onChange={async e => { const f = e.target.files?.[0]; if (!f) return; try { const b64 = await compressImage(f); setCerts(prev => prev.map(c => c.id === cert.id ? { ...c, imageUrl: b64 } : c)); } catch { toast.error('Gagal memproses foto.'); } }} />
+              onChange={e => handleCertUpload(cert.id, e)} />
           </div>
         </div>
       ))}
@@ -567,13 +644,27 @@ const SettingAbout: React.FC = () => {
 const CATEGORIES = ['HR', 'Administrasi', 'IT Support', 'Desain', 'Branding'];
 
 const SettingPortfolio: React.FC = () => {
-  const [items, setItems] = useState<PortfolioItem[]>(() => ls(LS_PORTFOLIO, []));
+  const [items, setItems]             = useState<PortfolioItem[]>(() => ls(LS_PORTFOLIO, []));
+  const [uploadingImg, setUploadingImg] = useState<string | null>(null);
   const imgRefs = useRef<Record<string, HTMLInputElement | null>>({});
 
   const addItem = () => setItems(prev => [...prev, {
     id: Date.now().toString(), title: '', description: '', category: 'HR',
     imageUrl: '', tags: '', year: new Date().getFullYear().toString(), client: '', featured: false,
   }]);
+
+  const handleImgUpload = async (itemId: string, e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0]; if (!f) return;
+    setUploadingImg(itemId);
+    const tid = toast.loading('Mengupload gambar project...');
+    try {
+      const url = await uploadToCloudinary(f);
+      setItems(prev => prev.map(p => p.id === itemId ? { ...p, imageUrl: url } : p));
+      toast.success('Gambar berhasil diupload!', { id: tid });
+    } catch {
+      toast.error('Gagal upload. Coba lagi.', { id: tid });
+    } finally { setUploadingImg(null); e.target.value = ''; }
+  };
 
   return (
     <div>
@@ -620,10 +711,18 @@ const SettingPortfolio: React.FC = () => {
           </div>
           <div>
             <label style={labelSmStyle}>Gambar Project</label>
-            {item.imageUrl && <img src={item.imageUrl} alt="project" style={{ width: '100%', maxHeight: '140px', objectFit: 'cover', borderRadius: '8px', marginBottom: '0.5rem' }} />}
-            <div onClick={() => imgRefs.current[item.id]?.click()} style={{ ...uploadBoxStyle, cursor: 'pointer' }}>🖼️ Upload gambar project</div>
+            {item.imageUrl && (
+              <div style={{ position: 'relative', marginBottom: '0.5rem' }}>
+                <img src={item.imageUrl} alt="project" style={{ width: '100%', maxHeight: '140px', objectFit: 'cover', borderRadius: '8px' }} />
+                <button onClick={() => setItems(prev => prev.map(p => p.id === item.id ? { ...p, imageUrl: '' } : p))} style={{ position: 'absolute', top: '6px', right: '6px', background: 'rgba(220,38,38,0.9)', border: 'none', color: 'white', borderRadius: '6px', padding: '2px 8px', cursor: 'pointer', fontSize: '0.75rem' }}>✕</button>
+              </div>
+            )}
+            <div onClick={() => uploadingImg !== item.id && imgRefs.current[item.id]?.click()}
+              style={{ ...uploadBoxStyle, cursor: uploadingImg === item.id ? 'not-allowed' : 'pointer', opacity: uploadingImg === item.id ? 0.6 : 1 }}>
+              {uploadingImg === item.id ? '⏳ Mengupload ke Cloudinary...' : '🖼️ Upload gambar project'}
+            </div>
             <input ref={el => { imgRefs.current[item.id] = el; }} type="file" accept="image/*" style={{ display: 'none' }}
-              onChange={async e => { const f = e.target.files?.[0]; if (!f) return; try { const b64 = await compressImage(f); setItems(prev => prev.map(p => p.id === item.id ? { ...p, imageUrl: b64 } : p)); } catch { toast.error('Gagal memproses foto.'); } }} />
+              onChange={e => handleImgUpload(item.id, e)} />
           </div>
         </div>
       ))}
