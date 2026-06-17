@@ -8,7 +8,7 @@ const LS_ABOUT_PHOTO = 'hk_about_photo';
 const LS_EDU         = 'hk_edu_data';
 const LS_CERT        = 'hk_cert_data';
 
-const FALLBACK_PHOTO = 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=600&q=80';
+const FALLBACK_PHOTO = 'https://res.cloudinary.com/dl4pyan8v/image/upload/WhatsApp_Image_2026-06-16_at_03.45.15_axvhg3';
 
 interface AboutData { name: string; location: string; bio1: string; bio2: string; }
 interface EduItem   { id: string; school: string; year: string; major: string; score: string; icon: string; }
