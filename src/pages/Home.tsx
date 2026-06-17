@@ -23,7 +23,7 @@ interface ExpItem    { id: string; position: string; company: string; period: st
 
 /* ─── Defaults ─── */
 const defaultHome: HomeData = {
-  heroTitle: 'MAHFUD FEBRY', heroSubtitle: 'STYANTO',
+  heroTitle: 'MAHFUDFEBRY', heroSubtitle: 'STYANTO',
   heroTagline: 'HR Professional · Admin · IT Support · Creative Designer',
   heroCta: 'Lihat Portfolio', heroCtaLink: '/portofolio', heroPhotoUrl: '',
 };
@@ -45,7 +45,7 @@ const defaultExperience: ExpItem[] = [
   { id: '3', position: 'IT Support', company: 'UD Duta Pangan', period: '2020 – 2023', icon: '💻', tags: 'Hardware Troubleshooting,Software Installation,Network Setup,User Training' },
 ];
 
-const FALLBACK_PHOTO = 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=600&q=80';
+const FALLBACK_PHOTO = 'https://res.cloudinary.com/dl4pyan8v/image/upload/WhatsApp_Image_2026-06-16_at_03.45.15_axvhg3';
 
 const ls = <T,>(key: string, fallback: T): T => {
   try { return JSON.parse(localStorage.getItem(key) || 'null') ?? fallback; } catch { return fallback; }
