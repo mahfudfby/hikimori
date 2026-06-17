@@ -31,8 +31,8 @@ const defaultEdus: EduItem[] = [
 ];
 
 const defaultCerts: CertItem[] = [
-  { id: '1', title: 'Certified Human Resource Officer', issuer: 'BNSP', items: 'Analisa Beban Kerja,Menyusun Uraian Jabatan,Payroll & BPJS', imageUrl: '' },
-  { id: '2', title: 'Surat Referensi Jabatan Sebelumnya', issuer: 'PT MAJU JAYA', items: 'Vendor Management,Stock Monitoring,Facility Maintenance', imageUrl: '' },
+  { id: '1', title: 'Certified Human Resource Officer', issuer: 'BNSP', items: 'Analisa Beban Kerja,Menyusun Uraian Jabatan,Payroll & Jaminan Soaial ( BPJS )', imageUrl: '' },
+  { id: '2', title: 'Surat Referensi Jabatan Sebelumnya', issuer: 'UD DUTA PANGAN', items: 'Administrasi Produksi,Stock Monitoring,Facility Maintenance', imageUrl: '' },
 ];
 
 const softSkills = [
