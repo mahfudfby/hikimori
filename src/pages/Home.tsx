@@ -139,19 +139,19 @@ const defaultEdus: EduItem[] = [
   { id: '2', school: 'SMAN 3 Nganjuk', year: '2018', major: 'Jurusan IPS (Ilmu Pengetahuan Sosial)', location: 'Nganjuk, Jawa Timur', score: '', icon: '🏫' },
 ];
 const defaultCerts: CertItem[] = [
-  { id: '1', title: 'Certified Human Resource Officer (CHRO)', issuer: 'BNSP – Badan Nasional Sertifikasi Profesi', items: 'Analisa Beban Kerja,Menyusun Uraian Jabatan,Payroll & BPJS', imageUrl: '' },
+  { id: '1', title: 'Certified Human Resource Officer ( CHRO )', issuer: 'BNSP – Badan Nasional Sertifikasi Profesi', items: 'Analisa Beban Kerja,Menyusun Uraian Jabatan,Payroll & BPJS', imageUrl: '' },
 ];
 const defaultContact: ContactData = {
-  whatsapp: '6281234567890', instagram: 'mahfudfebry', linkedin: 'mahfudfebry',
-  tiktok: 'mahfudfebry', website: 'https://hikimori-project.com', email: 'mahfudfebry@hikimori.web.id',
-  phone: '+62 895-1234-5678', location: 'Jakarta, Indonesia',
+  whatsapp: '6281234567890', instagram: 'Mahfudfebry', linkedin: 'Mahfud Febry Styanto',
+  tiktok: 'mahfudfebry', website: 'https://hikimori.web.id', email: 'Mahfudfebrys@gmail.com',
+  phone: '+62 895-1234-5678', location: 'Nganjuk, Indonesia',
   showWhatsapp: true, showInstagram: true, showLinkedin: true,
   showTiktok: false, showWebsite: true, showEmail: true,
 };
 
 /* ── Placeholder photo (akan otomatis terganti begitu foto asli diupload lewat Admin) ── */
-const FALLBACK_HERO_PHOTO  = 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=800&q=80';
-const FALLBACK_ABOUT_PHOTO = 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=600&q=80';
+const FALLBACK_HERO_PHOTO  = 'https://res.cloudinary.com/dl4pyan8v/image/upload/WhatsApp_Image_2026-06-16_at_03.45.15_axvhg3';
+const FALLBACK_ABOUT_PHOTO = 'https://res.cloudinary.com/dl4pyan8v/image/upload/WhatsApp_Image_2026-06-16_at_03.45.15_axvhg3';
 
 /* ── Helpers ── */
 const ls = <T,>(key: string, fallback: T): T => {
