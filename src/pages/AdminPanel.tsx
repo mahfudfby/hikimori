@@ -57,7 +57,7 @@ interface HomeAboutData {
 }
 interface AboutData { name: string; location: string; bio1: string; bio2: string; }
 interface EduItem   { id: string; school: string; year: string; major: string; location: string; score: string; icon: string; }
-interface CertItem  { id: string; title: string; issuer: string; items: string; imageUrl: string; }
+interface CertItem  { id: string; title: string; issuer: string; items: string; imageUrl: string; showBadge?: boolean; }
 
 // Skills & Tools (kartu "Skills & Expertise" di Home)
 interface SkillItem {
@@ -155,9 +155,9 @@ const defaultEdus: EduItem[] = [
   { id: '2', school: 'Institut Teknologi dan Bisnis ASIA', year: '2026', major: 'S1 – Teknik Informatika', location: 'Kota Malang', score: 'IPK 3.38', icon: '🎓' },
 ];
 const defaultCerts: CertItem[] = [
-  { id: '1', title: 'Certified Human Resource Officer (CHRO)', issuer: 'BNSP', items: 'Analisa Beban Kerja,Menyusun Uraian Jabatan,Payroll & BPJS', imageUrl: CERT_TEMPLATE_BNSP },
-  { id: '2', title: 'Surat Keterangan Kerja', issuer: 'UD Duta Pangan', items: 'Vendor Management,Stock Monitoring,Facility Maintenance', imageUrl: CERT_TEMPLATE_REFERENSI },
-  { id: '3', title: 'IT Support Specialist', issuer: 'Lembaga Sertifikasi Kompetensi TI', items: 'Hardware Troubleshooting,Network Configuration,IT Incident Management', imageUrl: CERT_TEMPLATE_IT },
+  { id: '1', title: 'Certified Human Resource Officer (CHRO)', issuer: 'BNSP', items: 'Analisa Beban Kerja,Menyusun Uraian Jabatan,Payroll & BPJS', imageUrl: CERT_TEMPLATE_BNSP, showBadge: true },
+  { id: '2', title: 'Surat Keterangan Kerja', issuer: 'UD Duta Pangan', items: 'Vendor Management,Stock Monitoring,Facility Maintenance', imageUrl: CERT_TEMPLATE_REFERENSI, showBadge: false },
+  { id: '3', title: 'IT Support Specialist', issuer: 'Lembaga Sertifikasi Kompetensi TI', items: 'Hardware Troubleshooting,Network Configuration,IT Incident Management', imageUrl: CERT_TEMPLATE_IT, showBadge: false },
 ];
 const defaultSkills: SkillItem[] = [
   { id: '1', icon: '📋', title: 'Manajemen Administrasi', desc: 'Mampu mengelola data, dokumen, dan proses administrasi secara sistematis dan efisien.' },
@@ -986,6 +986,23 @@ const SettingAbout: React.FC = () => {
                 onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,0.1)')} />
             </div>
           ))}
+
+          {/* Show Badge Toggle */}
+          <div style={{ marginBottom: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.65rem 1rem', background: 'rgba(245,166,35,0.05)', borderRadius: '8px', border: '1px solid rgba(245,166,35,0.15)' }}>
+            <input
+              type="checkbox"
+              id={`badge-${cert.id}`}
+              checked={cert.showBadge ?? false}
+              onChange={e => setCerts(prev => prev.map(c => c.id === cert.id ? { ...c, showBadge: e.target.checked } : c))}
+              style={{ width: '16px', height: '16px', accentColor: 'var(--amber)', cursor: 'pointer', flexShrink: 0 }}
+            />
+            <label htmlFor={`badge-${cert.id}`} style={{ color: 'rgba(255,255,255,0.8)', fontSize: '0.83rem', cursor: 'pointer', userSelect: 'none' as const }}>
+              Tampilkan badge di <strong style={{ color: 'var(--amber)' }}>Hero Home</strong>
+              <span style={{ display: 'block', color: 'rgba(255,255,255,0.4)', fontSize: '0.74rem', marginTop: '1px' }}>
+                Badge 🏅 {cert.title || '—'} {cert.showBadge ? '→ aktif di hero' : '→ tersembunyi'}
+              </span>
+            </label>
+          </div>
           <div style={{ marginBottom: '0.7rem' }}>
             <label style={labelSmStyle}>Gambar Sertifikat</label>
             {cert.imageUrl && (

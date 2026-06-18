@@ -42,7 +42,7 @@ interface ValueItem      { id: string; icon: string; label: string; }
 interface ExpItem        { id: string; position: string; company: string; period: string; icon: string; tags: string; imageUrl: string; }
 interface HomeProjectItem{ id: string; icon: string; title: string; desc: string; category: string; }
 interface EduItem        { id: string; school: string; year: string; major: string; location: string; score: string; icon: string; }
-interface CertItem       { id: string; title: string; issuer: string; items: string; imageUrl: string; }
+interface CertItem       { id: string; title: string; issuer: string; items: string; imageUrl: string; showBadge?: boolean; }
 interface ContactData {
   whatsapp: string; instagram: string; linkedin: string; tiktok: string; website: string; email: string;
   phone: string; location: string;
@@ -140,9 +140,9 @@ const defaultEdus: EduItem[] = [
   { id: '2', school: 'SMAN 3 Nganjuk', year: '2018', major: 'Jurusan IPS (Ilmu Pengetahuan Sosial)', location: 'Nganjuk, Jawa Timur', score: '', icon: '🏫' },
 ];
 const defaultCerts: CertItem[] = [
-  { id: '1', title: 'Certified Human Resource Officer ( CHRO )', issuer: 'BNSP – Badan Nasional Sertifikasi Profesi', items: 'Analisa Beban Kerja,Menyusun Uraian Jabatan,Payroll & BPJS', imageUrl: CERT_TEMPLATE_BNSP },
-  { id: '2', title: 'Surat Keterangan Kerja', issuer: 'UD Duta Pangan', items: 'Vendor Management,Stock Monitoring,Facility Maintenance', imageUrl: CERT_TEMPLATE_REFERENSI },
-  { id: '3', title: 'IT Support Specialist', issuer: 'Lembaga Sertifikasi Kompetensi TI', items: 'Hardware Troubleshooting,Network Configuration,IT Incident Management', imageUrl: CERT_TEMPLATE_IT },
+  { id: '1', title: 'Certified Human Resource Officer ( CHRO )', issuer: 'BNSP – Badan Nasional Sertifikasi Profesi', items: 'Analisa Beban Kerja,Menyusun Uraian Jabatan,Payroll & BPJS', imageUrl: CERT_TEMPLATE_BNSP, showBadge: true },
+  { id: '2', title: 'Surat Keterangan Kerja', issuer: 'UD Duta Pangan', items: 'Vendor Management,Stock Monitoring,Facility Maintenance', imageUrl: CERT_TEMPLATE_REFERENSI, showBadge: false },
+  { id: '3', title: 'IT Support Specialist', issuer: 'Lembaga Sertifikasi Kompetensi TI', items: 'Hardware Troubleshooting,Network Configuration,IT Incident Management', imageUrl: CERT_TEMPLATE_IT, showBadge: false },
 ];
 const defaultContact: ContactData = {
   whatsapp: '6281234567890', instagram: 'Mahfudfebry', linkedin: 'Mahfud Febry Styanto',
@@ -474,9 +474,9 @@ const Home: React.FC = () => {
               </div>
 
               {/* ── Certification Badges ── */}
-              {certs.filter(c => c.title).length > 0 && (
+              {certs.filter(c => c.showBadge && c.title).length > 0 && (
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '2rem' }}>
-                  {certs.map(cert => (
+                  {certs.filter(c => c.showBadge && c.title).map(cert => (
                     <a key={cert.id} href="#certification" style={{
                       display: 'inline-flex', alignItems: 'center', gap: '0.45rem',
                       background: C.bgSoft, border: `1px solid ${C.border}`,
@@ -751,13 +751,9 @@ const Home: React.FC = () => {
                 )}
                 <div style={{
                   width: '140px', height: '140px', borderRadius: '50%', background: C.bgSoft,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', margin: '0 auto',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto',
                 }}>
-                  {cert.imageUrl ? (
-                    <img src={cert.imageUrl} alt={cert.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  ) : (
-                    <span style={{ fontSize: '3rem' }}>🏅</span>
-                  )}
+                  <span style={{ fontSize: '3rem' }}>🏅</span>
                 </div>
                 <div>
                   <span style={{ background: C.bgSoft, color: C.greenDark, borderRadius: '6px', padding: '4px 12px', fontSize: '0.74rem', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase' }}>Sertifikasi</span>
