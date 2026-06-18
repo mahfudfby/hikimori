@@ -299,45 +299,99 @@ const GlobalNatureDecor: React.FC = () => {
 };
 
 /* ══════════════════════════════════════════════════════
-   HERO ILLUSTRATION — efek melayang + parallax kursor,
-   supaya foto/ilustrasi terasa "hidup".
+   HERO ILLUSTRATION — foto full-bleed sisi kanan dengan
+   gradasi animasi slowmotion seperti awan bergerak.
 ══════════════════════════════════════════════════════ */
 const HeroIllustration: React.FC<{ src: string }> = ({ src }) => {
-  const [tilt, setTilt] = useState({ x: 0, y: 0 });
-  const wrapRef = useRef<HTMLDivElement>(null);
-
-  const handleMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = wrapRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    const x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-    const y = ((e.clientY - rect.top) / rect.height) * 2 - 1;
-    setTilt({ x, y });
-  };
-
   return (
-    <div
-      ref={wrapRef}
-      onMouseMove={handleMove}
-      onMouseLeave={() => setTilt({ x: 0, y: 0 })}
-      style={{ position: 'relative', perspective: '1200px' }}
-    >
-      <motion.div
-        animate={{ y: [0, -14, 0] }}
-        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-        style={{ position: 'relative' }}
-      >
-        <motion.div
-          animate={{ rotateX: tilt.y * -6, rotateY: tilt.x * 8 }}
-          transition={{ type: 'spring', stiffness: 60, damping: 14 }}
-          style={{ transformStyle: 'preserve-3d', borderRadius: '28px', overflow: 'hidden', position: 'relative', aspectRatio: '4/5', boxShadow: '0 30px 70px rgba(40,60,30,0.22)' }}
-        >
-          <img src={src} alt="Hero" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
-          <div style={{ position: 'absolute', inset: 0, background: `radial-gradient(circle at 70% 20%, rgba(255,255,255,0.18), transparent 60%)` }} />
-        </motion.div>
-      </motion.div>
-      {/* lingkaran dekor di belakang foto */}
-      <div style={{ position: 'absolute', top: '8%', right: '-8%', width: '70%', height: '70%', borderRadius: '50%', background: 'rgba(116,163,90,0.16)', zIndex: -1 }} />
-    </div>
+    <>
+      {/* Keyframes untuk animasi gradasi awan slowmotion */}
+      <style>{`
+        @keyframes cloudGradient {
+          0%   { opacity: 1; transform: translateX(0px) scaleX(1); }
+          25%  { opacity: 0.85; transform: translateX(-6px) scaleX(1.03); }
+          50%  { opacity: 0.95; transform: translateX(-2px) scaleX(0.98); }
+          75%  { opacity: 0.88; transform: translateX(-8px) scaleX(1.04); }
+          100% { opacity: 1; transform: translateX(0px) scaleX(1); }
+        }
+        @keyframes cloudGradient2 {
+          0%   { opacity: 0.6; transform: translateX(0px); }
+          30%  { opacity: 0.45; transform: translateX(10px); }
+          60%  { opacity: 0.65; transform: translateX(4px); }
+          100% { opacity: 0.6; transform: translateX(0px); }
+        }
+        @keyframes cloudGradient3 {
+          0%   { opacity: 0.3; transform: translateY(0px); }
+          40%  { opacity: 0.2; transform: translateY(-12px); }
+          70%  { opacity: 0.35; transform: translateY(-5px); }
+          100% { opacity: 0.3; transform: translateY(0px); }
+        }
+        .hero-photo-wrap {
+          position: absolute;
+          top: 0; right: 0;
+          width: 52%;
+          height: 100%;
+          overflow: hidden;
+          pointer-events: none;
+        }
+        .hero-photo-img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          object-position: center top;
+          display: block;
+        }
+        /* Lapisan gradasi utama — tepi kiri ke transparan */
+        .hero-grad-left {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(
+            to right,
+            ${C.bg} 0%,
+            ${C.bg}ee 8%,
+            ${C.bg}cc 16%,
+            ${C.bg}99 26%,
+            ${C.bg}66 38%,
+            ${C.bg}33 52%,
+            transparent 68%
+          );
+          animation: cloudGradient 14s ease-in-out infinite;
+          will-change: transform, opacity;
+        }
+        /* Lapisan gradasi kedua — efek awan berlapis */
+        .hero-grad-left2 {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(
+            to right,
+            ${C.bg}ff 0%,
+            ${C.bg}dd 12%,
+            ${C.bg}88 28%,
+            ${C.bg}22 46%,
+            transparent 62%
+          );
+          animation: cloudGradient2 20s ease-in-out infinite;
+          will-change: transform, opacity;
+        }
+        /* Lapisan gradasi ketiga — efek awan vertikal lembut */
+        .hero-grad-top {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(
+            to bottom,
+            ${C.bg}88 0%,
+            transparent 25%,
+            transparent 75%,
+            ${C.bg}55 100%
+          );
+          animation: cloudGradient3 18s ease-in-out infinite;
+          will-change: transform, opacity;
+        }
+        @media (max-width: 900px) {
+          .hero-photo-wrap { display: none; }
+        }
+      `}</style>
+    </>
   );
 };
 
@@ -450,9 +504,24 @@ const Home: React.FC = () => {
       </div>
 
       {/* ══ HERO ══ */}
-      <section id="home" style={{ position: 'relative', zIndex: 2, padding: '4.5rem 2rem 3.5rem', maxWidth: '1300px', margin: '0 auto' }}>
-        <div className="home-hero-grid" style={{ display: 'grid', gridTemplateColumns: '1.05fr 0.95fr', gap: '3.5rem', alignItems: 'center' }}>
-          <div>
+      <section id="home" style={{ position: 'relative', zIndex: 2, minHeight: '100vh', overflow: 'hidden' }}>
+        {/* Render keyframes + style untuk foto hero */}
+        <HeroIllustration src={home.heroPhotoUrl || FALLBACK_HERO_PHOTO} />
+        {/* Foto full-bleed sisi kanan dengan efek gradasi animasi awan */}
+        <div className="hero-photo-wrap" aria-hidden="true">
+          <img
+            src={home.heroPhotoUrl || FALLBACK_HERO_PHOTO}
+            alt=""
+            className="hero-photo-img"
+          />
+          <div className="hero-grad-left" />
+          <div className="hero-grad-left2" />
+          <div className="hero-grad-top" />
+        </div>
+
+        {/* Konten teks di sebelah kiri */}
+        <div style={{ position: 'relative', zIndex: 3, maxWidth: '1300px', margin: '0 auto', padding: '5rem 2rem 4rem', display: 'flex', alignItems: 'center', minHeight: '100vh' }}>
+          <div style={{ maxWidth: '600px' }}>
             <AnimatedSection direction="left">
               <div style={{ color: C.green, fontFamily: 'var(--font-body)', fontWeight: 600, fontSize: '0.95rem', marginBottom: '1rem' }}>
                 {home.kicker} 🍃
@@ -463,7 +532,7 @@ const Home: React.FC = () => {
               <div style={{ color: C.green, fontFamily: 'var(--font-body)', fontWeight: 600, fontSize: '1.05rem', marginBottom: '1.5rem' }}>
                 {home.heroSubtitle}
               </div>
-              <p style={{ color: C.text, lineHeight: 1.85, fontSize: '1.02rem', marginBottom: '2.2rem', maxWidth: '520px' }}>
+              <p style={{ color: C.text, lineHeight: 1.85, fontSize: '1.02rem', marginBottom: '2.2rem', maxWidth: '480px' }}>
                 {home.heroTagline}
               </p>
               <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginBottom: '1.8rem' }}>
@@ -495,14 +564,11 @@ const Home: React.FC = () => {
               )}
             </AnimatedSection>
             <AnimatedSection direction="up" delay={0.2}>
-              <div style={{ ...cardStyle, padding: '1.5rem 1.7rem' }}>
+              <div style={{ ...cardStyle, padding: '1.5rem 1.7rem', maxWidth: '440px', backdropFilter: 'blur(4px)', background: 'rgba(255,255,255,0.85)' }}>
                 <StatGrid stats={home.stats} />
               </div>
             </AnimatedSection>
           </div>
-          <AnimatedSection direction="right">
-            <HeroIllustration src={home.heroPhotoUrl || FALLBACK_HERO_PHOTO} />
-          </AnimatedSection>
         </div>
       </section>
 
@@ -1031,9 +1097,9 @@ const Home: React.FC = () => {
            TABLET LANDSCAPE  (≤ 1024 px)
         ════════════════════════════════════ */
         @media (max-width: 1024px) {
-          .home-hero-grid   { gap: 2.5rem !important; }
           .home-about-grid  { gap: 2.5rem !important; }
           .home-contact-grid { gap: 2rem !important; }
+          .hero-photo-wrap  { width: 55% !important; }
         }
 
         /* ════════════════════════════════════
@@ -1041,11 +1107,10 @@ const Home: React.FC = () => {
         ════════════════════════════════════ */
         @media (max-width: 900px) {
           /* Collapse semua multi-column grid */
-          .home-hero-grid, .home-about-grid, .home-contact-grid,
+          .home-about-grid, .home-contact-grid,
           .tools-values-grid, .exp-card, .cert-card {
             grid-template-columns: 1fr !important;
           }
-          .home-hero-grid   { gap: 2.5rem !important; }
           .home-about-grid  { gap: 0 !important; }
           .home-contact-grid { gap: 2.5rem !important; }
           .cert-card > div:first-child { margin-bottom: 1.5rem !important; }
@@ -1054,7 +1119,7 @@ const Home: React.FC = () => {
           .about-photo-wrap { padding-bottom: 2.5rem !important; }
 
           /* Section padding dikurangi */
-          #home            { padding: 3.5rem 1.5rem 2.5rem !important; }
+          #home            { padding: 0 !important; min-height: 100vh !important; }
           #about, #expertise, #skills, #experience,
           #certification, #projects, #education { padding: 3.5rem 1.5rem !important; }
           #contact         { padding: 3.5rem 1.5rem 4rem !important; }
@@ -1075,7 +1140,6 @@ const Home: React.FC = () => {
           .contact-form-grid { grid-template-columns: 1fr !important; }
           .exp-tags-grid     { grid-template-columns: 1fr 1fr !important; gap: 0.4rem !important; }
 
-          #home            { padding: 3rem 1.2rem 2rem !important; }
           #about, #expertise, #skills, #experience,
           #certification, #projects, #education { padding: 3rem 1.2rem !important; }
           #contact         { padding: 3rem 1.2rem 3.5rem !important; }
@@ -1093,7 +1157,6 @@ const Home: React.FC = () => {
         @media (max-width: 420px) {
           .exp-tags-grid     { grid-template-columns: 1fr !important; }
 
-          #home            { padding: 2.5rem 1rem 1.8rem !important; }
           #about, #expertise, #skills, #experience,
           #certification, #projects, #education { padding: 2.5rem 1rem !important; }
           #contact         { padding: 2.5rem 1rem 3rem !important; }
