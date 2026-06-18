@@ -142,16 +142,16 @@ const defaultCerts: CertItem[] = [
   { id: '1', title: 'Certified Human Resource Officer (CHRO)', issuer: 'BNSP – Badan Nasional Sertifikasi Profesi', items: 'Analisa Beban Kerja,Menyusun Uraian Jabatan,Payroll & BPJS', imageUrl: '' },
 ];
 const defaultContact: ContactData = {
-  whatsapp: '6282234651413', instagram: 'mahfudfebry', linkedin: 'mahfud-febry-styanto',
-  tiktok: 'mahfudfebry', website: 'https://hikimori.web.id', email: 'mahfudfebrys@gmail.com',
-  phone: '+62 822-3465-1413', location: 'Nganjuk, Indonesia',
+  whatsapp: '6281234567890', instagram: 'mahfudfebry', linkedin: 'mahfudfebry',
+  tiktok: 'mahfudfebry', website: 'https://hikimori-project.com', email: 'mahfudfebry@hikimori.web.id',
+  phone: '+62 895-1234-5678', location: 'Jakarta, Indonesia',
   showWhatsapp: true, showInstagram: true, showLinkedin: true,
   showTiktok: false, showWebsite: true, showEmail: true,
 };
 
 /* ── Placeholder photo (akan otomatis terganti begitu foto asli diupload lewat Admin) ── */
-const FALLBACK_HERO_PHOTO  = 'https://res.cloudinary.com/dl4pyan8v/image/upload/WhatsApp_Image_2026-06-16_at_03.45.15_axvhg3';
-const FALLBACK_ABOUT_PHOTO = 'https://res.cloudinary.com/dl4pyan8v/image/upload/WhatsApp_Image_2026-06-16_at_03.45.15_axvhg3';
+const FALLBACK_HERO_PHOTO  = 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=800&q=80';
+const FALLBACK_ABOUT_PHOTO = 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=600&q=80';
 
 /* ── Helpers ── */
 const ls = <T,>(key: string, fallback: T): T => {
@@ -425,7 +425,7 @@ const Home: React.FC = () => {
         position: 'sticky', top: '70px', zIndex: 50, background: 'rgba(251,250,244,0.92)',
         backdropFilter: 'blur(10px)', borderBottom: `1px solid ${C.border}`,
       }}>
-        <div style={{ maxWidth: '1300px', margin: '0 auto', padding: '0.7rem 1.5rem', display: 'flex', gap: '0.4rem', overflowX: 'auto', whiteSpace: 'nowrap' }}>
+        <div className="home-subnav" style={{ maxWidth: '1300px', margin: '0 auto', padding: '0.7rem 1.5rem', display: 'flex', gap: '0.4rem', overflowX: 'auto', whiteSpace: 'nowrap' }}>
           {[
             ['Home', '#home'], ['About', '#about'], ['Expertise', '#expertise'], ['Skills', '#skills'],
             ['Experience', '#experience'], ['Certification', '#certification'], ['Projects', '#projects'],
@@ -485,7 +485,7 @@ const Home: React.FC = () => {
       <section id="about" style={{ position: 'relative', zIndex: 2, padding: '5rem 2rem', maxWidth: '1300px', margin: '0 auto' }}>
         <div className="home-about-grid" style={{ display: 'grid', gridTemplateColumns: '0.85fr 1.15fr', gap: '3.5rem', alignItems: 'center' }}>
           <AnimatedSection direction="left">
-            <div style={{ position: 'relative' }}>
+            <div className="about-photo-wrap" style={{ position: 'relative' }}>
               <div style={{ borderRadius: '24px', overflow: 'hidden', aspectRatio: '4/5', boxShadow: '0 24px 60px rgba(40,60,30,0.18)' }}>
                 <img src={about.photoUrl || FALLBACK_ABOUT_PHOTO} alt={about.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               </div>
@@ -662,7 +662,7 @@ const Home: React.FC = () => {
                         <div style={{ color: C.textMuted, fontSize: '0.82rem' }}>{exp.company} • {exp.period}</div>
                       </div>
                     </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.5rem' }}>
+                    <div className="exp-tags-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.5rem' }}>
                       {splitList(exp.tags).map(tag => (
                         <div key={tag} style={{ display: 'flex', gap: '0.5rem', color: C.text, fontSize: '0.84rem' }}>
                           <span style={{ color: C.green }}>✓</span>{tag}
@@ -949,13 +949,86 @@ const Home: React.FC = () => {
 
       {/* Responsive */}
       <style>{`
-        @media (max-width: 900px) {
-          .home-hero-grid, .home-about-grid, .home-contact-grid, .tools-values-grid, .exp-card, .cert-card { grid-template-columns: 1fr !important; }
-          .cert-card > div:first-child { margin-bottom: 1rem; }
+        /* ── Sembunyikan scrollbar sub-nav ── */
+        .home-subnav { -ms-overflow-style: none; scrollbar-width: none; }
+        .home-subnav::-webkit-scrollbar { display: none; }
+
+        /* ════════════════════════════════════
+           TABLET LANDSCAPE  (≤ 1024 px)
+        ════════════════════════════════════ */
+        @media (max-width: 1024px) {
+          .home-hero-grid   { gap: 2.5rem !important; }
+          .home-about-grid  { gap: 2.5rem !important; }
+          .home-contact-grid { gap: 2rem !important; }
         }
-        @media (max-width: 560px) {
-          .stat-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 1rem !important; }
+
+        /* ════════════════════════════════════
+           TABLET PORTRAIT  (≤ 900 px)
+        ════════════════════════════════════ */
+        @media (max-width: 900px) {
+          /* Collapse semua multi-column grid */
+          .home-hero-grid, .home-about-grid, .home-contact-grid,
+          .tools-values-grid, .exp-card, .cert-card {
+            grid-template-columns: 1fr !important;
+          }
+          .home-hero-grid   { gap: 2.5rem !important; }
+          .home-about-grid  { gap: 0 !important; }
+          .home-contact-grid { gap: 2.5rem !important; }
+          .cert-card > div:first-child { margin-bottom: 1.5rem !important; }
+
+          /* Space untuk badge yang menggantung di bawah foto */
+          .about-photo-wrap { padding-bottom: 2.5rem !important; }
+
+          /* Section padding dikurangi */
+          #home            { padding: 3.5rem 1.5rem 2.5rem !important; }
+          #about, #expertise, #skills, #experience,
+          #certification, #projects, #education { padding: 3.5rem 1.5rem !important; }
+          #contact         { padding: 3.5rem 1.5rem 4rem !important; }
+
+          /* Experience card inner */
+          .exp-card { padding: 1.4rem 1.2rem !important; }
+
+          /* Cert card */
+          .cert-card { padding: 1.6rem !important; text-align: center !important; }
+          .cert-card > div:last-child { text-align: left !important; }
+        }
+
+        /* ════════════════════════════════════
+           LARGE PHONE  (≤ 640 px)
+        ════════════════════════════════════ */
+        @media (max-width: 640px) {
+          .stat-grid         { grid-template-columns: repeat(2, 1fr) !important; gap: 1rem !important; }
           .contact-form-grid { grid-template-columns: 1fr !important; }
+          .exp-tags-grid     { grid-template-columns: 1fr 1fr !important; gap: 0.4rem !important; }
+
+          #home            { padding: 3rem 1.2rem 2rem !important; }
+          #about, #expertise, #skills, #experience,
+          #certification, #projects, #education { padding: 3rem 1.2rem !important; }
+          #contact         { padding: 3rem 1.2rem 3.5rem !important; }
+
+          /* Sub-nav tombol lebih kecil */
+          .home-subnav a   { padding: 5px 10px !important; font-size: 0.78rem !important; }
+
+          /* Tools & values agar tidak terlalu lebar */
+          .tools-values-grid { padding: 1.4rem !important; gap: 1.4rem !important; }
+        }
+
+        /* ════════════════════════════════════
+           SMALL PHONE  (≤ 420 px)
+        ════════════════════════════════════ */
+        @media (max-width: 420px) {
+          .exp-tags-grid     { grid-template-columns: 1fr !important; }
+
+          #home            { padding: 2.5rem 1rem 1.8rem !important; }
+          #about, #expertise, #skills, #experience,
+          #certification, #projects, #education { padding: 2.5rem 1rem !important; }
+          #contact         { padding: 2.5rem 1rem 3rem !important; }
+
+          /* Stat grid tetap 2 kolom tapi lebih ketat */
+          .stat-grid         { gap: 0.7rem !important; }
+
+          /* About photo badge tidak overflow */
+          .about-photo-wrap  { padding-bottom: 3rem !important; }
         }
       `}</style>
     </div>
