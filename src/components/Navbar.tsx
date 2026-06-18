@@ -77,6 +77,7 @@ const Navbar: React.FC = () => {
             fontSize: '1.5rem',
             color: 'var(--amber)',
             letterSpacing: '2px',
+            textShadow: '0 2px 12px rgba(0,0,0,0.6), 0 0 24px rgba(245,166,35,0.25)',
           }}>
             MFD-FBY's
           </span>
@@ -96,6 +97,7 @@ const Navbar: React.FC = () => {
                 fontSize: '0.95rem',
                 letterSpacing: '0.5px',
                 transition: 'color 0.3s ease',
+                textShadow: '0 1px 10px rgba(0,0,0,0.7)',
               }}
             >
               {link.label}

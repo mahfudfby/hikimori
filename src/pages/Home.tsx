@@ -1,6 +1,6 @@
 // src/pages/Home.tsx
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import AnimatedSection from '../components/AnimatedSection';
@@ -379,6 +379,7 @@ const Home: React.FC = () => {
   const [contact, setContact]     = useState<ContactData>(() => ls(LS_CONTACT, defaultContact));
 
   const [activeCategory, setActiveCategory] = useState('Semua');
+  const [expandedCertId, setExpandedCertId] = useState<string | null>(null);
   const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });
 
   /* Sinkron real-time kalau Admin menyimpan perubahan */
@@ -462,12 +463,33 @@ const Home: React.FC = () => {
               <p style={{ color: C.text, lineHeight: 1.85, fontSize: '1.02rem', marginBottom: '2.2rem', maxWidth: '520px' }}>
                 {home.heroTagline}
               </p>
-              <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginBottom: '2.6rem' }}>
+              <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginBottom: '1.8rem' }}>
                 <a href={home.heroCtaLink} style={primaryBtnStyle}>👤 {home.heroCta} →</a>
                 {home.heroCta2Link && (
                   <a href={home.heroCta2Link} target="_blank" rel="noopener noreferrer" style={secondaryBtnStyle}>⬇ {home.heroCta2}</a>
                 )}
               </div>
+
+              {/* ── Certification Badges ── */}
+              {certs.filter(c => c.title).length > 0 && (
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '2rem' }}>
+                  {certs.map(cert => (
+                    <a key={cert.id} href="#certification" style={{
+                      display: 'inline-flex', alignItems: 'center', gap: '0.45rem',
+                      background: C.bgSoft, border: `1px solid ${C.border}`,
+                      borderRadius: '24px', padding: '6px 14px', fontSize: '0.76rem',
+                      fontWeight: 700, color: C.greenDark, textDecoration: 'none',
+                      boxShadow: '0 2px 8px rgba(40,60,30,0.08)',
+                      transition: 'box-shadow 0.2s',
+                    }}
+                      onMouseEnter={e => (e.currentTarget.style.boxShadow = '0 4px 16px rgba(40,60,30,0.16)')}
+                      onMouseLeave={e => (e.currentTarget.style.boxShadow = '0 2px 8px rgba(40,60,30,0.08)')}
+                    >
+                      🏅 {cert.title}
+                    </a>
+                  ))}
+                </div>
+              )}
             </AnimatedSection>
             <AnimatedSection direction="up" delay={0.2}>
               <div style={{ ...cardStyle, padding: '1.5rem 1.7rem' }}>
@@ -697,27 +719,80 @@ const Home: React.FC = () => {
 
         {certs.map((cert, i) => (
           <AnimatedSection key={cert.id} direction="up" delay={i * 0.1}>
-            <div style={{ ...cardStyle, padding: '2.2rem', marginBottom: '1.4rem', display: 'grid', gridTemplateColumns: '160px 1fr', gap: '2rem', alignItems: 'center' }} className="cert-card">
-              <div style={{
-                width: '140px', height: '140px', borderRadius: '50%', background: C.bgSoft,
-                display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', margin: '0 auto',
-              }}>
-                {cert.imageUrl ? (
-                  <img src={cert.imageUrl} alt={cert.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                ) : (
-                  <span style={{ fontSize: '3rem' }}>🏅</span>
+            <div style={{ marginBottom: '1.4rem' }}>
+              {/* ── Clickable Card ── */}
+              <div
+                onClick={() => cert.imageUrl && setExpandedCertId(expandedCertId === cert.id ? null : cert.id)}
+                style={{
+                  ...cardStyle, padding: '2.2rem',
+                  display: 'grid', gridTemplateColumns: '160px 1fr', gap: '2rem', alignItems: 'center',
+                  position: 'relative',
+                  cursor: cert.imageUrl ? 'pointer' : 'default',
+                  transition: 'box-shadow 0.2s',
+                }}
+                className="cert-card"
+                onMouseEnter={e => cert.imageUrl && (e.currentTarget.style.boxShadow = '0 12px 40px rgba(40,60,30,0.14)')}
+                onMouseLeave={e => (e.currentTarget.style.boxShadow = (cardStyle as React.CSSProperties).boxShadow as string)}
+              >
+                {/* Toggle hint */}
+                {cert.imageUrl && (
+                  <div style={{
+                    position: 'absolute', top: '1rem', right: '1.2rem',
+                    background: C.bgSoft, border: `1px solid ${C.border}`,
+                    borderRadius: '20px', padding: '3px 10px',
+                    fontSize: '0.72rem', fontWeight: 700, color: C.greenDark,
+                    display: 'flex', alignItems: 'center', gap: '4px',
+                  }}>
+                    {expandedCertId === cert.id ? '▲ Tutup' : '📎 Lihat Sertifikat'}
+                  </div>
                 )}
-              </div>
-              <div>
-                <span style={{ background: C.bgSoft, color: C.greenDark, borderRadius: '6px', padding: '4px 12px', fontSize: '0.74rem', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase' }}>Sertifikasi</span>
-                <h3 style={{ fontFamily: 'var(--font-display)', color: C.ink, fontSize: '1.6rem', margin: '0.8rem 0 0.4rem' }}>{cert.title}</h3>
-                <p style={{ color: C.textMuted, marginBottom: '1rem' }}>{cert.issuer}</p>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-                  {splitList(cert.items).map(item => (
-                    <span key={item} style={{ background: C.bgSoft, color: C.greenDark, borderRadius: '20px', padding: '5px 14px', fontSize: '0.78rem', fontWeight: 600 }}>{item}</span>
-                  ))}
+                <div style={{
+                  width: '140px', height: '140px', borderRadius: '50%', background: C.bgSoft,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', margin: '0 auto',
+                }}>
+                  {cert.imageUrl ? (
+                    <img src={cert.imageUrl} alt={cert.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  ) : (
+                    <span style={{ fontSize: '3rem' }}>🏅</span>
+                  )}
+                </div>
+                <div>
+                  <span style={{ background: C.bgSoft, color: C.greenDark, borderRadius: '6px', padding: '4px 12px', fontSize: '0.74rem', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase' }}>Sertifikasi</span>
+                  <h3 style={{ fontFamily: 'var(--font-display)', color: C.ink, fontSize: '1.6rem', margin: '0.8rem 0 0.4rem' }}>{cert.title}</h3>
+                  <p style={{ color: C.textMuted, marginBottom: '1rem' }}>{cert.issuer}</p>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                    {splitList(cert.items).map(item => (
+                      <span key={item} style={{ background: C.bgSoft, color: C.greenDark, borderRadius: '20px', padding: '5px 14px', fontSize: '0.78rem', fontWeight: 600 }}>{item}</span>
+                    ))}
+                  </div>
                 </div>
               </div>
+
+              {/* ── Dropdown Image ── */}
+              <AnimatePresence>
+                {expandedCertId === cert.id && cert.imageUrl && (
+                  <motion.div
+                    key="cert-img"
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
+                    style={{ overflow: 'hidden' }}
+                  >
+                    <div style={{
+                      ...cardStyle, marginTop: '6px', padding: '1.5rem',
+                      textAlign: 'center', background: C.bgAlt,
+                    }}>
+                      <p style={{ color: C.textMuted, fontSize: '0.78rem', marginBottom: '1rem' }}>📎 Dokumen Sertifikat — {cert.title}</p>
+                      <img
+                        src={cert.imageUrl}
+                        alt={cert.title}
+                        style={{ maxWidth: '100%', maxHeight: '75vh', borderRadius: '12px', boxShadow: '0 12px 40px rgba(40,60,30,0.18)', objectFit: 'contain' }}
+                      />
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </AnimatedSection>
         ))}
