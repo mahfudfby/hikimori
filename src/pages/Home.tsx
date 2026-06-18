@@ -305,27 +305,8 @@ const GlobalNatureDecor: React.FC = () => {
 const HeroIllustration: React.FC<{ src: string }> = ({ src }) => {
   return (
     <>
-      {/* Keyframes untuk animasi gradasi awan slowmotion */}
+      {/* Lapisan gradasi statis di atas foto hero (animasi awan sudah dihapus) */}
       <style>{`
-        @keyframes cloudGradient {
-          0%   { opacity: 1; transform: translateX(0px) scaleX(1); }
-          25%  { opacity: 0.85; transform: translateX(-6px) scaleX(1.03); }
-          50%  { opacity: 0.95; transform: translateX(-2px) scaleX(0.98); }
-          75%  { opacity: 0.88; transform: translateX(-8px) scaleX(1.04); }
-          100% { opacity: 1; transform: translateX(0px) scaleX(1); }
-        }
-        @keyframes cloudGradient2 {
-          0%   { opacity: 0.6; transform: translateX(0px); }
-          30%  { opacity: 0.45; transform: translateX(10px); }
-          60%  { opacity: 0.65; transform: translateX(4px); }
-          100% { opacity: 0.6; transform: translateX(0px); }
-        }
-        @keyframes cloudGradient3 {
-          0%   { opacity: 0.3; transform: translateY(0px); }
-          40%  { opacity: 0.2; transform: translateY(-12px); }
-          70%  { opacity: 0.35; transform: translateY(-5px); }
-          100% { opacity: 0.3; transform: translateY(0px); }
-        }
         .hero-photo-wrap {
           position: absolute;
           top: 0; right: 0;
@@ -341,7 +322,7 @@ const HeroIllustration: React.FC<{ src: string }> = ({ src }) => {
           object-position: center top;
           display: block;
         }
-        /* Lapisan gradasi utama — tepi kiri ke transparan */
+        /* Lapisan gradasi utama — tepi kiri ke transparan (statis, tanpa animasi) */
         .hero-grad-left {
           position: absolute;
           inset: 0;
@@ -355,10 +336,8 @@ const HeroIllustration: React.FC<{ src: string }> = ({ src }) => {
             ${C.bg}33 52%,
             transparent 68%
           );
-          animation: cloudGradient 14s ease-in-out infinite;
-          will-change: transform, opacity;
         }
-        /* Lapisan gradasi kedua — efek awan berlapis */
+        /* Lapisan gradasi kedua — penguat transisi (statis) */
         .hero-grad-left2 {
           position: absolute;
           inset: 0;
@@ -370,10 +349,8 @@ const HeroIllustration: React.FC<{ src: string }> = ({ src }) => {
             ${C.bg}22 46%,
             transparent 62%
           );
-          animation: cloudGradient2 20s ease-in-out infinite;
-          will-change: transform, opacity;
         }
-        /* Lapisan gradasi ketiga — efek awan vertikal lembut */
+        /* Lapisan gradasi ketiga — vignette lembut atas/bawah (statis) */
         .hero-grad-top {
           position: absolute;
           inset: 0;
@@ -384,11 +361,48 @@ const HeroIllustration: React.FC<{ src: string }> = ({ src }) => {
             transparent 75%,
             ${C.bg}55 100%
           );
-          animation: cloudGradient3 18s ease-in-out infinite;
-          will-change: transform, opacity;
         }
+
+        /* ── Mobile/tablet portrait: foto ditumpuk di bagian atas, halaman hero
+           (judul, tagline, tombol, stat) mengalir di bawah foto, tertimpa
+           gradasi foto yang melebur ke warna background ── */
         @media (max-width: 900px) {
-          .hero-photo-wrap { display: none; }
+          .hero-section {
+            display: flex;
+            flex-direction: column;
+          }
+          .hero-photo-wrap {
+            position: relative;
+            top: auto; right: auto;
+            width: 100%;
+            height: 48vh;
+            min-height: 300px;
+            max-height: 420px;
+          }
+          /* Arah gradasi diputar vertikal supaya foto melebur ke konten di bawahnya */
+          .hero-grad-left,
+          .hero-grad-left2 {
+            background: linear-gradient(
+              to bottom,
+              transparent 0%,
+              transparent 52%,
+              ${C.bg}aa 80%,
+              ${C.bg} 100%
+            );
+          }
+          .hero-grad-top {
+            background: linear-gradient(
+              to bottom,
+              rgba(0,0,0,0.22) 0%,
+              transparent 22%,
+              transparent 100%
+            );
+          }
+          .hero-content-wrap {
+            min-height: auto !important;
+            padding: 2.2rem 1.4rem 3rem !important;
+            align-items: flex-start !important;
+          }
         }
       `}</style>
     </>
@@ -504,10 +518,10 @@ const Home: React.FC = () => {
       </div>
 
       {/* ══ HERO ══ */}
-      <section id="home" style={{ position: 'relative', zIndex: 2, minHeight: '100vh', overflow: 'hidden' }}>
+      <section id="home" className="hero-section" style={{ position: 'relative', zIndex: 2, minHeight: '100vh', overflow: 'hidden' }}>
         {/* Render keyframes + style untuk foto hero */}
         <HeroIllustration src={home.heroPhotoUrl || FALLBACK_HERO_PHOTO} />
-        {/* Foto full-bleed sisi kanan dengan efek gradasi animasi awan */}
+        {/* Foto — desktop: absolute kanan | mobile: banner tumpuk di atas */}
         <div className="hero-photo-wrap" aria-hidden="true">
           <img
             src={home.heroPhotoUrl || FALLBACK_HERO_PHOTO}
@@ -519,8 +533,8 @@ const Home: React.FC = () => {
           <div className="hero-grad-top" />
         </div>
 
-        {/* Konten teks di sebelah kiri */}
-        <div style={{ position: 'relative', zIndex: 3, maxWidth: '1300px', margin: '0 auto', padding: '5rem 2rem 4rem', display: 'flex', alignItems: 'center', minHeight: '100vh' }}>
+        {/* Konten teks di sebelah kiri (desktop) / di bawah foto (mobile) */}
+        <div className="hero-content-wrap" style={{ position: 'relative', zIndex: 3, maxWidth: '1300px', margin: '0 auto', padding: '5rem 2rem 4rem', display: 'flex', alignItems: 'center', minHeight: '100vh' }}>
           <div style={{ maxWidth: '600px' }}>
             <AnimatedSection direction="left">
               <div style={{ color: C.green, fontFamily: 'var(--font-body)', fontWeight: 600, fontSize: '0.95rem', marginBottom: '1rem' }}>
@@ -1093,6 +1107,14 @@ const Home: React.FC = () => {
         .home-subnav { -ms-overflow-style: none; scrollbar-width: none; }
         .home-subnav::-webkit-scrollbar { display: none; }
 
+        /* ── Fade di tepi kiri/kanan sub-nav supaya jelas bisa di-scroll, tidak terasa "terpotong" ── */
+        @media (max-width: 900px) {
+          .home-subnav {
+            -webkit-mask-image: linear-gradient(to right, transparent 0, black 22px, black calc(100% - 22px), transparent 100%);
+            mask-image: linear-gradient(to right, transparent 0, black 22px, black calc(100% - 22px), transparent 100%);
+          }
+        }
+
         /* ════════════════════════════════════
            TABLET LANDSCAPE  (≤ 1024 px)
         ════════════════════════════════════ */
@@ -1118,8 +1140,8 @@ const Home: React.FC = () => {
           /* Space untuk badge yang menggantung di bawah foto */
           .about-photo-wrap { padding-bottom: 2.5rem !important; }
 
-          /* Section padding dikurangi */
-          #home            { padding: 0 !important; min-height: 100vh !important; }
+          /* Section padding dikurangi — tinggi hero kini mengikuti konten (foto + teks ditumpuk), tidak lagi dipaksa 100vh */
+          #home            { padding: 0 !important; min-height: auto !important; }
           #about, #expertise, #skills, #experience,
           #certification, #projects, #education { padding: 3.5rem 1.5rem !important; }
           #contact         { padding: 3.5rem 1.5rem 4rem !important; }
