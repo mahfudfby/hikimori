@@ -201,17 +201,23 @@ const Navbar: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             style={{
-              position: 'absolute',
+              position: 'fixed',
               top: '70px',
               left: 0,
               right: 0,
               background: 'rgba(10,10,10,0.98)',
               backdropFilter: 'blur(20px)',
+              WebkitBackdropFilter: 'blur(20px)',
               borderBottom: '1px solid rgba(245,166,35,0.2)',
               padding: '1.5rem 2rem',
+              paddingBottom: 'calc(1.5rem + env(safe-area-inset-bottom))',
               display: 'flex',
               flexDirection: 'column',
               gap: '1.2rem',
+              zIndex: 999,
+              boxShadow: '0 8px 32px rgba(0,0,0,0.45)',
+              maxHeight: 'calc(100dvh - 70px)',
+              overflowY: 'auto',
             }}
           >
             {links.map((link, i) => (
