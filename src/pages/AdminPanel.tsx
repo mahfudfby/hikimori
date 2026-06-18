@@ -16,32 +16,52 @@ const LS_SKILLS       = 'hk_skills_data';        // Skills & Tools
 const LS_EXPERIENCE   = 'hk_experience_data';    // Pengalaman Kerja
 const LS_CONTACT      = 'hk_contact_data';
 const LS_PORTFOLIO    = 'hk_portfolio_data';
+const LS_EXPERTISE    = 'hk_expertise_data';      // Keahlian & Kompetensi (Home)
+const LS_TOOLS        = 'hk_tools_data';          // Tools & Technologies (Home)
+const LS_VALUES       = 'hk_values_data';         // Kompetensi Inti (Home)
+const LS_HOME_PROJECTS = 'hk_home_projects_data'; // Projects & Contributions (Home)
 
 /* ─── Types ─── */
+interface StatItem { id: string; value: string; label: string; }
+
 interface HomeData {
+  kicker: string;
   heroTitle: string;
   heroSubtitle: string;
   heroTagline: string;
   heroCta: string;
   heroCtaLink: string;
+  heroCta2: string;
+  heroCta2Link: string;
   heroPhotoUrl: string;
+  stats: StatItem[];
 }
 // About Me section yang muncul di halaman Home
 interface HomeAboutData {
   name: string;
   location: string;
+  subtitle: string;
   bio1: string;
   bio2: string;
   photoUrl: string;
+  badgeText: string;
+  closingQuote: string;
+  email: string;
+  phone: string;
+  linkedinLabel: string;
+  linkedinUrl: string;
+  githubLabel: string;
+  githubUrl: string;
+  stats: StatItem[];
 }
 interface AboutData { name: string; location: string; bio1: string; bio2: string; }
-interface EduItem   { id: string; school: string; year: string; major: string; score: string; icon: string; }
+interface EduItem   { id: string; school: string; year: string; major: string; location: string; score: string; icon: string; }
 interface CertItem  { id: string; title: string; issuer: string; items: string; imageUrl: string; }
 
-// Skills & Tools
+// Skills & Tools (kartu "Skills & Expertise" di Home)
 interface SkillItem {
   id: string;
-  number: string;   // "01", "02", dst
+  icon: string;    // emoji
   title: string;
   desc: string;
 }
@@ -53,11 +73,31 @@ interface ExpItem {
   period: string;     // 2020 – 2023
   icon: string;       // emoji
   tags: string;       // koma-separated
+  imageUrl: string;   // ilustrasi/foto untuk timeline
+}
+// Keahlian & Kompetensi (3 kartu Expertise di Home)
+interface ExpertiseCard {
+  id: string;
+  icon: string;
+  title: string;
+  items: string; // koma-separated
+}
+// Tools & Technologies / Kompetensi Inti
+interface ToolItem { id: string; icon: string; label: string; }
+interface ValueItem { id: string; icon: string; label: string; }
+// Projects & Contributions di Home
+interface HomeProjectItem {
+  id: string;
+  icon: string;
+  title: string;
+  desc: string;
+  category: string;
 }
 
 interface ContactData {
   whatsapp: string; instagram: string; linkedin: string;
   tiktok: string;   website: string;  email: string;
+  phone: string;    location: string;
   showWhatsapp: boolean; showInstagram: boolean; showLinkedin: boolean;
   showTiktok: boolean;   showWebsite: boolean;   showEmail: boolean;
 }
@@ -68,16 +108,41 @@ interface PortfolioItem {
 
 /* ─── Defaults ─── */
 const defaultHome: HomeData = {
-  heroTitle: 'MAHFUD FEBRY', heroSubtitle: 'STYANTO',
-  heroTagline: 'HR Professional · Admin · IT Support · Creative Designer',
-  heroCta: 'Lihat Portfolio', heroCtaLink: '/portofolio', heroPhotoUrl: '',
+  kicker: 'Welcome To My Journey',
+  heroTitle: 'MAHFUDFEBRY',
+  heroSubtitle: 'HR General Affairs  •  IT Support  •  Administrative Specialist',
+  heroTagline: 'Membantu organisasi berkembang melalui pengelolaan SDM, operasional perusahaan, dan dukungan teknologi yang efektif.',
+  heroCta: 'Hubungi Saya', heroCtaLink: '#contact',
+  heroCta2: 'Download CV', heroCta2Link: '',
+  heroPhotoUrl: '',
+  stats: [
+    { id: '1', value: '3+',  label: 'Posisi Profesional' },
+    { id: '2', value: '30+', label: 'Perangkat IT Ditangani' },
+    { id: '3', value: '1+',  label: 'Sertifikasi BNSP' },
+    { id: '4', value: '7+',  label: 'Bidang Kompetensi' },
+  ],
 };
 const defaultHomeAbout: HomeAboutData = {
   name: 'Mahfudfebry',
-  location: 'Nganjuk, Indonesia',
-  bio1: 'Halo! Nama saya Mahfudfebry, seorang profesional muda dari Nganjuk, Indonesia. Portfolio ini adalah kumpulan karya dan proyek terbaik saya yang mencerminkan keahlian, kreativitas, dan pertumbuhan profesional.',
-  bio2: 'Di setiap proyek, saya selalu berusaha memberikan hasil terbaik — dari desain visual yang kuat hingga solusi HR dan IT yang efisien dan berdampak.',
+  location: 'Nganjuk, Jawa Timur',
+  subtitle: 'Menghubungkan SDM, Operasional, dan Teknologi',
+  bio1: 'Saya adalah profesional yang memiliki pengalaman di bidang **Human Resource, General Affairs, IT Support,** dan **Administrasi Operasional.**',
+  bio2: 'Saya percaya bahwa kombinasi antara manajemen SDM yang baik, operasional yang terstruktur, dan teknologi yang tepat dapat membantu perusahaan berkembang secara berkelanjutan.',
   photoUrl: '',
+  badgeText: 'Berkomitmen pada kualitas, integritas, dan kolaborasi.',
+  closingQuote: 'Terus belajar, beradaptasi, dan memberikan dampak positif adalah cara saya berkembang setiap hari.',
+  email: 'mahfudfebrys@gmail.com',
+  phone: '+62 822-3465-1413',
+  linkedinLabel: 'linkedin.com/in/mahfud-febry-styanto',
+  linkedinUrl: 'https://linkedin.com/in/mahfud-febry-styanto',
+  githubLabel: 'github.com/Mahfudfby',
+  githubUrl: 'https://github.com/Mahfudfby',
+  stats: [
+    { id: '1', value: '1+',  label: 'Tahun Pengalaman' },
+    { id: '2', value: '3',   label: 'Posisi Profesional' },
+    { id: '3', value: '30+', label: 'Perangkat IT Ditangani' },
+    { id: '4', value: '7+',  label: 'Bidang Kompetensi' },
+  ],
 };
 const defaultAbout: AboutData = {
   name: 'Mahfudfebry', location: 'Nganjuk, Jawa Timur — Indonesia',
@@ -85,27 +150,63 @@ const defaultAbout: AboutData = {
   bio2: 'Di sepanjang perjalanan karier saya, saya telah mengerjakan berbagai bidang.',
 };
 const defaultEdus: EduItem[] = [
-  { id: '1', school: 'SMAN 3 Nganjuk', year: '2018', major: 'Ilmu Pengetahuan Sosial (IPS)', score: 'Avg Value: 88', icon: '🏫' },
-  { id: '2', school: 'Institut Teknologi dan Bisnis ASIA', year: 'Kota Malang', major: 'S1 – Teknik Informatika', score: 'IPK 3.38', icon: '🎓' },
+  { id: '1', school: 'SMAN 3 Nganjuk', year: '2018', major: 'Ilmu Pengetahuan Sosial (IPS)', location: 'Nganjuk, Jawa Timur', score: 'Avg Value: 88', icon: '🏫' },
+  { id: '2', school: 'Institut Teknologi dan Bisnis ASIA', year: '2026', major: 'S1 – Teknik Informatika', location: 'Kota Malang', score: 'IPK 3.38', icon: '🎓' },
 ];
 const defaultCerts: CertItem[] = [
-  { id: '1', title: 'Certified Human Resource Officer', issuer: 'BNSP', items: 'Analisa Beban Kerja,Menyusun Uraian Jabatan,Payroll & BPJS', imageUrl: '' },
+  { id: '1', title: 'Certified Human Resource Officer (CHRO)', issuer: 'BNSP', items: 'Analisa Beban Kerja,Menyusun Uraian Jabatan,Payroll & BPJS', imageUrl: '' },
   { id: '2', title: 'Surat Referensi Jabatan Sebelumnya', issuer: 'PT MAJU JAYA', items: 'Vendor Management,Stock Monitoring,Facility Maintenance', imageUrl: '' },
 ];
 const defaultSkills: SkillItem[] = [
-  { id: '1', number: '01', title: 'Branding & Identity Design', desc: 'Crafting memorable logos and visual systems that reflect a brand\'s essence and personality.' },
-  { id: '2', number: '02', title: 'Creativity & Problem-Solving', desc: 'Thinking outside the box while solving design challenges with strategic insight.' },
-  { id: '3', number: '03', title: 'Concept Development', desc: 'Skilled in brainstorming and translating abstract ideas into compelling visual narratives.' },
-  { id: '4', number: '04', title: 'Proper Time Management', desc: 'Capable of handling multiple projects and meeting tight deadlines consistently.' },
+  { id: '1', icon: '📋', title: 'Manajemen Administrasi', desc: 'Mampu mengelola data, dokumen, dan proses administrasi secara sistematis dan efisien.' },
+  { id: '2', icon: '🎧', title: 'IT Support', desc: 'Berpengalaman dalam troubleshooting hardware, software, jaringan, dan memberikan solusi teknis.' },
+  { id: '3', icon: '📈', title: 'Analisis & Pelaporan', desc: 'Terampil dalam menganalisis data dan menyusun laporan yang akurat dan informatif.' },
+  { id: '4', icon: '👥', title: 'Komunikasi & Kolaborasi', desc: 'Mampu berkomunikasi dengan jelas dan bekerja sama efektif dalam tim maupun lintas divisi.' },
+  { id: '5', icon: '🛡️', title: 'Problem Solving', desc: 'Mampu mengidentifikasi masalah, menganalisis akar penyebab, dan menemukan solusi yang tepat.' },
+  { id: '6', icon: '⚙️', title: 'Manajemen Proyek', desc: 'Berpengalaman merencanakan, melaksanakan, dan memantau proyek hingga selesai tepat waktu.' },
+  { id: '7', icon: '📖', title: 'Pembelajaran Berkelanjutan', desc: 'Selalu belajar hal baru untuk meningkatkan kompetensi dan mengikuti perkembangan teknologi.' },
+  { id: '8', icon: '🎯', title: 'Orientasi Hasil', desc: 'Fokus pada pencapaian target dengan kualitas terbaik dan memberikan nilai tambah.' },
 ];
 const defaultExperience: ExpItem[] = [
-  { id: '1', position: 'HR / General Affairs', company: 'UD Duta Pangan', period: '2020 – 2023', icon: '👥', tags: 'Vendor Management,Stock Monitoring,Facility Maintenance,Workload Analysis' },
-  { id: '2', position: 'Staff Administrasi',   company: 'UD Duta Pangan', period: '2020 – 2023', icon: '📋', tags: 'Document Processing,Administrative Support,Filing & Archiving,Reporting' },
-  { id: '3', position: 'IT Support',            company: 'UD Duta Pangan', period: '2020 – 2023', icon: '💻', tags: 'Hardware Troubleshooting,Software Installation,Network Setup,User Training' },
+  { id: '1', position: 'Administrasi Produksi', company: 'UD Duta Pangan', period: 'Jul 2024 – Des 2024', icon: '🏭', tags: 'Administrasi Produksi Pabrik,Monitoring Bahan Baku,Monitoring Hasil Produksi,Penyusunan Laporan Produksi,Pengendalian Dokumen,Manajemen FIFO (First in - First Out)', imageUrl: '' },
+  { id: '2', position: 'IT Support', company: 'UD Duta Pangan', period: 'Jan 2025 – Agu 2025', icon: '💻', tags: 'Menangani 30+ perangkat komputer,Troubleshooting Hardware,Troubleshooting Software,Konfigurasi LAN & WiFi,Penanganan Insiden IT,Pemeliharaan Jaringan', imageUrl: '' },
+  { id: '3', position: 'Staff HRD & General Affairs', company: 'UD Duta Pangan', period: 'Agu 2025 – Sekarang', icon: '👥', tags: 'Payroll (Gaji, Potongan, Bonus),BPJS Kesehatan,BPJS Ketenagakerjaan,Analisa Beban Kerja,Job Description,Asset Management,Vendor Management,Laporan Harian/Mingguan/Bulanan', imageUrl: '' },
+];
+const defaultExpertise: ExpertiseCard[] = [
+  { id: '1', icon: '👥', title: 'HR General Affairs', items: 'Analisa Beban Kerja,Penyusunan Uraian Jabatan (Jobdesk),Administrasi BPJS Kesehatan & Ketenagakerjaan,Kebijakan MSDM,Penghitungan Gaji Nett/Gross Up,Hubungan Relasi Industri,Koordinasi Operasional,Budget Monitoring,Asset Management,Vendor Management' },
+  { id: '2', icon: '💻', title: 'IT Support', items: 'Troubleshooting Hardware & Software,Konfigurasi LAN / WIFI,Pemeliharaan Jaringan,Dukungan Pengguna (User Support),Penanganan Insiden TI,Inventarisasi Perangkat TI' },
+  { id: '3', icon: '📋', title: 'Administrasi Produksi', items: 'Administrasi Produksi Pabrik,Monitoring Bahan Baku,Monitoring Hasil Produksi,Penyusunan Laporan Produksi,Pengendalian Dokumen,Manajemen FIFO (First in - First Out)' },
+];
+const defaultTools: ToolItem[] = [
+  { id: '1', icon: '🗂️', label: 'Microsoft Office' },
+  { id: '2', icon: '🔍', label: 'Google Workspace' },
+  { id: '3', icon: '🔌', label: 'Jaringan & LAN' },
+  { id: '4', icon: '💾', label: 'Database Dasar' },
+  { id: '5', icon: '🎨', label: 'Canva Design' },
+  { id: '6', icon: '📌', label: 'Trello Project' },
+];
+const defaultValues: ValueItem[] = [
+  { id: '1', icon: '👤', label: 'Profesional' },
+  { id: '2', icon: '💡', label: 'Inovatif' },
+  { id: '3', icon: '🤝', label: 'Integritas' },
+  { id: '4', icon: '⏰', label: 'Disiplin' },
+  { id: '5', icon: '🏆', label: 'Bertanggung Jawab' },
+];
+const HOME_PROJECT_CATEGORIES = ['Administrasi', 'IT Support', 'Sistem & Network', 'Analisis & Laporan', 'General Affairs'];
+const defaultHomeProjects: HomeProjectItem[] = [
+  { id: '1', icon: '📋', title: 'Implementasi Administrasi BPJS', desc: 'Mengelola administrasi BPJS Kesehatan dan Ketenagakerjaan karyawan secara akurat dan tepat waktu.', category: 'Administrasi' },
+  { id: '2', icon: '💰', title: 'Pengelolaan Payroll Karyawan', desc: 'Mengelola perhitungan gaji, potongan, bonus, BPJS, dan laporan payroll secara rutin dan akurat.', category: 'Administrasi' },
+  { id: '3', icon: '💻', title: 'Troubleshooting Infrastruktur IT', desc: 'Menangani troubleshooting hardware, software, jaringan LAN, dan WiFi dengan downtime minimal.', category: 'IT Support' },
+  { id: '4', icon: '📈', title: 'Analisa Beban Kerja Divisi', desc: 'Melakukan analisa beban kerja untuk penyesuaian SDM dan peningkatan efisiensi operasional.', category: 'Analisis & Laporan' },
+  { id: '5', icon: '📄', title: 'Administrasi Produksi & Stok', desc: 'Monitoring bahan baku, hasil produksi, penyusunan laporan produksi dan dokumentasi secara berkala.', category: 'Administrasi' },
+  { id: '6', icon: '🛡️', title: 'Konfigurasi & Pemeliharaan Jaringan', desc: 'Konfigurasi LAN, WiFi, dan perangkat jaringan untuk mendukung kelancaran operasional perusahaan.', category: 'Sistem & Network' },
+  { id: '7', icon: '📝', title: 'Penyusunan Laporan Operasional', desc: 'Menyusun laporan operasional bulanan sebagai dasar pengambilan keputusan dan evaluasi kinerja.', category: 'Analisis & Laporan' },
+  { id: '8', icon: '👥', title: 'Koordinasi & Support Kegiatan Internal', desc: 'Berkoordinasi dengan berbagai divisi untuk mendukung kelancaran kegiatan internal perusahaan.', category: 'General Affairs' },
 ];
 const defaultContact: ContactData = {
   whatsapp: '6281234567890', instagram: 'mahfudfebry', linkedin: 'mahfudfebry',
   tiktok: 'mahfudfebry',    website: 'https://hikimori-project.com', email: 'mahfudfebry@hikimori.web.id',
+  phone: '+62 895-1234-5678', location: 'Jakarta, Indonesia',
   showWhatsapp: true, showInstagram: true, showLinkedin: true,
   showTiktok: false,  showWebsite: true,  showEmail: true,
 };
@@ -149,13 +250,16 @@ const MENUS = [
    Berisi: Hero + About Me di Home + Skills & Tools + Pengalaman Kerja
 ══════════════════════════════════════════════════════ */
 const SettingHome: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'hero'|'homeabout'|'skills'|'experience'>('hero');
+  const [activeTab, setActiveTab] = useState<'hero'|'homeabout'|'expertise'|'skills'|'tools'|'experience'|'projects'>('hero');
 
   const tabs: { id: typeof activeTab; label: string; icon: string }[] = [
-    { id: 'hero',       label: 'Hero Section',     icon: '✨' },
-    { id: 'homeabout',  label: 'About Me (Home)',  icon: '👤' },
-    { id: 'skills',     label: 'Skills & Tools',   icon: '🛠️' },
-    { id: 'experience', label: 'Pengalaman Kerja', icon: '💼' },
+    { id: 'hero',       label: 'Hero Section',         icon: '✨' },
+    { id: 'homeabout',  label: 'About Me (Home)',       icon: '👤' },
+    { id: 'expertise',  label: 'Keahlian & Kompetensi', icon: '🧩' },
+    { id: 'skills',     label: 'Skills & Expertise',    icon: '🛠️' },
+    { id: 'tools',      label: 'Tools & Kompetensi Inti', icon: '🧰' },
+    { id: 'experience', label: 'Pengalaman Kerja',      icon: '💼' },
+    { id: 'projects',   label: 'Projects & Contributions', icon: '🗂️' },
   ];
 
   return (
@@ -186,10 +290,45 @@ const SettingHome: React.FC = () => {
         <motion.div key={activeTab} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
           {activeTab === 'hero'       && <HeroForm />}
           {activeTab === 'homeabout'  && <HomeAboutForm />}
+          {activeTab === 'expertise'  && <ExpertiseForm />}
           {activeTab === 'skills'     && <SkillsForm />}
+          {activeTab === 'tools'      && <ToolsValuesForm />}
           {activeTab === 'experience' && <ExperienceForm />}
+          {activeTab === 'projects'   && <HomeProjectsForm />}
         </motion.div>
       </AnimatePresence>
+    </div>
+  );
+};
+
+/* ── Shared: Stats List Editor (4 angka statistik) ── */
+const StatsEditor: React.FC<{ stats: StatItem[]; onChange: (next: StatItem[]) => void }> = ({ stats, onChange }) => {
+  const update = (id: string, key: keyof StatItem, val: string) =>
+    onChange(stats.map(s => s.id === id ? { ...s, [key]: val } : s));
+  const add = () => onChange([...stats, { id: Date.now().toString(), value: '', label: '' }]);
+  const remove = (id: string) => onChange(stats.filter(s => s.id !== id));
+
+  return (
+    <div style={{ marginBottom: '1rem' }}>
+      <label style={labelStyle}>Statistik (angka pencapaian)</label>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '0.7rem', marginBottom: '0.6rem' }}>
+        {stats.map(s => (
+          <div key={s.id} style={{ ...cardBoxStyle, padding: '0.9rem', marginBottom: 0 }}>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '0.4rem' }}>
+              <button onClick={() => remove(s.id)} style={deleteBtnStyle}>✕</button>
+            </div>
+            <input style={{ ...inputStyle, marginBottom: '0.5rem' }} value={s.value} placeholder="3+"
+              onChange={e => update(s.id, 'value', e.target.value)}
+              onFocus={e => (e.target.style.borderColor = 'rgba(245,166,35,0.6)')}
+              onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,0.1)')} />
+            <input style={inputStyle} value={s.label} placeholder="Posisi Profesional"
+              onChange={e => update(s.id, 'label', e.target.value)}
+              onFocus={e => (e.target.style.borderColor = 'rgba(245,166,35,0.6)')}
+              onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,0.1)')} />
+          </div>
+        ))}
+      </div>
+      <button onClick={add} style={{ ...addBtnStyle, marginBottom: '0.4rem' }}>+ Tambah Statistik</button>
     </div>
   );
 };
@@ -226,11 +365,28 @@ const HeroForm: React.FC = () => {
   return (
     <div>
       <SubTitle>Hero Utama</SubTitle>
-      {field('Nama Besar (Hero Title)', 'heroTitle', 'MAHFUD FEBRY')}
-      {field('Nama Kecil (Hero Subtitle)', 'heroSubtitle', 'STYANTO')}
-      {field('Tagline / Profesi', 'heroTagline', 'HR · Admin · IT Support · Designer')}
-      {field('Teks Tombol CTA', 'heroCta', 'Lihat Portfolio')}
-      {field('Link Tombol CTA', 'heroCtaLink', '/portofolio')}
+      <div style={{ background: 'rgba(245,166,35,0.06)', border: '1px solid rgba(245,166,35,0.2)', borderRadius: '10px', padding: '0.9rem 1.1rem', marginBottom: '1.5rem', fontSize: '0.83rem', color: 'var(--white-dim)' }}>
+        💡 Catatan: foto hero saat ini masih placeholder bergaya ilustrasi. Upload fotomu sendiri di sini kapan saja — efek "melayang" di Hero otomatis menyesuaikan foto baru.
+      </div>
+      {field('Kicker (teks kecil di atas judul)', 'kicker', 'Welcome To My Journey')}
+      {field('Nama Besar (Hero Title)', 'heroTitle', 'MAHFUDFEBRY')}
+      {field('Tagline Profesi', 'heroSubtitle', 'HR General Affairs  •  IT Support  •  Administrative Specialist')}
+      <div style={{ marginBottom: '1.2rem' }}>
+        <label style={labelStyle}>Paragraf Deskripsi</label>
+        <textarea style={{ ...inputStyle, height: '80px', resize: 'vertical' }} value={data.heroTagline}
+          onChange={e => setData(d => ({ ...d, heroTagline: e.target.value }))}
+          onFocus={e => (e.target.style.borderColor = 'rgba(245,166,35,0.6)')}
+          onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,0.1)')} />
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+        {field('Teks Tombol CTA Utama', 'heroCta', 'Hubungi Saya')}
+        {field('Link Tombol CTA Utama', 'heroCtaLink', '#contact')}
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+        {field('Teks Tombol CTA Kedua', 'heroCta2', 'Download CV')}
+        {field('Link File CV (PDF)', 'heroCta2Link', 'https://...')}
+      </div>
+      <StatsEditor stats={data.stats} onChange={next => setData(d => ({ ...d, stats: next }))} />
       <div style={{ marginBottom: '1.2rem' }}>
         <label style={labelStyle}>Foto Hero</label>
         {data.heroPhotoUrl && (
@@ -294,7 +450,8 @@ const HomeAboutForm: React.FC = () => {
 
       {[
         { key: 'name' as const, label: 'Nama Tampil', ph: 'Mahfudfebry' },
-        { key: 'location' as const, label: 'Lokasi', ph: 'Nganjuk, Indonesia' },
+        { key: 'location' as const, label: 'Lokasi', ph: 'Nganjuk, Jawa Timur' },
+        { key: 'subtitle' as const, label: 'Subjudul', ph: 'Menghubungkan SDM, Operasional, dan Teknologi' },
       ].map(({ key, label, ph }) => (
         <div key={key} style={{ marginBottom: '1rem' }}>
           <label style={labelStyle}>{label}</label>
@@ -304,6 +461,9 @@ const HomeAboutForm: React.FC = () => {
             onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,0.1)')} />
         </div>
       ))}
+      <div style={{ background: 'rgba(245,166,35,0.06)', border: '1px solid rgba(245,166,35,0.2)', borderRadius: '10px', padding: '0.7rem 1rem', marginBottom: '1rem', fontSize: '0.78rem', color: 'var(--white-dim)' }}>
+        ✍️ Tip: bungkus kata dengan <strong style={{ color: 'var(--amber)' }}>**dua bintang**</strong> untuk menebalkan, contoh: <em>"**Human Resource**, IT Support"</em>.
+      </div>
       {[
         { key: 'bio1' as const, label: 'Bio Paragraf 1' },
         { key: 'bio2' as const, label: 'Bio Paragraf 2' },
@@ -316,6 +476,42 @@ const HomeAboutForm: React.FC = () => {
             onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,0.1)')} />
         </div>
       ))}
+      {[
+        { key: 'badgeText' as const, label: 'Teks Badge Kecil (dekat foto)', ph: 'Berkomitmen pada kualitas, integritas, dan kolaborasi.' },
+        { key: 'closingQuote' as const, label: 'Quote Penutup Section', ph: 'Terus belajar, beradaptasi...' },
+      ].map(({ key, label, ph }) => (
+        <div key={key} style={{ marginBottom: '1rem' }}>
+          <label style={labelStyle}>{label}</label>
+          <textarea style={{ ...inputStyle, height: '64px', resize: 'vertical' }} value={data[key]} placeholder={ph}
+            onChange={e => setData(d => ({ ...d, [key]: e.target.value }))}
+            onFocus={e => (e.target.style.borderColor = 'rgba(245,166,35,0.6)')}
+            onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,0.1)')} />
+        </div>
+      ))}
+
+      <SubTitle style={{ marginTop: '1.5rem' }}>Info Kontak (tampil di sisi kanan Section About)</SubTitle>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+        {[
+          { key: 'email' as const, label: 'Email', ph: 'nama@email.com' },
+          { key: 'phone' as const, label: 'Telepon', ph: '+62 8xx-xxxx-xxxx' },
+          { key: 'linkedinLabel' as const, label: 'LinkedIn (teks tampil)', ph: 'linkedin.com/in/username' },
+          { key: 'linkedinUrl' as const, label: 'LinkedIn (URL lengkap)', ph: 'https://linkedin.com/in/username' },
+          { key: 'githubLabel' as const, label: 'GitHub (teks tampil)', ph: 'github.com/username' },
+          { key: 'githubUrl' as const, label: 'GitHub (URL lengkap)', ph: 'https://github.com/username' },
+        ].map(({ key, label, ph }) => (
+          <div key={key} style={{ marginBottom: '1rem' }}>
+            <label style={labelSmStyle}>{label}</label>
+            <input style={inputStyle} value={data[key]} placeholder={ph}
+              onChange={e => setData(d => ({ ...d, [key]: e.target.value }))}
+              onFocus={e => (e.target.style.borderColor = 'rgba(245,166,35,0.6)')}
+              onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,0.1)')} />
+          </div>
+        ))}
+      </div>
+
+      <SubTitle style={{ marginTop: '1rem' }}>Statistik di Section About</SubTitle>
+      <StatsEditor stats={data.stats} onChange={next => setData(d => ({ ...d, stats: next }))} />
+
       <SaveButton onClick={() => { save(LS_HOME_ABOUT, data); toast.success('About Me (Home) disimpan!'); }} />
     </div>
   );
@@ -328,31 +524,27 @@ const SkillsForm: React.FC = () => {
   const update = (id: string, key: keyof SkillItem, val: string) =>
     setSkills(prev => prev.map(s => s.id === id ? { ...s, [key]: val } : s));
 
-  const add = () => {
-    const next = (skills.length + 1).toString().padStart(2, '0');
-    setSkills(prev => [...prev, { id: Date.now().toString(), number: next, title: '', desc: '' }]);
-  };
+  const add = () => setSkills(prev => [...prev, { id: Date.now().toString(), icon: '⭐', title: '', desc: '' }]);
 
   return (
     <div>
-      <SubTitle>Skills & Tools — Kartu Keahlian di Home</SubTitle>
-      {skills.map((skill, i) => (
+      <SubTitle>Skills & Expertise — 8 Kartu Keahlian di Home</SubTitle>
+      {skills.map(skill => (
         <div key={skill.id} style={cardBoxStyle}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-            <span style={{ color: 'var(--amber)', fontWeight: 700, fontSize: '1.1rem' }}>{skill.number}</span>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '0.6rem' }}>
             <button onClick={() => setSkills(prev => prev.filter(s => s.id !== skill.id))} style={deleteBtnStyle}>✕ Hapus</button>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '80px 1fr', gap: '0.8rem', marginBottom: '0.8rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '64px 1fr', gap: '0.8rem', marginBottom: '0.8rem' }}>
             <div>
-              <label style={labelSmStyle}>Nomor</label>
-              <input style={inputStyle} value={skill.number} placeholder="01"
-                onChange={e => update(skill.id, 'number', e.target.value)}
+              <label style={labelSmStyle}>Icon</label>
+              <input style={{ ...inputStyle, textAlign: 'center', fontSize: '1.3rem' }} value={skill.icon} placeholder="🛠️"
+                onChange={e => update(skill.id, 'icon', e.target.value)}
                 onFocus={e => (e.target.style.borderColor = 'rgba(245,166,35,0.6)')}
                 onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,0.1)')} />
             </div>
             <div>
               <label style={labelSmStyle}>Judul Skill</label>
-              <input style={inputStyle} value={skill.title} placeholder="Branding & Identity Design"
+              <input style={inputStyle} value={skill.title} placeholder="Manajemen Administrasi"
                 onChange={e => update(skill.id, 'title', e.target.value)}
                 onFocus={e => (e.target.style.borderColor = 'rgba(245,166,35,0.6)')}
                 onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,0.1)')} />
@@ -368,7 +560,7 @@ const SkillsForm: React.FC = () => {
           </div>
         </div>
       ))}
-      <button onClick={add} style={addBtnStyle}>+ Tambah Skill / Tool</button>
+      <button onClick={add} style={addBtnStyle}>+ Tambah Skill</button>
 
       {/* Preview */}
       {skills.length > 0 && (
@@ -376,10 +568,9 @@ const SkillsForm: React.FC = () => {
           <SubTitle>Preview Kartu</SubTitle>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '0.8rem' }}>
             {skills.map(s => (
-              <div key={s.id} style={{ background: 'var(--black-3)', border: '1px solid rgba(245,166,35,0.15)', borderRadius: '12px', padding: '1.2rem', position: 'relative', overflow: 'hidden' }}>
-                <div style={{ position: 'absolute', top: '8px', right: '12px', fontFamily: 'var(--font-display)', fontSize: '2.5rem', color: 'rgba(245,166,35,0.08)', lineHeight: 1 }}>{s.number}</div>
-                <div style={{ color: 'var(--amber)', fontWeight: 700, fontSize: '0.85rem', marginBottom: '0.3rem' }}>{s.number}</div>
-                <div style={{ fontWeight: 700, fontSize: '0.88rem', color: 'var(--amber)', textTransform: 'uppercase', marginBottom: '0.4rem', letterSpacing: '0.5px' }}>{s.title || '—'}</div>
+              <div key={s.id} style={{ background: 'var(--black-3)', border: '1px solid rgba(245,166,35,0.15)', borderRadius: '12px', padding: '1.2rem' }}>
+                <div style={{ fontSize: '1.6rem', marginBottom: '0.5rem' }}>{s.icon}</div>
+                <div style={{ fontWeight: 700, fontSize: '0.88rem', color: 'var(--amber)', marginBottom: '0.4rem' }}>{s.title || '—'}</div>
                 <div style={{ color: 'var(--white-dim)', fontSize: '0.78rem', lineHeight: 1.5 }}>{s.desc || '—'}</div>
               </div>
             ))}
@@ -387,7 +578,96 @@ const SkillsForm: React.FC = () => {
         </div>
       )}
 
-      <SaveButton onClick={() => { save(LS_SKILLS, skills); toast.success('Skills & Tools disimpan!'); }} />
+      <SaveButton onClick={() => { save(LS_SKILLS, skills); toast.success('Skills & Expertise disimpan!'); }} />
+    </div>
+  );
+};
+
+/* ── Keahlian & Kompetensi (Expertise Cards) Form ── */
+const ExpertiseForm: React.FC = () => {
+  const [cards, setCards] = useState<ExpertiseCard[]>(() => ls(LS_EXPERTISE, defaultExpertise));
+
+  const update = (id: string, key: keyof ExpertiseCard, val: string) =>
+    setCards(prev => prev.map(c => c.id === id ? { ...c, [key]: val } : c));
+  const add = () => setCards(prev => [...prev, { id: Date.now().toString(), icon: '🧩', title: '', items: '' }]);
+
+  return (
+    <div>
+      <SubTitle>Keahlian & Kompetensi — 3 Kartu di Home</SubTitle>
+      {cards.map((card, i) => (
+        <div key={card.id} style={cardBoxStyle}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.8rem' }}>
+            <span style={{ color: 'var(--amber)', fontWeight: 700, fontSize: '0.85rem' }}>Kartu #{i + 1}</span>
+            <button onClick={() => setCards(prev => prev.filter(c => c.id !== card.id))} style={deleteBtnStyle}>✕ Hapus</button>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '64px 1fr', gap: '0.8rem', marginBottom: '0.7rem' }}>
+            <div>
+              <label style={labelSmStyle}>Icon</label>
+              <input style={{ ...inputStyle, textAlign: 'center', fontSize: '1.3rem' }} value={card.icon}
+                onChange={e => update(card.id, 'icon', e.target.value)}
+                onFocus={e => (e.target.style.borderColor = 'rgba(245,166,35,0.6)')}
+                onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,0.1)')} />
+            </div>
+            <div>
+              <label style={labelSmStyle}>Judul Kartu</label>
+              <input style={inputStyle} value={card.title} placeholder="HR General Affairs"
+                onChange={e => update(card.id, 'title', e.target.value)}
+                onFocus={e => (e.target.style.borderColor = 'rgba(245,166,35,0.6)')}
+                onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,0.1)')} />
+            </div>
+          </div>
+          <div>
+            <label style={labelSmStyle}>Daftar Poin (pisah koma)</label>
+            <textarea style={{ ...inputStyle, height: '90px', resize: 'vertical' }} value={card.items}
+              placeholder="Analisa Beban Kerja,Penyusunan Uraian Jabatan,..."
+              onChange={e => update(card.id, 'items', e.target.value)}
+              onFocus={e => (e.target.style.borderColor = 'rgba(245,166,35,0.6)')}
+              onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,0.1)')} />
+          </div>
+        </div>
+      ))}
+      <button onClick={add} style={addBtnStyle}>+ Tambah Kartu Keahlian</button>
+      <SaveButton onClick={() => { save(LS_EXPERTISE, cards); toast.success('Keahlian & Kompetensi disimpan!'); }} />
+    </div>
+  );
+};
+
+/* ── Tools & Technologies + Kompetensi Inti Form ── */
+const ToolsValuesForm: React.FC = () => {
+  const [tools, setTools]   = useState<ToolItem[]>(() => ls(LS_TOOLS, defaultTools));
+  const [values, setValues] = useState<ValueItem[]>(() => ls(LS_VALUES, defaultValues));
+
+  const miniListEditor = <T extends { id: string; icon: string; label: string }>(
+    items: T[], setItems: React.Dispatch<React.SetStateAction<T[]>>, placeholder: string
+  ) => (
+    <>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '0.7rem', marginBottom: '0.7rem' }}>
+        {items.map(item => (
+          <div key={item.id} style={{ ...cardBoxStyle, padding: '0.8rem', marginBottom: 0, display: 'grid', gridTemplateColumns: '52px 1fr auto', gap: '0.5rem', alignItems: 'center' }}>
+            <input style={{ ...inputStyle, textAlign: 'center', fontSize: '1.1rem', padding: '8px' }} value={item.icon}
+              onChange={e => setItems(prev => prev.map(p => p.id === item.id ? { ...p, icon: e.target.value } : p))} />
+            <input style={inputStyle} value={item.label} placeholder={placeholder}
+              onChange={e => setItems(prev => prev.map(p => p.id === item.id ? { ...p, label: e.target.value } : p))} />
+            <button onClick={() => setItems(prev => prev.filter(p => p.id !== item.id))} style={deleteBtnStyle}>✕</button>
+          </div>
+        ))}
+      </div>
+      <button onClick={() => setItems(prev => [...prev, { id: Date.now().toString(), icon: '✨', label: '' } as T])} style={{ ...addBtnStyle, marginBottom: '1.5rem' }}>+ Tambah</button>
+    </>
+  );
+
+  return (
+    <div>
+      <SubTitle>Tools & Technologies</SubTitle>
+      {miniListEditor(tools, setTools, 'Microsoft Office')}
+
+      <SubTitle>Kompetensi Inti (Core Values)</SubTitle>
+      {miniListEditor(values, setValues, 'Profesional')}
+
+      <SaveButton onClick={() => {
+        save(LS_TOOLS, tools); save(LS_VALUES, values);
+        toast.success('Tools & Kompetensi Inti disimpan!');
+      }} />
     </div>
   );
 };
@@ -395,19 +675,34 @@ const SkillsForm: React.FC = () => {
 /* ── Pengalaman Kerja Form ── */
 const ExperienceForm: React.FC = () => {
   const [exps, setExps] = useState<ExpItem[]>(() => ls(LS_EXPERIENCE, defaultExperience));
+  const [uploadingImg, setUploadingImg] = useState<string | null>(null);
+  const imgRefs = useRef<Record<string, HTMLInputElement | null>>({});
 
   const update = (id: string, key: keyof ExpItem, val: string) =>
     setExps(prev => prev.map(e => e.id === id ? { ...e, [key]: val } : e));
 
   const add = () => setExps(prev => [...prev, {
-    id: Date.now().toString(), position: '', company: '', period: '', icon: '💼', tags: '',
+    id: Date.now().toString(), position: '', company: '', period: '', icon: '💼', tags: '', imageUrl: '',
   }]);
+
+  const handleImgUpload = async (expId: string, e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0]; if (!f) return;
+    setUploadingImg(expId);
+    const tid = toast.loading('Mengupload gambar...');
+    try {
+      const url = await uploadToCloudinary(f);
+      setExps(prev => prev.map(x => x.id === expId ? { ...x, imageUrl: url } : x));
+      toast.success('Gambar berhasil diupload!', { id: tid });
+    } catch {
+      toast.error('Gagal upload. Coba lagi.', { id: tid });
+    } finally { setUploadingImg(null); e.target.value = ''; }
+  };
 
   return (
     <div>
       <SubTitle>Pengalaman Kerja</SubTitle>
       <div style={{ background: 'rgba(245,166,35,0.06)', border: '1px solid rgba(245,166,35,0.2)', borderRadius: '10px', padding: '0.9rem 1.1rem', marginBottom: '1.5rem', fontSize: '0.83rem', color: 'var(--white-dim)' }}>
-        💡 Judul section besar di halaman Home sudah diubah menjadi <strong style={{ color: 'var(--amber)' }}>"Pengalaman Kerja"</strong>. Tambah, edit, atau hapus riwayat kerja di bawah ini.
+        💡 Tampil sebagai timeline di Home. Tambah, edit, atau hapus riwayat kerja di bawah ini.
       </div>
 
       {exps.length === 0 && (
@@ -451,16 +746,16 @@ const ExperienceForm: React.FC = () => {
             </div>
             <div>
               <label style={labelSmStyle}>Periode Kerja</label>
-              <input style={inputStyle} value={exp.period} placeholder="2020 – 2023"
+              <input style={inputStyle} value={exp.period} placeholder="Jul 2024 – Des 2024"
                 onChange={e => update(exp.id, 'period', e.target.value)}
                 onFocus={e => (e.target.style.borderColor = 'rgba(245,166,35,0.6)')}
                 onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,0.1)')} />
             </div>
           </div>
 
-          <div>
-            <label style={labelSmStyle}>Tag Keahlian (pisah koma)</label>
-            <input style={inputStyle} value={exp.tags} placeholder="Vendor Management,Stock Monitoring,Facility Maintenance"
+          <div style={{ marginBottom: '0.8rem' }}>
+            <label style={labelSmStyle}>Tag Keahlian / Tugas (pisah koma)</label>
+            <textarea style={{ ...inputStyle, height: '70px', resize: 'vertical' }} value={exp.tags} placeholder="Vendor Management,Stock Monitoring,Facility Maintenance"
               onChange={e => update(exp.id, 'tags', e.target.value)}
               onFocus={e => (e.target.style.borderColor = 'rgba(245,166,35,0.6)')}
               onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,0.1)')} />
@@ -468,7 +763,7 @@ const ExperienceForm: React.FC = () => {
 
           {/* Preview Tags */}
           {exp.tags && (
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', marginTop: '0.7rem' }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', marginBottom: '0.8rem' }}>
               {exp.tags.split(',').map(t => t.trim()).filter(Boolean).map(tag => (
                 <span key={tag} style={{ background: 'rgba(245,166,35,0.1)', border: '1px solid rgba(245,166,35,0.3)', color: 'var(--amber)', borderRadius: '6px', padding: '3px 10px', fontSize: '0.75rem', fontWeight: 600 }}>
                   {tag}
@@ -476,11 +771,85 @@ const ExperienceForm: React.FC = () => {
               ))}
             </div>
           )}
+
+          <div>
+            <label style={labelSmStyle}>Gambar / Ilustrasi (opsional)</label>
+            {exp.imageUrl && (
+              <div style={{ position: 'relative', marginBottom: '0.5rem' }}>
+                <img src={exp.imageUrl} alt="exp" style={{ width: '100%', maxHeight: '140px', objectFit: 'cover', borderRadius: '8px' }} />
+                <button onClick={() => update(exp.id, 'imageUrl', '')} style={{ position: 'absolute', top: '6px', right: '6px', background: 'rgba(220,38,38,0.9)', border: 'none', color: 'white', borderRadius: '6px', padding: '2px 8px', cursor: 'pointer', fontSize: '0.75rem' }}>✕</button>
+              </div>
+            )}
+            <div onClick={() => uploadingImg !== exp.id && imgRefs.current[exp.id]?.click()}
+              style={{ ...uploadBoxStyle, cursor: uploadingImg === exp.id ? 'not-allowed' : 'pointer', opacity: uploadingImg === exp.id ? 0.6 : 1 }}>
+              {uploadingImg === exp.id ? '⏳ Mengupload...' : '🖼️ Upload gambar untuk timeline ini'}
+            </div>
+            <input ref={el => { imgRefs.current[exp.id] = el; }} type="file" accept="image/*" style={{ display: 'none' }}
+              onChange={e => handleImgUpload(exp.id, e)} />
+          </div>
         </div>
       ))}
 
       <button onClick={add} style={addBtnStyle}>+ Tambah Pengalaman Kerja</button>
       <SaveButton onClick={() => { save(LS_EXPERIENCE, exps); toast.success('Pengalaman Kerja disimpan!'); }} />
+    </div>
+  );
+};
+
+/* ── Projects & Contributions (Home) Form ── */
+const HomeProjectsForm: React.FC = () => {
+  const [items, setItems] = useState<HomeProjectItem[]>(() => ls(LS_HOME_PROJECTS, defaultHomeProjects));
+
+  const update = (id: string, key: keyof HomeProjectItem, val: string) =>
+    setItems(prev => prev.map(p => p.id === id ? { ...p, [key]: val } : p));
+  const add = () => setItems(prev => [...prev, { id: Date.now().toString(), icon: '📌', title: '', desc: '', category: HOME_PROJECT_CATEGORIES[0] }]);
+
+  return (
+    <div>
+      <SubTitle>Projects & Contributions — Grid di Home</SubTitle>
+      <div style={{ background: 'rgba(245,166,35,0.06)', border: '1px solid rgba(245,166,35,0.2)', borderRadius: '10px', padding: '0.9rem 1.1rem', marginBottom: '1.5rem', fontSize: '0.83rem', color: 'var(--white-dim)' }}>
+        💡 Berbeda dari "Setting Portfolio" (yang menampilkan galeri lengkap di halaman /portofolio), ini adalah daftar ringkas proyek yang muncul langsung di halaman Home.
+      </div>
+      {items.map((item, i) => (
+        <div key={item.id} style={cardBoxStyle}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.8rem' }}>
+            <span style={{ color: 'var(--amber)', fontWeight: 700, fontSize: '0.85rem' }}>Proyek #{i + 1}</span>
+            <button onClick={() => setItems(prev => prev.filter(p => p.id !== item.id))} style={deleteBtnStyle}>✕ Hapus</button>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '64px 1fr', gap: '0.8rem', marginBottom: '0.7rem' }}>
+            <div>
+              <label style={labelSmStyle}>Icon</label>
+              <input style={{ ...inputStyle, textAlign: 'center', fontSize: '1.3rem' }} value={item.icon}
+                onChange={e => update(item.id, 'icon', e.target.value)}
+                onFocus={e => (e.target.style.borderColor = 'rgba(245,166,35,0.6)')}
+                onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,0.1)')} />
+            </div>
+            <div>
+              <label style={labelSmStyle}>Judul Proyek</label>
+              <input style={inputStyle} value={item.title} placeholder="Implementasi Administrasi BPJS"
+                onChange={e => update(item.id, 'title', e.target.value)}
+                onFocus={e => (e.target.style.borderColor = 'rgba(245,166,35,0.6)')}
+                onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,0.1)')} />
+            </div>
+          </div>
+          <div style={{ marginBottom: '0.7rem' }}>
+            <label style={labelSmStyle}>Deskripsi</label>
+            <textarea style={{ ...inputStyle, height: '64px', resize: 'vertical' }} value={item.desc}
+              onChange={e => update(item.id, 'desc', e.target.value)}
+              onFocus={e => (e.target.style.borderColor = 'rgba(245,166,35,0.6)')}
+              onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,0.1)')} />
+          </div>
+          <div>
+            <label style={labelSmStyle}>Kategori</label>
+            <select style={{ ...inputStyle, cursor: 'pointer' }} value={item.category}
+              onChange={e => update(item.id, 'category', e.target.value)}>
+              {HOME_PROJECT_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+            </select>
+          </div>
+        </div>
+      ))}
+      <button onClick={add} style={addBtnStyle}>+ Tambah Proyek</button>
+      <SaveButton onClick={() => { save(LS_HOME_PROJECTS, items); toast.success('Projects & Contributions disimpan!'); }} />
     </div>
   );
 };
@@ -584,9 +953,9 @@ const SettingAbout: React.FC = () => {
             <span style={{ color: 'var(--amber)', fontWeight: 700, fontSize: '0.85rem' }}>Pendidikan #{i + 1}</span>
             <button onClick={() => setEdus(prev => prev.filter(e => e.id !== edu.id))} style={deleteBtnStyle}>✕ Hapus</button>
           </div>
-          {(['school', 'year', 'major', 'score', 'icon'] as const).map(k => (
+          {(['school', 'year', 'major', 'location', 'score', 'icon'] as const).map(k => (
             <div key={k} style={{ marginBottom: '0.7rem' }}>
-              <label style={labelSmStyle}>{k === 'school' ? 'Nama Sekolah/Kampus' : k === 'year' ? 'Tahun / Kota' : k === 'major' ? 'Jurusan' : k === 'score' ? 'Nilai/IPK' : 'Icon Emoji'}</label>
+              <label style={labelSmStyle}>{k === 'school' ? 'Nama Sekolah/Kampus' : k === 'year' ? 'Tahun Lulus' : k === 'major' ? 'Jurusan' : k === 'location' ? 'Lokasi' : k === 'score' ? 'Nilai/IPK (opsional)' : 'Icon Emoji'}</label>
               <input style={inputStyle} value={edu[k]}
                 onChange={e => setEdus(prev => prev.map(ed => ed.id === edu.id ? { ...ed, [k]: e.target.value } : ed))}
                 onFocus={e => (e.target.style.borderColor = 'rgba(245,166,35,0.6)')}
@@ -595,7 +964,7 @@ const SettingAbout: React.FC = () => {
           ))}
         </div>
       ))}
-      <button onClick={() => setEdus(prev => [...prev, { id: Date.now().toString(), school: '', year: '', major: '', score: '', icon: '🎓' }])} style={addBtnStyle}>+ Tambah Pendidikan</button>
+      <button onClick={() => setEdus(prev => [...prev, { id: Date.now().toString(), school: '', year: '', major: '', location: '', score: '', icon: '🎓' }])} style={addBtnStyle}>+ Tambah Pendidikan</button>
 
       {/* Certifications */}
       <SubTitle style={{ marginTop: '1.5rem' }}>Sertifikasi</SubTitle>
@@ -773,6 +1142,24 @@ const ContactSetting: React.FC = () => {
             onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,0.1)')} />
         </div>
       ))}
+
+      <SubTitle style={{ marginTop: '1.5rem' }}>Info Tambahan (Section "Contact" di Home)</SubTitle>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+        <div>
+          <label style={labelSmStyle}>📞 Telepon</label>
+          <input style={inputStyle} value={data.phone} placeholder="+62 8xx-xxxx-xxxx"
+            onChange={e => setData(d => ({ ...d, phone: e.target.value }))}
+            onFocus={e => (e.target.style.borderColor = 'rgba(245,166,35,0.6)')}
+            onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,0.1)')} />
+        </div>
+        <div>
+          <label style={labelSmStyle}>📍 Lokasi</label>
+          <input style={inputStyle} value={data.location} placeholder="Jakarta, Indonesia"
+            onChange={e => setData(d => ({ ...d, location: e.target.value }))}
+            onFocus={e => (e.target.style.borderColor = 'rgba(245,166,35,0.6)')}
+            onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,0.1)')} />
+        </div>
+      </div>
 
       <SubTitle style={{ marginTop: '1.5rem' }}>Preview Tombol Footer</SubTitle>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.7rem', padding: '1.2rem', background: 'var(--black-3)', borderRadius: '12px', marginBottom: '1.5rem' }}>
