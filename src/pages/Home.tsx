@@ -155,14 +155,21 @@ const FALLBACK_ABOUT_PHOTO = 'https://images.unsplash.com/photo-1522075469751-3a
 
 /* ── Helpers ── */
 const ls = <T,>(key: string, fallback: T): T => {
-  try { return JSON.parse(localStorage.getItem(key) || 'null') ?? fallback; } catch { return fallback; }
+  try {
+    const stored = JSON.parse(localStorage.getItem(key) || 'null');
+    if (stored === null) return fallback;
+    // Kalau fallback adalah array, kembalikan stored langsung (atau fallback jika null)
+    if (Array.isArray(fallback)) return (stored ?? fallback) as T;
+    // Kalau object, merge dengan fallback agar field baru tetap ada (misal: 'stats')
+    return { ...(fallback as object), ...(stored as object) } as T;
+  } catch { return fallback; }
 };
 /** Render teks dengan dukungan **bold** sederhana (tanpa library markdown). */
 const renderBold = (text: string): React.ReactNode => {
   const parts = text.split(/\*\*(.+?)\*\*/g);
   return parts.map((part, i) => (i % 2 === 1 ? <strong key={i} style={{ color: 'inherit', fontWeight: 700 }}>{part}</strong> : <React.Fragment key={i}>{part}</React.Fragment>));
 };
-const splitList = (s: string) => s.split(',').map(t => t.trim()).filter(Boolean);
+const splitList = (s: string) => (s ?? '').split(',').map(t => t.trim()).filter(Boolean);
 
 /* ══════════════════════════════════════════════════════
    PALET WARNA & STYLE BERSAMA — tema nature/green, lepas
@@ -345,8 +352,8 @@ const SectionHeading: React.FC<{ label: string; title: string; subtitle?: string
 );
 
 const StatGrid: React.FC<{ stats: StatItem[] }> = ({ stats }) => (
-  <div style={{ display: 'grid', gridTemplateColumns: `repeat(${stats.length}, 1fr)`, gap: '1.2rem' }} className="stat-grid">
-    {stats.map(s => (
+  <div style={{ display: 'grid', gridTemplateColumns: `repeat(${(stats ?? []).length}, 1fr)`, gap: '1.2rem' }} className="stat-grid">
+    {(stats ?? []).map(s => (
       <div key={s.id} style={{ textAlign: 'center' }}>
         <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.9rem', color: C.green, lineHeight: 1 }}>{s.value}</div>
         <div style={{ color: C.textMuted, fontSize: '0.76rem', marginTop: '4px' }}>{s.label}</div>
