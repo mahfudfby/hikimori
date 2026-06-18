@@ -22,12 +22,12 @@ interface ContactData {
 }
 
 const defaultContact: ContactData = {
-  whatsapp: '6281234567890',
+  whatsapp: '6282234651413',
   instagram: 'mahfudfebry',
-  linkedin: 'mahfudfebry',
+  linkedin: 'mahfud febry styanto',
   tiktok: 'mahfudfebry',
-  website: 'https://hikimori-project.com',
-  email: 'mahfudfebry@hikimori.web.id',
+  website: 'https://hikimori.web.id',
+  email: 'mahfudfebrys@gmail.com',
   showWhatsapp: true,
   showInstagram: true,
   showLinkedin: true,
