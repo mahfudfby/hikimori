@@ -4,8 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import AnimatedSection from '../components/AnimatedSection';
-import { CERT_TEMPLATE_BNSP, CERT_TEMPLATE_REFERENSI, CERT_TEMPLATE_IT }
-  from '../utils/CertTemplates';
+import { CERT_TEMPLATE_BNSP, CERT_TEMPLATE_REFERENSI, CERT_TEMPLATE_IT } from '../utils/CertTemplates';
 
 /* ══════════════════════════════════════════════════════
    LocalStorage Keys — SAMA dengan AdminPanel.tsx, jangan diubah
@@ -56,7 +55,7 @@ const HOME_PROJECT_CATEGORIES = ['Administrasi', 'IT Support', 'Sistem & Network
 /* ── Defaults (sinkron dengan AdminPanel.tsx) ── */
 const defaultHome: HomeData = {
   kicker: 'Welcome To My Journey',
-  heroTitle: 'Mahfud Febry Styanto, S.Kom ,.CHRO',
+  heroTitle: 'MAHFUDFEBRY',
   heroSubtitle: 'HR General Affairs  •  IT Support  •  Administrative Specialist',
   heroTagline: 'Membantu organisasi berkembang melalui pengelolaan SDM, operasional perusahaan, dan dukungan teknologi yang efektif.',
   heroCta: 'Hubungi Saya', heroCtaLink: '#contact',
@@ -70,7 +69,7 @@ const defaultHome: HomeData = {
   ],
 };
 const defaultHomeAbout: HomeAboutData = {
-  name: 'Mahfud Febry Styanto, S.Kom ,.CHRO',
+  name: 'Mahfudfebry',
   location: 'Nganjuk, Jawa Timur',
   subtitle: 'Menghubungkan SDM, Operasional, dan Teknologi',
   bio1: 'Saya adalah profesional yang memiliki pengalaman di bidang **Human Resource, General Affairs, IT Support,** dan **Administrasi Operasional.**',
@@ -141,7 +140,9 @@ const defaultEdus: EduItem[] = [
   { id: '2', school: 'SMAN 3 Nganjuk', year: '2018', major: 'Jurusan IPS (Ilmu Pengetahuan Sosial)', location: 'Nganjuk, Jawa Timur', score: '', icon: '🏫' },
 ];
 const defaultCerts: CertItem[] = [
-  { id: '1', title: 'Certified Human Resource Officer ( CHRO )', issuer: 'BNSP – Badan Nasional Sertifikasi Profesi', items: 'Analisa Beban Kerja,Menyusun Uraian Jabatan,Payroll & BPJS', imageUrl: '' },
+  { id: '1', title: 'Certified Human Resource Officer ( CHRO )', issuer: 'BNSP – Badan Nasional Sertifikasi Profesi', items: 'Analisa Beban Kerja,Menyusun Uraian Jabatan,Payroll & BPJS', imageUrl: CERT_TEMPLATE_BNSP },
+  { id: '2', title: 'Surat Keterangan Kerja', issuer: 'UD Duta Pangan', items: 'Vendor Management,Stock Monitoring,Facility Maintenance', imageUrl: CERT_TEMPLATE_REFERENSI },
+  { id: '3', title: 'IT Support Specialist', issuer: 'Lembaga Sertifikasi Kompetensi TI', items: 'Hardware Troubleshooting,Network Configuration,IT Incident Management', imageUrl: CERT_TEMPLATE_IT },
 ];
 const defaultContact: ContactData = {
   whatsapp: '6281234567890', instagram: 'Mahfudfebry', linkedin: 'Mahfud Febry Styanto',

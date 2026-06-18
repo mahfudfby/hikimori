@@ -4,8 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { CERT_TEMPLATE_BNSP, CERT_TEMPLATE_REFERENSI, CERT_TEMPLATE_IT }
-  from '../utils/CertTemplates';
+import { CERT_TEMPLATE_BNSP, CERT_TEMPLATE_REFERENSI, CERT_TEMPLATE_IT } from '../utils/CertTemplates';
 
 /* ─── LocalStorage Keys ─── */
 const LS_ABOUT        = 'hk_about_data';
@@ -156,8 +155,9 @@ const defaultEdus: EduItem[] = [
   { id: '2', school: 'Institut Teknologi dan Bisnis ASIA', year: '2026', major: 'S1 – Teknik Informatika', location: 'Kota Malang', score: 'IPK 3.38', icon: '🎓' },
 ];
 const defaultCerts: CertItem[] = [
-  { id: '1', title: 'Certified Human Resource Officer (CHRO)', issuer: 'BNSP', items: 'Analisa Beban Kerja,Menyusun Uraian Jabatan,Payroll & BPJS', imageUrl: '' },
-  { id: '2', title: 'Surat Referensi Jabatan Sebelumnya', issuer: 'PT MAJU JAYA', items: 'Vendor Management,Stock Monitoring,Facility Maintenance', imageUrl: '' },
+  { id: '1', title: 'Certified Human Resource Officer (CHRO)', issuer: 'BNSP', items: 'Analisa Beban Kerja,Menyusun Uraian Jabatan,Payroll & BPJS', imageUrl: CERT_TEMPLATE_BNSP },
+  { id: '2', title: 'Surat Keterangan Kerja', issuer: 'UD Duta Pangan', items: 'Vendor Management,Stock Monitoring,Facility Maintenance', imageUrl: CERT_TEMPLATE_REFERENSI },
+  { id: '3', title: 'IT Support Specialist', issuer: 'Lembaga Sertifikasi Kompetensi TI', items: 'Hardware Troubleshooting,Network Configuration,IT Incident Management', imageUrl: CERT_TEMPLATE_IT },
 ];
 const defaultSkills: SkillItem[] = [
   { id: '1', icon: '📋', title: 'Manajemen Administrasi', desc: 'Mampu mengelola data, dokumen, dan proses administrasi secara sistematis dan efisien.' },
@@ -866,6 +866,7 @@ const SettingAbout: React.FC = () => {
   const [certs, setCerts]         = useState<CertItem[]>(() => ls(LS_CERT, defaultCerts));
   const [uploadingPhoto, setUploadingPhoto]           = useState(false);
   const [uploadingCert, setUploadingCert]             = useState<string | null>(null);
+  const [expandedCertId, setExpandedCertId]           = useState<string | null>(null);
   const photoRef  = useRef<HTMLInputElement>(null);
   const certRefs  = useRef<Record<string, HTMLInputElement | null>>({});
 
@@ -988,14 +989,52 @@ const SettingAbout: React.FC = () => {
           <div style={{ marginBottom: '0.7rem' }}>
             <label style={labelSmStyle}>Gambar Sertifikat</label>
             {cert.imageUrl && (
-              <div style={{ position: 'relative', marginBottom: '0.5rem' }}>
-                <img src={cert.imageUrl} alt="cert" style={{ width: '100%', maxHeight: '120px', objectFit: 'cover', borderRadius: '8px' }} />
-                <button onClick={() => setCerts(prev => prev.map(c => c.id === cert.id ? { ...c, imageUrl: '' } : c))} style={{ position: 'absolute', top: '6px', right: '6px', background: 'rgba(220,38,38,0.9)', border: 'none', color: 'white', borderRadius: '6px', padding: '2px 8px', cursor: 'pointer', fontSize: '0.75rem' }}>✕</button>
+              <div style={{ marginBottom: '0.5rem' }}>
+                {/* Toggle preview button */}
+                <button
+                  onClick={() => setExpandedCertId(expandedCertId === cert.id ? null : cert.id)}
+                  style={{
+                    background: expandedCertId === cert.id ? 'rgba(245,166,35,0.15)' : 'rgba(255,255,255,0.05)',
+                    border: '1px solid rgba(245,166,35,0.3)',
+                    color: 'var(--amber)', borderRadius: '8px',
+                    padding: '6px 14px', fontSize: '0.8rem', fontWeight: 700,
+                    cursor: 'pointer', marginBottom: '0.5rem', width: '100%',
+                    textAlign: 'left' as const,
+                  }}
+                >
+                  {expandedCertId === cert.id ? '▲ Tutup Preview' : '🖼 Preview Sertifikat'}
+                </button>
+                {/* Expandable full image */}
+                <AnimatePresence>
+                  {expandedCertId === cert.id && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+                      style={{ overflow: 'hidden', marginBottom: '0.5rem' }}
+                    >
+                      <div style={{ position: 'relative', borderRadius: '10px', overflow: 'hidden', border: '1px solid rgba(245,166,35,0.2)' }}>
+                        <img
+                          src={cert.imageUrl}
+                          alt="cert"
+                          style={{ width: '100%', maxHeight: '380px', objectFit: 'contain', display: 'block', background: 'rgba(255,255,255,0.04)' }}
+                        />
+                        <button
+                          onClick={() => { setCerts(prev => prev.map(c => c.id === cert.id ? { ...c, imageUrl: '' } : c)); setExpandedCertId(null); }}
+                          style={{ position: 'absolute', top: '8px', right: '8px', background: 'rgba(220,38,38,0.9)', border: 'none', color: 'white', borderRadius: '6px', padding: '4px 10px', cursor: 'pointer', fontSize: '0.75rem', fontWeight: 700 }}
+                        >
+                          ✕ Hapus
+                        </button>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             )}
             <div onClick={() => uploadingCert !== cert.id && certRefs.current[cert.id]?.click()}
               style={{ ...uploadBoxStyle, cursor: uploadingCert === cert.id ? 'not-allowed' : 'pointer', padding: '0.7rem', opacity: uploadingCert === cert.id ? 0.6 : 1 }}>
-              {uploadingCert === cert.id ? '⏳ Mengupload...' : '📎 Upload gambar sertifikat'}
+              {uploadingCert === cert.id ? '⏳ Mengupload ke Cloudinary...' : cert.imageUrl ? '🔄 Ganti gambar sertifikat (Cloudinary)' : '📎 Upload gambar sertifikat (Cloudinary)'}
             </div>
             <input ref={el => { certRefs.current[cert.id] = el; }} type="file" accept="image/*" style={{ display: 'none' }}
               onChange={e => handleCertUpload(cert.id, e)} />
