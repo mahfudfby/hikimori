@@ -144,7 +144,7 @@ const defaultCerts: CertItem[] = [
 const defaultContact: ContactData = {
   whatsapp: '6281234567890', instagram: 'Mahfudfebry', linkedin: 'Mahfud Febry Styanto',
   tiktok: 'mahfudfebry', website: 'https://hikimori.web.id', email: 'Mahfudfebrys@gmail.com',
-  phone: '+62 895-1234-5678', location: 'Nganjuk, Indonesia',
+  phone: '+62 822-3465-1413', location: 'Nganjuk, Indonesia',
   showWhatsapp: true, showInstagram: true, showLinkedin: true,
   showTiktok: false, showWebsite: true, showEmail: true,
 };
