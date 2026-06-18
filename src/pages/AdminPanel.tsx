@@ -4,6 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { CERT_TEMPLATE_BNSP, CERT_TEMPLATE_REFERENSI, CERT_TEMPLATE_IT }
+  from '../utils/CertTemplates';
 
 /* ─── LocalStorage Keys ─── */
 const LS_ABOUT        = 'hk_about_data';

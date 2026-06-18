@@ -4,6 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import AnimatedSection from '../components/AnimatedSection';
+import { CERT_TEMPLATE_BNSP, CERT_TEMPLATE_REFERENSI, CERT_TEMPLATE_IT }
+  from '../utils/CertTemplates';
 
 /* ══════════════════════════════════════════════════════
    LocalStorage Keys — SAMA dengan AdminPanel.tsx, jangan diubah
