@@ -54,7 +54,7 @@ const HOME_PROJECT_CATEGORIES = ['Administrasi', 'IT Support', 'Sistem & Network
 /* ── Defaults (sinkron dengan AdminPanel.tsx) ── */
 const defaultHome: HomeData = {
   kicker: 'Welcome To My Journey',
-  heroTitle: 'MAHFUDFEBRY',
+  heroTitle: 'Mahfud Febry Styanto, S.Kom ,.CHRO',
   heroSubtitle: 'HR General Affairs  •  IT Support  •  Administrative Specialist',
   heroTagline: 'Membantu organisasi berkembang melalui pengelolaan SDM, operasional perusahaan, dan dukungan teknologi yang efektif.',
   heroCta: 'Hubungi Saya', heroCtaLink: '#contact',
@@ -68,7 +68,7 @@ const defaultHome: HomeData = {
   ],
 };
 const defaultHomeAbout: HomeAboutData = {
-  name: 'Mahfudfebry',
+  name: 'Mahfud Febry Styanto, S.Kom ,.CHRO',
   location: 'Nganjuk, Jawa Timur',
   subtitle: 'Menghubungkan SDM, Operasional, dan Teknologi',
   bio1: 'Saya adalah profesional yang memiliki pengalaman di bidang **Human Resource, General Affairs, IT Support,** dan **Administrasi Operasional.**',
