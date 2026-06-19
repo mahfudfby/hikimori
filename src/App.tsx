@@ -71,7 +71,7 @@ const AnimatedRoutes: React.FC = () => {
           } />
         </Routes>
       </AnimatePresence>
-      {!isAdmin && <Footer />}
+      {!isAdmin && !isHome && <Footer />}
     </>
   );
 };
