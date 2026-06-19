@@ -19,7 +19,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-const ADMIN_EMAIL    = "mahfudfebrys@gmail.com";
+const ADMIN_EMAIL    = "mahfudfebry@hikimori.web.id";
 const ADMIN_PASSWORD = "120200";
 const ADMIN_USERNAME = "Mahfudfebry";
 

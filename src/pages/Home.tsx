@@ -1,1193 +1,623 @@
 // src/pages/Home.tsx
-import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import toast from 'react-hot-toast';
+import React, { useEffect, useState } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import AnimatedSection from '../components/AnimatedSection';
-import { CERT_TEMPLATE_BNSP, CERT_TEMPLATE_REFERENSI, CERT_TEMPLATE_IT } from '../utils/CertTemplates';
 
-/* ══════════════════════════════════════════════════════
-   LocalStorage Keys — SAMA dengan AdminPanel.tsx, jangan diubah
-   sembarangan karena datanya dipakai bersama.
-══════════════════════════════════════════════════════ */
-const LS_HOME           = 'hk_home_data';
-const LS_HOME_ABOUT     = 'hk_home_about_data';
-const LS_SKILLS         = 'hk_skills_data';
-const LS_EXPERIENCE     = 'hk_experience_data';
-const LS_CONTACT        = 'hk_contact_data';
-const LS_EXPERTISE      = 'hk_expertise_data';
-const LS_TOOLS          = 'hk_tools_data';
-const LS_VALUES         = 'hk_values_data';
-const LS_HOME_PROJECTS  = 'hk_home_projects_data';
-const LS_EDU            = 'hk_edu_data';
-const LS_CERT           = 'hk_cert_data';
-
-/* ── Types (cermin dari AdminPanel.tsx) ── */
-interface StatItem { id: string; value: string; label: string; }
-interface HomeData {
-  kicker: string; heroTitle: string; heroSubtitle: string; heroTagline: string;
-  heroCta: string; heroCtaLink: string; heroCta2: string; heroCta2Link: string;
-  heroPhotoUrl: string; stats: StatItem[];
-}
-interface HomeAboutData {
-  name: string; location: string; subtitle: string; bio1: string; bio2: string;
-  photoUrl: string; badgeText: string; closingQuote: string;
-  email: string; phone: string; linkedinLabel: string; linkedinUrl: string;
-  githubLabel: string; githubUrl: string; stats: StatItem[];
-}
-interface SkillItem      { id: string; icon: string; title: string; desc: string; }
-interface ExpertiseCard  { id: string; icon: string; title: string; items: string; }
-interface ToolItem       { id: string; icon: string; label: string; }
-interface ValueItem      { id: string; icon: string; label: string; }
-interface ExpItem        { id: string; position: string; company: string; period: string; icon: string; tags: string; imageUrl: string; }
-interface HomeProjectItem{ id: string; icon: string; title: string; desc: string; category: string; }
-interface EduItem        { id: string; school: string; year: string; major: string; location: string; score: string; icon: string; }
-interface CertItem       { id: string; title: string; issuer: string; items: string; imageUrl: string; showBadge?: boolean; }
-interface ContactData {
-  whatsapp: string; instagram: string; linkedin: string; tiktok: string; website: string; email: string;
-  phone: string; location: string;
-  showWhatsapp: boolean; showInstagram: boolean; showLinkedin: boolean;
-  showTiktok: boolean; showWebsite: boolean; showEmail: boolean;
-}
-
-const HOME_PROJECT_CATEGORIES = ['Administrasi', 'IT Support', 'Sistem & Network', 'Analisis & Laporan', 'General Affairs'];
-
-/* ── Defaults (sinkron dengan AdminPanel.tsx) ── */
-const defaultHome: HomeData = {
-  kicker: 'Welcome To My Journey',
-  heroTitle: 'MAHFUDFEBRY',
-  heroSubtitle: 'HR General Affairs  •  IT Support  •  Administrative Specialist',
-  heroTagline: 'Membantu organisasi berkembang melalui pengelolaan SDM, operasional perusahaan, dan dukungan teknologi yang efektif.',
-  heroCta: 'Hubungi Saya', heroCtaLink: '#contact',
-  heroCta2: 'Download CV', heroCta2Link: '',
-  heroPhotoUrl: '',
-  stats: [
-    { id: '1', value: '3+',  label: 'Posisi Profesional' },
-    { id: '2', value: '30+', label: 'Perangkat IT Ditangani' },
-    { id: '3', value: '1+',  label: 'Sertifikasi BNSP' },
-    { id: '4', value: '7+',  label: 'Bidang Kompetensi' },
-  ],
-};
-const defaultHomeAbout: HomeAboutData = {
-  name: 'Mahfudfebry',
-  location: 'Nganjuk, Jawa Timur',
-  subtitle: 'Menghubungkan SDM, Operasional, dan Teknologi',
-  bio1: 'Saya adalah profesional yang memiliki pengalaman di bidang **Human Resource, General Affairs, IT Support,** dan **Administrasi Operasional.**',
-  bio2: 'Saya percaya bahwa kombinasi antara manajemen SDM yang baik, operasional yang terstruktur, dan teknologi yang tepat dapat membantu perusahaan berkembang secara berkelanjutan.',
-  photoUrl: '',
-  badgeText: 'Berkomitmen pada kualitas, integritas, dan kolaborasi.',
-  closingQuote: 'Terus belajar, beradaptasi, dan memberikan dampak positif adalah cara saya berkembang setiap hari.',
-  email: 'mahfudfebrys@gmail.com',
-  phone: '+62 822-3465-1413',
-  linkedinLabel: 'linkedin.com/in/mahfud-febry-styanto',
-  linkedinUrl: 'https://linkedin.com/in/mahfud-febry-styanto',
-  githubLabel: 'github.com/Mahfudfby',
-  githubUrl: 'https://github.com/Mahfudfby',
-  stats: [
-    { id: '1', value: '1+',  label: 'Tahun Pengalaman' },
-    { id: '2', value: '3',   label: 'Posisi Profesional' },
-    { id: '3', value: '30+', label: 'Perangkat IT Ditangani' },
-    { id: '4', value: '7+',  label: 'Bidang Kompetensi' },
-  ],
-};
-const defaultExpertise: ExpertiseCard[] = [
-  { id: '1', icon: '👥', title: 'HR General Affairs', items: 'Analisa Beban Kerja,Penyusunan Uraian Jabatan (Jobdesk),Administrasi BPJS Kesehatan & Ketenagakerjaan,Kebijakan MSDM,Penghitungan Gaji Nett/Gross Up,Hubungan Relasi Industri,Koordinasi Operasional,Budget Monitoring,Asset Management,Vendor Management' },
-  { id: '2', icon: '💻', title: 'IT Support', items: 'Troubleshooting Hardware & Software,Konfigurasi LAN / WIFI,Pemeliharaan Jaringan,Dukungan Pengguna (User Support),Penanganan Insiden TI,Inventarisasi Perangkat TI' },
-  { id: '3', icon: '📋', title: 'Administrasi Produksi', items: 'Administrasi Produksi Pabrik,Monitoring Bahan Baku,Monitoring Hasil Produksi,Penyusunan Laporan Produksi,Pengendalian Dokumen,Manajemen FIFO (First in - First Out)' },
-];
-const defaultSkills: SkillItem[] = [
-  { id: '1', icon: '📋', title: 'Manajemen Administrasi', desc: 'Mampu mengelola data, dokumen, dan proses administrasi secara sistematis dan efisien.' },
-  { id: '2', icon: '🎧', title: 'IT Support', desc: 'Berpengalaman dalam troubleshooting hardware, software, jaringan, dan memberikan solusi teknis.' },
-  { id: '3', icon: '📈', title: 'Analisis & Pelaporan', desc: 'Terampil dalam menganalisis data dan menyusun laporan yang akurat dan informatif.' },
-  { id: '4', icon: '👥', title: 'Komunikasi & Kolaborasi', desc: 'Mampu berkomunikasi dengan jelas dan bekerja sama efektif dalam tim maupun lintas divisi.' },
-  { id: '5', icon: '🛡️', title: 'Problem Solving', desc: 'Mampu mengidentifikasi masalah, menganalisis akar penyebab, dan menemukan solusi yang tepat.' },
-  { id: '6', icon: '⚙️', title: 'Manajemen Proyek', desc: 'Berpengalaman merencanakan, melaksanakan, dan memantau proyek hingga selesai tepat waktu.' },
-  { id: '7', icon: '📖', title: 'Pembelajaran Berkelanjutan', desc: 'Selalu belajar hal baru untuk meningkatkan kompetensi dan mengikuti perkembangan teknologi.' },
-  { id: '8', icon: '🎯', title: 'Orientasi Hasil', desc: 'Fokus pada pencapaian target dengan kualitas terbaik dan memberikan nilai tambah.' },
-];
-const defaultTools: ToolItem[] = [
-  { id: '1', icon: '🗂️', label: 'Microsoft Office' },
-  { id: '2', icon: '🔍', label: 'Google Workspace' },
-  { id: '3', icon: '🔌', label: 'Jaringan & LAN' },
-  { id: '4', icon: '💾', label: 'Database Dasar' },
-  { id: '5', icon: '🎨', label: 'Canva Design' },
-  { id: '6', icon: '📌', label: 'Trello Project' },
-];
-const defaultValues: ValueItem[] = [
-  { id: '1', icon: '👤', label: 'Profesional' },
-  { id: '2', icon: '💡', label: 'Inovatif' },
-  { id: '3', icon: '🤝', label: 'Integritas' },
-  { id: '4', icon: '⏰', label: 'Disiplin' },
-  { id: '5', icon: '🏆', label: 'Bertanggung Jawab' },
-];
-const defaultExperience: ExpItem[] = [
-  { id: '1', position: 'Administrasi Produksi', company: 'UD Duta Pangan', period: 'Jul 2024 – Des 2024', icon: '🏭', tags: 'Administrasi Produksi Pabrik,Monitoring Bahan Baku,Monitoring Hasil Produksi,Penyusunan Laporan Produksi,Pengendalian Dokumen,Manajemen FIFO (First in - First Out)', imageUrl: '' },
-  { id: '2', position: 'IT Support', company: 'UD Duta Pangan', period: 'Jan 2025 – Agu 2025', icon: '💻', tags: 'Menangani 30+ perangkat komputer,Troubleshooting Hardware,Troubleshooting Software,Konfigurasi LAN & WiFi,Penanganan Insiden IT,Pemeliharaan Jaringan', imageUrl: '' },
-  { id: '3', position: 'Staff HRD & General Affairs', company: 'UD Duta Pangan', period: 'Agu 2025 – Sekarang', icon: '👥', tags: 'Payroll (Gaji, Potongan, Bonus),BPJS Kesehatan,BPJS Ketenagakerjaan,Analisa Beban Kerja,Job Description,Asset Management,Vendor Management,Laporan Harian/Mingguan/Bulanan', imageUrl: '' },
-];
-const defaultHomeProjects: HomeProjectItem[] = [
-  { id: '1', icon: '📋', title: 'Implementasi Administrasi BPJS', desc: 'Mengelola administrasi BPJS Kesehatan dan Ketenagakerjaan karyawan secara akurat dan tepat waktu.', category: 'Administrasi' },
-  { id: '2', icon: '💰', title: 'Pengelolaan Payroll Karyawan', desc: 'Mengelola perhitungan gaji, potongan, bonus, BPJS, dan laporan payroll secara rutin dan akurat.', category: 'Administrasi' },
-  { id: '3', icon: '💻', title: 'Troubleshooting Infrastruktur IT', desc: 'Menangani troubleshooting hardware, software, jaringan LAN, dan WiFi dengan downtime minimal.', category: 'IT Support' },
-  { id: '4', icon: '📈', title: 'Analisa Beban Kerja Divisi', desc: 'Melakukan analisa beban kerja untuk penyesuaian SDM dan peningkatan efisiensi operasional.', category: 'Analisis & Laporan' },
-  { id: '5', icon: '📄', title: 'Administrasi Produksi & Stok', desc: 'Monitoring bahan baku, hasil produksi, penyusunan laporan produksi dan dokumentasi secara berkala.', category: 'Administrasi' },
-  { id: '6', icon: '🛡️', title: 'Konfigurasi & Pemeliharaan Jaringan', desc: 'Konfigurasi LAN, WiFi, dan perangkat jaringan untuk mendukung kelancaran operasional perusahaan.', category: 'Sistem & Network' },
-  { id: '7', icon: '📝', title: 'Penyusunan Laporan Operasional', desc: 'Menyusun laporan operasional bulanan sebagai dasar pengambilan keputusan dan evaluasi kinerja.', category: 'Analisis & Laporan' },
-  { id: '8', icon: '👥', title: 'Koordinasi & Support Kegiatan Internal', desc: 'Berkoordinasi dengan berbagai divisi untuk mendukung kelancaran kegiatan internal perusahaan.', category: 'General Affairs' },
-];
-const defaultEdus: EduItem[] = [
-  { id: '1', school: 'Institut Teknologi dan Bisnis ASIA', year: '2026', major: 'S1 Teknik Informatika (S.Kom.)', location: 'Kota Malang', score: '', icon: '🎓' },
-  { id: '2', school: 'SMAN 3 Nganjuk', year: '2018', major: 'Jurusan IPS (Ilmu Pengetahuan Sosial)', location: 'Nganjuk, Jawa Timur', score: '', icon: '🏫' },
-];
-const defaultCerts: CertItem[] = [
-  { id: '1', title: 'Certified Human Resource Officer ( CHRO )', issuer: 'BNSP – Badan Nasional Sertifikasi Profesi', items: 'Analisa Beban Kerja,Menyusun Uraian Jabatan,Payroll & BPJS', imageUrl: CERT_TEMPLATE_BNSP, showBadge: true },
-  { id: '2', title: 'Surat Keterangan Kerja', issuer: 'UD Duta Pangan', items: 'Vendor Management,Stock Monitoring,Facility Maintenance', imageUrl: CERT_TEMPLATE_REFERENSI, showBadge: false },
-  { id: '3', title: 'IT Support Specialist', issuer: 'Lembaga Sertifikasi Kompetensi TI', items: 'Hardware Troubleshooting,Network Configuration,IT Incident Management', imageUrl: CERT_TEMPLATE_IT, showBadge: false },
-];
-const defaultContact: ContactData = {
-  whatsapp: '6281234567890', instagram: 'Mahfudfebry', linkedin: 'Mahfud Febry Styanto',
-  tiktok: 'mahfudfebry', website: 'https://hikimori.web.id', email: 'Mahfudfebrys@gmail.com',
-  phone: '+62 822-3465-1413', location: 'Nganjuk, Indonesia',
-  showWhatsapp: true, showInstagram: true, showLinkedin: true,
-  showTiktok: false, showWebsite: true, showEmail: true,
-};
-
-/* ── Placeholder photo (akan otomatis terganti begitu foto asli diupload lewat Admin) ── */
-const FALLBACK_HERO_PHOTO  = 'https://res.cloudinary.com/dl4pyan8v/image/upload/WhatsApp_Image_2026-06-16_at_03.45.15_axvhg3';
-const FALLBACK_ABOUT_PHOTO = 'https://res.cloudinary.com/dl4pyan8v/image/upload/WhatsApp_Image_2026-06-16_at_03.45.15_axvhg3';
-
-/* ── Helpers ── */
-const ls = <T,>(key: string, fallback: T): T => {
-  try {
-    const stored = JSON.parse(localStorage.getItem(key) || 'null');
-    if (stored === null) return fallback;
-    // Kalau fallback adalah array, kembalikan stored langsung (atau fallback jika null)
-    if (Array.isArray(fallback)) return (stored ?? fallback) as T;
-    // Kalau object, merge dengan fallback agar field baru tetap ada (misal: 'stats')
-    return { ...(fallback as object), ...(stored as object) } as T;
-  } catch { return fallback; }
-};
-/** Render teks dengan dukungan **bold** sederhana (tanpa library markdown). */
-const renderBold = (text: string): React.ReactNode => {
-  const parts = text.split(/\*\*(.+?)\*\*/g);
-  return parts.map((part, i) => (i % 2 === 1 ? <strong key={i} style={{ color: 'inherit', fontWeight: 700 }}>{part}</strong> : <React.Fragment key={i}>{part}</React.Fragment>));
-};
-const splitList = (s: string) => (s ?? '').split(',').map(t => t.trim()).filter(Boolean);
-
-/* ══════════════════════════════════════════════════════
-   PALET WARNA & STYLE BERSAMA — tema nature/green, lepas
-   dari tema gelap+amber yang dipakai halaman lain.
-══════════════════════════════════════════════════════ */
-const C = {
-  bg: '#fbfaf4',
-  bgAlt: '#f3f3e8',
-  bgSoft: '#edf1e3',
-  card: '#ffffff',
-  ink: '#1d2b18',
-  text: '#42513c',
-  textMuted: '#74816c',
-  green: '#3f6b35',
-  greenDark: '#2a4823',
-  greenLight: '#74a35a',
-  border: 'rgba(63,107,53,0.16)',
-  borderSoft: 'rgba(63,107,53,0.09)',
-};
-
-const cardStyle: React.CSSProperties = {
-  background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px',
-  boxShadow: '0 6px 28px rgba(40,60,30,0.07)',
-};
-const kickerLineStyle: React.CSSProperties = { width: '30px', height: '1px', background: 'rgba(63,107,53,0.4)' };
-const primaryBtnStyle: React.CSSProperties = {
-  display: 'inline-flex', alignItems: 'center', gap: '8px',
-  background: C.greenDark, color: '#fff', textDecoration: 'none',
-  borderRadius: '10px', padding: '13px 26px', fontFamily: 'var(--font-body)',
-  fontWeight: 700, fontSize: '0.92rem', letterSpacing: '0.3px',
-};
-const secondaryBtnStyle: React.CSSProperties = {
-  display: 'inline-flex', alignItems: 'center', gap: '8px',
-  background: '#fff', color: C.greenDark, textDecoration: 'none',
-  border: `1px solid ${C.border}`, borderRadius: '10px', padding: '13px 26px',
-  fontFamily: 'var(--font-body)', fontWeight: 700, fontSize: '0.92rem',
-};
-
-/* ══════════════════════════════════════════════════════
-   EFEK ALAM: Daun Berterbangan + Ranting Bergoyang
-   (motion ambient, fixed di viewport, tidak ganggu klik)
-══════════════════════════════════════════════════════ */
-const LEAF_PATH = 'M20 2C30 9 35 23 31 36C28 47 22 54 20 58C18 54 12 47 9 36C5 23 10 9 20 2Z';
-
-const LeafSVG: React.FC<{ color: string; size: number }> = ({ color, size }) => (
-  <svg width={size} height={size * 1.45} viewBox="0 0 40 60" style={{ display: 'block' }}>
-    <path d={LEAF_PATH} fill={color} opacity={0.85} />
-    <path d="M20 8 L20 53" stroke="rgba(255,255,255,0.35)" strokeWidth="1.2" />
+const Squiggle: React.FC<{ size?: number; rotate?: number; style?: React.CSSProperties }> = ({
+  size = 60, rotate = 0, style
+}) => (
+  <svg
+    width={size} height={size * 0.5}
+    viewBox="0 0 60 30"
+    style={{ color: 'var(--amber)', transform: `rotate(${rotate}deg)`, ...style }}
+  >
+    <path
+      d="M0 15 Q10 0 20 15 Q30 30 40 15 Q50 0 60 15"
+      fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round"
+    />
   </svg>
 );
 
-interface LeafSpec { id: number; top: string; left: string; size: number; color: string; duration: number; delay: number; drift: number; rotate: number; }
-const LEAF_COLORS = ['#5a8c4a', '#7fae5a', '#3f6b35', '#9bc47a', '#4f7d3f'];
+const skills = [
+  {
+    num: '01',
+    title: 'Branding & Identity Design',
+    desc: 'Crafting memorable logos and visual systems that reflect a brand\'s essence and personality.',
+  },
+  {
+    num: '02',
+    title: 'Creativity & Problem-Solving',
+    desc: 'Thinking outside the box while solving design challenges with strategic insight.',
+  },
+  {
+    num: '03',
+    title: 'Concept Development',
+    desc: 'Skilled in brainstorming and translating abstract ideas into compelling visual narratives.',
+  },
+  {
+    num: '04',
+    title: 'Proper Time Management',
+    desc: 'Capable of handling multiple projects and meeting tight deadlines consistently.',
+  },
+];
 
-const FloatingLeaf: React.FC<{ spec: LeafSpec }> = ({ spec }) => (
-  <motion.div
-    style={{ position: 'absolute', top: spec.top, left: spec.left, willChange: 'transform' }}
-    animate={{
-      y: [0, -22, 4, -14, 0],
-      x: [0, spec.drift, spec.drift * 0.4, spec.drift * 1.15, 0],
-      rotate: [spec.rotate, spec.rotate + 18, spec.rotate - 12, spec.rotate + 10, spec.rotate],
-      opacity: [0.55, 0.85, 0.6, 0.8, 0.55],
-    }}
-    transition={{ duration: spec.duration, repeat: Infinity, ease: 'easeInOut', delay: spec.delay }}
-  >
-    <LeafSVG color={spec.color} size={spec.size} />
-  </motion.div>
-);
+const experiences = [
+  {
+    role: 'HR / General Affairs',
+    company: 'UD Duta Pangan',
+    tasks: ['Vendor Management', 'Stock Monitoring', 'Facility Maintenance', 'Workload Analysis'],
+  },
+  {
+    role: 'Staff Administrasi',
+    company: 'UD Duta Pangan',
+    tasks: ['Document Processing', 'Administrative Support', 'Filing & Archiving', 'Reporting'],
+  },
+  {
+    role: 'IT Support',
+    company: 'UD Duta Pangan',
+    tasks: ['Hardware Troubleshooting', 'Software Installation', 'Network Setup', 'User Training'],
+  },
+];
 
-const BranchCluster: React.FC<{ flip?: boolean }> = ({ flip }) => (
-  <svg width="170" height="170" viewBox="0 0 170 170" style={{ display: 'block', transform: flip ? 'scaleX(-1)' : undefined }}>
-    <path d="M4 4C46 22 78 54 96 100C106 126 102 148 96 164" stroke={C.greenDark} strokeWidth="3" fill="none" strokeLinecap="round" opacity={0.55} />
-    <path d="M30 14C50 30 64 46 74 64" stroke={C.greenDark} strokeWidth="2" fill="none" strokeLinecap="round" opacity={0.4} />
-    {[
-      { x: 18, y: 10, s: 22, r: -20 }, { x: 44, y: 26, s: 26, r: 10 }, { x: 66, y: 46, s: 20, r: -30 },
-      { x: 84, y: 72, s: 24, r: 25 }, { x: 96, y: 100, s: 18, r: -10 }, { x: 56, y: 16, s: 16, r: 40 },
-    ].map((l, i) => (
-      <g key={i} transform={`translate(${l.x - l.s / 2}, ${l.y - (l.s * 1.45) / 2}) rotate(${l.r} ${l.s / 2} ${(l.s * 1.45) / 2}) scale(${l.s / 40})`}>
-        <path d={LEAF_PATH} fill={LEAF_COLORS[i % LEAF_COLORS.length]} opacity={0.8} />
-      </g>
-    ))}
-  </svg>
-);
-
-const SwayingBranch: React.FC<{ corner: 'tl' | 'tr'; }> = ({ corner }) => (
-  <motion.div
-    style={{
-      position: 'fixed', top: '-22px', [corner === 'tl' ? 'left' : 'right']: '-24px',
-      transformOrigin: corner === 'tl' ? 'top left' : 'top right', zIndex: 1, pointerEvents: 'none',
-    }}
-    animate={{ rotate: corner === 'tl' ? [-3, 3, -2, 3, -3] : [3, -3, 2, -3, 3] }}
-    transition={{ duration: 7.5, repeat: Infinity, ease: 'easeInOut' }}
-  >
-    <BranchCluster flip={corner === 'tr'} />
-  </motion.div>
-);
-
-const GlobalNatureDecor: React.FC = () => {
-  const leaves = useMemo<LeafSpec[]>(() => {
-    const positions: Array<[string, string]> = [
-      ['6%', '4%'], ['14%', '9%'], ['22%', '3%'], ['4%', '16%'], ['30%', '6%'],
-      ['8%', '88%'], ['16%', '93%'], ['26%', '85%'], ['38%', '92%'], ['48%', '87%'],
-      ['62%', '5%'], ['70%', '91%'], ['80%', '7%'], ['86%', '90%'], ['52%', '95%'],
-      ['58%', '2%'], ['92%', '20%'], ['2%', '55%'],
-    ];
-    return positions.map(([top, left], i) => ({
-      id: i, top, left,
-      size: 16 + (i % 4) * 6,
-      color: LEAF_COLORS[i % LEAF_COLORS.length],
-      duration: 7 + (i % 5) * 1.6,
-      delay: (i % 6) * 0.5,
-      drift: i % 2 === 0 ? 24 : -24,
-      rotate: (i % 3) * 20 - 20,
-    }));
-  }, []);
-
-  return (
-    <div style={{ position: 'fixed', inset: 0, overflow: 'hidden', pointerEvents: 'none', zIndex: 1 }} aria-hidden="true">
-      <SwayingBranch corner="tl" />
-      <SwayingBranch corner="tr" />
-      {leaves.map(spec => <FloatingLeaf key={spec.id} spec={spec} />)}
-    </div>
-  );
-};
-
-/* ══════════════════════════════════════════════════════
-   HERO ILLUSTRATION — foto full-bleed sisi kanan dengan
-   gradasi animasi slowmotion seperti awan bergerak.
-══════════════════════════════════════════════════════ */
-const HeroIllustration: React.FC<{ src: string }> = ({ src }) => {
-  return (
-    <>
-      {/* Lapisan gradasi statis di atas foto hero (animasi awan sudah dihapus) */}
-      <style>{`
-        .hero-photo-wrap {
-          position: absolute;
-          top: 0; right: 0;
-          width: 52%;
-          height: 100%;
-          overflow: hidden;
-          pointer-events: none;
-        }
-        .hero-photo-img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          object-position: center top;
-          display: block;
-        }
-        /* Lapisan gradasi utama — tepi kiri ke transparan (statis, tanpa animasi) */
-        .hero-grad-left {
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(
-            to right,
-            ${C.bg} 0%,
-            ${C.bg}ee 8%,
-            ${C.bg}cc 16%,
-            ${C.bg}99 26%,
-            ${C.bg}66 38%,
-            ${C.bg}33 52%,
-            transparent 68%
-          );
-        }
-        /* Lapisan gradasi kedua — penguat transisi (statis) */
-        .hero-grad-left2 {
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(
-            to right,
-            ${C.bg}ff 0%,
-            ${C.bg}dd 12%,
-            ${C.bg}88 28%,
-            ${C.bg}22 46%,
-            transparent 62%
-          );
-        }
-        /* Lapisan gradasi ketiga — vignette lembut atas/bawah (statis) */
-        .hero-grad-top {
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(
-            to bottom,
-            ${C.bg}88 0%,
-            transparent 25%,
-            transparent 75%,
-            ${C.bg}55 100%
-          );
-        }
-
-        /* ── Mobile/tablet portrait: foto ditumpuk di bagian atas, halaman hero
-           (judul, tagline, tombol, stat) mengalir di bawah foto, tertimpa
-           gradasi foto yang melebur ke warna background ── */
-        @media (max-width: 900px) {
-          .hero-section {
-            display: flex;
-            flex-direction: column;
-          }
-          .hero-photo-wrap {
-            position: relative;
-            top: auto; right: auto;
-            width: 100%;
-            height: 48vh;
-            min-height: 300px;
-            max-height: 420px;
-          }
-          /* Arah gradasi diputar vertikal supaya foto melebur ke konten di bawahnya */
-          .hero-grad-left,
-          .hero-grad-left2 {
-            background: linear-gradient(
-              to bottom,
-              transparent 0%,
-              transparent 52%,
-              ${C.bg}aa 80%,
-              ${C.bg} 100%
-            );
-          }
-          .hero-grad-top {
-            background: linear-gradient(
-              to bottom,
-              rgba(0,0,0,0.22) 0%,
-              transparent 22%,
-              transparent 100%
-            );
-          }
-          .hero-content-wrap {
-            min-height: auto !important;
-            padding: 2.2rem 1.4rem 3rem !important;
-            align-items: flex-start !important;
-          }
-        }
-      `}</style>
-    </>
-  );
-};
-
-/* ── Section heading kecil (kicker + judul + subjudul) ── */
-const SectionHeading: React.FC<{ label: string; title: string; subtitle?: string }> = ({ label, title, subtitle }) => (
-  <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.7rem', marginBottom: '0.9rem' }}>
-      <span style={kickerLineStyle} />
-      <span style={{ fontFamily: 'var(--font-body)', color: C.green, fontWeight: 700, fontSize: '0.78rem', letterSpacing: '2.5px', textTransform: 'uppercase' }}>🍃 {label}</span>
-      <span style={kickerLineStyle} />
-    </div>
-    <h2 style={{ fontFamily: 'var(--font-display)', color: C.ink, fontSize: 'clamp(2rem, 5vw, 3.2rem)', margin: 0 }}>{title}</h2>
-    {subtitle && <p style={{ color: C.textMuted, maxWidth: '600px', margin: '1rem auto 0', lineHeight: 1.7 }}>{subtitle}</p>}
-  </div>
-);
-
-const StatGrid: React.FC<{ stats: StatItem[] }> = ({ stats }) => (
-  <div style={{ display: 'grid', gridTemplateColumns: `repeat(${(stats ?? []).length}, 1fr)`, gap: '1.2rem' }} className="stat-grid">
-    {(stats ?? []).map(s => (
-      <div key={s.id} style={{ textAlign: 'center' }}>
-        <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.9rem', color: C.green, lineHeight: 1 }}>{s.value}</div>
-        <div style={{ color: C.textMuted, fontSize: '0.76rem', marginTop: '4px' }}>{s.label}</div>
-      </div>
-    ))}
-  </div>
-);
-
-/* ══════════════════════════════════════════════════════
-   HOME — komponen utama
-══════════════════════════════════════════════════════ */
 const Home: React.FC = () => {
-  const [home, setHome]           = useState<HomeData>(() => ls(LS_HOME, defaultHome));
-  const [about, setAbout]         = useState<HomeAboutData>(() => ls(LS_HOME_ABOUT, defaultHomeAbout));
-  const [expertise, setExpertise] = useState<ExpertiseCard[]>(() => ls(LS_EXPERTISE, defaultExpertise));
-  const [skills, setSkills]       = useState<SkillItem[]>(() => ls(LS_SKILLS, defaultSkills));
-  const [tools, setTools]         = useState<ToolItem[]>(() => ls(LS_TOOLS, defaultTools));
-  const [values, setValues]       = useState<ValueItem[]>(() => ls(LS_VALUES, defaultValues));
-  const [exps, setExps]           = useState<ExpItem[]>(() => ls(LS_EXPERIENCE, defaultExperience));
-  const [certs, setCerts]         = useState<CertItem[]>(() => ls(LS_CERT, defaultCerts));
-  const [projects, setProjects]   = useState<HomeProjectItem[]>(() => ls(LS_HOME_PROJECTS, defaultHomeProjects));
-  const [edus, setEdus]           = useState<EduItem[]>(() => ls(LS_EDU, defaultEdus));
-  const [contact, setContact]     = useState<ContactData>(() => ls(LS_CONTACT, defaultContact));
+  const [typed, setTyped] = useState('');
+  const roles = ['HR Professional', 'IT Support', 'Admin Staff', 'Creative Designer'];
+  const [roleIdx, setRoleIdx] = useState(0);
+  const { scrollYProgress } = useScroll();
+  const heroY = useTransform(scrollYProgress, [0, 0.3], [0, -80]);
 
-  const [activeCategory, setActiveCategory] = useState('Semua');
-  const [expandedCertId, setExpandedCertId] = useState<string | null>(null);
-  const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });
-
-  /* Sinkron real-time kalau Admin menyimpan perubahan */
+  // Typewriter effect
   useEffect(() => {
-    const handler = (e: StorageEvent) => {
-      if (!e.newValue) return;
-      try {
-        if (e.key === LS_HOME) setHome(JSON.parse(e.newValue));
-        if (e.key === LS_HOME_ABOUT) setAbout(JSON.parse(e.newValue));
-        if (e.key === LS_EXPERTISE) setExpertise(JSON.parse(e.newValue));
-        if (e.key === LS_SKILLS) setSkills(JSON.parse(e.newValue));
-        if (e.key === LS_TOOLS) setTools(JSON.parse(e.newValue));
-        if (e.key === LS_VALUES) setValues(JSON.parse(e.newValue));
-        if (e.key === LS_EXPERIENCE) setExps(JSON.parse(e.newValue));
-        if (e.key === LS_CERT) setCerts(JSON.parse(e.newValue));
-        if (e.key === LS_HOME_PROJECTS) setProjects(JSON.parse(e.newValue));
-        if (e.key === LS_EDU) setEdus(JSON.parse(e.newValue));
-        if (e.key === LS_CONTACT) setContact(JSON.parse(e.newValue));
-      } catch { /* ignore */ }
+    const role = roles[roleIdx];
+    let i = 0;
+    let forward = true;
+    let timer: NodeJS.Timeout;
+
+    const tick = () => {
+      if (forward) {
+        i++;
+        setTyped(role.substring(0, i));
+        if (i >= role.length) {
+          forward = false;
+          timer = setTimeout(tick, 1500);
+          return;
+        }
+      } else {
+        i--;
+        setTyped(role.substring(0, i));
+        if (i <= 0) {
+          setRoleIdx((prev) => (prev + 1) % roles.length);
+          return;
+        }
+      }
+      timer = setTimeout(tick, forward ? 80 : 40);
     };
-    window.addEventListener('storage', handler);
-    return () => window.removeEventListener('storage', handler);
-  }, []);
-
-  const filteredProjects = activeCategory === 'Semua' ? projects : projects.filter(p => p.category === activeCategory);
-
-  const handleContactSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!form.name || !form.email || !form.message) {
-      toast.error('Mohon isi nama, email, dan pesan terlebih dahulu.');
-      return;
-    }
-    const body = `Dari: ${form.name} (${form.email})%0D%0A%0D%0A${form.message}`;
-    window.location.href = `mailto:${contact.email}?subject=${encodeURIComponent(form.subject || 'Pesan dari Website')}&body=${body}`;
-    toast.success('Membuka aplikasi email kamu...');
-  };
+    timer = setTimeout(tick, 100);
+    return () => clearTimeout(timer);
+  }, [roleIdx]);
 
   return (
-    <div style={{ background: C.bg, position: 'relative', overflow: 'hidden' }}>
-      <GlobalNatureDecor />
+    <div style={{ background: 'var(--black)', minHeight: '100vh' }}>
 
-      {/* ── Sub-nav anchor (di bawah Navbar utama) ── */}
-      <div style={{
-        position: 'sticky', top: '70px', zIndex: 50, background: 'rgba(251,250,244,0.92)',
-        backdropFilter: 'blur(10px)', borderBottom: `1px solid ${C.border}`,
-      }}>
-        <div className="home-subnav" style={{ maxWidth: '1300px', margin: '0 auto', padding: '0.7rem 1.5rem', display: 'flex', gap: '0.4rem', overflowX: 'auto', whiteSpace: 'nowrap' }}>
-          {[
-            ['Home', '#home'], ['About', '#about'], ['Expertise', '#expertise'], ['Skills', '#skills'],
-            ['Experience', '#experience'], ['Certification', '#certification'], ['Projects', '#projects'],
-            ['Education', '#education'], ['Contact', '#contact'],
-          ].map(([label, href]) => (
-            <a key={href} href={href} style={{
-              color: C.greenDark, textDecoration: 'none', fontFamily: 'var(--font-body)',
-              fontWeight: 600, fontSize: '0.82rem', padding: '6px 14px', borderRadius: '20px',
-              transition: 'background 0.2s',
+      {/* ─── HERO ─── */}
+      <motion.section
+        style={{
+          minHeight: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          position: 'relative',
+          overflow: 'hidden',
+          padding: '100px 2rem 4rem',
+          y: heroY,
+        }}
+      >
+        {/* Decorative squiggles */}
+        <motion.div
+          initial={{ opacity: 0, x: -60 }} animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.8, duration: 0.8 }}
+          style={{ position: 'absolute', left: '3%', top: '20%' }}
+        >
+          <Squiggle size={50} rotate={90} />
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, x: 60 }} animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 1, duration: 0.8 }}
+          style={{ position: 'absolute', right: '3%', bottom: '30%' }}
+        >
+          <Squiggle size={70} rotate={-20} />
+        </motion.div>
+
+        {/* Dot decorations */}
+        <motion.div
+          initial={{ scale: 0 }} animate={{ scale: 1 }}
+          transition={{ delay: 1.2, type: 'spring', stiffness: 200 }}
+          style={{ position: 'absolute', bottom: '8%', left: '3%', display: 'flex', gap: '10px' }}
+        >
+          <div style={{ width: 16, height: 16, borderRadius: '50%', background: 'var(--amber)' }} />
+          <div style={{ width: 16, height: 16, borderRadius: '50%', background: 'var(--white)' }} />
+        </motion.div>
+        <motion.div
+          initial={{ scale: 0 }} animate={{ scale: 1 }}
+          transition={{ delay: 1.3, type: 'spring', stiffness: 200 }}
+          style={{ position: 'absolute', bottom: '8%', right: '3%', display: 'flex', gap: '10px' }}
+        >
+          <div style={{ width: 16, height: 16, borderRadius: '50%', background: 'var(--amber)' }} />
+          <div style={{ width: 16, height: 16, borderRadius: '50%', background: 'var(--white)' }} />
+        </motion.div>
+
+        {/* Top label */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.7 }}
+          style={{ textAlign: 'center', marginBottom: '1rem' }}
+        >
+          <span style={{
+            fontFamily: 'var(--font-body)',
+            color: 'var(--white-dim)',
+            fontSize: '0.9rem',
+            letterSpacing: '3px',
+            textTransform: 'uppercase',
+          }}>
+            Creative Portfolio Presentation
+          </span>
+          <span style={{
+            marginLeft: '3rem',
+            fontFamily: 'var(--font-body)',
+            color: 'var(--white-dim)',
+            fontSize: '0.9rem',
+            letterSpacing: '1px',
+          }}>
+            NGANJUK, Indonesia
+          </span>
+        </motion.div>
+
+        {/* Big display name */}
+        <div style={{ position: 'relative', textAlign: 'center' }}>
+          <motion.h1
+            initial={{ opacity: 0, scale: 0.85 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.4, duration: 0.9, ease: [0.4, 0, 0.2, 1] }}
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 'clamp(3.5rem, 12vw, 10rem)',
+              color: 'var(--white)',
+              lineHeight: 0.9,
+              letterSpacing: '-2px',
+              userSelect: 'none',
             }}
-              onMouseEnter={e => (e.currentTarget.style.background = C.bgSoft)}
-              onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
-            >
-              {label}
-            </a>
-          ))}
-        </div>
-      </div>
+          >
+            MAHFUDFEBRY'S
+          </motion.h1>
 
-      {/* ══ HERO ══ */}
-      <section id="home" className="hero-section" style={{ position: 'relative', zIndex: 2, minHeight: '100vh', overflow: 'hidden' }}>
-        {/* Render keyframes + style untuk foto hero */}
-        <HeroIllustration src={home.heroPhotoUrl || FALLBACK_HERO_PHOTO} />
-        {/* Foto — desktop: absolute kanan | mobile: banner tumpuk di atas */}
-        <div className="hero-photo-wrap" aria-hidden="true">
-          <img
-            src={home.heroPhotoUrl || FALLBACK_HERO_PHOTO}
-            alt=""
-            className="hero-photo-img"
+          {/* HIKIMORI overlay in amber script */}
+          <motion.div
+            initial={{ opacity: 0, y: 30, rotate: -3 }}
+            animate={{ opacity: 1, y: 0, rotate: -3 }}
+            transition={{ delay: 0.7, duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
+            style={{
+              position: 'absolute',
+              top: '40%',
+              left: '50%',
+              transform: 'translateX(-50%) rotate(-3deg)',
+              fontFamily: 'var(--font-script)',
+              fontSize: 'clamp(2rem, 7vw, 6rem)',
+              color: 'var(--amber)',
+              fontWeight: 700,
+              whiteSpace: 'nowrap',
+              textShadow: '0 4px 30px rgba(245,166,35,0.4)',
+              zIndex: 2,
+            }}
+          >
+            Hikimori
+          </motion.div>
+        </div>
+
+        {/* Role typewriter */}
+        <motion.div
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+          transition={{ delay: 0.9, duration: 0.6 }}
+          style={{ marginTop: '3.5rem', textAlign: 'center' }}
+        >
+          <span style={{
+            fontFamily: 'var(--font-body)',
+            color: 'var(--white-dim)',
+            fontSize: '1.1rem',
+          }}>
+            Saya seorang{' '}
+          </span>
+          <span style={{
+            fontFamily: 'var(--font-body)',
+            color: 'var(--amber)',
+            fontWeight: 700,
+            fontSize: '1.1rem',
+            borderRight: '2px solid var(--amber)',
+            paddingRight: '4px',
+          }}>
+            {typed}
+          </span>
+        </motion.div>
+
+        {/* CTA badge */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.1, duration: 0.7 }}
+          whileHover={{ scale: 1.04, boxShadow: '0 8px 40px rgba(245,166,35,0.3)' }}
+          style={{
+            marginTop: '2.5rem',
+            border: '2px solid var(--white)',
+            borderRadius: '50px',
+            padding: '14px 40px',
+            fontFamily: 'var(--font-body)',
+            fontWeight: 700,
+            fontSize: '1rem',
+            letterSpacing: '1px',
+            cursor: 'default',
+          }}
+        >
+          A Curated Portfolio of Purpose-Driven and Visually Engaging Work
+        </motion.div>
+
+        {/* Scroll indicator */}
+        <motion.div
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+          transition={{ delay: 1.5, duration: 1 }}
+          style={{
+            position: 'absolute',
+            bottom: '2rem',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '6px',
+          }}
+        >
+          <span style={{ color: 'var(--white-dim)', fontSize: '0.75rem', letterSpacing: '2px', textTransform: 'uppercase' }}>
+            Scroll
+          </span>
+          <motion.div
+            animate={{ y: [0, 8, 0] }}
+            transition={{ repeat: Infinity, duration: 1.5, ease: 'easeInOut' }}
+            style={{ width: '1px', height: '30px', background: 'var(--amber)' }}
           />
-          <div className="hero-grad-left" />
-          <div className="hero-grad-left2" />
-          <div className="hero-grad-top" />
-        </div>
+        </motion.div>
+      </motion.section>
 
-        {/* Konten teks di sebelah kiri (desktop) / di bawah foto (mobile) */}
-        <div className="hero-content-wrap" style={{ position: 'relative', zIndex: 3, maxWidth: '1300px', margin: '0 auto', padding: '5rem 2rem 4rem', display: 'flex', alignItems: 'center', minHeight: '100vh' }}>
-          <div style={{ maxWidth: '600px' }}>
-            <AnimatedSection direction="left">
-              <div style={{ color: C.green, fontFamily: 'var(--font-body)', fontWeight: 600, fontSize: '0.95rem', marginBottom: '1rem' }}>
-                {home.kicker} 🍃
-              </div>
-              <h1 style={{ fontFamily: 'var(--font-display)', color: C.ink, fontSize: 'clamp(2.6rem, 7vw, 5rem)', lineHeight: 1, marginBottom: '1.1rem' }}>
-                {home.heroTitle}
-              </h1>
-              <div style={{ color: C.green, fontFamily: 'var(--font-body)', fontWeight: 600, fontSize: '1.05rem', marginBottom: '1.5rem' }}>
-                {home.heroSubtitle}
-              </div>
-              <p style={{ color: C.text, lineHeight: 1.85, fontSize: '1.02rem', marginBottom: '2.2rem', maxWidth: '480px' }}>
-                {home.heroTagline}
-              </p>
-              <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginBottom: '1.8rem' }}>
-                <a href={home.heroCtaLink} style={primaryBtnStyle}>👤 {home.heroCta} →</a>
-                {home.heroCta2Link && (
-                  <a href={home.heroCta2Link} target="_blank" rel="noopener noreferrer" style={secondaryBtnStyle}>⬇ {home.heroCta2}</a>
-                )}
-              </div>
-
-              {/* ── Certification Badges ── */}
-              {certs.filter(c => c.showBadge && c.title).length > 0 && (
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '2rem' }}>
-                  {certs.filter(c => c.showBadge && c.title).map(cert => (
-                    <a key={cert.id} href="#certification" style={{
-                      display: 'inline-flex', alignItems: 'center', gap: '0.45rem',
-                      background: C.bgSoft, border: `1px solid ${C.border}`,
-                      borderRadius: '24px', padding: '6px 14px', fontSize: '0.76rem',
-                      fontWeight: 700, color: C.greenDark, textDecoration: 'none',
-                      boxShadow: '0 2px 8px rgba(40,60,30,0.08)',
-                      transition: 'box-shadow 0.2s',
-                    }}
-                      onMouseEnter={e => (e.currentTarget.style.boxShadow = '0 4px 16px rgba(40,60,30,0.16)')}
-                      onMouseLeave={e => (e.currentTarget.style.boxShadow = '0 2px 8px rgba(40,60,30,0.08)')}
-                    >
-                      🏅 {cert.title}
-                    </a>
-                  ))}
-                </div>
-              )}
-            </AnimatedSection>
-            <AnimatedSection direction="up" delay={0.2}>
-              <div style={{ ...cardStyle, padding: '1.5rem 1.7rem', maxWidth: '440px', backdropFilter: 'blur(4px)', background: 'rgba(255,255,255,0.85)' }}>
-                <StatGrid stats={home.stats} />
-              </div>
-            </AnimatedSection>
+      {/* ─── ABOUT SECTION ─── */}
+      <section style={{
+        padding: '6rem 2rem',
+        maxWidth: '1200px',
+        margin: '0 auto',
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr',
+        gap: '4rem',
+        alignItems: 'center',
+      }}
+      className="about-grid"
+      >
+        <AnimatedSection direction="left">
+          <div>
+            <div style={{ marginBottom: '0.5rem' }}>
+              <span style={{
+                fontFamily: 'var(--font-body)',
+                color: 'var(--amber)',
+                fontSize: '0.85rem',
+                letterSpacing: '3px',
+                textTransform: 'uppercase',
+                fontWeight: 600,
+              }}>
+                About Me
+              </span>
+            </div>
+            <h2 style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 'clamp(2.5rem, 5vw, 4rem)',
+              lineHeight: 1,
+              marginBottom: '0.3rem',
+            }}>
+              ABOUT ME !
+            </h2>
+            <span style={{
+              fontFamily: 'var(--font-script)',
+              color: 'var(--amber)',
+              fontSize: '2.2rem',
+              fontWeight: 700,
+              display: 'block',
+              marginBottom: '1.5rem',
+            }}>
+              Mahfudfebry
+            </span>
+            <p style={{ color: 'var(--white-dim)', lineHeight: 1.8, marginBottom: '1rem' }}>
+              Halo! Nama saya <strong style={{ color: 'var(--white)' }}>Mahfudfebry</strong>, seorang profesional muda dari Nganjuk, Indonesia. Portfolio ini adalah kumpulan karya dan proyek terbaik saya yang mencerminkan keahlian, kreativitas, dan pertumbuhan profesional.
+            </p>
+            <p style={{ color: 'var(--white-dim)', lineHeight: 1.8 }}>
+              Di setiap proyek, saya selalu berusaha memberikan hasil terbaik — dari desain visual yang kuat hingga solusi HR dan IT yang efisien dan berdampak.
+            </p>
           </div>
-        </div>
-      </section>
+        </AnimatedSection>
 
-      {/* ══ ABOUT ME ══ */}
-      <section id="about" style={{ position: 'relative', zIndex: 2, padding: '5rem 2rem', maxWidth: '1300px', margin: '0 auto' }}>
-        <div className="home-about-grid" style={{ display: 'grid', gridTemplateColumns: '0.85fr 1.15fr', gap: '3.5rem', alignItems: 'center' }}>
-          <AnimatedSection direction="left">
-            <div className="about-photo-wrap" style={{ position: 'relative' }}>
-              <div style={{ borderRadius: '24px', overflow: 'hidden', aspectRatio: '4/5', boxShadow: '0 24px 60px rgba(40,60,30,0.18)' }}>
-                <img src={about.photoUrl || FALLBACK_ABOUT_PHOTO} alt={about.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        <AnimatedSection direction="right">
+          <div className="float-hover" style={{
+            position: 'relative',
+            borderRadius: 'var(--radius)',
+            overflow: 'hidden',
+            background: 'var(--black-3)',
+            aspectRatio: '4/3',
+          }}>
+            <img
+              src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80"
+              alt="Mahfudfebry"
+              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+            />
+            <div style={{
+              position: 'absolute',
+              inset: 0,
+              background: 'linear-gradient(135deg, rgba(245,166,35,0.2) 0%, transparent 60%)',
+            }} />
+            <div style={{
+              position: 'absolute',
+              bottom: '1.5rem',
+              left: '1.5rem',
+              background: 'rgba(10,10,10,0.9)',
+              borderRadius: '12px',
+              padding: '0.8rem 1.2rem',
+              backdropFilter: 'blur(10px)',
+            }}>
+              <div style={{ color: 'var(--amber)', fontFamily: 'var(--font-body)', fontWeight: 700, fontSize: '0.85rem' }}>
+                📍 Nganjuk, Indonesia
               </div>
-              {about.badgeText && (
-                <div style={{
-                  position: 'absolute', bottom: '-1.2rem', left: '1.2rem', right: '1.2rem',
-                  background: '#fff', borderRadius: '14px', padding: '0.9rem 1.1rem',
-                  boxShadow: '0 12px 30px rgba(40,60,30,0.16)', display: 'flex', gap: '0.7rem', alignItems: 'flex-start',
-                  border: `1px solid ${C.border}`,
-                }}>
-                  <span style={{ fontSize: '1.1rem' }}>🍃</span>
-                  <span style={{ color: C.text, fontSize: '0.85rem', lineHeight: 1.5 }}>{about.badgeText}</span>
-                </div>
-              )}
-              <div style={{ position: 'absolute', top: '-10%', left: '-12%', width: '55%', height: '55%', borderRadius: '50%', background: 'rgba(116,163,90,0.14)', zIndex: -1 }} />
             </div>
-          </AnimatedSection>
-
-          <AnimatedSection direction="right">
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.7rem', marginBottom: '0.9rem' }}>
-              <span style={kickerLineStyle} />
-              <span style={{ fontFamily: 'var(--font-body)', color: C.green, fontWeight: 700, fontSize: '0.78rem', letterSpacing: '2.5px', textTransform: 'uppercase' }}>🍃 About Me</span>
-            </div>
-            <h2 style={{ fontFamily: 'var(--font-display)', color: C.ink, fontSize: 'clamp(2rem, 5vw, 3.2rem)', marginBottom: '0.6rem' }}>Tentang Saya</h2>
-            <p style={{ color: C.green, fontWeight: 600, marginBottom: '1.3rem', fontSize: '1.02rem' }}>{about.subtitle}</p>
-            <p style={{ color: C.text, lineHeight: 1.85, marginBottom: '1rem', fontSize: '1rem' }}>{renderBold(about.bio1)}</p>
-            <p style={{ color: C.text, lineHeight: 1.85, marginBottom: '1.6rem', fontSize: '1rem' }}>{renderBold(about.bio2)}</p>
-
-            <div style={{ ...cardStyle, padding: '1.4rem 1.6rem', marginBottom: '1.6rem' }}>
-              <StatGrid stats={about.stats} />
-            </div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.9rem' }}>
-              {[
-                ['📍', 'Lokasi', about.location],
-                ['📧', 'Email', about.email],
-                ['📞', 'Telepon', about.phone],
-                ['💼', 'LinkedIn', about.linkedinLabel, about.linkedinUrl],
-                ['🐙', 'GitHub', about.githubLabel, about.githubUrl],
-              ].filter(row => row[2]).map(([icon, label, value, url], i) => (
-                <div key={i} style={{ display: 'flex', gap: '0.6rem', alignItems: 'flex-start' }}>
-                  <span style={{ fontSize: '1.05rem' }}>{icon}</span>
-                  <div>
-                    <div style={{ color: C.textMuted, fontSize: '0.74rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{label}</div>
-                    {url ? (
-                      <a href={url} target="_blank" rel="noopener noreferrer" style={{ color: C.ink, fontSize: '0.88rem', textDecoration: 'none' }}>{value}</a>
-                    ) : (
-                      <div style={{ color: C.ink, fontSize: '0.88rem' }}>{value}</div>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </AnimatedSection>
-        </div>
-
-        {about.closingQuote && (
-          <AnimatedSection direction="up">
-            <div style={{ ...cardStyle, marginTop: '3.5rem', padding: '1.5rem 2rem', textAlign: 'center', maxWidth: '760px', marginLeft: 'auto', marginRight: 'auto' }}>
-              <span style={{ color: C.green, fontSize: '1.4rem' }}>“</span>
-              <span style={{ color: C.text, fontStyle: 'italic', lineHeight: 1.7 }}> {about.closingQuote} </span>
-              <span style={{ color: C.green, fontSize: '1.4rem' }}>🍃</span>
-            </div>
-          </AnimatedSection>
-        )}
+          </div>
+        </AnimatedSection>
       </section>
 
-      {/* ══ KEAHLIAN & KOMPETENSI (EXPERTISE) ══ */}
-      <section id="expertise" style={{ position: 'relative', zIndex: 2, padding: '5rem 2rem', background: C.bgAlt }}>
-        <div style={{ maxWidth: '1300px', margin: '0 auto' }}>
+      {/* ─── SKILLS SECTION ─── */}
+      <section style={{
+        padding: '6rem 2rem',
+        background: 'var(--black-2)',
+        position: 'relative',
+        overflow: 'hidden',
+      }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <AnimatedSection direction="up">
-            <SectionHeading label="Expertise" title="Keahlian & Kompetensi"
-              subtitle="Kombinasi keahlian di bidang SDM, Teknologi, dan Administrasi Operasional untuk mendukung pertumbuhan organisasi." />
-          </AnimatedSection>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.6rem' }}>
-            {expertise.map((card, i) => (
-              <AnimatedSection key={card.id} direction="up" delay={i * 0.12}>
-                <div style={{ ...cardStyle, padding: '2.2rem' }}>
-                  <div style={{
-                    width: '58px', height: '58px', borderRadius: '50%', background: C.bgSoft,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.6rem', marginBottom: '1.2rem',
+            <div style={{ textAlign: 'center', marginBottom: '4rem', position: 'relative' }}>
+              <h2 style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: 'clamp(3rem, 7vw, 6rem)',
+                lineHeight: 0.9,
+                position: 'relative',
+                display: 'inline-block',
+              }}>
+                SKILLS &{' '}
+                <span style={{ position: 'relative' }}>
+                  TOOLS
+                  <span style={{
+                    position: 'absolute',
+                    top: '40%',
+                    left: '10%',
+                    fontFamily: 'var(--font-script)',
+                    color: 'var(--amber)',
+                    fontSize: '55%',
+                    transform: 'rotate(-3deg)',
+                    whiteSpace: 'nowrap',
                   }}>
-                    {card.icon}
-                  </div>
-                  <h3 style={{ fontFamily: 'var(--font-display)', color: C.ink, fontSize: '1.3rem', marginBottom: '1rem' }}>{card.title}</h3>
-                  <div style={{ height: '2px', width: '32px', background: C.green, marginBottom: '1rem' }} />
-                  <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.6rem', margin: 0, padding: 0 }}>
-                    {splitList(card.items).map(item => (
-                      <li key={item} style={{ display: 'flex', gap: '0.6rem', color: C.text, fontSize: '0.88rem', lineHeight: 1.5 }}>
-                        <span style={{ color: C.green, flexShrink: 0 }}>✓</span>{item}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </AnimatedSection>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ══ SKILLS & EXPERTISE (8 kartu) + TOOLS + VALUES ══ */}
-      <section id="skills" style={{ position: 'relative', zIndex: 2, padding: '5rem 2rem', maxWidth: '1300px', margin: '0 auto' }}>
-        <AnimatedSection direction="up">
-          <SectionHeading label="Skills" title="Skills & Expertise"
-            subtitle="Keterampilan yang saya miliki merupakan hasil dari pembelajaran berkelanjutan dan pengalaman praktik di berbagai bidang profesional." />
-        </AnimatedSection>
-
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))', gap: '1.4rem', marginBottom: '2.5rem' }}>
-          {skills.map((s, i) => (
-            <AnimatedSection key={s.id} direction="up" delay={i * 0.07}>
-              <div style={{ ...cardStyle, padding: '1.7rem' }}>
-                <div style={{
-                  width: '46px', height: '46px', borderRadius: '50%', background: C.bgSoft,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.3rem', marginBottom: '1rem',
-                }}>
-                  {s.icon}
-                </div>
-                <h4 style={{ fontFamily: 'var(--font-display)', color: C.ink, fontSize: '1.05rem', marginBottom: '0.5rem' }}>{s.title}</h4>
-                <p style={{ color: C.textMuted, fontSize: '0.85rem', lineHeight: 1.6, margin: 0 }}>{s.desc}</p>
-              </div>
-            </AnimatedSection>
-          ))}
-        </div>
-
-        <AnimatedSection direction="up">
-          <div style={{ ...cardStyle, background: C.bgSoft, border: 'none', padding: '2rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }} className="tools-values-grid">
-            <div>
-              <h4 style={{ fontFamily: 'var(--font-body)', color: C.greenDark, fontWeight: 700, fontSize: '0.9rem', letterSpacing: '0.5px', marginBottom: '1.1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                ⭐ Kompetensi Inti
-              </h4>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.4rem' }}>
-                {values.map(v => (
-                  <div key={v.id} style={{ textAlign: 'center', width: '74px' }}>
-                    <div style={{ width: '52px', height: '52px', borderRadius: '50%', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.3rem', margin: '0 auto 0.4rem' }}>{v.icon}</div>
-                    <div style={{ color: C.text, fontSize: '0.74rem' }}>{v.label}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div>
-              <h4 style={{ fontFamily: 'var(--font-body)', color: C.greenDark, fontWeight: 700, fontSize: '0.9rem', letterSpacing: '0.5px', marginBottom: '1.1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                🖥️ Tools & Technologies
-              </h4>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.4rem' }}>
-                {tools.map(t => (
-                  <div key={t.id} style={{ textAlign: 'center', width: '74px' }}>
-                    <div style={{ width: '52px', height: '52px', borderRadius: '14px', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.3rem', margin: '0 auto 0.4rem' }}>{t.icon}</div>
-                    <div style={{ color: C.text, fontSize: '0.74rem' }}>{t.label}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </AnimatedSection>
-      </section>
-
-      {/* ══ PENGALAMAN KERJA (EXPERIENCE) ══ */}
-      <section id="experience" style={{ position: 'relative', zIndex: 2, padding: '5rem 2rem', background: C.bgAlt }}>
-        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
-          <AnimatedSection direction="up">
-            <SectionHeading label="Experience" title="Perjalanan Profesional"
-              subtitle="Setiap pengalaman adalah langkah menuju pertumbuhan dan kontribusi yang lebih besar." />
-          </AnimatedSection>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.6rem' }}>
-            {exps.map((exp, i) => (
-              <AnimatedSection key={exp.id} direction={i % 2 === 0 ? 'left' : 'right'} delay={i * 0.1}>
-                <div style={{ ...cardStyle, padding: '1.8rem 2rem', display: 'grid', gridTemplateColumns: exp.imageUrl ? '1fr 200px' : '1fr', gap: '1.6rem', alignItems: 'center' }} className="exp-card">
-                  <div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginBottom: '0.8rem' }}>
-                      <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: C.bgSoft, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.1rem', flexShrink: 0 }}>{exp.icon}</div>
-                      <div>
-                        <h3 style={{ fontFamily: 'var(--font-display)', color: C.ink, fontSize: '1.2rem', margin: 0 }}>{i + 1}. {exp.position}</h3>
-                        <div style={{ color: C.textMuted, fontSize: '0.82rem' }}>{exp.company} • {exp.period}</div>
-                      </div>
-                    </div>
-                    <div className="exp-tags-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.5rem' }}>
-                      {splitList(exp.tags).map(tag => (
-                        <div key={tag} style={{ display: 'flex', gap: '0.5rem', color: C.text, fontSize: '0.84rem' }}>
-                          <span style={{ color: C.green }}>✓</span>{tag}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  {exp.imageUrl && (
-                    <div style={{ borderRadius: '14px', overflow: 'hidden', aspectRatio: '4/3' }}>
-                      <img src={exp.imageUrl} alt={exp.position} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    </div>
-                  )}
-                </div>
-              </AnimatedSection>
-            ))}
-          </div>
-
-          <AnimatedSection direction="up">
-            <div style={{ ...cardStyle, marginTop: '2.5rem', padding: '1.4rem 2rem', textAlign: 'center' }}>
-              <span style={{ color: C.text, fontStyle: 'italic' }}>“Pengalaman bukan hanya tentang bekerja, tetapi tentang memberi nilai dan membuat perbedaan.”</span> <span>🍃</span>
-            </div>
-          </AnimatedSection>
-        </div>
-      </section>
-
-      {/* ══ PROFESSIONAL CERTIFICATION ══ */}
-      <section id="certification" style={{ position: 'relative', zIndex: 2, padding: '5rem 2rem', maxWidth: '1100px', margin: '0 auto' }}>
-        <AnimatedSection direction="up">
-          <SectionHeading label="Certification" title="Professional Certification"
-            subtitle="Sertifikasi profesional yang saya miliki sebagai bukti kompetensi dan komitmen dalam pengembangan diri secara berkelanjutan." />
-        </AnimatedSection>
-
-        {certs.map((cert, i) => (
-          <AnimatedSection key={cert.id} direction="up" delay={i * 0.1}>
-            <div style={{ marginBottom: '1.4rem' }}>
-              {/* ── Clickable Card ── */}
-              <div
-                onClick={() => cert.imageUrl && setExpandedCertId(expandedCertId === cert.id ? null : cert.id)}
-                style={{
-                  ...cardStyle, padding: '2.2rem',
-                  display: 'grid', gridTemplateColumns: '160px 1fr', gap: '2rem', alignItems: 'center',
-                  position: 'relative',
-                  cursor: cert.imageUrl ? 'pointer' : 'default',
-                  transition: 'box-shadow 0.2s',
-                }}
-                className="cert-card"
-                onMouseEnter={e => cert.imageUrl && (e.currentTarget.style.boxShadow = '0 12px 40px rgba(40,60,30,0.14)')}
-                onMouseLeave={e => (e.currentTarget.style.boxShadow = (cardStyle as React.CSSProperties).boxShadow as string)}
-              >
-                {/* Toggle hint */}
-                {cert.imageUrl && (
-                  <div style={{
-                    position: 'absolute', top: '1rem', right: '1.2rem',
-                    background: C.bgSoft, border: `1px solid ${C.border}`,
-                    borderRadius: '20px', padding: '3px 10px',
-                    fontSize: '0.72rem', fontWeight: 700, color: C.greenDark,
-                    display: 'flex', alignItems: 'center', gap: '4px',
-                  }}>
-                    {expandedCertId === cert.id ? '▲ Tutup' : '📎 Lihat Sertifikat'}
-                  </div>
-                )}
-                <div style={{
-                  width: '140px', height: '140px', borderRadius: '50%', background: C.bgSoft,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto',
-                }}>
-                  <span style={{ fontSize: '3rem' }}>🏅</span>
-                </div>
-                <div>
-                  <span style={{ background: C.bgSoft, color: C.greenDark, borderRadius: '6px', padding: '4px 12px', fontSize: '0.74rem', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase' }}>Sertifikasi</span>
-                  <h3 style={{ fontFamily: 'var(--font-display)', color: C.ink, fontSize: '1.6rem', margin: '0.8rem 0 0.4rem' }}>{cert.title}</h3>
-                  <p style={{ color: C.textMuted, marginBottom: '1rem' }}>{cert.issuer}</p>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-                    {splitList(cert.items).map(item => (
-                      <span key={item} style={{ background: C.bgSoft, color: C.greenDark, borderRadius: '20px', padding: '5px 14px', fontSize: '0.78rem', fontWeight: 600 }}>{item}</span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              {/* ── Dropdown Image ── */}
-              <AnimatePresence>
-                {expandedCertId === cert.id && cert.imageUrl && (
-                  <motion.div
-                    key="cert-img"
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
-                    style={{ overflow: 'hidden' }}
-                  >
-                    <div style={{
-                      ...cardStyle, marginTop: '6px', padding: '1.5rem',
-                      textAlign: 'center', background: C.bgAlt,
-                    }}>
-                      <p style={{ color: C.textMuted, fontSize: '0.78rem', marginBottom: '1rem' }}>📎 Dokumen Sertifikat — {cert.title}</p>
-                      <img
-                        src={cert.imageUrl}
-                        alt={cert.title}
-                        style={{ maxWidth: '100%', maxHeight: '75vh', borderRadius: '12px', boxShadow: '0 12px 40px rgba(40,60,30,0.18)', objectFit: 'contain' }}
-                      />
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          </AnimatedSection>
-        ))}
-
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1.4rem', marginTop: '1.5rem' }}>
-          {[
-            ['🏆', 'Kompetensi Teruji', 'Dinyatakan kompeten oleh asesor profesional BNSP'],
-            ['🛡️', 'Standar Nasional', 'Sesuai dengan standar kompetensi kerja nasional'],
-            ['📈', 'Pengembangan Berkelanjutan', 'Terus belajar dan meningkatkan kompetensi secara konsisten'],
-            ['💼', 'Profesional & Terpercaya', 'Komitmen untuk memberikan kinerja terbaik'],
-          ].map(([icon, title, desc], i) => (
-            <AnimatedSection key={title} direction="up" delay={i * 0.08}>
-              <div style={{ textAlign: 'center', padding: '0.5rem' }}>
-                <div style={{ width: '52px', height: '52px', borderRadius: '50%', background: C.bgSoft, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.3rem', margin: '0 auto 0.7rem' }}>{icon}</div>
-                <div style={{ color: C.ink, fontWeight: 700, fontSize: '0.88rem', marginBottom: '0.3rem' }}>{title}</div>
-                <div style={{ color: C.textMuted, fontSize: '0.78rem', lineHeight: 1.5 }}>{desc}</div>
-              </div>
-            </AnimatedSection>
-          ))}
-        </div>
-      </section>
-
-      {/* ══ PROJECTS & CONTRIBUTIONS ══ */}
-      <section id="projects" style={{ position: 'relative', zIndex: 2, padding: '5rem 2rem', background: C.bgAlt }}>
-        <div style={{ maxWidth: '1300px', margin: '0 auto' }}>
-          <AnimatedSection direction="up">
-            <SectionHeading label="Projects" title="Projects & Contributions"
-              subtitle="Beberapa proyek dan kontribusi yang telah saya lakukan sebagai bentuk dedikasi dalam mendukung efisiensi, efektivitas, dan kemajuan organisasi." />
-          </AnimatedSection>
-
-          <AnimatedSection direction="up">
-            <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap', justifyContent: 'center', marginBottom: '2.5rem' }}>
-              {['Semua', ...HOME_PROJECT_CATEGORIES].map(cat => (
-                <button key={cat} onClick={() => setActiveCategory(cat)} style={{
-                  background: activeCategory === cat ? C.greenDark : '#fff',
-                  color: activeCategory === cat ? '#fff' : C.text,
-                  border: `1px solid ${activeCategory === cat ? C.greenDark : C.border}`,
-                  borderRadius: '24px', padding: '8px 18px', fontFamily: 'var(--font-body)',
-                  fontWeight: 600, fontSize: '0.85rem', cursor: 'pointer', transition: 'all 0.2s',
-                }}>
-                  {cat}
-                </button>
-              ))}
-            </div>
-          </AnimatedSection>
-
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.4rem' }}>
-            {filteredProjects.map((p, i) => (
-              <AnimatedSection key={p.id} direction="up" delay={(i % 4) * 0.08}>
-                <div style={{ ...cardStyle, padding: '1.8rem' }}>
-                  <div style={{ width: '46px', height: '46px', borderRadius: '50%', background: C.bgSoft, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.3rem', marginBottom: '1rem' }}>{p.icon}</div>
-                  <h4 style={{ fontFamily: 'var(--font-display)', color: C.ink, fontSize: '1.05rem', marginBottom: '0.5rem' }}>{p.title}</h4>
-                  <p style={{ color: C.textMuted, fontSize: '0.85rem', lineHeight: 1.6, marginBottom: '0.9rem' }}>{p.desc}</p>
-                  <span style={{ color: C.green, fontSize: '0.78rem', fontWeight: 700 }}>🏷️ {p.category}</span>
-                </div>
-              </AnimatedSection>
-            ))}
-          </div>
-
-          {filteredProjects.length === 0 && (
-            <div style={{ textAlign: 'center', padding: '3rem', color: C.textMuted }}>Belum ada proyek di kategori ini.</div>
-          )}
-
-          <div style={{ textAlign: 'center', marginTop: '2.5rem' }}>
-            <Link to="/portofolio" style={{ ...secondaryBtnStyle, textDecoration: 'none' }}>Lihat Semua Portofolio →</Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ══ EDUCATION & LEARNING ══ */}
-      <section id="education" style={{ position: 'relative', zIndex: 2, padding: '5rem 2rem', maxWidth: '1200px', margin: '0 auto' }}>
-        <AnimatedSection direction="up">
-          <SectionHeading label="Education" title="Education & Learning"
-            subtitle="Perjalanan akademik yang membentuk fondasi pengetahuan, keterampilan, dan pola pikir profesional." />
-        </AnimatedSection>
-
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem', maxWidth: '720px', margin: '0 auto 3rem' }}>
-          {edus.map((edu, i) => (
-            <AnimatedSection key={edu.id} direction="left" delay={i * 0.1}>
-              <div style={{ ...cardStyle, padding: '1.4rem 1.7rem', display: 'flex', gap: '1.2rem', alignItems: 'center' }}>
-                <div style={{ width: '54px', height: '54px', borderRadius: '50%', background: C.bgSoft, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.4rem', flexShrink: 0 }}>{edu.icon}</div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ display: 'flex', gap: '0.7rem', alignItems: 'center', flexWrap: 'wrap' }}>
-                    <span style={{ background: C.greenDark, color: '#fff', borderRadius: '6px', padding: '2px 10px', fontSize: '0.74rem', fontWeight: 700 }}>{edu.year}</span>
-                    <h4 style={{ fontFamily: 'var(--font-display)', color: C.ink, fontSize: '1.05rem', margin: 0 }}>{edu.school}</h4>
-                  </div>
-                  {edu.major && <div style={{ color: C.text, fontSize: '0.88rem', marginTop: '0.3rem' }}>{edu.major}</div>}
-                  {edu.location && <div style={{ color: C.textMuted, fontSize: '0.8rem', marginTop: '0.2rem' }}>📍 {edu.location}</div>}
-                </div>
-              </div>
-            </AnimatedSection>
-          ))}
-        </div>
-
-        <AnimatedSection direction="up">
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1.4rem' }}>
-            {[
-              ['📚', 'Self Development', 'Membaca buku, jurnal, dan artikel profesional.'],
-              ['🖥️', 'Online Courses', 'Mengikuti pelatihan dan sertifikasi untuk meningkatkan kompetensi.'],
-              ['🤝', 'Knowledge Sharing', 'Berbagi pengalaman dan pembelajaran dengan rekan kerja maupun komunitas.'],
-              ['🎯', 'Stay Updated', 'Mengikuti perkembangan teknologi, HR, administrasi, dan dunia industri.'],
-            ].map(([icon, title, desc]) => (
-              <div key={title} style={{ textAlign: 'center', padding: '0.5rem' }}>
-                <div style={{ width: '52px', height: '52px', borderRadius: '50%', background: C.bgSoft, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.3rem', margin: '0 auto 0.7rem' }}>{icon}</div>
-                <div style={{ color: C.ink, fontWeight: 700, fontSize: '0.88rem', marginBottom: '0.3rem' }}>{title}</div>
-                <div style={{ color: C.textMuted, fontSize: '0.78rem', lineHeight: 1.5 }}>{desc}</div>
-              </div>
-            ))}
-          </div>
-        </AnimatedSection>
-      </section>
-
-      {/* ══ CONTACT ══ */}
-      <section id="contact" style={{ position: 'relative', zIndex: 2, padding: '5rem 2rem 6rem', background: C.bgAlt }}>
-        <div style={{ maxWidth: '1300px', margin: '0 auto' }}>
-          <div className="home-contact-grid" style={{ display: 'grid', gridTemplateColumns: '0.9fr 1.1fr', gap: '3rem', alignItems: 'start' }}>
-            <AnimatedSection direction="left">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.7rem', marginBottom: '0.9rem' }}>
-                <span style={kickerLineStyle} />
-                <span style={{ fontFamily: 'var(--font-body)', color: C.green, fontWeight: 700, fontSize: '0.78rem', letterSpacing: '2.5px', textTransform: 'uppercase' }}>🍃 Contact</span>
-              </div>
-              <h2 style={{ fontFamily: 'var(--font-display)', color: C.ink, fontSize: 'clamp(2.2rem, 6vw, 3.6rem)', lineHeight: 1.05, marginBottom: '1.2rem' }}>
-                Let's Build Something Together
-              </h2>
-              <p style={{ color: C.text, lineHeight: 1.8, marginBottom: '2rem', maxWidth: '440px' }}>
-                Saya terbuka untuk peluang kolaborasi, proyek baru, atau sekadar berdiskusi mengenai ide dan solusi terbaik untuk organisasi Anda.
-              </p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.1rem', marginBottom: '2rem' }}>
-                {[
-                  ['📧', 'Email', contact.showEmail ? contact.email : '', `mailto:${contact.email}`],
-                  ['📞', 'Phone', contact.phone, `tel:${contact.phone.replace(/\s/g, '')}`],
-                  ['📍', 'Location', contact.location, ''],
-                  ['💼', 'LinkedIn', contact.showLinkedin ? contact.linkedin : '', `https://linkedin.com/in/${contact.linkedin}`],
-                ].filter(row => row[2]).map(([icon, label, value, href], i) => (
-                  <div key={i} style={{ display: 'flex', gap: '0.8rem', alignItems: 'center' }}>
-                    <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: C.bgSoft, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.05rem', flexShrink: 0 }}>{icon}</div>
-                    <div>
-                      <div style={{ color: C.textMuted, fontSize: '0.74rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{label}</div>
-                      {href ? (
-                        <a href={href} target={href.startsWith('http') ? '_blank' : undefined} rel="noopener noreferrer" style={{ color: C.ink, fontWeight: 600, textDecoration: 'none', fontSize: '0.95rem' }}>{value}</a>
-                      ) : (
-                        <div style={{ color: C.ink, fontWeight: 600, fontSize: '0.95rem' }}>{value}</div>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div style={{ ...cardStyle, padding: '1.2rem 1.4rem', display: 'flex', gap: '0.7rem', alignItems: 'flex-start' }}>
-                <span style={{ fontSize: '1.2rem' }}>🍃</span>
-                <span style={{ color: C.text, fontStyle: 'italic', fontSize: '0.9rem', lineHeight: 1.6 }}>
-                  Mari ciptakan dampak positif bersama melalui kolaborasi dan solusi yang tepat.
+                    Signature
+                  </span>
                 </span>
-              </div>
-            </AnimatedSection>
-
-            <AnimatedSection direction="right">
-              <form onSubmit={handleContactSubmit} style={{ ...cardStyle, padding: '2.2rem' }}>
-                <h3 style={{ fontFamily: 'var(--font-display)', color: C.ink, fontSize: '1.3rem', marginBottom: '0.4rem', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-                  ✈️ Send Me a Message
-                </h3>
-                <p style={{ color: C.textMuted, fontSize: '0.88rem', marginBottom: '1.5rem' }}>
-                  Isi formulir di bawah ini dan saya akan segera menghubungi Anda kembali.
-                </p>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }} className="contact-form-grid">
-                  {(['name', 'email'] as const).map(field => (
-                    <div key={field}>
-                      <label style={{ display: 'block', color: C.ink, fontWeight: 600, fontSize: '0.8rem', marginBottom: '0.4rem' }}>
-                        {field === 'name' ? '👤 Your Name' : '📧 Email Address'}
-                      </label>
-                      <input
-                        type={field === 'email' ? 'email' : 'text'}
-                        value={form[field]}
-                        onChange={e => setForm(f => ({ ...f, [field]: e.target.value }))}
-                        placeholder={field === 'name' ? 'Masukkan nama Anda' : 'Masukkan email Anda'}
-                        style={{ width: '100%', border: `1px solid ${C.border}`, borderRadius: '10px', padding: '11px 14px', fontFamily: 'var(--font-body)', fontSize: '0.9rem', outline: 'none', boxSizing: 'border-box' }}
-                      />
-                    </div>
-                  ))}
-                </div>
-                <div style={{ marginBottom: '1rem' }}>
-                  <label style={{ display: 'block', color: C.ink, fontWeight: 600, fontSize: '0.8rem', marginBottom: '0.4rem' }}>📝 Subject</label>
-                  <input
-                    value={form.subject}
-                    onChange={e => setForm(f => ({ ...f, subject: e.target.value }))}
-                    placeholder="Tuliskan topik pesan Anda"
-                    style={{ width: '100%', border: `1px solid ${C.border}`, borderRadius: '10px', padding: '11px 14px', fontFamily: 'var(--font-body)', fontSize: '0.9rem', outline: 'none', boxSizing: 'border-box' }}
-                  />
-                </div>
-                <div style={{ marginBottom: '1.4rem' }}>
-                  <label style={{ display: 'block', color: C.ink, fontWeight: 600, fontSize: '0.8rem', marginBottom: '0.4rem' }}>✏️ Your Message</label>
-                  <textarea
-                    value={form.message}
-                    onChange={e => setForm(f => ({ ...f, message: e.target.value }))}
-                    placeholder="Tulis pesan Anda di sini..."
-                    rows={5}
-                    style={{ width: '100%', border: `1px solid ${C.border}`, borderRadius: '10px', padding: '11px 14px', fontFamily: 'var(--font-body)', fontSize: '0.9rem', outline: 'none', resize: 'vertical', boxSizing: 'border-box' }}
-                  />
-                </div>
-                <motion.button type="submit" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} style={{ ...primaryBtnStyle, border: 'none', cursor: 'pointer', width: '100%', justifyContent: 'center' }}>
-                  ✈️ Send Message →
-                </motion.button>
-                <p style={{ color: C.textMuted, fontSize: '0.72rem', marginTop: '0.8rem', textAlign: 'center' }}>
-                  *Tombol ini akan membuka aplikasi email kamu (belum terhubung ke server pengiriman otomatis).
-                </p>
-              </form>
-            </AnimatedSection>
-          </div>
-
-          <AnimatedSection direction="up">
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1.2rem', marginTop: '3rem', background: '#fff', borderRadius: '20px', padding: '1.8rem', border: `1px solid ${C.border}` }}>
-              {[
-                ['⚡', 'Fast Response', 'Saya akan merespons pesan Anda secepat mungkin.'],
-                ['🛡️', 'Professional', 'Komitmen penuh dalam setiap kolaborasi dan proyek.'],
-                ['🤝', 'Collaborative', 'Terbuka untuk ide, diskusi, dan peluang baru.'],
-                ['🎯', 'Result Oriented', 'Berfokus pada solusi yang memberikan hasil terbaik.'],
-              ].map(([icon, title, desc]) => (
-                <div key={title} style={{ display: 'flex', gap: '0.8rem', alignItems: 'flex-start' }}>
-                  <div style={{ width: '42px', height: '42px', borderRadius: '50%', background: C.bgSoft, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.1rem', flexShrink: 0 }}>{icon}</div>
-                  <div>
-                    <div style={{ color: C.ink, fontWeight: 700, fontSize: '0.86rem', marginBottom: '0.2rem' }}>{title}</div>
-                    <div style={{ color: C.textMuted, fontSize: '0.76rem', lineHeight: 1.5 }}>{desc}</div>
-                  </div>
-                </div>
-              ))}
+              </h2>
             </div>
           </AnimatedSection>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gap: '1.5rem',
+          }}>
+            {skills.map((skill, i) => (
+              <AnimatedSection key={skill.num} direction={i % 2 === 0 ? 'left' : 'right'} delay={i * 0.1}>
+                <div
+                  className="float-hover"
+                  style={{
+                    background: 'var(--black-3)',
+                    border: '1px solid rgba(245,166,35,0.12)',
+                    borderRadius: 'var(--radius)',
+                    padding: '2rem',
+                    cursor: 'default',
+                    position: 'relative',
+                    overflow: 'hidden',
+                  }}
+                >
+                  <div style={{
+                    position: 'absolute',
+                    top: '-10px',
+                    right: '-10px',
+                    fontFamily: 'var(--font-display)',
+                    fontSize: '5rem',
+                    color: 'rgba(245,166,35,0.06)',
+                    lineHeight: 1,
+                    userSelect: 'none',
+                  }}>
+                    {skill.num}
+                  </div>
+                  <div style={{
+                    fontFamily: 'var(--font-display)',
+                    fontSize: '2.5rem',
+                    color: 'var(--amber)',
+                    marginBottom: '0.8rem',
+                  }}>
+                    {skill.num}
+                  </div>
+                  <h3 style={{
+                    fontFamily: 'var(--font-body)',
+                    fontWeight: 700,
+                    color: 'var(--amber)',
+                    fontSize: '0.95rem',
+                    letterSpacing: '1px',
+                    textTransform: 'uppercase',
+                    marginBottom: '0.7rem',
+                  }}>
+                    {skill.title}
+                  </h3>
+                  <p style={{ color: 'var(--white-dim)', fontSize: '0.9rem', lineHeight: 1.7 }}>
+                    {skill.desc}
+                  </p>
+                </div>
+              </AnimatedSection>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* Responsive */}
+      {/* ─── EXPERIENCE SECTION ─── */}
+      <section style={{ padding: '6rem 2rem', maxWidth: '1200px', margin: '0 auto' }}>
+        <AnimatedSection direction="up">
+          <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
+            <h2 style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 'clamp(2.5rem, 6vw, 5rem)',
+              lineHeight: 0.9,
+            }}>
+              HR / GENERAL{' '}
+              <span style={{
+                fontFamily: 'var(--font-script)',
+                color: 'var(--amber)',
+                fontSize: '60%',
+              }}>
+                Affairs
+              </span>
+            </h2>
+            <p style={{ color: 'var(--white-dim)', marginTop: '1rem', fontSize: '1rem' }}>
+              Pengalaman Profesional & Riwayat Kerja
+            </p>
+          </div>
+        </AnimatedSection>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+          {experiences.map((exp, i) => (
+            <AnimatedSection key={exp.role} direction={i % 2 === 0 ? 'left' : 'right'} delay={i * 0.15}>
+              <div
+                className="float-hover exp-card"
+                style={{
+                  background: 'var(--black-2)',
+                  border: '1px solid rgba(245,166,35,0.12)',
+                  borderRadius: 'var(--radius)',
+                  padding: '2rem 2.5rem',
+                  display: 'grid',
+                  gridTemplateColumns: '1fr auto',
+                  gap: '1rem',
+                  alignItems: 'center',
+                }}
+              >
+                <div>
+                  <h3 style={{
+                    fontFamily: 'var(--font-display)',
+                    fontSize: '1.8rem',
+                    marginBottom: '0.3rem',
+                  }}>
+                    {exp.role}
+                  </h3>
+                  <p style={{
+                    fontFamily: 'var(--font-script)',
+                    color: 'var(--amber)',
+                    fontSize: '1.2rem',
+                    fontWeight: 700,
+                    marginBottom: '1rem',
+                  }}>
+                    {exp.company}
+                  </p>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                    {exp.tasks.map((task) => (
+                      <span key={task} style={{
+                        background: 'rgba(245,166,35,0.1)',
+                        border: '1px solid rgba(245,166,35,0.3)',
+                        color: 'var(--amber)',
+                        borderRadius: '6px',
+                        padding: '4px 12px',
+                        fontSize: '0.8rem',
+                        fontWeight: 600,
+                      }}>
+                        {task}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{
+                    width: '60px',
+                    height: '60px',
+                    borderRadius: '50%',
+                    border: '2px solid rgba(245,166,35,0.4)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '1.5rem',
+                  }}>
+                    {i === 0 ? '👥' : i === 1 ? '📋' : '💻'}
+                  </div>
+                </div>
+              </div>
+            </AnimatedSection>
+          ))}
+        </div>
+      </section>
+
+      {/* ─── CTA CONTACT SECTION ─── */}
+      <section style={{
+        padding: '6rem 2rem',
+        background: 'var(--black-2)',
+        textAlign: 'center',
+      }}>
+        <AnimatedSection direction="scale">
+          <div style={{ maxWidth: '700px', margin: '0 auto' }}>
+            <h2 style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 'clamp(3rem, 8vw, 6rem)',
+              lineHeight: 0.9,
+              marginBottom: '0.5rem',
+            }}>
+              HUBUNGI SAYA !
+            </h2>
+            <div style={{
+              fontFamily: 'var(--font-script)',
+              color: 'var(--amber)',
+              fontSize: '2rem',
+              fontWeight: 700,
+              marginBottom: '2rem',
+            }}>
+              24/7 ready
+            </div>
+            <p style={{ color: 'var(--white-dim)', lineHeight: 1.8, marginBottom: '2.5rem' }}>
+              Siap berkolaborasi untuk project Anda. Hubungi saya kapan saja, saya selalu siap memberikan yang terbaik.
+            </p>
+            <motion.a
+              href="mailto:mahfudfebry@hikimori.web.id"
+              whileHover={{ scale: 1.05, boxShadow: '0 10px 40px rgba(245,166,35,0.4)' }}
+              whileTap={{ scale: 0.97 }}
+              style={{
+                display: 'inline-block',
+                background: 'var(--amber)',
+                color: 'var(--black)',
+                textDecoration: 'none',
+                borderRadius: '50px',
+                padding: '16px 48px',
+                fontFamily: 'var(--font-body)',
+                fontWeight: 700,
+                fontSize: '1rem',
+                letterSpacing: '1px',
+              }}
+            >
+              Kirim Pesan →
+            </motion.a>
+          </div>
+        </AnimatedSection>
+      </section>
+
       <style>{`
-        /* ── Sembunyikan scrollbar sub-nav ── */
-        .home-subnav { -ms-overflow-style: none; scrollbar-width: none; }
-        .home-subnav::-webkit-scrollbar { display: none; }
-
-        /* ── Fade di tepi kiri/kanan sub-nav supaya jelas bisa di-scroll, tidak terasa "terpotong" ── */
-        @media (max-width: 900px) {
-          .home-subnav {
-            -webkit-mask-image: linear-gradient(to right, transparent 0, black 22px, black calc(100% - 22px), transparent 100%);
-            mask-image: linear-gradient(to right, transparent 0, black 22px, black calc(100% - 22px), transparent 100%);
-          }
-        }
-
-        /* ════════════════════════════════════
-           TABLET LANDSCAPE  (≤ 1024 px)
-        ════════════════════════════════════ */
-        @media (max-width: 1024px) {
-          .home-about-grid  { gap: 2.5rem !important; }
-          .home-contact-grid { gap: 2rem !important; }
-          .hero-photo-wrap  { width: 55% !important; }
-        }
-
-        /* ════════════════════════════════════
-           TABLET PORTRAIT  (≤ 900 px)
-        ════════════════════════════════════ */
-        @media (max-width: 900px) {
-          /* Collapse semua multi-column grid */
-          .home-about-grid, .home-contact-grid,
-          .tools-values-grid, .exp-card, .cert-card {
-            grid-template-columns: 1fr !important;
-          }
-          .home-about-grid  { gap: 0 !important; }
-          .home-contact-grid { gap: 2.5rem !important; }
-          .cert-card > div:first-child { margin-bottom: 1.5rem !important; }
-
-          /* Space untuk badge yang menggantung di bawah foto */
-          .about-photo-wrap { padding-bottom: 2.5rem !important; }
-
-          /* Section padding dikurangi — tinggi hero kini mengikuti konten (foto + teks ditumpuk), tidak lagi dipaksa 100vh */
-          #home            { padding: 0 !important; min-height: auto !important; }
-          #about, #expertise, #skills, #experience,
-          #certification, #projects, #education { padding: 3.5rem 1.5rem !important; }
-          #contact         { padding: 3.5rem 1.5rem 4rem !important; }
-
-          /* Experience card inner */
-          .exp-card { padding: 1.4rem 1.2rem !important; }
-
-          /* Cert card */
-          .cert-card { padding: 1.6rem !important; text-align: center !important; }
-          .cert-card > div:last-child { text-align: left !important; }
-        }
-
-        /* ════════════════════════════════════
-           LARGE PHONE  (≤ 640 px)
-        ════════════════════════════════════ */
-        @media (max-width: 640px) {
-          .stat-grid         { grid-template-columns: repeat(2, 1fr) !important; gap: 1rem !important; }
-          .contact-form-grid { grid-template-columns: 1fr !important; }
-          .exp-tags-grid     { grid-template-columns: 1fr 1fr !important; gap: 0.4rem !important; }
-
-          #about, #expertise, #skills, #experience,
-          #certification, #projects, #education { padding: 3rem 1.2rem !important; }
-          #contact         { padding: 3rem 1.2rem 3.5rem !important; }
-
-          /* Sub-nav tombol lebih kecil */
-          .home-subnav a   { padding: 5px 10px !important; font-size: 0.78rem !important; }
-
-          /* Tools & values agar tidak terlalu lebar */
-          .tools-values-grid { padding: 1.4rem !important; gap: 1.4rem !important; }
-        }
-
-        /* ════════════════════════════════════
-           SMALL PHONE  (≤ 420 px)
-        ════════════════════════════════════ */
-        @media (max-width: 420px) {
-          .exp-tags-grid     { grid-template-columns: 1fr !important; }
-
-          #about, #expertise, #skills, #experience,
-          #certification, #projects, #education { padding: 2.5rem 1rem !important; }
-          #contact         { padding: 2.5rem 1rem 3rem !important; }
-
-          /* Stat grid tetap 2 kolom tapi lebih ketat */
-          .stat-grid         { gap: 0.7rem !important; }
-
-          /* About photo badge tidak overflow */
-          .about-photo-wrap  { padding-bottom: 3rem !important; }
+        @media (max-width: 768px) {
+          .about-grid { grid-template-columns: 1fr !important; gap: 2rem !important; }
         }
       `}</style>
     </div>
