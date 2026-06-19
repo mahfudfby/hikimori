@@ -21,10 +21,11 @@ import AdminPanel from './pages/AdminPanel';
 const AnimatedRoutes: React.FC = () => {
   const location = useLocation();
   const isAdmin = location.pathname.startsWith('/admin');
+  const isHome = location.pathname === '/';
 
   return (
     <>
-      {!isAdmin && <Navbar />}
+      {!isAdmin && !isHome && <Navbar />}
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
           <Route path="/" element={<PageTransition><Home /></PageTransition>} />

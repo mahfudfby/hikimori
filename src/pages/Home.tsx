@@ -1,28 +1,510 @@
 // src/pages/Home.tsx
 import React, { useEffect, useState } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion } from 'framer-motion';
+import { Twitter, Circle, Instagram, Linkedin, CheckCircle2 } from 'lucide-react';
 import AnimatedSection from '../components/AnimatedSection';
 
-const Squiggle: React.FC<{ size?: number; rotate?: number; style?: React.CSSProperties }> = ({
-  size = 60, rotate = 0, style
-}) => (
-  <svg
-    width={size} height={size * 0.5}
-    viewBox="0 0 60 30"
-    style={{ color: 'var(--amber)', transform: `rotate(${rotate}deg)`, ...style }}
+// ─── Constants ─────────────────────────────────────────────────────────────
+const CONTACT_VIDEO_URL =
+  'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260602_150901_c45b90ec-18d7-42ff-90e2-b95d7109e330.mp4';
+
+const SERVICES = [
+  'Website', 'Mobile App', 'Web App', 'E-Commerce',
+  'Visual Identity', '3D & Motion', 'Digital Marketing',
+  'Growth & Consulting', 'Other',
+];
+
+// ─── SocialBtn ──────────────────────────────────────────────────────────────
+interface SocialBtnProps {
+  icon: React.ReactNode;
+  bg: string;
+  color: string;
+}
+const SocialBtn: React.FC<SocialBtnProps> = ({ icon, bg, color }) => (
+  <button
+    type="button"
+    style={{
+      width: 32, height: 32, borderRadius: 12,
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      background: bg, color, border: 'none', cursor: 'pointer',
+      flexShrink: 0, transition: 'opacity 150ms',
+    }}
+    onMouseEnter={e => (e.currentTarget.style.opacity = '0.7')}
+    onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
   >
-    <path
-      d="M0 15 Q10 0 20 15 Q30 30 40 15 Q50 0 60 15"
-      fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round"
-    />
-  </svg>
+    {icon}
+  </button>
 );
+
+// ─── ContactSection ──────────────────────────────────────────────────────────
+const ContactSection: React.FC = () => {
+  const [selected, setSelected] = useState<string[]>([]);
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
+  const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
+
+  const toggleService = (s: string) =>
+    setSelected(prev => prev.includes(s) ? prev.filter(x => x !== s) : [...prev, s]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSending(true);
+    await new Promise(r => setTimeout(r, 1000));
+    setSending(false);
+    setSent(true);
+  };
+
+  const inputStyle: React.CSSProperties = {
+    flex: 1, minWidth: 0,
+    fontSize: '0.875rem',
+    padding: '10px 12px',
+    borderRadius: 12,
+    border: '1px solid #e5e7eb',
+    background: 'transparent',
+    outline: 'none',
+    fontFamily: "'Inter', sans-serif",
+    color: '#111',
+    transition: 'box-shadow 150ms',
+  };
+
+  return (
+    <section
+      style={{
+        width: '100%',
+        minHeight: '100vh',
+        padding: '12px',
+        background: '#fff',
+        boxSizing: 'border-box',
+        fontFamily: "'Inter', sans-serif",
+      }}
+    >
+      {/* Outer card */}
+      <div
+        style={{
+          position: 'relative',
+          borderRadius: 24,
+          overflow: 'hidden',
+          minHeight: 'calc(100vh - 24px)',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        {/* Video bg */}
+        <video
+          autoPlay muted loop playsInline
+          style={{
+            position: 'absolute', inset: 0,
+            width: '100%', height: '100%',
+            objectFit: 'cover', zIndex: 0,
+          }}
+        >
+          <source src={CONTACT_VIDEO_URL} type="video/mp4" />
+        </video>
+
+        {/* Content */}
+        <div
+          style={{
+            position: 'relative', zIndex: 1,
+            flex: 1, display: 'flex', flexDirection: 'column',
+            padding: '24px', gap: 24,
+            minHeight: 'calc(100vh - 24px)',
+            boxSizing: 'border-box',
+          }}
+          className="contact-content"
+        >
+          {/* ── Navbar ── */}
+          <div
+            style={{
+              background: 'rgba(255,255,255,0.6)',
+              backdropFilter: 'blur(12px)',
+              WebkitBackdropFilter: 'blur(12px)',
+              borderRadius: 16,
+              boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+              padding: '8px 8px 8px 16px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 24,
+              width: '100%',
+            }}
+          >
+            {/* Logo SVG */}
+            <svg viewBox="0 0 256 256" width={32} height={32} style={{ flexShrink: 0 }}>
+              <path fill="#000" d="M 256 256 L 128 256 L 0 128 L 128 128 Z" />
+              <path fill="#000" d="M 256 128 L 128 128 L 0 0 L 128 0 Z" />
+            </svg>
+
+            {/* Nav links */}
+            <div style={{ display: 'flex', gap: 24, flex: 1 }} className="contact-nav-links">
+              {['Our story', 'Expertise', 'Our work', 'Journal'].map(link => (
+                <a key={link} href="#"
+                  style={{
+                    color: '#1f2937', fontSize: '0.875rem', fontWeight: 500,
+                    textDecoration: 'none', whiteSpace: 'nowrap', transition: 'opacity 150ms',
+                  }}
+                  onMouseEnter={e => (e.currentTarget.style.opacity = '0.5')}
+                  onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
+                >
+                  {link}
+                </a>
+              ))}
+            </div>
+
+            {/* CTA */}
+            <button
+              style={{
+                background: '#000', color: '#fff',
+                fontSize: '0.875rem', fontWeight: 500,
+                padding: '8px 20px', borderRadius: 12,
+                border: 'none', cursor: 'pointer',
+                marginLeft: 'auto', flexShrink: 0,
+                fontFamily: "'Inter', sans-serif",
+                transition: 'background 150ms',
+              }}
+              onMouseEnter={e => (e.currentTarget.style.background = '#374151')}
+              onMouseLeave={e => (e.currentTarget.style.background = '#000')}
+            >
+              Start a project
+            </button>
+          </div>
+
+          {/* Spacer */}
+          <div style={{ flex: 1, minHeight: 32 }} />
+
+          {/* ── Bottom row ── */}
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 24,
+              alignItems: 'flex-end',
+            }}
+            className="contact-bottom-row"
+          >
+            {/* Headline */}
+            <p
+              style={{
+                color: '#fff',
+                fontSize: 'clamp(1.75rem, 4vw, 3rem)',
+                fontWeight: 500,
+                lineHeight: 1.2,
+                textShadow: '0 2px 12px rgba(0,0,0,0.3)',
+                margin: 0,
+              }}
+              className="contact-headline"
+            >
+              We craft bold ideas<br />
+              and ship them as{' '}
+              <span style={{
+                fontFamily: "'Instrument Serif', serif",
+                fontStyle: 'italic',
+                fontWeight: 400,
+              }}>
+                products
+              </span>
+            </p>
+
+            {/* Form card */}
+            <div style={{ width: '100%', maxWidth: 480, flexShrink: 0 }} className="contact-form-col">
+              <div style={{
+                background: '#fff',
+                borderRadius: 24,
+                boxShadow: '0 25px 50px rgba(0,0,0,0.25)',
+                overflow: 'hidden',
+                padding: '24px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 16,
+              }}>
+
+                {sent ? (
+                  /* Success state */
+                  <div style={{
+                    display: 'flex', flexDirection: 'column',
+                    alignItems: 'center', justifyContent: 'center',
+                    paddingTop: 24, paddingBottom: 24, gap: 12,
+                  }}>
+                    <div style={{
+                      width: 48, height: 48, borderRadius: '50%',
+                      background: '#f0fdf4',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      fontSize: '1.5rem',
+                    }}>
+                      ✓
+                    </div>
+                    <p style={{ fontSize: '1rem', fontWeight: 600, color: '#111', margin: 0 }}>
+                      You're all set!
+                    </p>
+                    <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: 0 }}>
+                      Expect a reply within 24 hours.
+                    </p>
+                  </div>
+                ) : (
+                  <>
+                    {/* Heading */}
+                    <h2 style={{
+                      fontSize: '1.35rem', fontWeight: 600,
+                      color: '#000', letterSpacing: '-0.02em', margin: 0,
+                    }}>
+                      Say hello! 👋
+                    </h2>
+
+                    {/* Email + socials row */}
+                    <div style={{
+                      display: 'flex', flexDirection: 'row',
+                      alignItems: 'center', justifyContent: 'space-between',
+                      gap: 12, background: '#f9fafb',
+                      borderRadius: 16, padding: '10px 16px',
+                    }}>
+                      <div style={{ minWidth: 0 }}>
+                        <p style={{ fontSize: '0.75rem', color: '#9ca3af', margin: '0 0 2px 0' }}>
+                          Drop us a line
+                        </p>
+                        <a
+                          href="mailto:hello@forma.co"
+                          style={{
+                            color: '#2563eb', fontWeight: 600,
+                            fontSize: '0.875rem', textDecoration: 'none',
+                            display: 'block', overflow: 'hidden',
+                            textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                          }}
+                          onMouseEnter={e => (e.currentTarget.style.textDecoration = 'underline')}
+                          onMouseLeave={e => (e.currentTarget.style.textDecoration = 'none')}
+                        >
+                          hello@forma.co
+                        </a>
+                      </div>
+                      <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
+                        <SocialBtn icon={<Twitter size={13} />} bg="#f3f4f6" color="#1f2937" />
+                        <SocialBtn icon={<Circle size={13} />} bg="#fce7f3" color="#ec4899" />
+                        <SocialBtn icon={<Instagram size={13} />} bg="#ffedd5" color="#fb923c" />
+                        <SocialBtn icon={<Linkedin size={13} />} bg="#dbeafe" color="#2563eb" />
+                      </div>
+                    </div>
+
+                    {/* OR divider */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <div style={{ flex: 1, height: 1, background: '#e5e7eb' }} />
+                      <span style={{ fontSize: '0.875rem', color: '#9ca3af', fontWeight: 500 }}>OR</span>
+                      <div style={{ flex: 1, height: 1, background: '#e5e7eb' }} />
+                    </div>
+
+                    {/* Form */}
+                    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                      <label style={{ fontSize: '0.875rem', fontWeight: 500, color: '#000' }}>
+                        Tell us about your vision
+                      </label>
+
+                      {/* Name + Email */}
+                      <div style={{ display: 'flex', flexDirection: 'row', gap: 8 }} className="contact-name-email">
+                        <input
+                          type="text" placeholder="Full name" value={name}
+                          onChange={e => setName(e.target.value)}
+                          style={inputStyle}
+                          onFocus={e => (e.target.style.boxShadow = '0 0 0 2px #111')}
+                          onBlur={e => (e.target.style.boxShadow = 'none')}
+                        />
+                        <input
+                          type="email" placeholder="Email" value={email}
+                          onChange={e => setEmail(e.target.value)}
+                          style={inputStyle}
+                          onFocus={e => (e.target.style.boxShadow = '0 0 0 2px #111')}
+                          onBlur={e => (e.target.style.boxShadow = 'none')}
+                        />
+                      </div>
+
+                      {/* Textarea */}
+                      <textarea
+                        rows={4} placeholder="What are you looking to build or improve..."
+                        value={message} onChange={e => setMessage(e.target.value)}
+                        style={{ ...inputStyle, resize: 'none', width: '100%', boxSizing: 'border-box' }}
+                        onFocus={e => (e.target.style.boxShadow = '0 0 0 2px #111')}
+                        onBlur={e => (e.target.style.boxShadow = 'none')}
+                      />
+
+                      {/* Service tags */}
+                      <div>
+                        <p style={{ fontSize: '0.875rem', fontWeight: 500, color: '#000', marginBottom: 8 }}>
+                          I need help with...
+                        </p>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                          {SERVICES.map(s => (
+                            <button
+                              key={s} type="button" onClick={() => toggleService(s)}
+                              style={{
+                                fontSize: '0.75rem', fontWeight: 500,
+                                padding: '8px 12px', borderRadius: 8,
+                                border: selected.includes(s) ? '1px solid #000' : '1px solid #e5e7eb',
+                                background: selected.includes(s) ? '#f3f4f6' : '#fff',
+                                color: selected.includes(s) ? '#000' : '#374151',
+                                cursor: 'pointer', transition: 'all 150ms',
+                                fontFamily: "'Inter', sans-serif",
+                              }}
+                            >
+                              {s}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Submit */}
+                      <button
+                        type="submit"
+                        disabled={sending}
+                        style={{
+                          width: '100%', background: '#000', color: '#fff',
+                          fontSize: '0.875rem', fontWeight: 600,
+                          padding: '12px 0', borderRadius: 16,
+                          border: 'none', cursor: sending ? 'not-allowed' : 'pointer',
+                          opacity: sending ? 0.6 : 1,
+                          fontFamily: "'Inter', sans-serif",
+                          transition: 'background 150ms, opacity 150ms',
+                        }}
+                        onMouseEnter={e => { if (!sending) e.currentTarget.style.background = '#374151'; }}
+                        onMouseLeave={e => { e.currentTarget.style.background = '#000'; }}
+                      >
+                        {sending ? 'Sending...' : 'Send my message'}
+                      </button>
+                    </form>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <style>{`
+        @media (min-width: 768px) {
+          .contact-nav-links { display: flex !important; }
+        }
+        @media (max-width: 767px) {
+          .contact-nav-links { display: none !important; }
+        }
+        @media (min-width: 1024px) {
+          .contact-bottom-row {
+            flex-direction: row !important;
+            align-items: flex-end !important;
+            justify-content: space-between !important;
+          }
+          .contact-headline {
+            max-width: 32rem;
+          }
+          .contact-form-col {
+            width: min(480px, 45%) !important;
+          }
+          .contact-content {
+            padding: 32px !important;
+          }
+        }
+      `}</style>
+    </section>
+  );
+};
+
+// ─── Sub-components for hero ───────────────────────────────────────────────
+
+interface FadeInProps {
+  children: React.ReactNode;
+  delay?: number;
+  duration?: number;
+  className?: string;
+  style?: React.CSSProperties;
+}
+
+const FadeIn: React.FC<FadeInProps> = ({
+  children,
+  delay = 0,
+  duration = 1000,
+  className = '',
+  style = {},
+}) => {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setVisible(true), delay);
+    return () => clearTimeout(timer);
+  }, [delay]);
+
+  return (
+    <div
+      className={`transition-opacity ${className}`}
+      style={{
+        opacity: visible ? 1 : 0,
+        transitionDuration: `${duration}ms`,
+        ...style,
+      }}
+    >
+      {children}
+    </div>
+  );
+};
+
+interface AnimatedHeadingProps {
+  text: string;
+  initialDelay?: number;
+  charDelay?: number;
+  className?: string;
+  style?: React.CSSProperties;
+}
+
+const AnimatedHeading: React.FC<AnimatedHeadingProps> = ({
+  text,
+  initialDelay = 200,
+  charDelay = 30,
+  className = '',
+  style = {},
+}) => {
+  const [animated, setAnimated] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setAnimated(true), initialDelay);
+    return () => clearTimeout(timer);
+  }, [initialDelay]);
+
+  const lines = text.split('\n');
+
+  return (
+    <h1 className={className} style={style}>
+      {lines.map((line, lineIndex) => {
+        const prevLineChars = lines
+          .slice(0, lineIndex)
+          .reduce((acc, l) => acc + l.length, 0);
+
+        return (
+          <span key={lineIndex} style={{ display: 'block' }}>
+            {line.split('').map((char, charIndex) => {
+              const globalIndex = prevLineChars + charIndex;
+              const delay = (initialDelay + globalIndex * charDelay) / 1000;
+              return (
+                <span
+                  key={charIndex}
+                  style={{
+                    display: 'inline-block',
+                    opacity: animated ? 1 : 0,
+                    transform: animated ? 'translateX(0)' : 'translateX(-18px)',
+                    transition: `opacity 500ms ease ${delay}s, transform 500ms ease ${delay}s`,
+                  }}
+                >
+                  {char === ' ' ? '\u00A0' : char}
+                </span>
+              );
+            })}
+          </span>
+        );
+      })}
+    </h1>
+  );
+};
+
+// ─── Data ──────────────────────────────────────────────────────────────────
 
 const skills = [
   {
     num: '01',
     title: 'Branding & Identity Design',
-    desc: 'Crafting memorable logos and visual systems that reflect a brand\'s essence and personality.',
+    desc: "Crafting memorable logos and visual systems that reflect a brand's essence and personality.",
   },
   {
     num: '02',
@@ -59,232 +541,283 @@ const experiences = [
   },
 ];
 
+// ─── Component ─────────────────────────────────────────────────────────────
+
 const Home: React.FC = () => {
-  const [typed, setTyped] = useState('');
-  const roles = ['HR Professional', 'IT Support', 'Admin Staff', 'Creative Designer'];
-  const [roleIdx, setRoleIdx] = useState(0);
-  const { scrollYProgress } = useScroll();
-  const heroY = useTransform(scrollYProgress, [0, 0.3], [0, -80]);
-
-  // Typewriter effect
-  useEffect(() => {
-    const role = roles[roleIdx];
-    let i = 0;
-    let forward = true;
-    let timer: NodeJS.Timeout;
-
-    const tick = () => {
-      if (forward) {
-        i++;
-        setTyped(role.substring(0, i));
-        if (i >= role.length) {
-          forward = false;
-          timer = setTimeout(tick, 1500);
-          return;
-        }
-      } else {
-        i--;
-        setTyped(role.substring(0, i));
-        if (i <= 0) {
-          setRoleIdx((prev) => (prev + 1) % roles.length);
-          return;
-        }
-      }
-      timer = setTimeout(tick, forward ? 80 : 40);
-    };
-    timer = setTimeout(tick, 100);
-    return () => clearTimeout(timer);
-  }, [roleIdx]);
-
   return (
     <div style={{ background: 'var(--black)', minHeight: '100vh' }}>
 
       {/* ─── HERO ─── */}
-      <motion.section
+      <section
         style={{
-          minHeight: '100vh',
+          position: 'relative',
+          width: '100%',
+          height: '100vh',
+          overflow: 'hidden',
           display: 'flex',
           flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          position: 'relative',
-          overflow: 'hidden',
-          padding: '100px 2rem 4rem',
-          y: heroY,
+          background: '#000',
+          color: '#fff',
+          fontFamily: "'Inter', sans-serif",
         }}
       >
-        {/* Decorative squiggles */}
-        <motion.div
-          initial={{ opacity: 0, x: -60 }} animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.8, duration: 0.8 }}
-          style={{ position: 'absolute', left: '3%', top: '20%' }}
-        >
-          <Squiggle size={50} rotate={90} />
-        </motion.div>
-        <motion.div
-          initial={{ opacity: 0, x: 60 }} animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 1, duration: 0.8 }}
-          style={{ position: 'absolute', right: '3%', bottom: '30%' }}
-        >
-          <Squiggle size={70} rotate={-20} />
-        </motion.div>
-
-        {/* Dot decorations */}
-        <motion.div
-          initial={{ scale: 0 }} animate={{ scale: 1 }}
-          transition={{ delay: 1.2, type: 'spring', stiffness: 200 }}
-          style={{ position: 'absolute', bottom: '8%', left: '3%', display: 'flex', gap: '10px' }}
-        >
-          <div style={{ width: 16, height: 16, borderRadius: '50%', background: 'var(--amber)' }} />
-          <div style={{ width: 16, height: 16, borderRadius: '50%', background: 'var(--white)' }} />
-        </motion.div>
-        <motion.div
-          initial={{ scale: 0 }} animate={{ scale: 1 }}
-          transition={{ delay: 1.3, type: 'spring', stiffness: 200 }}
-          style={{ position: 'absolute', bottom: '8%', right: '3%', display: 'flex', gap: '10px' }}
-        >
-          <div style={{ width: 16, height: 16, borderRadius: '50%', background: 'var(--amber)' }} />
-          <div style={{ width: 16, height: 16, borderRadius: '50%', background: 'var(--white)' }} />
-        </motion.div>
-
-        {/* Top label */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.7 }}
-          style={{ textAlign: 'center', marginBottom: '1rem' }}
-        >
-          <span style={{
-            fontFamily: 'var(--font-body)',
-            color: 'var(--white-dim)',
-            fontSize: '0.9rem',
-            letterSpacing: '3px',
-            textTransform: 'uppercase',
-          }}>
-            Creative Portfolio Presentation
-          </span>
-          <span style={{
-            marginLeft: '3rem',
-            fontFamily: 'var(--font-body)',
-            color: 'var(--white-dim)',
-            fontSize: '0.9rem',
-            letterSpacing: '1px',
-          }}>
-            NGANJUK, Indonesia
-          </span>
-        </motion.div>
-
-        {/* Big display name */}
-        <div style={{ position: 'relative', textAlign: 'center' }}>
-          <motion.h1
-            initial={{ opacity: 0, scale: 0.85 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.4, duration: 0.9, ease: [0.4, 0, 0.2, 1] }}
-            style={{
-              fontFamily: 'var(--font-display)',
-              fontSize: 'clamp(3.5rem, 12vw, 10rem)',
-              color: 'var(--white)',
-              lineHeight: 0.9,
-              letterSpacing: '-2px',
-              userSelect: 'none',
-            }}
-          >
-            MAHFUDFEBRY'S
-          </motion.h1>
-
-          {/* HIKIMORI overlay in amber script */}
-          <motion.div
-            initial={{ opacity: 0, y: 30, rotate: -3 }}
-            animate={{ opacity: 1, y: 0, rotate: -3 }}
-            transition={{ delay: 0.7, duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
-            style={{
-              position: 'absolute',
-              top: '40%',
-              left: '50%',
-              transform: 'translateX(-50%) rotate(-3deg)',
-              fontFamily: 'var(--font-script)',
-              fontSize: 'clamp(2rem, 7vw, 6rem)',
-              color: 'var(--amber)',
-              fontWeight: 700,
-              whiteSpace: 'nowrap',
-              textShadow: '0 4px 30px rgba(245,166,35,0.4)',
-              zIndex: 2,
-            }}
-          >
-            Hikimori
-          </motion.div>
-        </div>
-
-        {/* Role typewriter */}
-        <motion.div
-          initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-          transition={{ delay: 0.9, duration: 0.6 }}
-          style={{ marginTop: '3.5rem', textAlign: 'center' }}
-        >
-          <span style={{
-            fontFamily: 'var(--font-body)',
-            color: 'var(--white-dim)',
-            fontSize: '1.1rem',
-          }}>
-            Saya seorang{' '}
-          </span>
-          <span style={{
-            fontFamily: 'var(--font-body)',
-            color: 'var(--amber)',
-            fontWeight: 700,
-            fontSize: '1.1rem',
-            borderRight: '2px solid var(--amber)',
-            paddingRight: '4px',
-          }}>
-            {typed}
-          </span>
-        </motion.div>
-
-        {/* CTA badge */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.1, duration: 0.7 }}
-          whileHover={{ scale: 1.04, boxShadow: '0 8px 40px rgba(245,166,35,0.3)' }}
-          style={{
-            marginTop: '2.5rem',
-            border: '2px solid var(--white)',
-            borderRadius: '50px',
-            padding: '14px 40px',
-            fontFamily: 'var(--font-body)',
-            fontWeight: 700,
-            fontSize: '1rem',
-            letterSpacing: '1px',
-            cursor: 'default',
-          }}
-        >
-          A Curated Portfolio of Purpose-Driven and Visually Engaging Work
-        </motion.div>
-
-        {/* Scroll indicator */}
-        <motion.div
-          initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-          transition={{ delay: 1.5, duration: 1 }}
+        {/* Video Background */}
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
           style={{
             position: 'absolute',
-            bottom: '2rem',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '6px',
+            inset: 0,
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            zIndex: 0,
           }}
         >
-          <span style={{ color: 'var(--white-dim)', fontSize: '0.75rem', letterSpacing: '2px', textTransform: 'uppercase' }}>
-            Scroll
-          </span>
-          <motion.div
-            animate={{ y: [0, 8, 0] }}
-            transition={{ repeat: Infinity, duration: 1.5, ease: 'easeInOut' }}
-            style={{ width: '1px', height: '30px', background: 'var(--amber)' }}
+          <source
+            src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260403_050628_c4e32401-fab4-4a27-b7a8-6e9291cd5959.mp4"
+            type="video/mp4"
           />
-        </motion.div>
-      </motion.section>
+        </video>
+
+        {/* Content layer (above video, no overlay) */}
+        <div
+          style={{
+            position: 'relative',
+            zIndex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            height: '100%',
+            paddingLeft: 'clamp(1.5rem, 4vw, 4rem)',
+            paddingRight: 'clamp(1.5rem, 4vw, 4rem)',
+            paddingTop: '1.5rem',
+          }}
+        >
+          {/* ── Navbar ── */}
+          <nav>
+            <div
+              className="liquid-glass"
+              style={{
+                borderRadius: '12px',
+                padding: '8px 16px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
+            >
+              {/* Logo */}
+              <span
+                style={{
+                  fontSize: '1.5rem',
+                  fontWeight: 600,
+                  letterSpacing: '-0.03em',
+                  color: '#fff',
+                }}
+              >
+                Hikimori
+              </span>
+
+              {/* Center links */}
+              <div
+                style={{
+                  display: 'none',
+                  gap: '2rem',
+                  fontSize: '0.875rem',
+                  color: '#fff',
+                }}
+                className="hero-nav-links"
+              >
+                {['Home', 'About Me', 'Sertifikasi', 'Portofolio'].map((link) => (
+                  <a
+                    key={link}
+                    href="#"
+                    style={{
+                      color: '#fff',
+                      textDecoration: 'none',
+                      transition: 'color 150ms',
+                    }}
+                    onMouseEnter={(e) => ((e.target as HTMLElement).style.color = '#d1d5db')}
+                    onMouseLeave={(e) => ((e.target as HTMLElement).style.color = '#fff')}
+                  >
+                    {link}
+                  </a>
+                ))}
+              </div>
+
+              {/* CTA Button */}
+              <button
+                style={{
+                  background: '#fff',
+                  color: '#000',
+                  border: 'none',
+                  borderRadius: '8px',
+                  padding: '8px 24px',
+                  fontSize: '0.875rem',
+                  fontWeight: 500,
+                  cursor: 'pointer',
+                  fontFamily: "'Inter', sans-serif",
+                  transition: 'background 150ms',
+                }}
+                onMouseEnter={(e) => ((e.target as HTMLElement).style.background = '#f3f4f6')}
+                onMouseLeave={(e) => ((e.target as HTMLElement).style.background = '#fff')}
+              >
+                Start a Chat
+              </button>
+            </div>
+          </nav>
+
+          {/* ── Hero Content (pushed to bottom) ── */}
+          <div
+            style={{
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'flex-end',
+              paddingBottom: 'clamp(3rem, 4vw, 4rem)',
+            }}
+          >
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: '1fr',
+                alignItems: 'flex-end',
+                gap: '2rem',
+              }}
+              className="hero-grid"
+            >
+              {/* Left: main content */}
+              <div>
+                {/* Animated heading */}
+                <AnimatedHeading
+                  text={"Shaping tomorrow\nwith vision and action."}
+                  initialDelay={200}
+                  charDelay={30}
+                  style={{
+                    fontSize: 'clamp(2.5rem, 7vw, 4.5rem)',
+                    fontWeight: 400,
+                    marginBottom: '1rem',
+                    letterSpacing: '-0.04em',
+                    lineHeight: 1.1,
+                    color: '#fff',
+                  }}
+                />
+
+                {/* Subheading */}
+                <FadeIn delay={800} duration={1000}>
+                  <p
+                    style={{
+                      fontSize: 'clamp(1rem, 1.5vw, 1.125rem)',
+                      color: '#d1d5db',
+                      marginBottom: '1.25rem',
+                      fontWeight: 400,
+                    }}
+                  >
+                    We back visionaries and craft ventures that define what comes next.
+                  </p>
+                </FadeIn>
+
+                {/* Buttons */}
+                <FadeIn delay={1200} duration={1000}>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+                    <button
+                      style={{
+                        background: '#fff',
+                        color: '#000',
+                        border: 'none',
+                        borderRadius: '8px',
+                        padding: '12px 32px',
+                        fontWeight: 500,
+                        fontSize: '0.95rem',
+                        cursor: 'pointer',
+                        fontFamily: "'Inter', sans-serif",
+                      }}
+                    >
+                      Start a Chat
+                    </button>
+                    <button
+                      className="liquid-glass explore-btn"
+                      style={{
+                        border: '1px solid rgba(255,255,255,0.2)',
+                        color: '#fff',
+                        borderRadius: '8px',
+                        padding: '12px 32px',
+                        fontWeight: 500,
+                        fontSize: '0.95rem',
+                        cursor: 'pointer',
+                        fontFamily: "'Inter', sans-serif",
+                        transition: 'background 200ms, color 200ms',
+                      }}
+                      onMouseEnter={(e) => {
+                        const el = e.target as HTMLElement;
+                        el.style.background = '#fff';
+                        el.style.color = '#000';
+                      }}
+                      onMouseLeave={(e) => {
+                        const el = e.target as HTMLElement;
+                        el.style.background = '';
+                        el.style.color = '#fff';
+                      }}
+                    >
+                      Explore Now
+                    </button>
+                  </div>
+                </FadeIn>
+              </div>
+
+              {/* Right: tag */}
+              <div
+                style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'flex-start' }}
+                className="hero-tag-col"
+              >
+                <FadeIn delay={1400} duration={1000}>
+                  <div
+                    className="liquid-glass"
+                    style={{
+                      border: '1px solid rgba(255,255,255,0.2)',
+                      borderRadius: '12px',
+                      padding: '12px 24px',
+                      display: 'inline-block',
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontSize: 'clamp(1.125rem, 2.5vw, 1.5rem)',
+                        fontWeight: 300,
+                        color: '#fff',
+                      }}
+                    >
+                      Investing. Building. Advisory.
+                    </span>
+                  </div>
+                </FadeIn>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Responsive styles for hero */}
+      <style>{`
+        @media (min-width: 768px) {
+          .hero-nav-links {
+            display: flex !important;
+          }
+        }
+        @media (min-width: 1024px) {
+          .hero-grid {
+            grid-template-columns: 1fr 1fr !important;
+          }
+          .hero-tag-col {
+            justify-content: flex-end !important;
+          }
+        }
+        .explore-btn:hover {
+          background: #fff !important;
+          color: #000 !important;
+        }
+      `}</style>
 
       {/* ─── ABOUT SECTION ─── */}
       <section style={{
@@ -564,56 +1097,8 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* ─── CTA CONTACT SECTION ─── */}
-      <section style={{
-        padding: '6rem 2rem',
-        background: 'var(--black-2)',
-        textAlign: 'center',
-      }}>
-        <AnimatedSection direction="scale">
-          <div style={{ maxWidth: '700px', margin: '0 auto' }}>
-            <h2 style={{
-              fontFamily: 'var(--font-display)',
-              fontSize: 'clamp(3rem, 8vw, 6rem)',
-              lineHeight: 0.9,
-              marginBottom: '0.5rem',
-            }}>
-              HUBUNGI SAYA !
-            </h2>
-            <div style={{
-              fontFamily: 'var(--font-script)',
-              color: 'var(--amber)',
-              fontSize: '2rem',
-              fontWeight: 700,
-              marginBottom: '2rem',
-            }}>
-              24/7 ready
-            </div>
-            <p style={{ color: 'var(--white-dim)', lineHeight: 1.8, marginBottom: '2.5rem' }}>
-              Siap berkolaborasi untuk project Anda. Hubungi saya kapan saja, saya selalu siap memberikan yang terbaik.
-            </p>
-            <motion.a
-              href="mailto:mahfudfebry@hikimori.web.id"
-              whileHover={{ scale: 1.05, boxShadow: '0 10px 40px rgba(245,166,35,0.4)' }}
-              whileTap={{ scale: 0.97 }}
-              style={{
-                display: 'inline-block',
-                background: 'var(--amber)',
-                color: 'var(--black)',
-                textDecoration: 'none',
-                borderRadius: '50px',
-                padding: '16px 48px',
-                fontFamily: 'var(--font-body)',
-                fontWeight: 700,
-                fontSize: '1rem',
-                letterSpacing: '1px',
-              }}
-            >
-              Kirim Pesan →
-            </motion.a>
-          </div>
-        </AnimatedSection>
-      </section>
+      {/* ─── CONTACT SECTION ─── */}
+      <ContactSection />
 
       <style>{`
         @media (max-width: 768px) {
