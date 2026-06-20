@@ -1,6 +1,6 @@
 // src/pages/Home.tsx — Ghibli Studio Theme (sections below hero → ContactSection)
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, useTransform, useMotionValue, useSpring } from 'framer-motion';
+import { motion, useTransform, useMotionValue, useSpring, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import Footer from '../components/Footer';
 
@@ -10,12 +10,14 @@ const LS_ABOUT   = 'hk_home_about_data';
 const LS_SKILLS  = 'hk_skills_data';
 const LS_EXP     = 'hk_experience_data';
 const LS_CONTACT = 'hk_contact_data';
+const LS_CERT    = 'hk_cert_data';
 
 interface HomeData    { heroTitle:string; heroSubtitle:string; heroTagline:string; heroCtaSecondary:string; heroCtaSecondaryLink:string; heroCta:string; heroCtaLink:string; heroPhotoUrl:string; heroTagRight:string; }
 interface AboutData   { name:string; location:string; bio1:string; bio2:string; photoUrl:string; }
 interface SkillItem   { id:string; number:string; title:string; desc:string; }
 interface ExpItem     { id:string; position:string; company:string; period:string; icon:string; tags:string; }
 interface ContactData { email:string; location:string; website:string; instagram:string; linkedin:string; twitter:string; }
+interface CertItem    { id:string; name:string; year:string; issuer:string; subtitle:string; imageUrl:string; }
 
 const D_HOME:    HomeData    = { heroTitle:'Shaping tomorrow', heroSubtitle:'with vision and action.', heroTagline:'We back visionaries and craft ventures that define what comes next.', heroCtaSecondary:'Start a Chat', heroCtaSecondaryLink:'#contact', heroCta:'Explore Now', heroCtaLink:'/portofolio', heroPhotoUrl:'', heroTagRight:'Investing. Building. Advisory.' };
 const D_ABOUT:   AboutData   = { name:'Mahfudfebry', location:'Nganjuk, Indonesia', bio1:'Halo! Nama saya Mahfudfebry, seorang profesional muda dari Nganjuk, Indonesia. Portfolio ini adalah kumpulan karya dan proyek terbaik saya yang mencerminkan keahlian, kreativitas, dan pertumbuhan profesional.', bio2:'Di setiap proyek, saya selalu berusaha memberikan hasil terbaik — dari desain visual yang kuat hingga solusi HR dan IT yang efisien dan berdampak.', photoUrl:'' };
@@ -31,6 +33,10 @@ const D_EXP: ExpItem[] = [
   { id:'3', position:'IT Support',           company:'UD Duta Pangan', period:'2020–2023', icon:'💻', tags:'Hardware Troubleshooting,Software Installation,Network Setup,User Training' },
 ];
 const D_CONTACT: ContactData = { email:'mahfudfebry@hikimori.web.id', location:'Nganjuk, Indonesia', website:'hikimori.web.id', instagram:'', linkedin:'', twitter:'' };
+const D_CERT: CertItem[] = [
+  { id:'1', name:'Google Digital Marketing', year:'2023', issuer:'Google', subtitle:'Fundamentals of Digital Marketing', imageUrl:'' },
+  { id:'2', name:'HR Management Professional', year:'2022', issuer:'BNSP Indonesia', subtitle:'Sertifikasi Kompetensi SDM', imageUrl:'' },
+];
 
 const FALLBACK_PHOTO = 'https://res.cloudinary.com/dl4pyan8v/image/upload/WhatsApp_Image_2026-06-16_at_03.45.15_axvhg3';
 const HERO_VIDEO    = 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260403_050628_c4e32401-fab4-4a27-b7a8-6e9291cd5959.mp4';
@@ -308,6 +314,78 @@ const Marquee:React.FC<{contact:ContactData}>=({contact})=>{
   );
 };
 
+
+/* ═══════════════════════════════════════════════
+   CERT CARD (accordion)
+═══════════════════════════════════════════════ */
+const CertCard:React.FC<{cert:CertItem;index:number}>=({cert,index})=>{
+  const [open,setOpen]=useState(false);
+  const [imgLoaded,setImgLoaded]=useState(false);
+  return (
+    <Reveal direction="up" delay={index*0.08}>
+      <motion.div
+        whileHover={!open?{y:-3,boxShadow:`0 16px 48px rgba(78,205,196,0.2), 0 0 0 1px rgba(78,205,196,0.25)`}:{}}
+        style={{borderRadius:16,overflow:'hidden',border:`1px solid rgba(78,205,196,${open?0.4:0.15})`,background:'rgba(13,34,64,0.82)',backdropFilter:'blur(12px)',transition:'border-color 0.3s'}}>
+
+        {/* Header — always visible */}
+        <button onClick={()=>setOpen(o=>!o)} style={{width:'100%',background:'none',border:'none',cursor:'pointer',padding:'1.2rem 1.4rem',display:'flex',alignItems:'center',gap:'1rem',textAlign:'left'}}>
+          {/* Year badge */}
+          <div style={{flexShrink:0,width:52,height:52,borderRadius:12,background:`rgba(245,166,35,0.12)`,border:`1px solid rgba(245,166,35,0.3)`,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:0}}>
+            <span style={{fontFamily:'var(--font-display)',fontSize:'1rem',color:G.amber,lineHeight:1}}>{cert.year}</span>
+          </div>
+          {/* Info */}
+          <div style={{flex:1,minWidth:0}}>
+            <div style={{fontFamily:'var(--font-body)',fontWeight:700,fontSize:'clamp(0.88rem,2vw,1rem)',color:G.cream,marginBottom:'0.15rem',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{cert.name}</div>
+            <div style={{fontFamily:'var(--font-body)',fontSize:'0.78rem',color:G.jade,fontWeight:600,marginBottom:'0.1rem',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{cert.issuer}</div>
+            <div style={{fontFamily:'var(--font-body)',fontSize:'0.72rem',color:'rgba(168,230,207,0.55)',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{cert.subtitle}</div>
+          </div>
+          {/* Chevron */}
+          <motion.div animate={{rotate:open?180:0}} transition={{duration:0.3,ease:[0.4,0,0.2,1]}} style={{flexShrink:0,color:G.jade,fontSize:'1rem'}}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </motion.div>
+        </button>
+
+        {/* Dropdown — image */}
+        <AnimatePresence initial={false}>
+          {open && (
+            <motion.div
+              key="cert-img"
+              initial={{height:0,opacity:0}}
+              animate={{height:'auto',opacity:1}}
+              exit={{height:0,opacity:0}}
+              transition={{duration:0.4,ease:[0.4,0,0.2,1]}}
+              style={{overflow:'hidden'}}>
+              <div style={{padding:'0 1.2rem 1.4rem'}}>
+                <div style={{borderRadius:12,overflow:'hidden',border:`1px solid rgba(78,205,196,0.2)`,background:'rgba(0,0,0,0.3)',minHeight:180,display:'flex',alignItems:'center',justifyContent:'center',position:'relative'}}>
+                  {cert.imageUrl ? (
+                    <>
+                      {!imgLoaded && (
+                        <div style={{position:'absolute',inset:0,display:'flex',alignItems:'center',justifyContent:'center'}}>
+                          <motion.div animate={{rotate:360}} transition={{duration:1.2,repeat:Infinity,ease:'linear'}}
+                            style={{width:32,height:32,borderRadius:'50%',border:`2px solid ${G.jade}`,borderTopColor:'transparent'}}/>
+                        </div>
+                      )}
+                      <img src={cert.imageUrl} alt={cert.name} onLoad={()=>setImgLoaded(true)}
+                        style={{width:'100%',display:'block',objectFit:'contain',maxHeight:360,opacity:imgLoaded?1:0,transition:'opacity 0.3s'}}/>
+                    </>
+                  ) : (
+                    <div style={{textAlign:'center',padding:'2rem',color:'rgba(168,230,207,0.4)'}}>
+                      <div style={{fontSize:'3rem',marginBottom:'0.5rem'}}>🎓</div>
+                      <p style={{fontFamily:'var(--font-body)',fontSize:'0.82rem'}}>Gambar sertifikat belum diupload</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
+    </Reveal>
+  );
+};
+
 /* ═══════════════════════════════════════════════
    CONTACT SECTION (unchanged)
 ═══════════════════════════════════════════════ */
@@ -405,6 +483,7 @@ const Home:React.FC=()=>{
   const [skills,setSkills]   =useState<SkillItem[]>(()=>ls(LS_SKILLS,D_SKILLS));
   const [exps,setExps]       =useState<ExpItem[]>(()=>ls(LS_EXP,D_EXP));
   const [contact,setContact] =useState<ContactData>(()=>ls(LS_CONTACT,D_CONTACT));
+  const [certs,setCerts]     =useState<CertItem[]>(()=>ls(LS_CERT,D_CERT));
   const containerRef=useRef<HTMLDivElement>(null);
 
   useEffect(()=>{
@@ -414,6 +493,7 @@ const Home:React.FC=()=>{
       if(e.key===LS_SKILLS&&e.newValue)try{setSkills(JSON.parse(e.newValue));}catch{}
       if(e.key===LS_EXP&&e.newValue)try{setExps(JSON.parse(e.newValue));}catch{}
       if(e.key===LS_CONTACT&&e.newValue)try{setContact(JSON.parse(e.newValue));}catch{}
+      if(e.key===LS_CERT&&e.newValue)try{setCerts(JSON.parse(e.newValue));}catch{}
     };
     const onCustom=(e:Event)=>{
       const{key,value}=(e as CustomEvent).detail;
@@ -423,6 +503,7 @@ const Home:React.FC=()=>{
         if(key===LS_SKILLS)setSkills(JSON.parse(value));
         if(key===LS_EXP)setExps(JSON.parse(value));
         if(key===LS_CONTACT)setContact(JSON.parse(value));
+        if(key===LS_CERT)setCerts(JSON.parse(value));
       }catch{}
     };
     window.addEventListener('storage',onStorage);
@@ -733,6 +814,50 @@ const Home:React.FC=()=>{
 
         {/* Ground fog */}
         <div style={{position:'absolute',bottom:0,left:0,right:0,height:100,background:'linear-gradient(to top, rgba(10,31,10,0.9), transparent)',pointerEvents:'none'}}/>
+      </section>
+
+
+      {/* ══════════════════════════════════════════
+          GHIBLI — CERTIFICATES "SCROLL OF WISDOM"
+      ══════════════════════════════════════════ */}
+      <section style={{position:'relative',padding:'clamp(4rem,10vw,8rem) clamp(1rem,5vw,2rem)',overflow:'hidden',background:`linear-gradient(180deg, #1a0a2e 0%, #0d1a2e 60%, ${G.sky1} 100%)`}}>
+        {/* bg stars */}
+        {[...Array(25)].map((_,i)=>(
+          <motion.div key={i} style={{position:'absolute',width:2,height:2,borderRadius:'50%',background:'white',left:`${Math.random()*100}%`,top:`${Math.random()*80}%`,pointerEvents:'none'}}
+            animate={{opacity:[0.1,0.7,0.1]}} transition={{duration:2+Math.random()*3,repeat:Infinity,delay:Math.random()*4}}/>
+        ))}
+        {/* Fireflies */}
+        {[...Array(6)].map((_,i)=><Firefly key={i} style={{left:`${10+i*14}%`,top:`${15+i*10}%`}} delay={i*0.5}/>)}
+        {/* Kodama */}
+        <Kodama x="5%" y="15%" size={26} delay={0.8}/>
+        <Kodama x="90%" y="30%" size={22} delay={2}/>
+
+        <div style={{maxWidth:900,margin:'0 auto',position:'relative',zIndex:2}}>
+          <Reveal direction="up">
+            <div style={{textAlign:'center',marginBottom:'3rem'}}>
+              <motion.div animate={{y:[0,-5,0]}} transition={{duration:3.5,repeat:Infinity,ease:'easeInOut'}}>
+                <div style={{fontFamily:'var(--font-body)',color:G.jade,fontSize:'0.78rem',letterSpacing:'4px',textTransform:'uppercase',fontWeight:700,marginBottom:'0.6rem'}}>✦ Scroll of Wisdom</div>
+                <h2 style={{fontFamily:'var(--font-display)',fontSize:'clamp(2.2rem,8vw,5rem)',lineHeight:0.9,color:G.warmWhite,wordBreak:'break-word'}}>
+                  SERTIFI<span style={{color:G.jade,textShadow:`0 0 30px ${G.jade}66`}}>KASI</span>
+                </h2>
+                <p style={{color:'rgba(168,230,207,0.6)',marginTop:'0.8rem',fontSize:'0.9rem'}}>Klik kartu untuk melihat sertifikat</p>
+              </motion.div>
+            </div>
+          </Reveal>
+
+          {certs.length === 0 ? (
+            <Reveal direction="up">
+              <div style={{textAlign:'center',padding:'3rem',color:'rgba(168,230,207,0.4)',border:`1px dashed rgba(78,205,196,0.2)`,borderRadius:16}}>
+                <div style={{fontSize:'3rem',marginBottom:'0.8rem'}}>🎓</div>
+                <p style={{fontFamily:'var(--font-body)',fontSize:'0.9rem'}}>Belum ada sertifikasi. Tambahkan melalui Admin Panel.</p>
+              </div>
+            </Reveal>
+          ) : (
+            <div style={{display:'flex',flexDirection:'column',gap:'0.75rem'}}>
+              {certs.map((cert,i)=><CertCard key={cert.id} cert={cert} index={i}/>)}
+            </div>
+          )}
+        </div>
       </section>
 
       {/* ══ CONTACT (unchanged) ══ */}
