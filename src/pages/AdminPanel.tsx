@@ -13,6 +13,7 @@ const LS_ABOUT   = 'hk_home_about_data';
 const LS_SKILLS  = 'hk_skills_data';
 const LS_EXP     = 'hk_experience_data';
 const LS_CONTACT = 'hk_contact_data';
+const LS_CERT    = 'hk_cert_data';
 
 /* ─── Types ─── */
 interface HomeData    { heroTitle:string; heroSubtitle:string; heroTagline:string; heroCtaSecondary:string; heroCtaSecondaryLink:string; heroCta:string; heroCtaLink:string; heroPhotoUrl:string; heroTagRight:string; }
@@ -20,6 +21,7 @@ interface AboutData   { name:string; location:string; bio1:string; bio2:string; 
 interface SkillItem   { id:string; number:string; title:string; desc:string; }
 interface ExpItem     { id:string; position:string; company:string; period:string; icon:string; tags:string; }
 interface ContactData { email:string; location:string; website:string; instagram:string; linkedin:string; twitter:string; }
+interface CertItem    { id:string; name:string; year:string; issuer:string; subtitle:string; imageUrl:string; }
 
 /* ─── Defaults ─── */
 const D_HOME:    HomeData    = { heroTitle:'Shaping tomorrow', heroSubtitle:'with vision and action.', heroTagline:'We back visionaries and craft ventures that define what comes next.', heroCtaSecondary:'Start a Chat', heroCtaSecondaryLink:'#contact', heroCta:'Explore Now', heroCtaLink:'/portofolio', heroPhotoUrl:'', heroTagRight:'Investing. Building. Advisory.' };
@@ -36,6 +38,9 @@ const D_EXP: ExpItem[] = [
   { id:'3', position:'IT Support',           company:'UD Duta Pangan', period:'2020–2023', icon:'💻', tags:'Hardware Troubleshooting,Software Installation,Network Setup' },
 ];
 const D_CONTACT: ContactData = { email:'mahfudfebry@hikimori.web.id', location:'Nganjuk, Indonesia', website:'hikimori.web.id', instagram:'', linkedin:'', twitter:'' };
+const D_CERT: CertItem[] = [
+  { id:'1', name:'Google Digital Marketing', year:'2023', issuer:'Google', subtitle:'Fundamentals of Digital Marketing', imageUrl:'' },
+];
 
 const ls = <T,>(key: string, fallback: T): T => { try { return JSON.parse(localStorage.getItem(key) || 'null') ?? fallback; } catch { return fallback; } };
 const save = (key: string, val: any) => {
@@ -46,7 +51,7 @@ const save = (key: string, val: any) => {
 };
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
 
-type Tab = 'dashboard'|'home'|'about'|'skills'|'experience'|'portfolio'|'contact'|'settings';
+type Tab = 'dashboard'|'home'|'about'|'skills'|'experience'|'sertifikasi'|'portfolio'|'contact'|'settings';
 
 /* ─── Styles ─── */
 const inp: React.CSSProperties = { width:'100%', background:'#111', border:'1px solid rgba(255,255,255,0.1)', borderRadius:8, padding:'10px 14px', color:'var(--white)', fontFamily:'var(--font-body)', fontSize:'0.9rem', outline:'none', boxSizing:'border-box' };
@@ -120,6 +125,10 @@ const AdminPanel: React.FC = () => {
   const [portSubmitting, setPortSubmitting] = useState(false);
   const [delConfirm, setDelConfirm] = useState<string|null>(null);
 
+  /* Sertifikasi */
+  const [certs, setCerts] = useState<CertItem[]>(() => ls(LS_CERT, D_CERT));
+  const [certForm, setCertForm] = useState<CertItem|null>(null);
+
   /* Contact */
   const [contact, setContact] = useState<ContactData>(() => ls(LS_CONTACT, D_CONTACT));
   const [contactSaving, setContactSaving] = useState(false);
@@ -129,6 +138,16 @@ const AdminPanel: React.FC = () => {
   /* ── SAVE helpers ── */
   const saveHome = () => { setHomeSaving(true); save(LS_HOME, home); setTimeout(() => { setHomeSaving(false); toast.success('Halaman Hero disimpan!'); }, 400); };
   const saveAbout = () => { setAboutSaving(true); save(LS_ABOUT, about); setTimeout(() => { setAboutSaving(false); toast.success('About Me disimpan!'); }, 400); };
+  /* ── Cert CRUD ── */
+  const saveCert = () => {
+    if (!certForm) return;
+    const updated = certForm.id && certs.find(c => c.id === certForm.id)
+      ? certs.map(c => c.id === certForm.id ? certForm : c)
+      : [...certs, { ...certForm, id: uid() }];
+    setCerts(updated); save(LS_CERT, updated); setCertForm(null); toast.success('Sertifikasi disimpan!');
+  };
+  const deleteCert = (id: string) => { const u = certs.filter(c => c.id !== id); setCerts(u); save(LS_CERT, u); toast.success('Sertifikasi dihapus.'); };
+
   const saveContact = () => { setContactSaving(true); save(LS_CONTACT, contact); setTimeout(() => { setContactSaving(false); toast.success('Info Kontak disimpan!'); }, 400); };
 
   /* ── Skills CRUD ── */
@@ -183,6 +202,7 @@ const AdminPanel: React.FC = () => {
     { id:'skills',     icon:'💡', label:'Skills'       },
     { id:'experience', icon:'🏢', label:'Pengalaman'   },
     { id:'portfolio',  icon:'📁', label:'Portfolio'    },
+    { id:'sertifikasi', icon:'🎓', label:'Sertifikasi'  },
     { id:'contact',    icon:'📬', label:'Kontak'       },
     { id:'settings',   icon:'⚙️', label:'Settings'     },
   ];
@@ -438,6 +458,44 @@ const AdminPanel: React.FC = () => {
             </div>
           )}
 
+
+          {/* ── SERTIFIKASI ── */}
+          {tab === 'sertifikasi' && (
+            <div>
+              <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', flexWrap:'wrap', gap:'1rem', marginBottom:'1.5rem' }}>
+                <div>
+                  <h1 style={{ fontFamily:'var(--font-display)', fontSize:'clamp(1.8rem,5vw,2.5rem)', marginBottom:'0.2rem' }}>SERTIFIKASI</h1>
+                  <p style={{ color:'var(--white-dim)', fontSize:'0.88rem' }}>{certs.length} sertifikat tersimpan</p>
+                </div>
+                <button onClick={() => setCertForm({ id:'', name:'', year:new Date().getFullYear().toString(), issuer:'', subtitle:'', imageUrl:'' })} style={btn(true)}>+ Tambah</button>
+              </div>
+              {certs.length === 0 && <div style={{ ...card, textAlign:'center', padding:'3rem', color:'var(--white-dim)' }}><div style={{ fontSize:'3rem', marginBottom:'0.8rem' }}>🎓</div><p>Belum ada sertifikasi.</p></div>}
+              <div style={{ display:'flex', flexDirection:'column', gap:'0.6rem' }}>
+                {certs.map(cert => (
+                  <div key={cert.id} style={{ ...card, display:'flex', gap:'1rem', alignItems:'flex-start', marginBottom:0 }}>
+                    {/* Image thumbnail */}
+                    <div style={{ width:72, height:52, borderRadius:8, overflow:'hidden', flexShrink:0, background:'rgba(255,255,255,0.05)', border:'1px solid rgba(245,166,35,0.15)', display:'flex', alignItems:'center', justifyContent:'center' }}>
+                      {cert.imageUrl
+                        ? <img src={cert.imageUrl} alt={cert.name} style={{ width:'100%', height:'100%', objectFit:'cover' }}/>
+                        : <span style={{ fontSize:'1.4rem' }}>🎓</span>}
+                    </div>
+                    {/* Info */}
+                    <div style={{ flex:1, minWidth:0 }}>
+                      <div style={{ fontWeight:700, fontSize:'0.9rem', marginBottom:'0.15rem', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{cert.name}</div>
+                      <div style={{ color:'var(--amber)', fontSize:'0.78rem', marginBottom:'0.1rem' }}>{cert.issuer} · {cert.year}</div>
+                      <div style={{ color:'var(--white-dim)', fontSize:'0.75rem', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{cert.subtitle}</div>
+                    </div>
+                    {/* Actions */}
+                    <div style={{ display:'flex', gap:5, flexShrink:0 }}>
+                      <button onClick={() => setCertForm({ ...cert })} style={{ ...btn(), fontSize:'0.78rem', padding:'6px 12px' }}>✏️</button>
+                      <button onClick={() => deleteCert(cert.id)} style={{ background:'rgba(255,60,60,0.1)', border:'1px solid rgba(255,60,60,0.2)', color:'#ff6b6b', borderRadius:8, padding:'6px 12px', cursor:'pointer', fontSize:'0.78rem' }}>🗑️</button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* ── CONTACT INFO ── */}
           {tab === 'contact' && (
             <div>
@@ -472,7 +530,7 @@ const AdminPanel: React.FC = () => {
               <div style={card}>
                 <h3 style={{ marginBottom:'0.5rem', fontWeight:700 }}>Reset Data</h3>
                 <p style={{ color:'var(--white-dim)', fontSize:'0.85rem', marginBottom:'1rem' }}>Hapus semua data localStorage dan kembalikan ke default.</p>
-                <button onClick={() => { if (window.confirm('Reset semua data?')) { [LS_HOME,LS_ABOUT,LS_SKILLS,LS_EXP,LS_CONTACT].forEach(k => localStorage.removeItem(k)); toast.success('Data direset!'); window.location.reload(); } }} style={{ background:'rgba(255,60,60,0.1)', border:'1px solid rgba(255,60,60,0.25)', color:'#ff6b6b', borderRadius:8, padding:'10px 20px', cursor:'pointer', fontFamily:'var(--font-body)', fontWeight:600 }}>🔄 Reset Data</button>
+                <button onClick={() => { if (window.confirm('Reset semua data?')) { [LS_HOME,LS_ABOUT,LS_SKILLS,LS_EXP,LS_CONTACT,LS_CERT].forEach(k => localStorage.removeItem(k)); toast.success('Data direset!'); window.location.reload(); } }} style={{ background:'rgba(255,60,60,0.1)', border:'1px solid rgba(255,60,60,0.25)', color:'#ff6b6b', borderRadius:8, padding:'10px 20px', cursor:'pointer', fontFamily:'var(--font-body)', fontWeight:600 }}>🔄 Reset Data</button>
               </div>
             </div>
           )}
@@ -580,6 +638,46 @@ const AdminPanel: React.FC = () => {
               <div style={{ display:'flex', gap:'0.6rem', justifyContent:'center' }}>
                 <button onClick={() => handleDelete(delConfirm)} style={{ background:'#ff4444', color:'white', border:'none', borderRadius:8, padding:'10px 22px', cursor:'pointer', fontWeight:700 }}>Ya, Hapus</button>
                 <button onClick={() => setDelConfirm(null)} style={{ ...btn(), padding:'10px 18px' }}>Batal</button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+
+      {/* ─── Cert Modal ─── */}
+      <AnimatePresence>
+        {certForm && (
+          <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.8)', backdropFilter:'blur(6px)', zIndex:2000, display:'flex', alignItems:'center', justifyContent:'center', padding:'1rem', overflowY:'auto' }} onClick={e => { if (e.target===e.currentTarget) setCertForm(null); }}>
+            <motion.div initial={{ opacity:0, scale:0.9 }} animate={{ opacity:1, scale:1 }} exit={{ opacity:0, scale:0.9 }} style={{ background:'var(--black-2)', border:'1px solid rgba(245,166,35,0.2)', borderRadius:18, padding:'1.5rem', width:'100%', maxWidth:520, maxHeight:'90vh', overflowY:'auto' }}>
+              <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'1.2rem' }}>
+                <h2 style={{ fontFamily:'var(--font-display)', fontSize:'1.5rem' }}>{certForm.id ? 'EDIT SERTIFIKASI' : 'TAMBAH SERTIFIKASI'}</h2>
+                <button onClick={() => setCertForm(null)} style={{ background:'none', border:'none', color:'var(--white-dim)', fontSize:'1.2rem', cursor:'pointer' }}>✕</button>
+              </div>
+              <div style={{ display:'flex', flexDirection:'column', gap:'1rem' }}>
+                <div>
+                  <label style={lbl}>Nama Sertifikasi *</label>
+                  <input style={inp} value={certForm.name} onChange={e => setCertForm({ ...certForm, name:e.target.value })} placeholder="Google Digital Marketing" />
+                </div>
+                <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'0.8rem' }}>
+                  <div>
+                    <label style={lbl}>Tahun</label>
+                    <input style={inp} value={certForm.year} onChange={e => setCertForm({ ...certForm, year:e.target.value })} placeholder="2023" />
+                  </div>
+                  <div>
+                    <label style={lbl}>Lembaga Penerbit</label>
+                    <input style={inp} value={certForm.issuer} onChange={e => setCertForm({ ...certForm, issuer:e.target.value })} placeholder="Google" />
+                  </div>
+                </div>
+                <div>
+                  <label style={lbl}>Sub-Title Lembaga</label>
+                  <input style={inp} value={certForm.subtitle} onChange={e => setCertForm({ ...certForm, subtitle:e.target.value })} placeholder="Fundamentals of Digital Marketing" />
+                </div>
+                <ImageUploader label="Gambar Sertifikat" value={certForm.imageUrl} onChange={url => setCertForm({ ...certForm, imageUrl:url })} />
+                <div style={{ display:'flex', gap:'0.6rem' }}>
+                  <button onClick={saveCert} style={{ ...btn(true), flex:1 }}>💾 Simpan</button>
+                  <button onClick={() => setCertForm(null)} style={{ ...btn(), padding:'10px 16px' }}>Batal</button>
+                </div>
               </div>
             </motion.div>
           </motion.div>
