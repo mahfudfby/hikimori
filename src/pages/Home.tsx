@@ -13,14 +13,14 @@ const LS_EXP      = 'hk_experience_data';
 const LS_CONTACT  = 'hk_contact_data';
 
 /* ─── Types ─── */
-interface HomeData { heroTitle: string; heroSubtitle: string; heroTagline: string; heroCta: string; heroCtaLink: string; heroPhotoUrl: string; }
+interface HomeData { heroTitle: string; heroSubtitle: string; heroTagline: string; heroCtaSecondary: string; heroCtaSecondaryLink: string; heroCta: string; heroCtaLink: string; heroPhotoUrl: string; heroTagRight: string; }
 interface AboutData { name: string; location: string; bio1: string; bio2: string; photoUrl: string; }
 interface SkillItem { id: string; number: string; title: string; desc: string; }
 interface ExpItem   { id: string; position: string; company: string; period: string; icon: string; tags: string; }
 interface ContactData { email: string; location: string; website: string; instagram: string; linkedin: string; twitter: string; }
 
 /* ─── Defaults ─── */
-const D_HOME: HomeData   = { heroTitle:'Shaping tomorrow', heroSubtitle:'with vision and action.', heroTagline:'We back visionaries and craft ventures that define what comes next.', heroCta:'Explore Now', heroCtaLink:'/portofolio', heroPhotoUrl:'' };
+const D_HOME: HomeData   = { heroTitle:'Shaping tomorrow', heroSubtitle:'with vision and action.', heroTagline:'We back visionaries and craft ventures that define what comes next.', heroCtaSecondary:'Start a Chat', heroCtaSecondaryLink:'#contact', heroCta:'Explore Now', heroCtaLink:'/portofolio', heroPhotoUrl:'', heroTagRight:'Investing. Building. Advisory.' };
 const D_ABOUT: AboutData = { name:'Mahfudfebry', location:'Nganjuk, Indonesia', bio1:'Halo! Nama saya Mahfudfebry, seorang profesional muda dari Nganjuk, Indonesia. Portfolio ini adalah kumpulan karya dan proyek terbaik saya yang mencerminkan keahlian, kreativitas, dan pertumbuhan profesional.', bio2:'Di setiap proyek, saya selalu berusaha memberikan hasil terbaik — dari desain visual yang kuat hingga solusi HR dan IT yang efisien dan berdampak.', photoUrl:'' };
 const D_SKILLS: SkillItem[] = [
   { id:'1', number:'01', title:'Branding & Identity Design', desc:"Crafting memorable logos and visual systems that reflect a brand's essence and personality." },
@@ -114,6 +114,63 @@ const Stars: React.FC = () => {
     return () => { cancelAnimationFrame(raf); window.removeEventListener('resize', resize); };
   }, []);
   return <canvas ref={ref} style={{ position:'absolute', inset:0, width:'100%', height:'100%', pointerEvents:'none', zIndex:0 }} />;
+};
+
+
+/* ═══════════════ MARQUEE TICKER ═══════════════ */
+const Marquee: React.FC<{ contact: ContactData }> = ({ contact }) => {
+  const items = [
+    contact.instagram && { icon: '📸', label: 'Instagram', value: '@' + contact.instagram, href: 'https://instagram.com/' + contact.instagram },
+    contact.linkedin  && { icon: '💼', label: 'LinkedIn',  value: contact.linkedin,          href: 'https://linkedin.com/in/' + contact.linkedin },
+    contact.twitter   && { icon: '🐦', label: 'Twitter',   value: '@' + contact.twitter,     href: 'https://twitter.com/' + contact.twitter },
+    contact.email     && { icon: '📧', label: 'Email',     value: contact.email,              href: 'mailto:' + contact.email },
+    contact.website   && { icon: '🌐', label: 'Website',   value: contact.website,            href: 'https://' + contact.website },
+    contact.location  && { icon: '📍', label: 'Location',  value: contact.location,           href: null },
+    /* Always-on filler items so ticker is never empty */
+    { icon: '✦', label: 'Hikimori', value: 'Creative Portfolio', href: null },
+    { icon: '✦', label: 'Open to Work', value: 'Nganjuk, Indonesia', href: null },
+  ].filter(Boolean) as { icon: string; label: string; value: string; href: string | null }[];
+
+  // Duplicate for seamless loop
+  const doubled = [...items, ...items, ...items];
+
+  return (
+    <div style={{
+      width: '100%',
+      overflow: 'hidden',
+      background: 'var(--amber)',
+      borderTop: '1px solid rgba(255,255,255,0.2)',
+      borderBottom: '1px solid rgba(255,255,255,0.2)',
+      padding: '10px 0',
+      position: 'relative',
+      zIndex: 10,
+    }}>
+      <motion.div
+        style={{ display: 'flex', gap: 0, width: 'max-content' }}
+        animate={{ x: ['0%', '-33.33%'] }}
+        transition={{ duration: 22, repeat: Infinity, ease: 'linear', repeatType: 'loop' }}
+      >
+        {doubled.map((item, i) => (
+          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '0 28px', flexShrink: 0, whiteSpace: 'nowrap' }}>
+            <span style={{ fontSize: '0.85rem', color: 'rgba(0,0,0,0.5)' }}>{item.icon}</span>
+            <span style={{ fontFamily: 'var(--font-body)', fontSize: '0.78rem', fontWeight: 700, color: '#000', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{item.label}</span>
+            <span style={{ fontSize: '0.62rem', color: 'rgba(0,0,0,0.4)' }}>—</span>
+            {item.href ? (
+              <a href={item.href} target={item.href.startsWith('http') ? '_blank' : undefined} rel="noreferrer"
+                style={{ fontFamily: 'var(--font-body)', fontSize: '0.78rem', fontWeight: 600, color: 'rgba(0,0,0,0.75)', textDecoration: 'none' }}
+                onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.textDecoration = 'underline'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.textDecoration = 'none'; }}>
+                {item.value}
+              </a>
+            ) : (
+              <span style={{ fontFamily: 'var(--font-body)', fontSize: '0.78rem', fontWeight: 600, color: 'rgba(0,0,0,0.75)' }}>{item.value}</span>
+            )}
+            <span style={{ color: 'rgba(0,0,0,0.25)', fontSize: '1rem', marginLeft: 8 }}>✦</span>
+          </div>
+        ))}
+      </motion.div>
+    </div>
+  );
 };
 
 /* ═══════════════ CONTACT SECTION (dipertahankan) ═══════════════ */
@@ -222,15 +279,31 @@ const Home: React.FC = () => {
   const [contact, setContact] = useState<ContactData>(() => ls(LS_CONTACT, D_CONTACT));
 
   useEffect(() => {
-    const fn = (e: StorageEvent) => {
+    // Cross-tab sync
+    const onStorage = (e: StorageEvent) => {
       if (e.key === LS_HOME    && e.newValue) try { setHero(JSON.parse(e.newValue));    } catch {}
       if (e.key === LS_ABOUT   && e.newValue) try { setAbout(JSON.parse(e.newValue));   } catch {}
       if (e.key === LS_SKILLS  && e.newValue) try { setSkills(JSON.parse(e.newValue));  } catch {}
       if (e.key === LS_EXP     && e.newValue) try { setExps(JSON.parse(e.newValue));    } catch {}
       if (e.key === LS_CONTACT && e.newValue) try { setContact(JSON.parse(e.newValue)); } catch {}
     };
-    window.addEventListener('storage', fn);
-    return () => window.removeEventListener('storage', fn);
+    // Same-tab sync (from AdminPanel save)
+    const onCustom = (e: Event) => {
+      const { key, value } = (e as CustomEvent).detail;
+      try {
+        if (key === LS_HOME)    setHero(JSON.parse(value));
+        if (key === LS_ABOUT)   setAbout(JSON.parse(value));
+        if (key === LS_SKILLS)  setSkills(JSON.parse(value));
+        if (key === LS_EXP)     setExps(JSON.parse(value));
+        if (key === LS_CONTACT) setContact(JSON.parse(value));
+      } catch {}
+    };
+    window.addEventListener('storage', onStorage);
+    window.addEventListener('hk-update', onCustom);
+    return () => {
+      window.removeEventListener('storage', onStorage);
+      window.removeEventListener('hk-update', onCustom);
+    };
   }, []);
 
   const photo = about.photoUrl || FALLBACK_PHOTO;
@@ -259,7 +332,7 @@ const Home: React.FC = () => {
                 </FadeIn>
                 <FadeIn delay={1200} duration={1000}>
                   <div style={{ display:'flex', flexWrap:'wrap', gap:'0.75rem' }}>
-                    <button style={{ background:'#fff', color:'#000', border:'none', borderRadius:8, padding:'10px 24px', fontWeight:500, fontSize:'0.9rem', cursor:'pointer', fontFamily:'var(--font-body)', whiteSpace:'nowrap' }}>Start a Chat</button>
+                    <a href={hero.heroCtaSecondaryLink || '#contact'} style={{ textDecoration:'none' }}><button style={{ background:'#fff', color:'#000', border:'none', borderRadius:8, padding:'10px 24px', fontWeight:500, fontSize:'0.9rem', cursor:'pointer', fontFamily:'var(--font-body)', whiteSpace:'nowrap' }}>{hero.heroCtaSecondary || 'Start a Chat'}</button></a>
                     <Link to={hero.heroCtaLink || '/portofolio'} style={{ textDecoration:'none' }}>
                       <button style={{ ...LG, border:'1px solid rgba(255,255,255,0.2)', color:'#fff', borderRadius:8, padding:'10px 24px', fontWeight:500, fontSize:'0.9rem', cursor:'pointer', fontFamily:'var(--font-body)', whiteSpace:'nowrap' }}>{hero.heroCta}</button>
                     </Link>
@@ -270,7 +343,7 @@ const Home: React.FC = () => {
               <div id="htag" style={{ display:'flex', alignItems:'flex-end', justifyContent:'flex-start' }}>
                 <FadeIn delay={1400} duration={1000}>
                   <div style={{ ...LG, border:'1px solid rgba(255,255,255,0.2)', borderRadius:12, padding:'10px 20px', display:'inline-block', maxWidth:'100%' }}>
-                    <span style={{ fontSize:'clamp(1rem,2.5vw,1.5rem)', fontWeight:300, color:'#fff', fontFamily:'var(--font-body)', wordBreak:'break-word' }}>Investing. Building. Advisory.</span>
+                    <span style={{ fontSize:'clamp(1rem,2.5vw,1.5rem)', fontWeight:300, color:'#fff', fontFamily:'var(--font-body)', wordBreak:'break-word' }}>{hero.heroTagRight || 'Investing. Building. Advisory.'}</span>
                   </div>
                 </FadeIn>
               </div>
@@ -279,19 +352,22 @@ const Home: React.FC = () => {
         </div>
       </section>
 
+      {/* ══ MARQUEE TICKER ══ */}
+      <Marquee contact={contact} />
+
       {/* ══ ABOUT ══ */}
       <section style={{ padding:'clamp(3rem,8vw,6rem) clamp(1rem,5vw,2rem)', background:'var(--black-2)' }}>
         <div style={{ maxWidth:1100, margin:'0 auto' }}>
           <div id="about-row" style={{ display:'flex', flexDirection:'column', gap:'2.5rem', alignItems:'center' }}>
             {/* Photo */}
             <AnimatedSection direction="up">
-              <div style={{ width:'100%', maxWidth:340, borderRadius:'var(--radius)', overflow:'hidden', position:'relative', aspectRatio:'4/5', flexShrink:0, margin:'0 auto' }}>
+              <motion.div whileHover={{ scale: 1.02 }} transition={{ type: 'spring', stiffness: 200, damping: 20 }} style={{ width:'100%', maxWidth:340, borderRadius:'var(--radius)', overflow:'hidden', position:'relative', aspectRatio:'4/5', flexShrink:0, margin:'0 auto', cursor: 'default' }}>
                 <img src={photo} alt={about.name} style={{ width:'100%', height:'100%', objectFit:'cover', display:'block' }} />
                 <div style={{ position:'absolute', inset:0, background:'linear-gradient(to top,rgba(10,10,10,0.7) 0%,transparent 55%)' }} />
                 <div style={{ position:'absolute', bottom:'1rem', left:'1rem', right:'1rem' }}>
                   <div style={{ background:'rgba(245,166,35,0.9)', borderRadius:10, padding:'0.5rem 1rem', color:'var(--black)', fontWeight:700, fontSize:'0.82rem', display:'inline-block', maxWidth:'100%', wordBreak:'break-word' }}>📍 {about.location}</div>
                 </div>
-              </div>
+              </motion.div>
             </AnimatedSection>
             {/* Text */}
             <AnimatedSection direction="up">
@@ -327,12 +403,12 @@ const Home: React.FC = () => {
           <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(min(100%,260px),1fr))', gap:'1rem' }}>
             {skills.map((sk, i) => (
               <AnimatedSection key={sk.id} direction="up" delay={i * 0.08}>
-                <div className="float-hover" style={{ background:'var(--black-2)', border:'1px solid rgba(245,166,35,0.12)', borderRadius:'var(--radius)', padding:'1.5rem', position:'relative', overflow:'hidden', height:'100%' }}>
+                <motion.div whileHover={{ y: -6, boxShadow: '0 16px 40px rgba(245,166,35,0.18)', borderColor: 'rgba(245,166,35,0.4)' }} transition={{ type: 'spring', stiffness: 300, damping: 20 }} style={{ background:'var(--black-2)', border:'1px solid rgba(245,166,35,0.12)', borderRadius:'var(--radius)', padding:'1.5rem', position:'relative', overflow:'hidden', height:'100%', cursor: 'default' }}>
                   <div style={{ position:'absolute', top:4, right:12, fontFamily:'var(--font-display)', fontSize:'4.5rem', color:'rgba(245,166,35,0.06)', lineHeight:1, userSelect:'none' }}>{sk.number}</div>
                   <div style={{ color:'var(--amber)', fontFamily:'var(--font-display)', fontSize:'1.4rem', marginBottom:'0.5rem' }}>{sk.number}</div>
                   <h3 style={{ fontFamily:'var(--font-body)', fontWeight:700, fontSize:'0.85rem', color:'var(--amber)', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:'0.6rem' }}>{sk.title}</h3>
                   <p style={{ color:'var(--white-dim)', fontSize:'0.85rem', lineHeight:1.6 }}>{sk.desc}</p>
-                </div>
+                </motion.div>
               </AnimatedSection>
             ))}
           </div>
@@ -354,7 +430,7 @@ const Home: React.FC = () => {
           <div style={{ display:'flex', flexDirection:'column', gap:'0.8rem' }}>
             {exps.map((exp, i) => (
               <AnimatedSection key={exp.id} direction="up" delay={i * 0.1}>
-                <div className="float-hover" style={{ background:'var(--black-3)', border:'1px solid rgba(245,166,35,0.1)', borderRadius:'var(--radius)', padding:'1.4rem clamp(1rem,4vw,2rem)', display:'flex', alignItems:'flex-start', gap:'1rem', position:'relative', overflow:'hidden' }}>
+                <motion.div whileHover={{ x: 6, borderColor: 'rgba(245,166,35,0.4)', backgroundColor: '#1d1d1d' }} transition={{ type: 'spring', stiffness: 300, damping: 22 }} style={{ background:'var(--black-3)', border:'1px solid rgba(245,166,35,0.1)', borderRadius:'var(--radius)', padding:'1.4rem clamp(1rem,4vw,2rem)', display:'flex', alignItems:'flex-start', gap:'1rem', position:'relative', overflow:'hidden', cursor: 'default' }}>
                   <div style={{ position:'absolute', left:0, top:'50%', transform:'translateY(-50%)', width:4, height:'60%', background:'linear-gradient(to bottom,transparent,var(--amber),transparent)', borderRadius:'0 4px 4px 0' }} />
                   {/* Icon */}
                   <div style={{ width:44, height:44, borderRadius:'50%', background:'rgba(245,166,35,0.1)', border:'2px solid rgba(245,166,35,0.3)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'1.2rem', flexShrink:0 }}>{exp.icon}</div>
@@ -373,7 +449,7 @@ const Home: React.FC = () => {
                       </div>
                     )}
                   </div>
-                </div>
+                </motion.div>
               </AnimatedSection>
             ))}
           </div>
@@ -385,11 +461,15 @@ const Home: React.FC = () => {
         <AnimatedSection direction="scale">
           <h2 style={{ fontFamily:'var(--font-display)', fontSize:'clamp(2rem,8vw,5rem)', marginBottom:'0.8rem', wordBreak:'break-word' }}>SIAP BERKOLABORASI?</h2>
           <p style={{ color:'var(--white-dim)', marginBottom:'2rem', fontSize:'clamp(0.88rem,2vw,1rem)', maxWidth:480, margin:'0 auto 2rem' }}>Hubungi saya dan kita mulai wujudkan ide Anda bersama.</p>
+          <div style={{ position: 'relative', display: 'inline-block' }}>
+            <motion.div animate={{ scale: [1, 1.18, 1], opacity: [0.5, 0, 0.5] }} transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+              style={{ position: 'absolute', inset: -8, borderRadius: 50, border: '2px solid var(--amber)', pointerEvents: 'none' }} />
           <motion.a href={`mailto:${contact.email}`}
             whileHover={{ scale:1.05, boxShadow:'0 10px 40px rgba(245,166,35,0.4)' }} whileTap={{ scale:0.97 }}
-            style={{ display:'inline-block', background:'var(--amber)', color:'var(--black)', textDecoration:'none', borderRadius:50, padding:'14px 40px', fontFamily:'var(--font-body)', fontWeight:700, fontSize:'0.95rem', letterSpacing:'0.5px' }}>
+            style={{ display:'inline-block', background:'var(--amber)', color:'var(--black)', textDecoration:'none', borderRadius:50, padding:'14px 40px', fontFamily:'var(--font-body)', fontWeight:700, fontSize:'0.95rem', letterSpacing:'0.5px', position: 'relative' }}>
             Mulai Sekarang →
           </motion.a>
+          </div>
         </AnimatedSection>
       </section>
 
