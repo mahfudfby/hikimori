@@ -1,5 +1,5 @@
 // src/pages/AdminPanel.tsx — Full CMS: Home, About, Skills, Experience, Portfolio, Contact, Settings
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { usePortfolio, PortfolioItem } from '../hooks/usePortfolio';
@@ -15,14 +15,14 @@ const LS_EXP     = 'hk_experience_data';
 const LS_CONTACT = 'hk_contact_data';
 
 /* ─── Types ─── */
-interface HomeData    { heroTitle:string; heroSubtitle:string; heroTagline:string; heroCta:string; heroCtaLink:string; heroPhotoUrl:string; }
+interface HomeData    { heroTitle:string; heroSubtitle:string; heroTagline:string; heroCtaSecondary:string; heroCtaSecondaryLink:string; heroCta:string; heroCtaLink:string; heroPhotoUrl:string; heroTagRight:string; }
 interface AboutData   { name:string; location:string; bio1:string; bio2:string; photoUrl:string; }
 interface SkillItem   { id:string; number:string; title:string; desc:string; }
 interface ExpItem     { id:string; position:string; company:string; period:string; icon:string; tags:string; }
 interface ContactData { email:string; location:string; website:string; instagram:string; linkedin:string; twitter:string; }
 
 /* ─── Defaults ─── */
-const D_HOME:    HomeData    = { heroTitle:'Shaping tomorrow', heroSubtitle:'with vision and action.', heroTagline:'We back visionaries and craft ventures that define what comes next.', heroCta:'Explore Now', heroCtaLink:'/portofolio', heroPhotoUrl:'' };
+const D_HOME:    HomeData    = { heroTitle:'Shaping tomorrow', heroSubtitle:'with vision and action.', heroTagline:'We back visionaries and craft ventures that define what comes next.', heroCtaSecondary:'Start a Chat', heroCtaSecondaryLink:'#contact', heroCta:'Explore Now', heroCtaLink:'/portofolio', heroPhotoUrl:'', heroTagRight:'Investing. Building. Advisory.' };
 const D_ABOUT:   AboutData   = { name:'Mahfudfebry', location:'Nganjuk, Indonesia', bio1:'Halo! Nama saya Mahfudfebry, seorang profesional muda dari Nganjuk, Indonesia.', bio2:'Di setiap proyek, saya selalu berusaha memberikan hasil terbaik.', photoUrl:'' };
 const D_SKILLS:  SkillItem[] = [
   { id:'1', number:'01', title:'Branding & Identity Design', desc:"Crafting memorable logos and visual systems." },
@@ -38,7 +38,12 @@ const D_EXP: ExpItem[] = [
 const D_CONTACT: ContactData = { email:'mahfudfebry@hikimori.web.id', location:'Nganjuk, Indonesia', website:'hikimori.web.id', instagram:'', linkedin:'', twitter:'' };
 
 const ls = <T,>(key: string, fallback: T): T => { try { return JSON.parse(localStorage.getItem(key) || 'null') ?? fallback; } catch { return fallback; } };
-const save = (key: string, val: any) => { localStorage.setItem(key, JSON.stringify(val)); window.dispatchEvent(new StorageEvent('storage', { key, newValue: JSON.stringify(val) })); };
+const save = (key: string, val: any) => {
+  const json = JSON.stringify(val);
+  localStorage.setItem(key, json);
+  // Same-tab update via CustomEvent (StorageEvent only fires cross-tab)
+  window.dispatchEvent(new CustomEvent('hk-update', { detail: { key, value: json } }));
+};
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
 
 type Tab = 'dashboard'|'home'|'about'|'skills'|'experience'|'portfolio'|'contact'|'settings';
@@ -259,33 +264,60 @@ const AdminPanel: React.FC = () => {
             <div>
               <h1 style={{ fontFamily:'var(--font-display)', fontSize:'clamp(1.8rem,5vw,2.5rem)', marginBottom:'0.3rem' }}>HERO HOME</h1>
               <p style={{ color:'var(--white-dim)', marginBottom:'1.5rem', fontSize:'0.88rem' }}>Edit konten utama halaman beranda.</p>
+              {/* Live preview hint */}
+              <div style={{ background:'rgba(245,166,35,0.08)', border:'1px solid rgba(245,166,35,0.2)', borderRadius:10, padding:'10px 14px', marginBottom:'1rem', fontSize:'0.82rem', color:'var(--amber)' }}>
+                ⚡ Perubahan langsung tampil di halaman Home setelah klik Simpan.
+              </div>
               <div style={card}>
+                <h3 style={{ fontFamily:'var(--font-display)', fontSize:'1.1rem', marginBottom:'1rem', color:'var(--amber)' }}>✏️ TEKS HEADING</h3>
                 <div style={{ display:'flex', flexDirection:'column', gap:'1rem' }}>
                   <div>
-                    <label style={lbl}>Judul Baris 1 (Hero Title)</label>
+                    <label style={lbl}>Judul Baris 1 — tampil di baris pertama heading</label>
                     <input style={inp} value={home.heroTitle} onChange={e => setHome({ ...home, heroTitle:e.target.value })} placeholder="Shaping tomorrow" />
+                    <p style={{ color:'var(--white-dim)', fontSize:'0.75rem', marginTop:4 }}>Preview: <em style={{ color:'var(--amber)' }}>{home.heroTitle || 'Shaping tomorrow'}</em></p>
                   </div>
                   <div>
-                    <label style={lbl}>Judul Baris 2 (Hero Subtitle)</label>
+                    <label style={lbl}>Judul Baris 2 — tampil di baris kedua heading</label>
                     <input style={inp} value={home.heroSubtitle} onChange={e => setHome({ ...home, heroSubtitle:e.target.value })} placeholder="with vision and action." />
+                    <p style={{ color:'var(--white-dim)', fontSize:'0.75rem', marginTop:4 }}>Preview: <em style={{ color:'var(--amber)' }}>{home.heroSubtitle || 'with vision and action.'}</em></p>
                   </div>
                   <div>
-                    <label style={lbl}>Tagline / Deskripsi Hero</label>
-                    <textarea style={{ ...inp, minHeight:80, resize:'vertical' }} value={home.heroTagline} onChange={e => setHome({ ...home, heroTagline:e.target.value })} />
+                    <label style={lbl}>Tagline / Deskripsi di bawah heading</label>
+                    <textarea style={{ ...inp, minHeight:70, resize:'vertical' }} value={home.heroTagline} onChange={e => setHome({ ...home, heroTagline:e.target.value })} placeholder="We back visionaries..." />
                   </div>
-                  <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'1rem' }}>
+                  <div>
+                    <label style={lbl}>Teks Tag Kanan (pojok kanan bawah hero)</label>
+                    <input style={inp} value={home.heroTagRight} onChange={e => setHome({ ...home, heroTagRight:e.target.value })} placeholder="Investing. Building. Advisory." />
+                    <p style={{ color:'var(--white-dim)', fontSize:'0.75rem', marginTop:4 }}>Ini teks di dalam card glass pojok kanan bawah.</p>
+                  </div>
+                </div>
+              </div>
+              <div style={card}>
+                <h3 style={{ fontFamily:'var(--font-display)', fontSize:'1.1rem', marginBottom:'1rem', color:'var(--amber)' }}>🔘 TOMBOL CTA</h3>
+                <div style={{ display:'flex', flexDirection:'column', gap:'1rem' }}>
+                  <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'0.8rem' }}>
                     <div>
-                      <label style={lbl}>Teks Tombol CTA</label>
+                      <label style={lbl}>Tombol Kiri (putih) — Teks</label>
+                      <input style={inp} value={home.heroCtaSecondary} onChange={e => setHome({ ...home, heroCtaSecondary:e.target.value })} placeholder="Start a Chat" />
+                    </div>
+                    <div>
+                      <label style={lbl}>Tombol Kiri — Link / Anchor</label>
+                      <input style={inp} value={home.heroCtaSecondaryLink} onChange={e => setHome({ ...home, heroCtaSecondaryLink:e.target.value })} placeholder="#contact" />
+                    </div>
+                  </div>
+                  <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'0.8rem' }}>
+                    <div>
+                      <label style={lbl}>Tombol Kanan (glass) — Teks</label>
                       <input style={inp} value={home.heroCta} onChange={e => setHome({ ...home, heroCta:e.target.value })} placeholder="Explore Now" />
                     </div>
                     <div>
-                      <label style={lbl}>Link Tombol CTA</label>
+                      <label style={lbl}>Tombol Kanan — Link</label>
                       <input style={inp} value={home.heroCtaLink} onChange={e => setHome({ ...home, heroCtaLink:e.target.value })} placeholder="/portofolio" />
                     </div>
                   </div>
-                  <button onClick={saveHome} disabled={homeSaving} style={btn(true)}>{homeSaving ? '⌛ Menyimpan...' : '💾 Simpan Hero'}</button>
                 </div>
               </div>
+              <button onClick={saveHome} disabled={homeSaving} style={{ ...btn(true), width:'100%', padding:'14px', fontSize:'1rem' }}>{homeSaving ? '⌛ Menyimpan...' : '💾 Simpan Semua Perubahan Hero'}</button>
             </div>
           )}
 
