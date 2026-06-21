@@ -557,7 +557,7 @@ const Home:React.FC=()=>{
   const heroText=`${hero.heroTitle}\n${hero.heroSubtitle}`;
 
   return (
-    <div ref={containerRef} style={{background:G.sky1,minHeight:'100vh',overflowX:'hidden'}}>
+    <div ref={containerRef} style={{background:'#070d1a',minHeight:'100vh',overflowX:'hidden'}}>
 
       {/* ══ HERO (unchanged) ══ */}
       <section style={{position:'relative',width:'100%',height:'100vh',overflow:'hidden',display:'flex',flexDirection:'column',background:'#000',color:'#fff'}}>
@@ -598,7 +598,7 @@ const Home:React.FC=()=>{
       {/* ══════════════════════════════════════════
           GHIBLI — ABOUT "SPIRIT FOREST"
       ══════════════════════════════════════════ */}
-      <section style={{position:'relative',padding:'clamp(4rem,10vw,8rem) clamp(1rem,5vw,2rem)',overflow:'hidden',background:`linear-gradient(180deg, ${G.sky1} 0%, ${G.forest1} 40%, ${G.forest2} 100%)`}}>
+      <section style={{position:'relative',padding:'clamp(4rem,10vw,8rem) clamp(1rem,5vw,2rem)',overflow:'hidden',background:`linear-gradient(180deg, #070d1a 0%, #081510 50%, #091810 100%)`}}>
         {/* Bg fireflies */}
         <FirefliesCanvas/>
         {/* Clouds */}
@@ -669,7 +669,7 @@ const Home:React.FC=()=>{
       {/* ══════════════════════════════════════════
           GHIBLI — CERTIFICATES "SCROLL OF WISDOM"
       ══════════════════════════════════════════ */}
-      <section style={{position:'relative',padding:'clamp(4rem,10vw,8rem) clamp(1rem,5vw,2rem)',overflow:'hidden',background:`linear-gradient(180deg, #1a0a2e 0%, #0d1a2e 60%, ${G.sky1} 100%)`}}>
+      <section style={{position:'relative',padding:'clamp(4rem,10vw,8rem) clamp(1rem,5vw,2rem)',overflow:'hidden',background:`linear-gradient(180deg, #091810 0%, #081410 50%, #070d1a 100%)`}}>
         {/* bg stars */}
         {[...Array(25)].map((_,i)=>(
           <motion.div key={i} style={{position:'absolute',width:2,height:2,borderRadius:'50%',background:'white',left:`${Math.random()*100}%`,top:`${Math.random()*80}%`,pointerEvents:'none'}}
@@ -712,7 +712,7 @@ const Home:React.FC=()=>{
       {/* ══════════════════════════════════════════
           GHIBLI — EXPERIENCE "JOURNEY PATH"
       ══════════════════════════════════════════ */}
-      <section style={{position:'relative',padding:'clamp(4rem,10vw,8rem) clamp(1rem,5vw,2rem)',overflow:'hidden',background:`linear-gradient(180deg, ${G.dusk2} 0%, ${G.dusk3} 50%, #1a0a2e 100%)`}}>
+      <section style={{position:'relative',padding:'clamp(4rem,10vw,8rem) clamp(1rem,5vw,2rem)',overflow:'hidden',background:`linear-gradient(180deg, #070d1a 0%, #0a0c1e 50%, #0c0a1e 100%)`}}>
         {/* Stars bg */}
         {[...Array(30)].map((_,i)=>(
           <motion.div key={i} style={{position:'absolute',width:2,height:2,borderRadius:'50%',background:'white',left:`${Math.random()*100}%`,top:`${Math.random()*100}%`,pointerEvents:'none'}}
@@ -791,7 +791,7 @@ const Home:React.FC=()=>{
       {/* ══════════════════════════════════════════
           GHIBLI — SKILLS "CASTLE IN THE SKY"
       ══════════════════════════════════════════ */}
-      <section style={{position:'relative',padding:'clamp(4rem,10vw,8rem) clamp(1rem,5vw,2rem)',overflow:'hidden',background:`linear-gradient(180deg, ${G.forest2} 0%, ${G.dusk1} 50%, ${G.dusk2} 100%)`}}>
+      <section style={{position:'relative',padding:'clamp(4rem,10vw,8rem) clamp(1rem,5vw,2rem)',overflow:'hidden',background:`linear-gradient(180deg, #0c0a1e 0%, #0a0f18 50%, #091810 100%)`}}>
         {/* Moving clouds bg */}
         <GhibliCloud style={{top:'5%',left:'-10%',opacity:0.6}} speed={25}/>
         <GhibliCloud style={{top:'40%',right:'-5%',opacity:0.4}} speed={35} direction={-1}/>
@@ -847,7 +847,7 @@ const Home:React.FC=()=>{
       {/* ══════════════════════════════════════════
           GHIBLI — CTA "FOREST SPIRIT"
       ══════════════════════════════════════════ */}
-      <section style={{position:'relative',padding:'clamp(4rem,10vw,8rem) clamp(1rem,5vw,2rem)',textAlign:'center',overflow:'hidden',background:`linear-gradient(180deg, #1a0a2e 0%, ${G.forest1} 60%, ${G.forest2} 100%)`}}>
+      <section style={{position:'relative',padding:'clamp(4rem,10vw,8rem) clamp(1rem,5vw,2rem)',textAlign:'center',overflow:'hidden',background:`linear-gradient(180deg, #091810 0%, #081512 60%, #070d1a 100%)`}}>
         {/* Fireflies */}
         {[...Array(12)].map((_,i)=><Firefly key={i} style={{left:`${5+i*8}%`,top:`${10+i*6}%`}} delay={i*0.3}/>)}
         {/* Trees sides */}
