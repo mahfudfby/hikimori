@@ -324,30 +324,61 @@ const CertCard:React.FC<{cert:CertItem;index:number}>=({cert,index})=>{
   return (
     <Reveal direction="up" delay={index*0.08}>
       <motion.div
-        whileHover={!open?{y:-3,boxShadow:`0 16px 48px rgba(78,205,196,0.2), 0 0 0 1px rgba(78,205,196,0.25)`}:{}}
-        style={{borderRadius:16,overflow:'hidden',border:`1px solid rgba(78,205,196,${open?0.4:0.15})`,background:'rgba(13,34,64,0.82)',backdropFilter:'blur(12px)',transition:'border-color 0.3s'}}>
+        whileHover={!open?{y:-3,boxShadow:`0 20px 50px rgba(78,205,196,0.18), 0 0 0 1px rgba(78,205,196,0.3)`}:{}}
+        style={{borderRadius:18,overflow:'hidden',border:`1px solid rgba(78,205,196,${open?0.5:0.15})`,background:'rgba(10,22,50,0.88)',backdropFilter:'blur(14px)',transition:'border-color 0.3s,box-shadow 0.3s'}}>
 
-        {/* Header — always visible */}
-        <button onClick={()=>setOpen(o=>!o)} style={{width:'100%',background:'none',border:'none',cursor:'pointer',padding:'1.2rem 1.4rem',display:'flex',alignItems:'center',gap:'1rem',textAlign:'left'}}>
-          {/* Year badge */}
-          <div style={{flexShrink:0,width:52,height:52,borderRadius:12,background:`rgba(245,166,35,0.12)`,border:`1px solid rgba(245,166,35,0.3)`,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:0}}>
-            <span style={{fontFamily:'var(--font-display)',fontSize:'1rem',color:G.amber,lineHeight:1}}>{cert.year}</span>
+        {/* ── Header — always visible ── */}
+        <button onClick={()=>setOpen(o=>!o)} style={{width:'100%',background:'none',border:'none',cursor:'pointer',padding:'1.4rem 1.6rem',display:'flex',alignItems:'center',gap:'1.2rem',textAlign:'left'}}>
+
+          {/* Icon / number circle */}
+          <div style={{flexShrink:0,width:48,height:48,borderRadius:'50%',background:`rgba(78,205,196,0.1)`,border:`1.5px solid rgba(78,205,196,0.35)`,display:'flex',alignItems:'center',justifyContent:'center',boxShadow:`0 0 14px rgba(78,205,196,0.15)`}}>
+            <span style={{fontSize:'1.3rem'}}>🎓</span>
           </div>
-          {/* Info */}
-          <div style={{flex:1,minWidth:0}}>
-            <div style={{fontFamily:'var(--font-body)',fontWeight:700,fontSize:'clamp(0.88rem,2vw,1rem)',color:G.cream,marginBottom:'0.15rem',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{cert.name}</div>
-            <div style={{fontFamily:'var(--font-body)',fontSize:'0.78rem',color:G.jade,fontWeight:600,marginBottom:'0.1rem',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{cert.issuer}</div>
-            <div style={{fontFamily:'var(--font-body)',fontSize:'0.72rem',color:'rgba(168,230,207,0.55)',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{cert.subtitle}</div>
+
+          {/* Info — stacked 3 baris */}
+          <div style={{flex:1,minWidth:0,display:'flex',flexDirection:'column',gap:'0.22rem'}}>
+            {/* Baris 1: Nama Sertifikasi */}
+            <div style={{fontFamily:'var(--font-body)',fontWeight:700,fontSize:'clamp(0.9rem,2.2vw,1.05rem)',color:G.cream,lineHeight:1.3,wordBreak:'break-word'}}>
+              {cert.name || '—'}
+            </div>
+            {/* Baris 2: Lembaga Penerbit */}
+            <div style={{fontFamily:'var(--font-body)',fontSize:'0.82rem',color:G.jade,fontWeight:600,display:'flex',alignItems:'center',gap:'0.4rem',flexWrap:'wrap'}}>
+              <span style={{display:'inline-block',width:6,height:6,borderRadius:'50%',background:G.jade,flexShrink:0}}/>
+              {cert.issuer || '—'}
+              {cert.subtitle && (
+                <span style={{color:'rgba(168,230,207,0.5)',fontWeight:400}}>· {cert.subtitle}</span>
+              )}
+            </div>
+            {/* Baris 3: Tahun */}
+            <div style={{display:'flex',alignItems:'center',gap:'0.5rem',marginTop:'0.1rem'}}>
+              <span style={{fontFamily:'var(--font-body)',fontSize:'0.75rem',fontWeight:700,color:G.amber,background:'rgba(245,166,35,0.1)',border:`1px solid rgba(245,166,35,0.3)`,borderRadius:6,padding:'2px 10px',letterSpacing:'0.5px'}}>
+                {cert.year || '—'}
+              </span>
+              {open && (
+                <motion.span initial={{opacity:0,x:-8}} animate={{opacity:1,x:0}} style={{fontFamily:'var(--font-body)',fontSize:'0.72rem',color:'rgba(168,230,207,0.5)'}}>
+                  Lihat sertifikat ↓
+                </motion.span>
+              )}
+            </div>
           </div>
+
           {/* Chevron */}
-          <motion.div animate={{rotate:open?180:0}} transition={{duration:0.3,ease:[0.4,0,0.2,1]}} style={{flexShrink:0,color:G.jade,fontSize:'1rem'}}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <motion.div animate={{rotate:open?180:0}} transition={{duration:0.35,ease:[0.4,0,0.2,1]}} style={{flexShrink:0,color:G.jade}}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="6 9 12 15 18 9"/>
             </svg>
           </motion.div>
         </button>
 
-        {/* Dropdown — image */}
+        {/* Separator line */}
+        <AnimatePresence>
+          {open && (
+            <motion.div key="sep" initial={{scaleX:0}} animate={{scaleX:1}} exit={{scaleX:0}}
+              style={{height:1,background:`linear-gradient(to right,transparent,${G.jade}55,transparent)`,transformOrigin:'left',marginLeft:'1.6rem',marginRight:'1.6rem'}}/>
+          )}
+        </AnimatePresence>
+
+        {/* ── Dropdown — image ── */}
         <AnimatePresence initial={false}>
           {open && (
             <motion.div
@@ -355,25 +386,36 @@ const CertCard:React.FC<{cert:CertItem;index:number}>=({cert,index})=>{
               initial={{height:0,opacity:0}}
               animate={{height:'auto',opacity:1}}
               exit={{height:0,opacity:0}}
-              transition={{duration:0.4,ease:[0.4,0,0.2,1]}}
+              transition={{duration:0.45,ease:[0.4,0,0.2,1]}}
               style={{overflow:'hidden'}}>
-              <div style={{padding:'0 1.2rem 1.4rem'}}>
-                <div style={{borderRadius:12,overflow:'hidden',border:`1px solid rgba(78,205,196,0.2)`,background:'rgba(0,0,0,0.3)',minHeight:180,display:'flex',alignItems:'center',justifyContent:'center',position:'relative'}}>
+              <div style={{padding:'1rem 1.6rem 1.6rem'}}>
+                {/* Meta info recap */}
+                <div style={{display:'flex',flexWrap:'wrap',gap:'0.5rem',marginBottom:'1rem'}}>
+                  <span style={{fontFamily:'var(--font-body)',fontSize:'0.75rem',fontWeight:600,color:G.cream,background:'rgba(255,255,255,0.06)',border:'1px solid rgba(255,255,255,0.1)',borderRadius:6,padding:'3px 12px'}}>📋 {cert.name}</span>
+                  <span style={{fontFamily:'var(--font-body)',fontSize:'0.75rem',fontWeight:600,color:G.jade,background:'rgba(78,205,196,0.08)',border:`1px solid rgba(78,205,196,0.2)`,borderRadius:6,padding:'3px 12px'}}>{cert.issuer}</span>
+                  {cert.subtitle && <span style={{fontFamily:'var(--font-body)',fontSize:'0.75rem',color:'rgba(168,230,207,0.6)',background:'rgba(255,255,255,0.04)',border:'1px solid rgba(255,255,255,0.08)',borderRadius:6,padding:'3px 12px'}}>{cert.subtitle}</span>}
+                  <span style={{fontFamily:'var(--font-body)',fontSize:'0.75rem',fontWeight:700,color:G.amber,background:'rgba(245,166,35,0.1)',border:`1px solid rgba(245,166,35,0.3)`,borderRadius:6,padding:'3px 12px'}}>📅 {cert.year}</span>
+                </div>
+                {/* Certificate image */}
+                <div style={{borderRadius:14,overflow:'hidden',border:`1px solid rgba(78,205,196,0.25)`,background:'rgba(0,0,0,0.35)',minHeight:200,display:'flex',alignItems:'center',justifyContent:'center',position:'relative',boxShadow:`inset 0 0 40px rgba(0,0,0,0.3)`}}>
                   {cert.imageUrl ? (
                     <>
                       {!imgLoaded && (
-                        <div style={{position:'absolute',inset:0,display:'flex',alignItems:'center',justifyContent:'center'}}>
-                          <motion.div animate={{rotate:360}} transition={{duration:1.2,repeat:Infinity,ease:'linear'}}
-                            style={{width:32,height:32,borderRadius:'50%',border:`2px solid ${G.jade}`,borderTopColor:'transparent'}}/>
+                        <div style={{position:'absolute',inset:0,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:'0.8rem'}}>
+                          <motion.div animate={{rotate:360}} transition={{duration:1,repeat:Infinity,ease:'linear'}}
+                            style={{width:36,height:36,borderRadius:'50%',border:`2.5px solid ${G.jade}`,borderTopColor:'transparent'}}/>
+                          <span style={{fontFamily:'var(--font-body)',fontSize:'0.78rem',color:'rgba(168,230,207,0.5)'}}>Memuat sertifikat...</span>
                         </div>
                       )}
-                      <img src={cert.imageUrl} alt={cert.name} onLoad={()=>setImgLoaded(true)}
-                        style={{width:'100%',display:'block',objectFit:'contain',maxHeight:360,opacity:imgLoaded?1:0,transition:'opacity 0.3s'}}/>
+                      <img src={cert.imageUrl} alt={`Sertifikat ${cert.name}`} onLoad={()=>setImgLoaded(true)}
+                        style={{width:'100%',display:'block',objectFit:'contain',maxHeight:420,opacity:imgLoaded?1:0,transition:'opacity 0.4s ease'}}/>
                     </>
                   ) : (
-                    <div style={{textAlign:'center',padding:'2rem',color:'rgba(168,230,207,0.4)'}}>
-                      <div style={{fontSize:'3rem',marginBottom:'0.5rem'}}>🎓</div>
-                      <p style={{fontFamily:'var(--font-body)',fontSize:'0.82rem'}}>Gambar sertifikat belum diupload</p>
+                    <div style={{textAlign:'center',padding:'3rem 2rem',color:'rgba(168,230,207,0.4)'}}>
+                      <motion.div animate={{y:[0,-8,0]}} transition={{duration:2.5,repeat:Infinity,ease:'easeInOut'}}
+                        style={{fontSize:'3.5rem',marginBottom:'0.8rem'}}>🎓</motion.div>
+                      <p style={{fontFamily:'var(--font-body)',fontSize:'0.85rem',lineHeight:1.6}}>Gambar sertifikat<br/>belum diupload</p>
+                      <p style={{fontFamily:'var(--font-body)',fontSize:'0.75rem',color:'rgba(168,230,207,0.3)',marginTop:'0.5rem'}}>Upload melalui Admin Panel → Sertifikasi</p>
                     </div>
                   )}
                 </div>
