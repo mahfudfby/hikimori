@@ -667,58 +667,45 @@ const Home:React.FC=()=>{
       </section>
 
       {/* ══════════════════════════════════════════
-          GHIBLI — SKILLS "CASTLE IN THE SKY"
+          GHIBLI — CERTIFICATES "SCROLL OF WISDOM"
       ══════════════════════════════════════════ */}
-      <section style={{position:'relative',padding:'clamp(4rem,10vw,8rem) clamp(1rem,5vw,2rem)',overflow:'hidden',background:`linear-gradient(180deg, ${G.forest2} 0%, ${G.dusk1} 50%, ${G.dusk2} 100%)`}}>
-        {/* Moving clouds bg */}
-        <GhibliCloud style={{top:'5%',left:'-10%',opacity:0.6}} speed={25}/>
-        <GhibliCloud style={{top:'40%',right:'-5%',opacity:0.4}} speed={35} direction={-1}/>
-        <GhibliCloud style={{bottom:'20%',left:'20%',opacity:0.3}} speed={45}/>
-        {/* Floating islands */}
-        <FloatingIsland style={{right:'5%',top:'10%',opacity:0.5}} delay={0}/>
-        <FloatingIsland style={{left:'3%',top:'35%',opacity:0.4}} delay={1.5}/>
-        <FloatingIsland style={{right:'15%',bottom:'15%',opacity:0.35}} delay={3}/>
+      <section style={{position:'relative',padding:'clamp(4rem,10vw,8rem) clamp(1rem,5vw,2rem)',overflow:'hidden',background:`linear-gradient(180deg, #1a0a2e 0%, #0d1a2e 60%, ${G.sky1} 100%)`}}>
+        {/* bg stars */}
+        {[...Array(25)].map((_,i)=>(
+          <motion.div key={i} style={{position:'absolute',width:2,height:2,borderRadius:'50%',background:'white',left:`${Math.random()*100}%`,top:`${Math.random()*80}%`,pointerEvents:'none'}}
+            animate={{opacity:[0.1,0.7,0.1]}} transition={{duration:2+Math.random()*3,repeat:Infinity,delay:Math.random()*4}}/>
+        ))}
         {/* Fireflies */}
-        {[...Array(8)].map((_,i)=><Firefly key={i} style={{left:`${10+i*11}%`,top:`${20+i*8}%`}} delay={i*0.4}/>)}
+        {[...Array(6)].map((_,i)=><Firefly key={i} style={{left:`${10+i*14}%`,top:`${15+i*10}%`}} delay={i*0.5}/>)}
+        {/* Kodama */}
+        <Kodama x="5%" y="15%" size={26} delay={0.8}/>
+        <Kodama x="90%" y="30%" size={22} delay={2}/>
 
-        <div style={{maxWidth:1100,margin:'0 auto',position:'relative',zIndex:2}}>
+        <div style={{maxWidth:900,margin:'0 auto',position:'relative',zIndex:2}}>
           <Reveal direction="up">
             <div style={{textAlign:'center',marginBottom:'3rem'}}>
-              <motion.div animate={{y:[0,-6,0]}} transition={{duration:4,repeat:Infinity,ease:'easeInOut'}}>
-                <div style={{fontFamily:'var(--font-body)',color:G.jade,fontSize:'0.78rem',letterSpacing:'4px',textTransform:'uppercase',fontWeight:700,marginBottom:'0.6rem'}}>✦ Skills & Tools</div>
-                <h2 style={{fontFamily:'var(--font-display)',fontSize:'clamp(2.5rem,8vw,5.5rem)',lineHeight:0.9,color:G.warmWhite,wordBreak:'break-word'}}>
-                  CASTLE IN{' '}
-                  <span style={{color:G.jade,textShadow:`0 0 30px ${G.jade}66`}}>THE SKY</span>
+              <motion.div animate={{y:[0,-5,0]}} transition={{duration:3.5,repeat:Infinity,ease:'easeInOut'}}>
+                <div style={{fontFamily:'var(--font-body)',color:G.jade,fontSize:'0.78rem',letterSpacing:'4px',textTransform:'uppercase',fontWeight:700,marginBottom:'0.6rem'}}>✦ Scroll of Wisdom</div>
+                <h2 style={{fontFamily:'var(--font-display)',fontSize:'clamp(2.2rem,8vw,5rem)',lineHeight:0.9,color:G.warmWhite,wordBreak:'break-word'}}>
+                  SERTIFI<span style={{color:G.jade,textShadow:`0 0 30px ${G.jade}66`}}>KASI</span>
                 </h2>
+                <p style={{color:'rgba(168,230,207,0.6)',marginTop:'0.8rem',fontSize:'0.9rem'}}>Klik kartu untuk melihat sertifikat</p>
               </motion.div>
             </div>
           </Reveal>
 
-          <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(min(100%,260px),1fr))',gap:'1.2rem'}}>
-            {skills.map((sk,i)=>(
-              <Reveal key={sk.id} direction="up" delay={i*0.1}>
-                <TiltCard style={{borderRadius:18,height:'100%'}}>
-                  <motion.div
-                    whileHover={{boxShadow:`0 20px 60px rgba(78,205,196,0.3), 0 0 0 1px ${G.jade}44`}}
-                    style={{background:'rgba(13,34,64,0.85)',border:`1px solid rgba(78,205,196,0.2)`,borderRadius:18,padding:'1.8rem',position:'relative',overflow:'hidden',height:'100%',backdropFilter:'blur(12px)'}}>
-                    {/* Glow orb */}
-                    <motion.div animate={{scale:[1,1.3,1],opacity:[0.3,0.6,0.3]}} transition={{duration:3+i*0.5,repeat:Infinity}}
-                      style={{position:'absolute',top:-20,right:-20,width:80,height:80,borderRadius:'50%',background:`radial-gradient(circle, ${G.jade}33 0%, transparent 70%)`}}/>
-                    {/* Floating number */}
-                    <motion.div animate={{y:[0,-4,0]}} transition={{duration:2.5+i*0.3,repeat:Infinity,ease:'easeInOut'}}
-                      style={{color:G.jade,fontFamily:'var(--font-display)',fontSize:'1.8rem',marginBottom:'0.6rem',position:'relative',zIndex:1,textShadow:`0 0 15px ${G.jade}88`}}>
-                      {sk.number}
-                    </motion.div>
-                    <h3 style={{fontFamily:'var(--font-body)',fontWeight:700,fontSize:'0.88rem',color:G.cream,textTransform:'uppercase',letterSpacing:'0.5px',marginBottom:'0.7rem',position:'relative',zIndex:1}}>{sk.title}</h3>
-                    <p style={{color:'rgba(168,230,207,0.7)',fontSize:'0.85rem',lineHeight:1.6,position:'relative',zIndex:1}}>{sk.desc}</p>
-                    {/* Bottom shimmer line */}
-                    <motion.div animate={{scaleX:[0,1,0]}} transition={{duration:3,repeat:Infinity,delay:i*0.4}}
-                      style={{position:'absolute',bottom:0,left:0,right:0,height:2,background:`linear-gradient(to right, transparent, ${G.jade}, transparent)`,transformOrigin:'left'}}/>
-                  </motion.div>
-                </TiltCard>
-              </Reveal>
-            ))}
-          </div>
+          {certs.length === 0 ? (
+            <Reveal direction="up">
+              <div style={{textAlign:'center',padding:'3rem',color:'rgba(168,230,207,0.4)',border:`1px dashed rgba(78,205,196,0.2)`,borderRadius:16}}>
+                <div style={{fontSize:'3rem',marginBottom:'0.8rem'}}>🎓</div>
+                <p style={{fontFamily:'var(--font-body)',fontSize:'0.9rem'}}>Belum ada sertifikasi. Tambahkan melalui Admin Panel.</p>
+              </div>
+            </Reveal>
+          ) : (
+            <div style={{display:'flex',flexDirection:'column',gap:'0.75rem'}}>
+              {certs.map((cert,i)=><CertCard key={cert.id} cert={cert} index={i}/>)}
+            </div>
+          )}
         </div>
       </section>
 
@@ -802,6 +789,62 @@ const Home:React.FC=()=>{
       </section>
 
       {/* ══════════════════════════════════════════
+          GHIBLI — SKILLS "CASTLE IN THE SKY"
+      ══════════════════════════════════════════ */}
+      <section style={{position:'relative',padding:'clamp(4rem,10vw,8rem) clamp(1rem,5vw,2rem)',overflow:'hidden',background:`linear-gradient(180deg, ${G.forest2} 0%, ${G.dusk1} 50%, ${G.dusk2} 100%)`}}>
+        {/* Moving clouds bg */}
+        <GhibliCloud style={{top:'5%',left:'-10%',opacity:0.6}} speed={25}/>
+        <GhibliCloud style={{top:'40%',right:'-5%',opacity:0.4}} speed={35} direction={-1}/>
+        <GhibliCloud style={{bottom:'20%',left:'20%',opacity:0.3}} speed={45}/>
+        {/* Floating islands */}
+        <FloatingIsland style={{right:'5%',top:'10%',opacity:0.5}} delay={0}/>
+        <FloatingIsland style={{left:'3%',top:'35%',opacity:0.4}} delay={1.5}/>
+        <FloatingIsland style={{right:'15%',bottom:'15%',opacity:0.35}} delay={3}/>
+        {/* Fireflies */}
+        {[...Array(8)].map((_,i)=><Firefly key={i} style={{left:`${10+i*11}%`,top:`${20+i*8}%`}} delay={i*0.4}/>)}
+
+        <div style={{maxWidth:1100,margin:'0 auto',position:'relative',zIndex:2}}>
+          <Reveal direction="up">
+            <div style={{textAlign:'center',marginBottom:'3rem'}}>
+              <motion.div animate={{y:[0,-6,0]}} transition={{duration:4,repeat:Infinity,ease:'easeInOut'}}>
+                <div style={{fontFamily:'var(--font-body)',color:G.jade,fontSize:'0.78rem',letterSpacing:'4px',textTransform:'uppercase',fontWeight:700,marginBottom:'0.6rem'}}>✦ Skills & Tools</div>
+                <h2 style={{fontFamily:'var(--font-display)',fontSize:'clamp(2.5rem,8vw,5.5rem)',lineHeight:0.9,color:G.warmWhite,wordBreak:'break-word'}}>
+                  CASTLE IN{' '}
+                  <span style={{color:G.jade,textShadow:`0 0 30px ${G.jade}66`}}>THE SKY</span>
+                </h2>
+              </motion.div>
+            </div>
+          </Reveal>
+
+          <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(min(100%,260px),1fr))',gap:'1.2rem'}}>
+            {skills.map((sk,i)=>(
+              <Reveal key={sk.id} direction="up" delay={i*0.1}>
+                <TiltCard style={{borderRadius:18,height:'100%'}}>
+                  <motion.div
+                    whileHover={{boxShadow:`0 20px 60px rgba(78,205,196,0.3), 0 0 0 1px ${G.jade}44`}}
+                    style={{background:'rgba(13,34,64,0.85)',border:`1px solid rgba(78,205,196,0.2)`,borderRadius:18,padding:'1.8rem',position:'relative',overflow:'hidden',height:'100%',backdropFilter:'blur(12px)'}}>
+                    {/* Glow orb */}
+                    <motion.div animate={{scale:[1,1.3,1],opacity:[0.3,0.6,0.3]}} transition={{duration:3+i*0.5,repeat:Infinity}}
+                      style={{position:'absolute',top:-20,right:-20,width:80,height:80,borderRadius:'50%',background:`radial-gradient(circle, ${G.jade}33 0%, transparent 70%)`}}/>
+                    {/* Floating number */}
+                    <motion.div animate={{y:[0,-4,0]}} transition={{duration:2.5+i*0.3,repeat:Infinity,ease:'easeInOut'}}
+                      style={{color:G.jade,fontFamily:'var(--font-display)',fontSize:'1.8rem',marginBottom:'0.6rem',position:'relative',zIndex:1,textShadow:`0 0 15px ${G.jade}88`}}>
+                      {sk.number}
+                    </motion.div>
+                    <h3 style={{fontFamily:'var(--font-body)',fontWeight:700,fontSize:'0.88rem',color:G.cream,textTransform:'uppercase',letterSpacing:'0.5px',marginBottom:'0.7rem',position:'relative',zIndex:1}}>{sk.title}</h3>
+                    <p style={{color:'rgba(168,230,207,0.7)',fontSize:'0.85rem',lineHeight:1.6,position:'relative',zIndex:1}}>{sk.desc}</p>
+                    {/* Bottom shimmer line */}
+                    <motion.div animate={{scaleX:[0,1,0]}} transition={{duration:3,repeat:Infinity,delay:i*0.4}}
+                      style={{position:'absolute',bottom:0,left:0,right:0,height:2,background:`linear-gradient(to right, transparent, ${G.jade}, transparent)`,transformOrigin:'left'}}/>
+                  </motion.div>
+                </TiltCard>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════
           GHIBLI — CTA "FOREST SPIRIT"
       ══════════════════════════════════════════ */}
       <section style={{position:'relative',padding:'clamp(4rem,10vw,8rem) clamp(1rem,5vw,2rem)',textAlign:'center',overflow:'hidden',background:`linear-gradient(180deg, #1a0a2e 0%, ${G.forest1} 60%, ${G.forest2} 100%)`}}>
@@ -858,49 +901,6 @@ const Home:React.FC=()=>{
         <div style={{position:'absolute',bottom:0,left:0,right:0,height:100,background:'linear-gradient(to top, rgba(10,31,10,0.9), transparent)',pointerEvents:'none'}}/>
       </section>
 
-
-      {/* ══════════════════════════════════════════
-          GHIBLI — CERTIFICATES "SCROLL OF WISDOM"
-      ══════════════════════════════════════════ */}
-      <section style={{position:'relative',padding:'clamp(4rem,10vw,8rem) clamp(1rem,5vw,2rem)',overflow:'hidden',background:`linear-gradient(180deg, #1a0a2e 0%, #0d1a2e 60%, ${G.sky1} 100%)`}}>
-        {/* bg stars */}
-        {[...Array(25)].map((_,i)=>(
-          <motion.div key={i} style={{position:'absolute',width:2,height:2,borderRadius:'50%',background:'white',left:`${Math.random()*100}%`,top:`${Math.random()*80}%`,pointerEvents:'none'}}
-            animate={{opacity:[0.1,0.7,0.1]}} transition={{duration:2+Math.random()*3,repeat:Infinity,delay:Math.random()*4}}/>
-        ))}
-        {/* Fireflies */}
-        {[...Array(6)].map((_,i)=><Firefly key={i} style={{left:`${10+i*14}%`,top:`${15+i*10}%`}} delay={i*0.5}/>)}
-        {/* Kodama */}
-        <Kodama x="5%" y="15%" size={26} delay={0.8}/>
-        <Kodama x="90%" y="30%" size={22} delay={2}/>
-
-        <div style={{maxWidth:900,margin:'0 auto',position:'relative',zIndex:2}}>
-          <Reveal direction="up">
-            <div style={{textAlign:'center',marginBottom:'3rem'}}>
-              <motion.div animate={{y:[0,-5,0]}} transition={{duration:3.5,repeat:Infinity,ease:'easeInOut'}}>
-                <div style={{fontFamily:'var(--font-body)',color:G.jade,fontSize:'0.78rem',letterSpacing:'4px',textTransform:'uppercase',fontWeight:700,marginBottom:'0.6rem'}}>✦ Scroll of Wisdom</div>
-                <h2 style={{fontFamily:'var(--font-display)',fontSize:'clamp(2.2rem,8vw,5rem)',lineHeight:0.9,color:G.warmWhite,wordBreak:'break-word'}}>
-                  SERTIFI<span style={{color:G.jade,textShadow:`0 0 30px ${G.jade}66`}}>KASI</span>
-                </h2>
-                <p style={{color:'rgba(168,230,207,0.6)',marginTop:'0.8rem',fontSize:'0.9rem'}}>Klik kartu untuk melihat sertifikat</p>
-              </motion.div>
-            </div>
-          </Reveal>
-
-          {certs.length === 0 ? (
-            <Reveal direction="up">
-              <div style={{textAlign:'center',padding:'3rem',color:'rgba(168,230,207,0.4)',border:`1px dashed rgba(78,205,196,0.2)`,borderRadius:16}}>
-                <div style={{fontSize:'3rem',marginBottom:'0.8rem'}}>🎓</div>
-                <p style={{fontFamily:'var(--font-body)',fontSize:'0.9rem'}}>Belum ada sertifikasi. Tambahkan melalui Admin Panel.</p>
-              </div>
-            </Reveal>
-          ) : (
-            <div style={{display:'flex',flexDirection:'column',gap:'0.75rem'}}>
-              {certs.map((cert,i)=><CertCard key={cert.id} cert={cert} index={i}/>)}
-            </div>
-          )}
-        </div>
-      </section>
 
       {/* ══ CONTACT (unchanged) ══ */}
       <ContactSection/>
