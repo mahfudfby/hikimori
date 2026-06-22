@@ -123,8 +123,6 @@ const Navbar: React.FC = () => {
               borderBottom: '1px solid rgba(245,166,35,0.2)',
               padding: '1.5rem 2rem',
               display: 'flex', flexDirection: 'column', gap: '1.2rem',
-              /* Relative positioning so gear button can anchor to bottom-right */
-              position: 'absolute',
             }}
           >
             {/* Nav links */}
