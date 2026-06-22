@@ -110,11 +110,24 @@ const Navbar: React.FC = () => {
         ))}
       </button>
 
-      {/* ── Mobile Menu ── */}
+      {/* ── Mobile Dropdown Menu ── */}
       <AnimatePresence>
         {menuOpen && (
-          <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
-            style={{ position: 'absolute', top: '70px', left: 0, right: 0, background: 'rgba(10,10,10,0.98)', backdropFilter: 'blur(20px)', borderBottom: '1px solid rgba(245,166,35,0.2)', padding: '1.5rem 2rem', display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            style={{
+              position: 'absolute', top: '70px', left: 0, right: 0,
+              background: 'rgba(10,10,10,0.98)', backdropFilter: 'blur(20px)',
+              borderBottom: '1px solid rgba(245,166,35,0.2)',
+              padding: '1.5rem 2rem',
+              display: 'flex', flexDirection: 'column', gap: '1.2rem',
+              /* Relative positioning so gear button can anchor to bottom-right */
+              position: 'absolute',
+            }}
+          >
+            {/* Nav links */}
             {links.map((link, i) => (
               <motion.div key={link.to} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.08 }}>
                 <Link to={link.to} style={{ textDecoration: 'none', color: isActive(link.to) ? 'var(--amber)' : 'var(--white)', fontFamily: 'var(--font-body)', fontWeight: 600, fontSize: '1.1rem' }}>
@@ -122,20 +135,69 @@ const Navbar: React.FC = () => {
                 </Link>
               </motion.div>
             ))}
-            {isAdmin ? (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
-                <Link to="/admin" style={{ textDecoration: 'none' }}>
-                  <span style={{ color: 'var(--amber)', fontWeight: 700 }}>⚙ Admin Panel</span>
+
+            {/* Spacer bawah agar tidak ketutup gear button */}
+            <div style={{ height: 8 }} />
+
+            {/* ── Gear / Logout — pojok kanan bawah dropdown ── */}
+            <div style={{
+              position: 'absolute',
+              bottom: '1rem',
+              right: '1.5rem',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+            }}>
+              {isAdmin ? (
+                <>
+                  <Link to="/admin" style={{ textDecoration: 'none' }}>
+                    <motion.button
+                      whileHover={{ scale: 1.08, backgroundColor: '#D4891F' }}
+                      whileTap={{ scale: 0.95 }}
+                      style={{
+                        background: 'var(--amber)', color: 'var(--black)',
+                        border: 'none', borderRadius: '8px',
+                        padding: '7px 14px',
+                        fontFamily: 'var(--font-body)', fontWeight: 700,
+                        fontSize: '0.82rem', cursor: 'pointer',
+                        display: 'flex', alignItems: 'center', gap: '5px',
+                      }}>
+                      ⚙ Admin
+                    </motion.button>
+                  </Link>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={handleLogout}
+                    disabled={loggingOut}
+                    style={{
+                      background: 'rgba(255,60,60,0.12)',
+                      color: '#ff6b6b',
+                      border: '1px solid rgba(255,60,60,0.25)',
+                      borderRadius: '8px', padding: '7px 14px',
+                      fontFamily: 'var(--font-body)', fontWeight: 600,
+                      fontSize: '0.82rem', cursor: 'pointer',
+                    }}>
+                    {loggingOut ? '...' : 'Logout'}
+                  </motion.button>
+                </>
+              ) : (
+                <Link to="/admin/login" style={{ textDecoration: 'none' }}>
+                  <motion.button
+                    whileHover={{ scale: 1.05, backgroundColor: 'rgba(245,166,35,0.12)' }}
+                    whileTap={{ scale: 0.95 }}
+                    style={{
+                      background: 'transparent', color: 'var(--amber)',
+                      border: '1px solid rgba(245,166,35,0.4)',
+                      borderRadius: '8px', padding: '7px 14px',
+                      fontFamily: 'var(--font-body)', fontWeight: 600,
+                      fontSize: '0.82rem', cursor: 'pointer',
+                    }}>
+                    🔐 Login
+                  </motion.button>
                 </Link>
-                <button onClick={handleLogout} style={{ background: 'none', border: '1px solid rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.5)', borderRadius: '8px', padding: '8px 16px', fontFamily: 'var(--font-body)', fontSize: '0.9rem', cursor: 'pointer', textAlign: 'left' }}>
-                  Logout
-                </button>
-              </div>
-            ) : (
-              <Link to="/admin/login" style={{ textDecoration: 'none' }}>
-                <span style={{ color: 'var(--amber)', fontWeight: 700 }}>🔐 Login Admin</span>
-              </Link>
-            )}
+              )}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

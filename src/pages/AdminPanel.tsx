@@ -1,19 +1,32 @@
-// src/pages/AdminPanel.tsx — Full CMS: Home, About, Skills, Experience, Portfolio, Contact, Settings
-import React, { useState, useEffect } from 'react';
+// src/pages/AdminPanel.tsx — Full CMS: Firestore-backed (Home, About, Skills, Experience, Contact, Sertifikasi) + Portfolio
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { usePortfolio, PortfolioItem } from '../hooks/usePortfolio';
 import { uploadToCloudinary } from '../utils/cloudinaryUpload';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import {
+  doc, getDoc, setDoc, onSnapshot,
+} from 'firebase/firestore';
+import { db } from '../config/firebase';
 
-/* ─── localStorage Keys ─── */
-const LS_HOME    = 'hk_home_data';
-const LS_ABOUT   = 'hk_home_about_data';
-const LS_SKILLS  = 'hk_skills_data';
-const LS_EXP     = 'hk_experience_data';
-const LS_CONTACT = 'hk_contact_data';
-const LS_CERT    = 'hk_cert_data';
+/* ─── Firestore document paths ───────────────────────────────────────────
+   Semua konten CMS disimpan di collection "siteData", satu doc per section.
+   Home.tsx membaca dari sini via onSnapshot → real-time di semua device.
+──────────────────────────────────────────────────────────────────────── */
+const FS = {
+  home:    'siteData/home',
+  about:   'siteData/about',
+  skills:  'siteData/skills',
+  exp:     'siteData/experience',
+  contact: 'siteData/contact',
+  cert:    'siteData/sertifikasi',
+} as const;
+
+/* ─── localStorage keys (HANYA sebagai cache offline fallback) ─── */
+const LS_HOME='hk_home_data', LS_ABOUT='hk_home_about_data', LS_SKILLS='hk_skills_data';
+const LS_EXP='hk_experience_data', LS_CONTACT='hk_contact_data', LS_CERT='hk_cert_data';
 
 /* ─── Types ─── */
 interface HomeData    { heroTitle:string; heroSubtitle:string; heroTagline:string; heroCtaSecondary:string; heroCtaSecondaryLink:string; heroCta:string; heroCtaLink:string; heroPhotoUrl:string; heroTagRight:string; }
@@ -24,31 +37,73 @@ interface ContactData { email:string; location:string; website:string; instagram
 interface CertItem    { id:string; name:string; year:string; issuer:string; subtitle:string; imageUrl:string; }
 
 /* ─── Defaults ─── */
-const D_HOME:    HomeData    = { heroTitle:'Shaping tomorrow', heroSubtitle:'with vision and action.', heroTagline:'We back visionaries and craft ventures that define what comes next.', heroCtaSecondary:'Start a Chat', heroCtaSecondaryLink:'#contact', heroCta:'Explore Now', heroCtaLink:'/portofolio', heroPhotoUrl:'', heroTagRight:'Investing. Building. Advisory.' };
-const D_ABOUT:   AboutData   = { name:'Mahfudfebry', location:'Nganjuk, Indonesia', bio1:'Halo! Nama saya Mahfudfebry, seorang profesional muda dari Nganjuk, Indonesia.', bio2:'Di setiap proyek, saya selalu berusaha memberikan hasil terbaik.', photoUrl:'' };
-const D_SKILLS:  SkillItem[] = [
-  { id:'1', number:'01', title:'Branding & Identity Design', desc:"Crafting memorable logos and visual systems." },
-  { id:'2', number:'02', title:'Creativity & Problem-Solving', desc:'Thinking outside the box while solving design challenges.' },
-  { id:'3', number:'03', title:'Concept Development', desc:'Skilled in brainstorming and translating abstract ideas.' },
-  { id:'4', number:'04', title:'Proper Time Management', desc:'Capable of handling multiple projects and meeting deadlines.' },
-];
-const D_EXP: ExpItem[] = [
-  { id:'1', position:'HR / General Affairs', company:'UD Duta Pangan', period:'2020–2023', icon:'👥', tags:'Vendor Management,Stock Monitoring,Facility Maintenance' },
-  { id:'2', position:'Staff Administrasi',   company:'UD Duta Pangan', period:'2020–2023', icon:'📋', tags:'Document Processing,Administrative Support,Filing' },
-  { id:'3', position:'IT Support',           company:'UD Duta Pangan', period:'2020–2023', icon:'💻', tags:'Hardware Troubleshooting,Software Installation,Network Setup' },
-];
-const D_CONTACT: ContactData = { email:'mahfudfebry@hikimori.web.id', location:'Nganjuk, Indonesia', website:'hikimori.web.id', instagram:'', linkedin:'', twitter:'' };
-const D_CERT: CertItem[] = [
-  { id:'1', name:'Google Digital Marketing', year:'2023', issuer:'Google', subtitle:'Fundamentals of Digital Marketing', imageUrl:'' },
-];
+const D_HOME:HomeData    = { heroTitle:'Shaping tomorrow', heroSubtitle:'with vision and action.', heroTagline:'We back visionaries and craft ventures that define what comes next.', heroCtaSecondary:'Start a Chat', heroCtaSecondaryLink:'#contact', heroCta:'Explore Now', heroCtaLink:'/portofolio', heroPhotoUrl:'', heroTagRight:'Investing. Building. Advisory.' };
+const D_ABOUT:AboutData  = { name:'Mahfudfebry', location:'Nganjuk, Indonesia', bio1:'Halo! Nama saya Mahfudfebry, seorang profesional muda dari Nganjuk, Indonesia.', bio2:'Di setiap proyek, saya selalu berusaha memberikan hasil terbaik.', photoUrl:'' };
+const D_SKILLS:SkillItem[]= [{id:'1',number:'01',title:'Branding & Identity Design',desc:"Crafting memorable logos and visual systems."},{id:'2',number:'02',title:'Creativity & Problem-Solving',desc:'Thinking outside the box while solving design challenges.'},{id:'3',number:'03',title:'Concept Development',desc:'Skilled in brainstorming and translating abstract ideas.'},{id:'4',number:'04',title:'Proper Time Management',desc:'Capable of handling multiple projects and meeting deadlines.'}];
+const D_EXP:ExpItem[]    = [{id:'1',position:'HR / General Affairs',company:'UD Duta Pangan',period:'2020–2023',icon:'👥',tags:'Vendor Management,Stock Monitoring,Facility Maintenance'},{id:'2',position:'Staff Administrasi',company:'UD Duta Pangan',period:'2020–2023',icon:'📋',tags:'Document Processing,Administrative Support,Filing'},{id:'3',position:'IT Support',company:'UD Duta Pangan',period:'2020–2023',icon:'💻',tags:'Hardware Troubleshooting,Software Installation,Network Setup'}];
+const D_CONTACT:ContactData = { email:'mahfudfebry@hikimori.web.id', location:'Nganjuk, Indonesia', website:'hikimori.web.id', instagram:'', linkedin:'', twitter:'' };
+const D_CERT:CertItem[]  = [{id:'1',name:'Google Digital Marketing',year:'2023',issuer:'Google',subtitle:'Fundamentals of Digital Marketing',imageUrl:''}];
 
-const ls = <T,>(key: string, fallback: T): T => { try { return JSON.parse(localStorage.getItem(key) || 'null') ?? fallback; } catch { return fallback; } };
-const save = (key: string, val: any) => {
-  const json = JSON.stringify(val);
-  localStorage.setItem(key, json);
-  // Same-tab update via CustomEvent (StorageEvent only fires cross-tab)
-  window.dispatchEvent(new CustomEvent('hk-update', { detail: { key, value: json } }));
+/* ─── Firestore helpers ──────────────────────────────────────────────────
+   fsGet  : baca sekali dari Firestore, fallback ke localStorage, lalu default
+   fsSave : tulis ke Firestore DAN update localStorage cache + CustomEvent
+──────────────────────────────────────────────────────────────────────── */
+const parseDocPath = (path: string) => {
+  const [col, docId] = path.split('/');
+  return { col, docId };
 };
+
+const fsGet = async <T,>(path: string, lsKey: string, fallback: T): Promise<T> => {
+  try {
+    const { col, docId } = parseDocPath(path);
+    const snap = await getDoc(doc(db, col, docId));
+    if (snap.exists()) {
+      const data = snap.data() as { value: T };
+      // update local cache
+      localStorage.setItem(lsKey, JSON.stringify(data.value));
+      return data.value;
+    }
+  } catch (e) {
+    console.warn('fsGet failed, falling back to localStorage', e);
+  }
+  // fallback to localStorage cache
+  try {
+    const cached = localStorage.getItem(lsKey);
+    if (cached) return JSON.parse(cached) as T;
+  } catch {}
+  return fallback;
+};
+
+const fsSave = async <T,>(path: string, lsKey: string, value: T): Promise<void> => {
+  const { col, docId } = parseDocPath(path);
+  // Write to Firestore
+  await setDoc(doc(db, col, docId), { value });
+  // Update localStorage cache
+  const json = JSON.stringify(value);
+  localStorage.setItem(lsKey, json);
+  // Notify same-tab listeners (Home.tsx)
+  window.dispatchEvent(new CustomEvent('hk-update', { detail: { key: lsKey, value: json } }));
+};
+
+/* ─── Firestore real-time subscription helper ─── */
+const fsListen = <T,>(path: string, lsKey: string, fallback: T, cb: (val: T) => void) => {
+  const { col, docId } = parseDocPath(path);
+  return onSnapshot(doc(db, col, docId), (snap) => {
+    if (snap.exists()) {
+      const data = snap.data() as { value: T };
+      localStorage.setItem(lsKey, JSON.stringify(data.value));
+      window.dispatchEvent(new CustomEvent('hk-update', { detail: { key: lsKey, value: JSON.stringify(data.value) } }));
+      cb(data.value);
+    } else {
+      cb(fallback);
+    }
+  }, (err) => {
+    console.warn('fsListen error', err);
+    // fallback to localStorage
+    try { const c = localStorage.getItem(lsKey); if (c) cb(JSON.parse(c)); else cb(fallback); } catch { cb(fallback); }
+  });
+};
+
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
 
 type Tab = 'dashboard'|'home'|'about'|'skills'|'experience'|'sertifikasi'|'portfolio'|'contact'|'settings';
@@ -61,25 +116,19 @@ const btn = (primary?: boolean): React.CSSProperties => ({ background: primary ?
 
 const EMPTY_PORT = { title:'', category:'HR', description:'', imageUrl:'', tags:'', client:'', year:new Date().getFullYear().toString(), featured:false, order:0 };
 
-/* ─── ImageUploader helper ─── */
+/* ─── ImageUploader ─── */
 const ImageUploader: React.FC<{ value:string; onChange:(url:string)=>void; label?:string }> = ({ value, onChange, label='Foto / Gambar' }) => {
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState(value);
-
   useEffect(() => { setPreview(value); }, [value]);
-
   const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]; if (!file) return;
     setPreview(URL.createObjectURL(file));
     setUploading(true);
-    try {
-      const url = await uploadToCloudinary(file);
-      onChange(url); setPreview(url);
-      toast.success('Gambar berhasil diupload!');
-    } catch { toast.error('Gagal upload gambar.'); }
+    try { const url = await uploadToCloudinary(file); onChange(url); setPreview(url); toast.success('Gambar berhasil diupload!'); }
+    catch { toast.error('Gagal upload gambar.'); }
     finally { setUploading(false); }
   };
-
   return (
     <div>
       <label style={lbl}>{label}</label>
@@ -99,22 +148,21 @@ const AdminPanel: React.FC = () => {
   const { items, loading, addItem, updateItem, deleteItem } = usePortfolio();
   const navigate = useNavigate();
   const [tab, setTab] = useState<Tab>('dashboard');
+  const [fsReady, setFsReady] = useState(false);
 
-  /* Home */
-  const [home, setHome] = useState<HomeData>(() => ls(LS_HOME, D_HOME));
+  /* ── State ── */
+  const [home, setHome]       = useState<HomeData>(D_HOME);
   const [homeSaving, setHomeSaving] = useState(false);
-
-  /* About */
-  const [about, setAbout] = useState<AboutData>(() => ls(LS_ABOUT, D_ABOUT));
+  const [about, setAbout]     = useState<AboutData>(D_ABOUT);
   const [aboutSaving, setAboutSaving] = useState(false);
-
-  /* Skills */
-  const [skills, setSkills] = useState<SkillItem[]>(() => ls(LS_SKILLS, D_SKILLS));
+  const [skills, setSkills]   = useState<SkillItem[]>(D_SKILLS);
   const [skillForm, setSkillForm] = useState<SkillItem|null>(null);
-
-  /* Experience */
-  const [exps, setExps] = useState<ExpItem[]>(() => ls(LS_EXP, D_EXP));
+  const [exps, setExps]       = useState<ExpItem[]>(D_EXP);
   const [expForm, setExpForm] = useState<ExpItem|null>(null);
+  const [certs, setCerts]     = useState<CertItem[]>(D_CERT);
+  const [certForm, setCertForm] = useState<CertItem|null>(null);
+  const [contact, setContact] = useState<ContactData>(D_CONTACT);
+  const [contactSaving, setContactSaving] = useState(false);
 
   /* Portfolio */
   const [portForm, setPortForm] = useState({ ...EMPTY_PORT });
@@ -125,52 +173,108 @@ const AdminPanel: React.FC = () => {
   const [portSubmitting, setPortSubmitting] = useState(false);
   const [delConfirm, setDelConfirm] = useState<string|null>(null);
 
-  /* Sertifikasi */
-  const [certs, setCerts] = useState<CertItem[]>(() => ls(LS_CERT, D_CERT));
-  const [certForm, setCertForm] = useState<CertItem|null>(null);
+  /* ── Load dari Firestore saat mount + subscribe real-time ── */
+  useEffect(() => {
+    const unsubs: (() => void)[] = [];
 
-  /* Contact */
-  const [contact, setContact] = useState<ContactData>(() => ls(LS_CONTACT, D_CONTACT));
-  const [contactSaving, setContactSaving] = useState(false);
+    // Load semua section sekaligus
+    Promise.all([
+      fsGet<HomeData>(FS.home, LS_HOME, D_HOME),
+      fsGet<AboutData>(FS.about, LS_ABOUT, D_ABOUT),
+      fsGet<SkillItem[]>(FS.skills, LS_SKILLS, D_SKILLS),
+      fsGet<ExpItem[]>(FS.exp, LS_EXP, D_EXP),
+      fsGet<ContactData>(FS.contact, LS_CONTACT, D_CONTACT),
+      fsGet<CertItem[]>(FS.cert, LS_CERT, D_CERT),
+    ]).then(([h, a, sk, ex, co, ce]) => {
+      setHome(h); setAbout(a); setSkills(sk);
+      setExps(ex); setContact(co); setCerts(ce);
+      setFsReady(true);
+    });
+
+    // Real-time listeners — update UI jika ada perubahan dari device lain
+    unsubs.push(fsListen<HomeData>(FS.home, LS_HOME, D_HOME, setHome));
+    unsubs.push(fsListen<AboutData>(FS.about, LS_ABOUT, D_ABOUT, setAbout));
+    unsubs.push(fsListen<SkillItem[]>(FS.skills, LS_SKILLS, D_SKILLS, setSkills));
+    unsubs.push(fsListen<ExpItem[]>(FS.exp, LS_EXP, D_EXP, setExps));
+    unsubs.push(fsListen<ContactData>(FS.contact, LS_CONTACT, D_CONTACT, setContact));
+    unsubs.push(fsListen<CertItem[]>(FS.cert, LS_CERT, D_CERT, setCerts));
+
+    return () => unsubs.forEach(u => u());
+  }, []);
 
   const handleLogout = async () => { await logout(); navigate('/admin/login'); toast.success('Berhasil logout.'); };
 
-  /* ── SAVE helpers ── */
-  const saveHome = () => { setHomeSaving(true); save(LS_HOME, home); setTimeout(() => { setHomeSaving(false); toast.success('Halaman Hero disimpan!'); }, 400); };
-  const saveAbout = () => { setAboutSaving(true); save(LS_ABOUT, about); setTimeout(() => { setAboutSaving(false); toast.success('About Me disimpan!'); }, 400); };
-  /* ── Cert CRUD ── */
-  const saveCert = () => {
-    if (!certForm) return;
-    const updated = certForm.id && certs.find(c => c.id === certForm.id)
-      ? certs.map(c => c.id === certForm.id ? certForm : c)
-      : [...certs, { ...certForm, id: uid() }];
-    setCerts(updated); save(LS_CERT, updated); setCertForm(null); toast.success('Sertifikasi disimpan!');
+  /* ── SAVE helpers — tulis ke Firestore ── */
+  const saveHome = async () => {
+    setHomeSaving(true);
+    try { await fsSave(FS.home, LS_HOME, home); toast.success('Hero Home disimpan! ✓ Sinkron semua device.'); }
+    catch { toast.error('Gagal menyimpan ke Firestore.'); }
+    finally { setHomeSaving(false); }
   };
-  const deleteCert = (id: string) => { const u = certs.filter(c => c.id !== id); setCerts(u); save(LS_CERT, u); toast.success('Sertifikasi dihapus.'); };
 
-  const saveContact = () => { setContactSaving(true); save(LS_CONTACT, contact); setTimeout(() => { setContactSaving(false); toast.success('Info Kontak disimpan!'); }, 400); };
+  const saveAbout = async () => {
+    setAboutSaving(true);
+    try { await fsSave(FS.about, LS_ABOUT, about); toast.success('About Me disimpan! ✓ Sinkron semua device.'); }
+    catch { toast.error('Gagal menyimpan.'); }
+    finally { setAboutSaving(false); }
+  };
+
+  const saveContact = async () => {
+    setContactSaving(true);
+    try { await fsSave(FS.contact, LS_CONTACT, contact); toast.success('Kontak disimpan! ✓ Sinkron semua device.'); }
+    catch { toast.error('Gagal menyimpan.'); }
+    finally { setContactSaving(false); }
+  };
 
   /* ── Skills CRUD ── */
-  const saveSkill = () => {
+  const saveSkill = async () => {
     if (!skillForm) return;
     const updated = skillForm.id && skills.find(s => s.id === skillForm.id)
       ? skills.map(s => s.id === skillForm.id ? skillForm : s)
       : [...skills, { ...skillForm, id: uid() }];
-    setSkills(updated); save(LS_SKILLS, updated); setSkillForm(null); toast.success('Skill disimpan!');
+    setSkills(updated);
+    try { await fsSave(FS.skills, LS_SKILLS, updated); setSkillForm(null); toast.success('Skill disimpan! ✓'); }
+    catch { toast.error('Gagal menyimpan skill.'); }
   };
-  const deleteSkill = (id: string) => { const u = skills.filter(s => s.id !== id); setSkills(u); save(LS_SKILLS, u); toast.success('Skill dihapus.'); };
+  const deleteSkill = async (id: string) => {
+    const u = skills.filter(s => s.id !== id); setSkills(u);
+    try { await fsSave(FS.skills, LS_SKILLS, u); toast.success('Skill dihapus.'); }
+    catch { toast.error('Gagal menghapus.'); }
+  };
 
   /* ── Experience CRUD ── */
-  const saveExp = () => {
+  const saveExp = async () => {
     if (!expForm) return;
     const updated = expForm.id && exps.find(e => e.id === expForm.id)
       ? exps.map(e => e.id === expForm.id ? expForm : e)
       : [...exps, { ...expForm, id: uid() }];
-    setExps(updated); save(LS_EXP, updated); setExpForm(null); toast.success('Pengalaman disimpan!');
+    setExps(updated);
+    try { await fsSave(FS.exp, LS_EXP, updated); setExpForm(null); toast.success('Pengalaman disimpan! ✓'); }
+    catch { toast.error('Gagal menyimpan.'); }
   };
-  const deleteExp = (id: string) => { const u = exps.filter(e => e.id !== id); setExps(u); save(LS_EXP, u); toast.success('Pengalaman dihapus.'); };
+  const deleteExp = async (id: string) => {
+    const u = exps.filter(e => e.id !== id); setExps(u);
+    try { await fsSave(FS.exp, LS_EXP, u); toast.success('Pengalaman dihapus.'); }
+    catch { toast.error('Gagal menghapus.'); }
+  };
 
-  /* ── Portfolio CRUD ── */
+  /* ── Sertifikasi CRUD ── */
+  const saveCert = async () => {
+    if (!certForm) return;
+    const updated = certForm.id && certs.find(c => c.id === certForm.id)
+      ? certs.map(c => c.id === certForm.id ? certForm : c)
+      : [...certs, { ...certForm, id: uid() }];
+    setCerts(updated);
+    try { await fsSave(FS.cert, LS_CERT, updated); setCertForm(null); toast.success('Sertifikasi disimpan! ✓'); }
+    catch { toast.error('Gagal menyimpan.'); }
+  };
+  const deleteCert = async (id: string) => {
+    const u = certs.filter(c => c.id !== id); setCerts(u);
+    try { await fsSave(FS.cert, LS_CERT, u); toast.success('Sertifikasi dihapus.'); }
+    catch { toast.error('Gagal menghapus.'); }
+  };
+
+  /* ── Portfolio CRUD (sudah Firestore via usePortfolio) ── */
   const openPortAdd = () => { setPortForm({ ...EMPTY_PORT }); setPortEditId(null); setPortImgPreview(''); setPortImgFile(null); setPortModal(true); };
   const openPortEdit = (item: PortfolioItem) => { setPortForm({ title:item.title, category:item.category, description:item.description, imageUrl:item.imageUrl, tags:item.tags?.join(', ')||'', client:item.client, year:item.year, featured:item.featured, order:item.order }); setPortImgPreview(item.imageUrl); setPortImgFile(null); setPortEditId(item.id); setPortModal(true); };
   const handlePortSubmit = async (e: React.FormEvent) => {
@@ -186,7 +290,27 @@ const AdminPanel: React.FC = () => {
     } catch (err: any) { toast.error('Gagal: ' + err.message); }
     finally { setPortSubmitting(false); }
   };
-  const handleDelete = async (id: string) => { try { await deleteItem(id); toast.success('Dihapus.'); setDelConfirm(null); } catch { toast.error('Gagal menghapus.'); } };
+  const handleDelete = async (id: string) => {
+    try { await deleteItem(id); toast.success('Dihapus.'); setDelConfirm(null); }
+    catch { toast.error('Gagal menghapus.'); }
+  };
+
+  /* ── Reset semua ke Firestore default ── */
+  const handleReset = async () => {
+    if (!window.confirm('Reset semua data ke default? Ini akan menghapus semua perubahan.')) return;
+    try {
+      await Promise.all([
+        fsSave(FS.home, LS_HOME, D_HOME),
+        fsSave(FS.about, LS_ABOUT, D_ABOUT),
+        fsSave(FS.skills, LS_SKILLS, D_SKILLS),
+        fsSave(FS.exp, LS_EXP, D_EXP),
+        fsSave(FS.contact, LS_CONTACT, D_CONTACT),
+        fsSave(FS.cert, LS_CERT, D_CERT),
+      ]);
+      toast.success('Data direset ke default!');
+      window.location.reload();
+    } catch { toast.error('Gagal reset.'); }
+  };
 
   const stats = [
     { label:'Total Portfolio', value:items.length, icon:'📁' },
@@ -196,23 +320,38 @@ const AdminPanel: React.FC = () => {
   ];
 
   const tabs: { id:Tab; icon:string; label:string }[] = [
-    { id:'dashboard',  icon:'📊', label:'Dashboard'    },
-    { id:'home',       icon:'🏠', label:'Hero Home'    },
-    { id:'about',      icon:'👤', label:'About Me'     },
-    { id:'skills',     icon:'💡', label:'Skills'       },
-    { id:'experience', icon:'🏢', label:'Pengalaman'   },
-    { id:'portfolio',  icon:'📁', label:'Portfolio'    },
-    { id:'sertifikasi', icon:'🎓', label:'Sertifikasi'  },
-    { id:'contact',    icon:'📬', label:'Kontak'       },
-    { id:'settings',   icon:'⚙️', label:'Settings'     },
+    { id:'dashboard',   icon:'📊', label:'Dashboard'   },
+    { id:'home',        icon:'🏠', label:'Hero Home'   },
+    { id:'about',       icon:'👤', label:'About Me'    },
+    { id:'skills',      icon:'💡', label:'Skills'      },
+    { id:'experience',  icon:'🏢', label:'Pengalaman'  },
+    { id:'portfolio',   icon:'📁', label:'Portfolio'   },
+    { id:'sertifikasi', icon:'🎓', label:'Sertifikasi' },
+    { id:'contact',     icon:'📬', label:'Kontak'      },
+    { id:'settings',    icon:'⚙️', label:'Settings'    },
   ];
+
+  /* Loading state saat Firestore belum siap */
+  if (!fsReady) return (
+    <div style={{ minHeight:'100vh', background:'var(--black)', display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column', gap:'1rem' }}>
+      <motion.div animate={{ rotate:360 }} transition={{ duration:1, repeat:Infinity, ease:'linear' }}
+        style={{ width:40, height:40, borderRadius:'50%', border:'3px solid rgba(245,166,35,0.3)', borderTopColor:'var(--amber)' }}/>
+      <p style={{ color:'var(--white-dim)', fontFamily:'var(--font-body)', fontSize:'0.9rem' }}>Memuat data dari Firestore...</p>
+    </div>
+  );
 
   return (
     <div style={{ minHeight:'100vh', background:'var(--black)', fontFamily:'var(--font-body)' }}>
       {/* Mobile top bar */}
       <div id="admin-topbar" style={{ display:'none', background:'var(--black-2)', borderBottom:'1px solid rgba(245,166,35,0.15)', padding:'12px 16px', position:'sticky', top:0, zIndex:100, alignItems:'center', justifyContent:'space-between' }}>
         <span style={{ fontFamily:'var(--font-display)', color:'var(--amber)', fontSize:'1.2rem', letterSpacing:'2px' }}>MFD-FBY's Admin</span>
-        <button onClick={handleLogout} style={{ background:'rgba(255,60,60,0.15)', border:'none', borderRadius:8, color:'#ff6b6b', padding:'6px 12px', cursor:'pointer', fontWeight:600, fontSize:'0.8rem' }}>Logout</button>
+        <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+          {/* Firestore status indicator */}
+          <span style={{ fontSize:'0.65rem', color:'#4ade80', background:'rgba(74,222,128,0.1)', border:'1px solid rgba(74,222,128,0.3)', borderRadius:6, padding:'3px 8px', fontWeight:700 }}>
+            🔥 Firestore Live
+          </span>
+          <button onClick={handleLogout} style={{ background:'rgba(255,60,60,0.15)', border:'none', borderRadius:8, color:'#ff6b6b', padding:'6px 12px', cursor:'pointer', fontWeight:600, fontSize:'0.8rem' }}>Logout</button>
+        </div>
       </div>
 
       {/* Mobile Tab Bar */}
@@ -233,6 +372,14 @@ const AdminPanel: React.FC = () => {
           <div style={{ marginBottom:'1.5rem', paddingLeft:'0.4rem' }}>
             <div style={{ fontFamily:'var(--font-display)', color:'var(--amber)', fontSize:'1.2rem', letterSpacing:'2px' }}>MFD-FBY's</div>
             <p style={{ color:'var(--white-dim)', fontSize:'0.72rem' }}>Admin Panel</p>
+          </div>
+          {/* Firestore badge */}
+          <div style={{ background:'rgba(74,222,128,0.08)', border:'1px solid rgba(74,222,128,0.2)', borderRadius:8, padding:'6px 10px', marginBottom:'1rem', display:'flex', alignItems:'center', gap:6 }}>
+            <span style={{ fontSize:'0.7rem' }}>🔥</span>
+            <div>
+              <div style={{ color:'#4ade80', fontSize:'0.68rem', fontWeight:700 }}>Firestore Live</div>
+              <div style={{ color:'rgba(74,222,128,0.6)', fontSize:'0.62rem' }}>Sinkron semua device</div>
+            </div>
           </div>
           <div style={{ background:'var(--black-3)', borderRadius:10, padding:'0.8rem', marginBottom:'1.2rem', border:'1px solid rgba(245,166,35,0.1)' }}>
             <div style={{ fontSize:'1.2rem', marginBottom:'0.2rem' }}>👤</div>
@@ -256,7 +403,15 @@ const AdminPanel: React.FC = () => {
           {tab === 'dashboard' && (
             <div>
               <h1 style={{ fontFamily:'var(--font-display)', fontSize:'clamp(1.8rem,5vw,2.5rem)', marginBottom:'0.3rem' }}>DASHBOARD</h1>
-              <p style={{ color:'var(--white-dim)', marginBottom:'2rem', fontSize:'0.9rem' }}>Selamat datang, <span style={{ color:'var(--amber)' }}>Mahfudfebry</span>!</p>
+              <p style={{ color:'var(--white-dim)', marginBottom:'1rem', fontSize:'0.9rem' }}>Selamat datang, <span style={{ color:'var(--amber)' }}>Mahfudfebry</span>!</p>
+              {/* Firestore info banner */}
+              <div style={{ background:'rgba(74,222,128,0.07)', border:'1px solid rgba(74,222,128,0.2)', borderRadius:10, padding:'10px 14px', marginBottom:'1.5rem', display:'flex', alignItems:'center', gap:10 }}>
+                <span style={{ fontSize:'1.2rem' }}>🔥</span>
+                <div>
+                  <div style={{ color:'#4ade80', fontSize:'0.82rem', fontWeight:700 }}>Firestore Real-time Aktif</div>
+                  <div style={{ color:'rgba(255,255,255,0.45)', fontSize:'0.75rem' }}>Semua perubahan tersimpan di cloud & sinkron ke semua device secara real-time.</div>
+                </div>
+              </div>
               <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(140px,1fr))', gap:'0.8rem', marginBottom:'2rem' }}>
                 {stats.map(s => (
                   <div key={s.label} style={{ background:'var(--black-2)', border:'1px solid rgba(245,166,35,0.15)', borderRadius:12, padding:'1.2rem', textAlign:'center' }}>
@@ -284,31 +439,27 @@ const AdminPanel: React.FC = () => {
             <div>
               <h1 style={{ fontFamily:'var(--font-display)', fontSize:'clamp(1.8rem,5vw,2.5rem)', marginBottom:'0.3rem' }}>HERO HOME</h1>
               <p style={{ color:'var(--white-dim)', marginBottom:'1.5rem', fontSize:'0.88rem' }}>Edit konten utama halaman beranda.</p>
-              {/* Live preview hint */}
-              <div style={{ background:'rgba(245,166,35,0.08)', border:'1px solid rgba(245,166,35,0.2)', borderRadius:10, padding:'10px 14px', marginBottom:'1rem', fontSize:'0.82rem', color:'var(--amber)' }}>
-                ⚡ Perubahan langsung tampil di halaman Home setelah klik Simpan.
+              <div style={{ background:'rgba(74,222,128,0.07)', border:'1px solid rgba(74,222,128,0.2)', borderRadius:10, padding:'10px 14px', marginBottom:'1rem', fontSize:'0.82rem', color:'#4ade80' }}>
+                🔥 Tersimpan ke Firestore — langsung sinkron ke semua device & browser.
               </div>
               <div style={card}>
                 <h3 style={{ fontFamily:'var(--font-display)', fontSize:'1.1rem', marginBottom:'1rem', color:'var(--amber)' }}>✏️ TEKS HEADING</h3>
                 <div style={{ display:'flex', flexDirection:'column', gap:'1rem' }}>
                   <div>
-                    <label style={lbl}>Judul Baris 1 — tampil di baris pertama heading</label>
+                    <label style={lbl}>Judul Baris 1</label>
                     <input style={inp} value={home.heroTitle} onChange={e => setHome({ ...home, heroTitle:e.target.value })} placeholder="Shaping tomorrow" />
-                    <p style={{ color:'var(--white-dim)', fontSize:'0.75rem', marginTop:4 }}>Preview: <em style={{ color:'var(--amber)' }}>{home.heroTitle || 'Shaping tomorrow'}</em></p>
                   </div>
                   <div>
-                    <label style={lbl}>Judul Baris 2 — tampil di baris kedua heading</label>
+                    <label style={lbl}>Judul Baris 2</label>
                     <input style={inp} value={home.heroSubtitle} onChange={e => setHome({ ...home, heroSubtitle:e.target.value })} placeholder="with vision and action." />
-                    <p style={{ color:'var(--white-dim)', fontSize:'0.75rem', marginTop:4 }}>Preview: <em style={{ color:'var(--amber)' }}>{home.heroSubtitle || 'with vision and action.'}</em></p>
                   </div>
                   <div>
-                    <label style={lbl}>Tagline / Deskripsi di bawah heading</label>
-                    <textarea style={{ ...inp, minHeight:70, resize:'vertical' }} value={home.heroTagline} onChange={e => setHome({ ...home, heroTagline:e.target.value })} placeholder="We back visionaries..." />
+                    <label style={lbl}>Tagline / Deskripsi</label>
+                    <textarea style={{ ...inp, minHeight:70, resize:'vertical' }} value={home.heroTagline} onChange={e => setHome({ ...home, heroTagline:e.target.value })} />
                   </div>
                   <div>
-                    <label style={lbl}>Teks Tag Kanan (pojok kanan bawah hero)</label>
-                    <input style={inp} value={home.heroTagRight} onChange={e => setHome({ ...home, heroTagRight:e.target.value })} placeholder="Investing. Building. Advisory." />
-                    <p style={{ color:'var(--white-dim)', fontSize:'0.75rem', marginTop:4 }}>Ini teks di dalam card glass pojok kanan bawah.</p>
+                    <label style={lbl}>Teks Tag Kanan</label>
+                    <input style={inp} value={home.heroTagRight} onChange={e => setHome({ ...home, heroTagRight:e.target.value })} />
                   </div>
                 </div>
               </div>
@@ -316,28 +467,16 @@ const AdminPanel: React.FC = () => {
                 <h3 style={{ fontFamily:'var(--font-display)', fontSize:'1.1rem', marginBottom:'1rem', color:'var(--amber)' }}>🔘 TOMBOL CTA</h3>
                 <div style={{ display:'flex', flexDirection:'column', gap:'1rem' }}>
                   <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'0.8rem' }}>
-                    <div>
-                      <label style={lbl}>Tombol Kiri (putih) — Teks</label>
-                      <input style={inp} value={home.heroCtaSecondary} onChange={e => setHome({ ...home, heroCtaSecondary:e.target.value })} placeholder="Start a Chat" />
-                    </div>
-                    <div>
-                      <label style={lbl}>Tombol Kiri — Link / Anchor</label>
-                      <input style={inp} value={home.heroCtaSecondaryLink} onChange={e => setHome({ ...home, heroCtaSecondaryLink:e.target.value })} placeholder="#contact" />
-                    </div>
+                    <div><label style={lbl}>Tombol Kiri — Teks</label><input style={inp} value={home.heroCtaSecondary} onChange={e => setHome({ ...home, heroCtaSecondary:e.target.value })} /></div>
+                    <div><label style={lbl}>Tombol Kiri — Link</label><input style={inp} value={home.heroCtaSecondaryLink} onChange={e => setHome({ ...home, heroCtaSecondaryLink:e.target.value })} /></div>
                   </div>
                   <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'0.8rem' }}>
-                    <div>
-                      <label style={lbl}>Tombol Kanan (glass) — Teks</label>
-                      <input style={inp} value={home.heroCta} onChange={e => setHome({ ...home, heroCta:e.target.value })} placeholder="Explore Now" />
-                    </div>
-                    <div>
-                      <label style={lbl}>Tombol Kanan — Link</label>
-                      <input style={inp} value={home.heroCtaLink} onChange={e => setHome({ ...home, heroCtaLink:e.target.value })} placeholder="/portofolio" />
-                    </div>
+                    <div><label style={lbl}>Tombol Kanan — Teks</label><input style={inp} value={home.heroCta} onChange={e => setHome({ ...home, heroCta:e.target.value })} /></div>
+                    <div><label style={lbl}>Tombol Kanan — Link</label><input style={inp} value={home.heroCtaLink} onChange={e => setHome({ ...home, heroCtaLink:e.target.value })} /></div>
                   </div>
                 </div>
               </div>
-              <button onClick={saveHome} disabled={homeSaving} style={{ ...btn(true), width:'100%', padding:'14px', fontSize:'1rem' }}>{homeSaving ? '⌛ Menyimpan...' : '💾 Simpan Semua Perubahan Hero'}</button>
+              <button onClick={saveHome} disabled={homeSaving} style={{ ...btn(true), width:'100%', padding:'14px', fontSize:'1rem' }}>{homeSaving ? '⌛ Menyimpan ke Firestore...' : '💾 Simpan & Sinkron Semua Device'}</button>
             </div>
           )}
 
@@ -349,23 +488,11 @@ const AdminPanel: React.FC = () => {
               <div style={card}>
                 <div style={{ display:'flex', flexDirection:'column', gap:'1rem' }}>
                   <ImageUploader label="Foto Profil" value={about.photoUrl} onChange={url => setAbout({ ...about, photoUrl:url })} />
-                  <div>
-                    <label style={lbl}>Nama</label>
-                    <input style={inp} value={about.name} onChange={e => setAbout({ ...about, name:e.target.value })} />
-                  </div>
-                  <div>
-                    <label style={lbl}>Lokasi</label>
-                    <input style={inp} value={about.location} onChange={e => setAbout({ ...about, location:e.target.value })} />
-                  </div>
-                  <div>
-                    <label style={lbl}>Bio Paragraf 1</label>
-                    <textarea style={{ ...inp, minHeight:90, resize:'vertical' }} value={about.bio1} onChange={e => setAbout({ ...about, bio1:e.target.value })} />
-                  </div>
-                  <div>
-                    <label style={lbl}>Bio Paragraf 2</label>
-                    <textarea style={{ ...inp, minHeight:90, resize:'vertical' }} value={about.bio2} onChange={e => setAbout({ ...about, bio2:e.target.value })} />
-                  </div>
-                  <button onClick={saveAbout} disabled={aboutSaving} style={btn(true)}>{aboutSaving ? '⌛ Menyimpan...' : '💾 Simpan About'}</button>
+                  <div><label style={lbl}>Nama</label><input style={inp} value={about.name} onChange={e => setAbout({ ...about, name:e.target.value })} /></div>
+                  <div><label style={lbl}>Lokasi</label><input style={inp} value={about.location} onChange={e => setAbout({ ...about, location:e.target.value })} /></div>
+                  <div><label style={lbl}>Bio Paragraf 1</label><textarea style={{ ...inp, minHeight:90, resize:'vertical' }} value={about.bio1} onChange={e => setAbout({ ...about, bio1:e.target.value })} /></div>
+                  <div><label style={lbl}>Bio Paragraf 2</label><textarea style={{ ...inp, minHeight:90, resize:'vertical' }} value={about.bio2} onChange={e => setAbout({ ...about, bio2:e.target.value })} /></div>
+                  <button onClick={saveAbout} disabled={aboutSaving} style={btn(true)}>{aboutSaving ? '⌛ Menyimpan...' : '💾 Simpan & Sinkron'}</button>
                 </div>
               </div>
             </div>
@@ -381,7 +508,7 @@ const AdminPanel: React.FC = () => {
                 </div>
                 <button onClick={() => setSkillForm({ id:'', number:(skills.length+1).toString().padStart(2,'0'), title:'', desc:'' })} style={btn(true)}>+ Tambah Skill</button>
               </div>
-              {skills.map((sk, i) => (
+              {skills.map(sk => (
                 <div key={sk.id} style={{ ...card, display:'flex', alignItems:'flex-start', gap:'1rem', marginBottom:'0.6rem' }}>
                   <div style={{ fontFamily:'var(--font-display)', fontSize:'2rem', color:'var(--amber)', flexShrink:0 }}>{sk.number}</div>
                   <div style={{ flex:1, minWidth:0 }}>
@@ -458,7 +585,6 @@ const AdminPanel: React.FC = () => {
             </div>
           )}
 
-
           {/* ── SERTIFIKASI ── */}
           {tab === 'sertifikasi' && (
             <div>
@@ -473,19 +599,14 @@ const AdminPanel: React.FC = () => {
               <div style={{ display:'flex', flexDirection:'column', gap:'0.6rem' }}>
                 {certs.map(cert => (
                   <div key={cert.id} style={{ ...card, display:'flex', gap:'1rem', alignItems:'flex-start', marginBottom:0 }}>
-                    {/* Image thumbnail */}
                     <div style={{ width:72, height:52, borderRadius:8, overflow:'hidden', flexShrink:0, background:'rgba(255,255,255,0.05)', border:'1px solid rgba(245,166,35,0.15)', display:'flex', alignItems:'center', justifyContent:'center' }}>
-                      {cert.imageUrl
-                        ? <img src={cert.imageUrl} alt={cert.name} style={{ width:'100%', height:'100%', objectFit:'cover' }}/>
-                        : <span style={{ fontSize:'1.4rem' }}>🎓</span>}
+                      {cert.imageUrl ? <img src={cert.imageUrl} alt={cert.name} style={{ width:'100%', height:'100%', objectFit:'cover' }}/> : <span style={{ fontSize:'1.4rem' }}>🎓</span>}
                     </div>
-                    {/* Info */}
                     <div style={{ flex:1, minWidth:0 }}>
                       <div style={{ fontWeight:700, fontSize:'0.9rem', marginBottom:'0.15rem', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{cert.name}</div>
                       <div style={{ color:'var(--amber)', fontSize:'0.78rem', marginBottom:'0.1rem' }}>{cert.issuer} · {cert.year}</div>
                       <div style={{ color:'var(--white-dim)', fontSize:'0.75rem', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{cert.subtitle}</div>
                     </div>
-                    {/* Actions */}
                     <div style={{ display:'flex', gap:5, flexShrink:0 }}>
                       <button onClick={() => setCertForm({ ...cert })} style={{ ...btn(), fontSize:'0.78rem', padding:'6px 12px' }}>✏️</button>
                       <button onClick={() => deleteCert(cert.id)} style={{ background:'rgba(255,60,60,0.1)', border:'1px solid rgba(255,60,60,0.2)', color:'#ff6b6b', borderRadius:8, padding:'6px 12px', cursor:'pointer', fontSize:'0.78rem' }}>🗑️</button>
@@ -509,7 +630,7 @@ const AdminPanel: React.FC = () => {
                       <input style={inp} value={(contact as any)[key]} onChange={e => setContact({ ...contact, [key]:e.target.value })} placeholder={ph} />
                     </div>
                   ))}
-                  <button onClick={saveContact} disabled={contactSaving} style={btn(true)}>{contactSaving ? '⌛ Menyimpan...' : '💾 Simpan Kontak'}</button>
+                  <button onClick={saveContact} disabled={contactSaving} style={btn(true)}>{contactSaving ? '⌛ Menyimpan...' : '💾 Simpan & Sinkron'}</button>
                 </div>
               </div>
             </div>
@@ -528,9 +649,20 @@ const AdminPanel: React.FC = () => {
                 </p>
               </div>
               <div style={card}>
+                <h3 style={{ marginBottom:'0.5rem', fontWeight:700 }}>Storage Info</h3>
+                <div style={{ background:'rgba(74,222,128,0.07)', border:'1px solid rgba(74,222,128,0.2)', borderRadius:8, padding:'12px 14px' }}>
+                  <p style={{ color:'#4ade80', fontSize:'0.85rem', lineHeight:1.8 }}>
+                    🔥 <strong>Firestore</strong> — Home, About, Skills, Experience, Contact, Sertifikasi<br />
+                    🔥 <strong>Firestore</strong> — Portfolio (collection: portfolio)<br />
+                    ☁️ <strong>Cloudinary</strong> — Semua gambar & foto<br />
+                    💾 <strong>localStorage</strong> — Cache offline saja (otomatis)
+                  </p>
+                </div>
+              </div>
+              <div style={card}>
                 <h3 style={{ marginBottom:'0.5rem', fontWeight:700 }}>Reset Data</h3>
-                <p style={{ color:'var(--white-dim)', fontSize:'0.85rem', marginBottom:'1rem' }}>Hapus semua data localStorage dan kembalikan ke default.</p>
-                <button onClick={() => { if (window.confirm('Reset semua data?')) { [LS_HOME,LS_ABOUT,LS_SKILLS,LS_EXP,LS_CONTACT,LS_CERT].forEach(k => localStorage.removeItem(k)); toast.success('Data direset!'); window.location.reload(); } }} style={{ background:'rgba(255,60,60,0.1)', border:'1px solid rgba(255,60,60,0.25)', color:'#ff6b6b', borderRadius:8, padding:'10px 20px', cursor:'pointer', fontFamily:'var(--font-body)', fontWeight:600 }}>🔄 Reset Data</button>
+                <p style={{ color:'var(--white-dim)', fontSize:'0.85rem', marginBottom:'1rem' }}>Reset semua konten ke default. Data akan ditulis ulang ke Firestore.</p>
+                <button onClick={handleReset} style={{ background:'rgba(255,60,60,0.1)', border:'1px solid rgba(255,60,60,0.25)', color:'#ff6b6b', borderRadius:8, padding:'10px 20px', cursor:'pointer', fontFamily:'var(--font-body)', fontWeight:600 }}>🔄 Reset Semua Data</button>
               </div>
             </div>
           )}
@@ -644,7 +776,6 @@ const AdminPanel: React.FC = () => {
         )}
       </AnimatePresence>
 
-
       {/* ─── Cert Modal ─── */}
       <AnimatePresence>
         {certForm && (
@@ -655,24 +786,12 @@ const AdminPanel: React.FC = () => {
                 <button onClick={() => setCertForm(null)} style={{ background:'none', border:'none', color:'var(--white-dim)', fontSize:'1.2rem', cursor:'pointer' }}>✕</button>
               </div>
               <div style={{ display:'flex', flexDirection:'column', gap:'1rem' }}>
-                <div>
-                  <label style={lbl}>Nama Sertifikasi *</label>
-                  <input style={inp} value={certForm.name} onChange={e => setCertForm({ ...certForm, name:e.target.value })} placeholder="Google Digital Marketing" />
-                </div>
+                <div><label style={lbl}>Nama Sertifikasi *</label><input style={inp} value={certForm.name} onChange={e => setCertForm({ ...certForm, name:e.target.value })} placeholder="Google Digital Marketing" /></div>
                 <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'0.8rem' }}>
-                  <div>
-                    <label style={lbl}>Tahun</label>
-                    <input style={inp} value={certForm.year} onChange={e => setCertForm({ ...certForm, year:e.target.value })} placeholder="2023" />
-                  </div>
-                  <div>
-                    <label style={lbl}>Lembaga Penerbit</label>
-                    <input style={inp} value={certForm.issuer} onChange={e => setCertForm({ ...certForm, issuer:e.target.value })} placeholder="Google" />
-                  </div>
+                  <div><label style={lbl}>Tahun</label><input style={inp} value={certForm.year} onChange={e => setCertForm({ ...certForm, year:e.target.value })} placeholder="2023" /></div>
+                  <div><label style={lbl}>Lembaga Penerbit</label><input style={inp} value={certForm.issuer} onChange={e => setCertForm({ ...certForm, issuer:e.target.value })} placeholder="Google" /></div>
                 </div>
-                <div>
-                  <label style={lbl}>Sub-Title Lembaga</label>
-                  <input style={inp} value={certForm.subtitle} onChange={e => setCertForm({ ...certForm, subtitle:e.target.value })} placeholder="Fundamentals of Digital Marketing" />
-                </div>
+                <div><label style={lbl}>Sub-Title Lembaga</label><input style={inp} value={certForm.subtitle} onChange={e => setCertForm({ ...certForm, subtitle:e.target.value })} placeholder="Fundamentals of Digital Marketing" /></div>
                 <ImageUploader label="Gambar Sertifikat" value={certForm.imageUrl} onChange={url => setCertForm({ ...certForm, imageUrl:url })} />
                 <div style={{ display:'flex', gap:'0.6rem' }}>
                   <button onClick={saveCert} style={{ ...btn(true), flex:1 }}>💾 Simpan</button>
