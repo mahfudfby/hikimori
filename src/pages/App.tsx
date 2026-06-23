@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import { Toaster } from 'react-hot-toast';
 
-import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { AuthProvider } from './contexts/AuthContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import CursorGlow from './components/CursorGlow';
@@ -20,10 +20,21 @@ import AdminPanel from './pages/AdminPanel';
 
 /* ─── Floating Gear Button ─── */
 const FloatingGear: React.FC = () => {
-  const { isAdmin } = useAuth();
+  // Read admin state from localStorage directly — avoids coupling to AuthContext
+  const [isAdmin, setIsAdmin] = React.useState(
+    () => localStorage.getItem('hk_admin_session') === 'true'
+  );
   const location = useLocation();
   const [hovered, setHovered] = React.useState(false);
   const [spinning, setSpinning] = React.useState(false);
+
+  // Sync with storage changes (login/logout in other tab)
+  React.useEffect(() => {
+    const sync = () =>
+      setIsAdmin(localStorage.getItem('hk_admin_session') === 'true');
+    window.addEventListener('storage', sync);
+    return () => window.removeEventListener('storage', sync);
+  }, []);
 
   if (location.pathname.startsWith('/admin')) return null;
 
