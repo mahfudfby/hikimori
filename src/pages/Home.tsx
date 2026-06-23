@@ -138,6 +138,96 @@ const SakuraCanvas:React.FC=()=>{
   return <canvas ref={ref} style={{position:'absolute',inset:0,width:'100%',height:'100%',pointerEvents:'none',zIndex:1}}/>;
 };
 
+/* ════════════════════════════════════════
+   KANJI FLOATING LAYER 漢字
+════════════════════════════════════════ */
+const KANJI_POOL=['引','こ','も','り','愛','情','熱','孤','独','静','心','夢','道','力','美','闇','光','空','風','雪','花','月','星','海','山','火','水','木','魂','絆','詩','侘','寂','間','無','気','命','縁','悲','涙','歌','記','憶','幻','霧','影','永','刹','那','煌','儚','想','願','祈','響','沈','漂','揺','廻','暁'];
+
+const KanjiCanvas:React.FC=()=>{
+  const ref=useRef<HTMLDivElement>(null);
+  useEffect(()=>{
+    const container=ref.current;if(!container)return;
+    const particles:HTMLSpanElement[]=[];
+    let timer:ReturnType<typeof setInterval>;
+    const rand=(a:number,b:number)=>a+Math.random()*(b-a);
+    const spawn=()=>{
+      const el=document.createElement('span');
+      const isAccent=Math.random()<0.2;
+      el.textContent=KANJI_POOL[Math.floor(Math.random()*KANJI_POOL.length)];
+      const size=rand(14,70);
+      const x=rand(1,95);
+      const startY=rand(60,100);
+      const dur=rand(10,24);
+      const delay=rand(0,dur);
+      const r0=rand(-28,28);
+      const r1=r0+rand(-32,32);
+      const op=isAccent?rand(0.25,0.55):rand(0.05,0.22);
+      const sc=rand(0.75,1.2);
+      Object.assign(el.style,{
+        position:'absolute',
+        fontFamily:"'Noto Serif JP', 'Hiragino Mincho ProN', 'Yu Mincho', serif",
+        fontWeight:'900',
+        fontSize:`${size}px`,
+        left:`${x}%`,
+        top:`${startY}%`,
+        color:isAccent?`rgba(220,145,55,${op})`:`rgba(210,160,80,${op})`,
+        pointerEvents:'none',
+        userSelect:'none',
+        willChange:'transform,opacity',
+        animation:`hkmFloat ${dur}s ${-delay}s linear infinite`,
+        '--r0':`${r0}deg`,
+        '--r1':`${r1}deg`,
+        '--sc':`${sc}`,
+      } as React.CSSProperties & Record<string,string>);
+      container.appendChild(el);
+      particles.push(el);
+      if(particles.length>60){const old=particles.shift();old&&container.removeChild(old);}
+    };
+    for(let i=0;i<45;i++)spawn();
+    timer=setInterval(spawn,600);
+    return()=>{clearInterval(timer);particles.forEach(p=>{try{container.removeChild(p);}catch{}});};
+  },[]);
+  return(
+    <>
+      <style>{`
+        @keyframes hkmFloat{
+          0%{transform:translateY(0) rotate(var(--r0)) scale(1);opacity:var(--op,0.15);}
+          45%{opacity:calc(var(--op,0.15)*2.2);}
+          85%{opacity:var(--op,0.15);}
+          100%{transform:translateY(-600px) rotate(var(--r1)) scale(var(--sc));opacity:0;}
+        }
+      `}</style>
+      <div ref={ref} style={{position:'absolute',inset:0,zIndex:1,pointerEvents:'none',overflow:'hidden'}}/>
+    </>
+  );
+};
+
+/* Ink Brush Strokes Overlay 墨 */
+const InkBrushOverlay:React.FC=()=>(
+  <svg style={{position:'absolute',inset:0,width:'100%',height:'100%',pointerEvents:'none',zIndex:1,opacity:0.18}} preserveAspectRatio="xMidYMid slice" viewBox="0 0 1400 900">
+    <path d="M30,130 C110,175 200,110 370,220" stroke="#b07828" strokeWidth="12" fill="none" strokeLinecap="round" opacity="0.9"/>
+    <path d="M370,220 C470,275 560,195 720,310" stroke="#b07828" strokeWidth="8" fill="none" strokeLinecap="round" opacity="0.75"/>
+    <path d="M720,310 C840,390 950,280 1150,160" stroke="#b07828" strokeWidth="9" fill="none" strokeLinecap="round" opacity="0.8"/>
+    <path d="M1200,80 C1260,180 1340,130 1370,320" stroke="#b07828" strokeWidth="10" fill="none" strokeLinecap="round" opacity="0.7"/>
+    <path d="M60,500 C180,570 310,480 480,610" stroke="#b07828" strokeWidth="14" fill="none" strokeLinecap="round" opacity="0.65"/>
+    <path d="M480,610 C590,680 700,580 880,680" stroke="#b07828" strokeWidth="6" fill="none" strokeLinecap="round" opacity="0.6"/>
+    <path d="M100,760 C240,800 380,745 550,810" stroke="#b07828" strokeWidth="7" fill="none" strokeLinecap="round" opacity="0.55"/>
+    <path d="M900,700 C1000,750 1080,700 1200,760" stroke="#b07828" strokeWidth="8" fill="none" strokeLinecap="round" opacity="0.5"/>
+    {/* Ink blots at stroke starts */}
+    <ellipse cx="32" cy="132" rx="18" ry="11" fill="#8a5c18" opacity="0.7"/>
+    <ellipse cx="1152" cy="163" rx="14" ry="9" fill="#8a5c18" opacity="0.65"/>
+    <ellipse cx="63" cy="503" rx="20" ry="12" fill="#8a5c18" opacity="0.6"/>
+    <ellipse cx="103" cy="762" rx="12" ry="7" fill="#8a5c18" opacity="0.55"/>
+    <ellipse cx="1202" cy="83" rx="13" ry="8" fill="#8a5c18" opacity="0.6"/>
+    {/* Fine splatter drops */}
+    <circle cx="450" cy="195" r="4" fill="#8a5c18" opacity="0.5"/>
+    <circle cx="820" cy="290" r="3" fill="#8a5c18" opacity="0.45"/>
+    <circle cx="1050" cy="210" r="5" fill="#8a5c18" opacity="0.4"/>
+    <circle cx="350" cy="580" r="4" fill="#8a5c18" opacity="0.4"/>
+    <circle cx="700" cy="650" r="3" fill="#8a5c18" opacity="0.35"/>
+  </svg>
+);
+
 /* Stars */
 const Stars:React.FC=()=>{
   const ref=useRef<HTMLCanvasElement>(null);
@@ -768,6 +858,8 @@ const Home:React.FC=()=>{
       {/* ══ HERO (unchanged) ══ */}
       <section style={{position:'relative',width:'100%',height:'100vh',overflow:'hidden',display:'flex',flexDirection:'column',background:'#000',color:'#fff'}}>
         <video autoPlay loop muted playsInline style={{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover',zIndex:0}}><source src={HERO_VIDEO} type="video/mp4"/></video>
+        <InkBrushOverlay/>
+        <KanjiCanvas/>
         <Stars/>
         <div style={{position:'relative',zIndex:1,display:'flex',flexDirection:'column',height:'100%',padding:'70px clamp(1rem,5vw,4rem) 0 clamp(1rem,5vw,4rem)'}}>
           <div style={{flex:1,display:'flex',flexDirection:'column',justifyContent:'flex-end',paddingBottom:'clamp(2rem,5vw,4rem)'}}>
