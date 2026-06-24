@@ -1,4 +1,5 @@
-// src/pages/Home.tsx — Modern Japanese Theme 和モダン
+// src/pages/Home.tsx — Japanese Calligraphy Theme 書道
+// Palette: Red · Black · Gold · White — Masculine Portfolio
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useTransform, useMotionValue, useSpring, AnimatePresence, useScroll } from 'framer-motion';
 import { Link } from 'react-router-dom';
@@ -27,36 +28,29 @@ const CONTACT_VIDEO='https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttw
 const SERVICES_LIST=['Website','Mobile App','Web App','E-Commerce','Visual Identity','3D & Motion','Digital Marketing','Growth & Consulting','Other'];
 const ls=<T,>(key:string,fb:T):T=>{try{return JSON.parse(localStorage.getItem(key)||'null')??fb;}catch{return fb;}};
 
-/* ════════════════════════════════════════
-   JAPANESE PALETTE 和カラー
-════════════════════════════════════════ */
+/* ══════════════════════════════════════════
+   PALETTE — Red · Black · Gold · White
+   書道カラー
+══════════════════════════════════════════ */
 const J={
-  // Warm dark — matches washi/ink concept art
-  ink:'#100c08',    inkD:'#080604',    inkM:'#1a1410',
-  warm:'#1e1610',   warmD:'#140f0a',   warmL:'#281e14',
-  indigo:'#1a1530', indigoL:'#252040',
-  // Nature accents
-  sakura:'#c4687a',  sakuraL:'#e8909f', sakuraD:'#8b3040',
-  bamboo:'#4a6840',  bambooL:'#6a9860', bambooD:'#2d4828',
-  // Core Japanese accents — from image
-  vermillion:'#922018', vermillionL:'#c03028', vermillionB:'rgba(146,32,24,0.15)',
-  gold:'#b8922a',       goldL:'#d4b050',       goldD:'#7a5e18',
-  goldGlow:'rgba(184,146,42,0.25)',
-  // Washi paper tones
-  washi:'#e8d0a0',    washiD:'#c4a878',   washiDark:'#8a6a3a',
-  cream:'#d8c090',
-  // Text
-  moon:'#f0e8d0',    moonD:'#c8b898',    moonDim:'rgba(240,232,208,0.65)',
-  // Effects
-  smoke:'rgba(20,12,8,0.7)',
-  crack:'rgba(180,140,80,0.12)',
-  circuit:'rgba(184,146,42,0.35)',
+  // Blacks
+  ink:'#080808',   inkD:'#030303',   inkM:'#111',   inkL:'#1a1a1a',   charcoal:'#1c1c1c',
+  // Crimsons
+  red:'#8B1A1A',   redL:'#c0392b',   redD:'#5c0e0e', redV:'#a01515',
+  redGlow:'rgba(139,26,26,0.35)',  redBg:'rgba(139,26,26,0.08)',
+  // Golds
+  gold:'#c9a030',  goldL:'#d4af50',  goldB:'#e8c870', goldD:'#8a6e18',
+  goldGlow:'rgba(201,160,48,0.3)',  goldBg:'rgba(201,160,48,0.08)',
+  // Whites
+  white:'#f5f5f0', whiteD:'#d8d0c0', whiteDim:'rgba(245,245,240,0.65)',
+  // Overlays
+  ov78:'rgba(5,3,0,0.78)',  ov82:'rgba(4,2,0,0.82)',  ov85:'rgba(3,1,0,0.85)',  ov88:'rgba(2,1,0,0.88)',
 };
 
-/* ════════════════════════════════════════
-   UTILITY COMPONENTS
-════════════════════════════════════════ */
-const LG:React.CSSProperties={background:'rgba(0,0,0,0.4)',backdropFilter:'blur(4px)',WebkitBackdropFilter:'blur(4px)',boxShadow:'inset 0 1px 1px rgba(255,255,255,0.1)',position:'relative'};
+/* ══════════════════════════════════════════
+   UTILITIES
+══════════════════════════════════════════ */
+const LG:React.CSSProperties={background:'rgba(0,0,0,0.5)',backdropFilter:'blur(4px)',WebkitBackdropFilter:'blur(4px)',boxShadow:'inset 0 1px 1px rgba(255,255,255,0.08)',position:'relative'};
 
 const FadeIn:React.FC<{children:React.ReactNode;delay?:number;duration?:number;style?:React.CSSProperties}>=({children,delay=0,duration=1000,style={}})=>{
   const [v,setV]=useState(false);
@@ -68,10 +62,9 @@ const AnimatedHeading:React.FC<{text:string;style?:React.CSSProperties}>=({text,
   const [a,setA]=useState(false);
   useEffect(()=>{const t=setTimeout(()=>setA(true),200);return()=>clearTimeout(t);},[]);
   const lines=text.split('\n');
-  return <h1 style={{margin:0,...style}}>{lines.map((line,li)=>{const prev=lines.slice(0,li).reduce((acc,l)=>acc+l.length,0);return <span key={li} style={{display:'block'}}>{line.split('').map((char,ci)=>{const delay=(200+(prev+ci)*30)/1000;return <span key={ci} style={{display:'inline-block',opacity:a?1:0,transform:a?'translateX(0)':'translateX(-18px)',transition:`opacity 500ms ease ${delay}s,transform 500ms ease ${delay}s`}}>{char===' '?'\u00A0':char}</span>;})}</span>;})}</h1>;
+  return <h1 style={{margin:0,...style}}>{lines.map((line,li)=>{const prev=lines.slice(0,li).reduce((acc,l)=>acc+l.length,0);return <span key={li} style={{display:'block'}}>{line.split('').map((char,ci)=>{const d=(200+(prev+ci)*30)/1000;return <span key={ci} style={{display:'inline-block',opacity:a?1:0,transform:a?'none':'translateX(-18px)',transition:`opacity 500ms ease ${d}s,transform 500ms ease ${d}s`}}>{char===' '?'\u00A0':char}</span>;})}</span>;})}  </h1>;
 };
 
-/* 3D Tilt Card */
 const TiltCard:React.FC<{children:React.ReactNode;style?:React.CSSProperties;intensity?:number}>=({children,style={},intensity=8})=>{
   const mx=useMotionValue(0),my=useMotionValue(0);
   const rx=useSpring(useTransform(my,[-0.5,0.5],[intensity,-intensity]),{stiffness:200,damping:30});
@@ -82,63 +75,33 @@ const TiltCard:React.FC<{children:React.ReactNode;style?:React.CSSProperties;int
   return <motion.div style={{perspective:900,transformStyle:'preserve-3d',...style}} onMouseMove={move} onMouseLeave={()=>{mx.set(0);my.set(0);}}>
     <motion.div style={{rotateX:rx,rotateY:ry,transformStyle:'preserve-3d',width:'100%',height:'100%',position:'relative'}}>
       {children}
-      <motion.div style={{position:'absolute',inset:0,borderRadius:'inherit',pointerEvents:'none',background:`radial-gradient(circle at ${gx} ${gy},rgba(242,167,184,0.12) 0%,transparent 65%)`,zIndex:10}}/>
+      <motion.div style={{position:'absolute',inset:0,borderRadius:'inherit',pointerEvents:'none',background:`radial-gradient(circle at ${gx} ${gy},rgba(201,160,48,0.1) 0%,transparent 65%)`,zIndex:10}}/>
     </motion.div>
   </motion.div>;
 };
 
-/* Scroll Reveal */
 const Reveal:React.FC<{children:React.ReactNode;direction?:'up'|'left'|'right'|'scale'|'fade';delay?:number;style?:React.CSSProperties}>=({children,direction='up',delay=0,style={}})=>{
-  const variants={hidden:{opacity:0,y:direction==='up'?50:0,x:direction==='left'?-50:direction==='right'?50:0,scale:direction==='scale'?0.8:1,filter:'blur(4px)'},visible:{opacity:1,y:0,x:0,scale:1,filter:'blur(0px)',transition:{duration:0.9,ease:[0.22,1,0.36,1],delay}}};
-  return <motion.div variants={variants} initial="hidden" whileInView="visible" viewport={{once:true,margin:'-60px'}} style={style}>{children}</motion.div>;
+  const v={hidden:{opacity:0,y:direction==='up'?50:0,x:direction==='left'?-50:direction==='right'?50:0,scale:direction==='scale'?0.8:1,filter:'blur(4px)'},visible:{opacity:1,y:0,x:0,scale:1,filter:'blur(0px)',transition:{duration:0.9,ease:[0.22,1,0.36,1],delay}}};
+  return <motion.div variants={v} initial="hidden" whileInView="visible" viewport={{once:true,margin:'-60px'}} style={style}>{children}</motion.div>;
 };
 
-/* ════════════════════════════════════════
-   JAPANESE SVG ASSETS
-════════════════════════════════════════ */
-
-/* Sakura Petal Canvas */
-const SakuraCanvas:React.FC=()=>{
-  const ref=useRef<HTMLCanvasElement>(null);
-  useEffect(()=>{
-    const c=ref.current;if(!c)return;
-    const ctx=c.getContext('2d');if(!ctx)return;
-    let raf:number;
-    const resize=()=>{c.width=c.offsetWidth;c.height=c.offsetHeight;};
-    resize();window.addEventListener('resize',resize);
-    const petals=Array.from({length:35},()=>({
-      x:Math.random()*1400,y:Math.random()*-800,
-      r:Math.random()*5+3,vx:Math.random()*1.2-0.4,vy:Math.random()*1.5+0.8,
-      rot:Math.random()*360,vrot:Math.random()*2-1,
-      a:Math.random()*0.6+0.3,swing:Math.random()*60,swingSpeed:Math.random()*0.02+0.01,t:Math.random()*100,
-    }));
-    const drawPetal=(x:number,y:number,r:number,rot:number,a:number)=>{
-      ctx.save();ctx.translate(x,y);ctx.rotate(rot*Math.PI/180);ctx.globalAlpha=a;
-      ctx.beginPath();
-      ctx.moveTo(0,0);ctx.bezierCurveTo(r,r*0.5,r*1.5,-r*0.5,r*2,0);
-      ctx.bezierCurveTo(r*1.5,r*0.5,r,-r*0.3,0,0);
-      const grad=ctx.createLinearGradient(0,-r,r*2,r);
-      grad.addColorStop(0,'rgba(255,182,193,'+a+')');
-      grad.addColorStop(0.5,'rgba(255,150,170,'+a*0.9+')');
-      grad.addColorStop(1,'rgba(220,120,140,'+a*0.7+')');
-      ctx.fillStyle=grad;ctx.fill();ctx.restore();
-    };
-    const tick=()=>{
-      ctx.clearRect(0,0,c.width,c.height);
-      petals.forEach(p=>{
-        p.t+=p.swingSpeed;p.x+=p.vx+Math.sin(p.t)*0.4;p.y+=p.vy;p.rot+=p.vrot;
-        if(p.y>c.height+20){p.y=-20;p.x=Math.random()*c.width;}
-        if(p.x>c.width+20)p.x=-20;if(p.x<-20)p.x=c.width+20;
-        drawPetal(p.x,p.y,p.r,p.rot,p.a);
-      });
-      raf=requestAnimationFrame(tick);
-    };
-    tick();return()=>{cancelAnimationFrame(raf);window.removeEventListener('resize',resize);};
-  },[]);
-  return <canvas ref={ref} style={{position:'absolute',inset:0,width:'100%',height:'100%',pointerEvents:'none',zIndex:1}}/>;
+const InkRipple:React.FC<{children:React.ReactNode;style?:React.CSSProperties}>=({children,style={}})=>{
+  const [rips,setRips]=useState<{id:number;x:number;y:number}[]>([]);
+  const click=(e:React.MouseEvent<HTMLDivElement>)=>{
+    const r=e.currentTarget.getBoundingClientRect();const id=Date.now();
+    setRips(p=>[...p,{id,x:e.clientX-r.left,y:e.clientY-r.top}]);
+    setTimeout(()=>setRips(p=>p.filter(r=>r.id!==id)),900);
+  };
+  return <div style={{position:'relative',overflow:'hidden',...style}} onClick={click}>
+    {children}
+    {rips.map(r=><motion.div key={r.id} style={{position:'absolute',left:r.x,top:r.y,width:0,height:0,borderRadius:'50%',border:`2px solid ${J.red}`,transform:'translate(-50%,-50%)',pointerEvents:'none'}}
+      animate={{width:240,height:240,opacity:[0.7,0]}} transition={{duration:0.9,ease:'easeOut'}}/>)}
+  </div>;
 };
 
-/* Stars */
+/* ══════════════════════════════════════════
+   STARS (hero bg — unchanged)
+══════════════════════════════════════════ */
 const Stars:React.FC=()=>{
   const ref=useRef<HTMLCanvasElement>(null);
   useEffect(()=>{
@@ -147,460 +110,329 @@ const Stars:React.FC=()=>{
     const stars=Array.from({length:100},()=>({x:Math.random()*1400,y:Math.random()*900,r:Math.random()*1.2+0.2,a:Math.random(),da:(Math.random()*0.005+0.001)*(Math.random()<0.5?1:-1)}));
     const shoots:any[]=[]; let next=0,t=0;
     const spawn=()=>{const a=(Math.random()*25+15)*Math.PI/180,sp=Math.random()*7+6,len=Math.random()*120+80,life=len/sp;shoots.push({x:Math.random()*c.width*0.8,y:Math.random()*c.height*0.4,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,len,life,maxLife:life});};
-    const tick=()=>{
-      ctx.clearRect(0,0,c.width,c.height);
-      stars.forEach(s=>{s.a=Math.max(0.1,Math.min(1,s.a+s.da));if(s.a<=0.1||s.a>=1)s.da*=-1;ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle=`rgba(232,232,245,${s.a})`;ctx.fill();});
+    const tick=()=>{ctx.clearRect(0,0,c.width,c.height);stars.forEach(s=>{s.a=Math.max(0.1,Math.min(1,s.a+s.da));if(s.a<=0.1||s.a>=1)s.da*=-1;ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle=`rgba(245,240,230,${s.a})`;ctx.fill();});
       t++;if(t>=next){spawn();next=t+Math.floor(Math.random()*200+100);}
-      for(let i=shoots.length-1;i>=0;i--){const s=shoots[i];const prog=1-s.life/s.maxLife;const alpha=s.life<20?s.life/20:1;const ang=Math.atan2(s.vy,s.vx);const tx=s.x-Math.cos(ang)*s.len*Math.min(prog*2,1);const ty=s.y-Math.sin(ang)*s.len*Math.min(prog*2,1);const g=ctx.createLinearGradient(tx,ty,s.x,s.y);g.addColorStop(0,'rgba(201,168,76,0)');g.addColorStop(1,`rgba(232,232,245,${alpha})`);ctx.beginPath();ctx.moveTo(tx,ty);ctx.lineTo(s.x,s.y);ctx.strokeStyle=g;ctx.lineWidth=1.5;ctx.stroke();s.x+=s.vx;s.y+=s.vy;s.life--;if(s.life<=0)shoots.splice(i,1);}
-      raf=requestAnimationFrame(tick);
-    };
+      for(let i=shoots.length-1;i>=0;i--){const s=shoots[i];const prog=1-s.life/s.maxLife;const alpha=s.life<20?s.life/20:1;const ang=Math.atan2(s.vy,s.vx);const tx=s.x-Math.cos(ang)*s.len*Math.min(prog*2,1);const ty=s.y-Math.sin(ang)*s.len*Math.min(prog*2,1);const g=ctx.createLinearGradient(tx,ty,s.x,s.y);g.addColorStop(0,'rgba(201,160,48,0)');g.addColorStop(1,`rgba(245,240,230,${alpha})`);ctx.beginPath();ctx.moveTo(tx,ty);ctx.lineTo(s.x,s.y);ctx.strokeStyle=g;ctx.lineWidth=1.5;ctx.stroke();s.x+=s.vx;s.y+=s.vy;s.life--;if(s.life<=0)shoots.splice(i,1);}
+      raf=requestAnimationFrame(tick);};
     tick();return()=>{cancelAnimationFrame(raf);window.removeEventListener('resize',resize);};
   },[]);
   return <canvas ref={ref} style={{position:'absolute',inset:0,width:'100%',height:'100%',pointerEvents:'none',zIndex:0}}/>;
 };
 
-/* Cherry Blossom Tree */
-const CherryTree:React.FC<{style?:React.CSSProperties;scale?:number;delay?:number;flip?:boolean}>=({style={},scale=1,delay=0,flip=false})=>(
-  <motion.div style={{position:'absolute',pointerEvents:'none',transformOrigin:'bottom center',transform:flip?'scaleX(-1)':'none',...style}}
-    animate={{rotate:[0,1.2,-0.8,0.5,0],scaleX:[1,1.01,0.99,1]}} transition={{duration:5+delay,repeat:Infinity,ease:'easeInOut',delay}}>
-    <svg viewBox="0 0 120 220" width={120*scale} height={220*scale}>
-      {/* Trunk */}
-      <path d="M58 220 Q55 180 52 150 Q48 120 50 90" stroke="#5c3d1e" strokeWidth="8" fill="none" strokeLinecap="round"/>
-      <path d="M62 220 Q65 180 68 150 Q72 120 70 90" stroke="#7a5230" strokeWidth="6" fill="none" strokeLinecap="round"/>
-      {/* Main branches */}
-      <path d="M50 90 Q30 70 15 50" stroke="#5c3d1e" strokeWidth="5" fill="none" strokeLinecap="round"/>
-      <path d="M70 90 Q90 70 105 50" stroke="#5c3d1e" strokeWidth="5" fill="none" strokeLinecap="round"/>
-      <path d="M55 110 Q40 90 25 80" stroke="#5c3d1e" strokeWidth="4" fill="none" strokeLinecap="round"/>
-      <path d="M65 110 Q80 90 95 80" stroke="#5c3d1e" strokeWidth="4" fill="none" strokeLinecap="round"/>
-      {/* Blossom clusters */}
-      {[{cx:15,cy:44,r:22},{cx:105,cy:44,r:20},{cx:25,cy:72,r:18},{cx:95,cy:72,r:17},{cx:60,cy:35,r:25},{cx:45,cy:60,r:16},{cx:75,cy:58,r:16},{cx:60,cy:80,r:14}].map((b,i)=>(
-        <g key={i}>
-          <ellipse cx={b.cx} cy={b.cy} rx={b.r} ry={b.r*0.85} fill={`rgba(255,182,193,${0.35+i%3*0.1})`}/>
-          <ellipse cx={b.cx} cy={b.cy} rx={b.r*0.7} ry={b.r*0.6} fill={`rgba(255,150,170,${0.25+i%2*0.1})`}/>
-          {[...Array(5)].map((_,j)=>{ const a=j*72*Math.PI/180; return <circle key={j} cx={b.cx+Math.cos(a)*b.r*0.5} cy={b.cy+Math.sin(a)*b.r*0.45} r={b.r*0.18} fill={`rgba(255,210,220,0.7)`}/>; })}
-        </g>
-      ))}
-    </svg>
-  </motion.div>
-);
+/* ══════════════════════════════════════════
+   CALLIGRAPHY ASSETS — Red · Black · Gold
+══════════════════════════════════════════ */
 
-/* Torii Gate */
-const ToriiGate:React.FC<{style?:React.CSSProperties;opacity?:number}>=({style={},opacity=0.18})=>(
-  <motion.div style={{position:'absolute',pointerEvents:'none',opacity,...style}}
-    animate={{opacity:[opacity,opacity*1.4,opacity],y:[0,-4,0]}} transition={{duration:6,repeat:Infinity,ease:'easeInOut'}}>
-    <svg viewBox="0 0 200 260" width="200" height="260">
-      {/* Top kasagi */}
-      <rect x="5" y="20" width="190" height="16" rx="3" fill={J.vermillion}/>
-      {/* Top arch (nuki upper) */}
-      <path d="M5 36 Q100 10 195 36" stroke={J.vermillion} strokeWidth="8" fill="none"/>
-      {/* Shimaki (second beam) */}
-      <rect x="18" y="55" width="164" height="12" rx="2" fill={J.vermillion}/>
-      {/* Columns */}
-      <rect x="28" y="67" width="18" height="193" rx="4" fill={J.vermillionL}/>
-      <rect x="154" y="67" width="18" height="193" rx="4" fill={J.vermillionL}/>
-      {/* Nuki (tie beams) */}
-      <rect x="20" y="110" width="160" height="9" rx="2" fill={J.vermillion} opacity="0.7"/>
-      {/* Glow */}
-      <rect x="5" y="20" width="190" height="16" rx="3" fill={J.vermillion} opacity="0.3" filter="blur(4px)"/>
-    </svg>
-  </motion.div>
-);
-
-/* Bamboo Forest */
-const BambooForest:React.FC<{style?:React.CSSProperties;count?:number}>=({style={},count=5})=>(
-  <div style={{position:'absolute',pointerEvents:'none',...style}}>
-    {Array.from({length:count},(_,i)=>(
-      <motion.div key={i} style={{position:'absolute',left:i*22,bottom:0,transformOrigin:'bottom center'}}
-        animate={{rotate:[0,1.5,-1,1.2,0],scaleX:[1,1.02,0.98,1]}} transition={{duration:3.5+i*0.4,repeat:Infinity,ease:'easeInOut',delay:i*0.3}}>
-        <svg viewBox="0 0 20 200" width={16+i%2*4} height={160+i*20}>
-          <line x1="8" y1="200" x2="10" y2="0" stroke={J.bambooL} strokeWidth="3.5" strokeLinecap="round" opacity={0.6+i*0.06}/>
-          {[20,50,80,110,140].map((y,j)=>(
-            <g key={j}>
-              <line x1="3" y1={y} x2="15" y2={y} stroke={J.bambooD} strokeWidth="1.5" opacity="0.8"/>
-              <path d={`M10 ${y} Q22 ${y-18} 28 ${y-8}`} stroke={J.bambooL} strokeWidth="1.5" fill="none" strokeLinecap="round" opacity="0.5"/>
-              <path d={`M10 ${y} Q-2 ${y-15} -8 ${y-5}`} stroke={J.bambooL} strokeWidth="1.5" fill="none" strokeLinecap="round" opacity="0.4"/>
-            </g>
-          ))}
-        </svg>
-      </motion.div>
-    ))}
-  </div>
-);
-
-/* Mount Fuji */
-const MountFuji:React.FC<{style?:React.CSSProperties;opacity?:number}>=({style={},opacity=0.12})=>(
-  <motion.div style={{position:'absolute',pointerEvents:'none',opacity,...style}}
-    animate={{opacity:[opacity,opacity*1.3,opacity]}} transition={{duration:8,repeat:Infinity,ease:'easeInOut'}}>
-    <svg viewBox="0 0 400 200" width="400" height="200">
-      {/* Mountain body */}
-      <path d="M0 200 L200 20 L400 200 Z" fill={`rgba(26,31,56,0.8)`}/>
-      {/* Snow cap */}
-      <path d="M160 65 L200 20 L240 65 Q220 58 200 55 Q180 58 160 65 Z" fill={`rgba(232,232,245,0.85)`}/>
-      {/* Snow detail */}
-      <path d="M170 72 Q200 62 230 72 Q210 66 200 64 Q190 66 170 72 Z" fill={`rgba(200,200,225,0.6)`}/>
-      {/* Mist layers */}
-      <ellipse cx="200" cy="130" rx="200" ry="25" fill={`rgba(20,25,45,0.5)`}/>
-      <ellipse cx="200" cy="150" rx="200" ry="20" fill={`rgba(15,20,40,0.4)`}/>
-    </svg>
-  </motion.div>
-);
-
-/* Origami Crane */
-const OrigamiCrane:React.FC<{style?:React.CSSProperties;size?:number;delay?:number;color?:string}>=({style={},size=40,delay=0,color=J.sakura})=>(
-  <motion.div style={{position:'absolute',pointerEvents:'none',...style}}
-    animate={{y:[0,-25,0],x:[0,12,-8,0],rotate:[0,8,-5,0],opacity:[0.4,0.85,0.4]}}
-    transition={{duration:5+delay,repeat:Infinity,ease:'easeInOut',delay}}>
-    <svg viewBox="0 0 60 50" width={size} height={size*0.83}>
-      {/* Body */}
-      <polygon points="30,5 50,30 30,22 10,30" fill={color} opacity="0.8"/>
-      {/* Left wing */}
-      <polygon points="10,30 30,22 5,45" fill={color} opacity="0.65"/>
-      {/* Right wing */}
-      <polygon points="50,30 30,22 55,45" fill={color} opacity="0.65"/>
-      {/* Tail */}
-      <polygon points="30,22 28,48 32,48" fill={color} opacity="0.7"/>
-      {/* Head */}
-      <polygon points="30,5 38,12 33,18" fill={color} opacity="0.9"/>
-      {/* Beak */}
-      <line x1="33" y1="12" x2="42" y2="8" stroke={color} strokeWidth="1.5" opacity="0.8" strokeLinecap="round"/>
-    </svg>
-  </motion.div>
-);
-
-/* Paper Lantern */
-const Lantern:React.FC<{style?:React.CSSProperties;delay?:number;size?:number}>=({style={},delay=0,size=50})=>(
-  <motion.div style={{position:'absolute',pointerEvents:'none',...style}}
-    animate={{y:[0,-12,0],rotate:[0,3,-3,0]}} transition={{duration:3.5+delay,repeat:Infinity,ease:'easeInOut',delay}}>
-    <svg viewBox="0 0 50 80" width={size} height={size*1.6}>
-      {/* String */}
-      <line x1="25" y1="0" x2="25" y2="10" stroke={J.gold} strokeWidth="1.5" strokeLinecap="round"/>
-      <line x1="18" y1="10" x2="32" y2="10" stroke={J.gold} strokeWidth="2" strokeLinecap="round"/>
-      {/* Body glow */}
-      <ellipse cx="25" cy="40" rx="16" ry="22" fill={`rgba(232,200,106,0.08)`}/>
-      {/* Body */}
-      <path d="M12 22 Q8 40 12 58 Q25 65 38 58 Q42 40 38 22 Q25 16 12 22 Z" fill={J.vermillion}/>
-      {/* Ribs */}
-      {[28,35,42,49].map(y=><ellipse key={y} cx="25" cy={y} rx="13" ry="2.5" fill="none" stroke="rgba(0,0,0,0.25)" strokeWidth="1"/>)}
-      {/* Inner glow */}
-      <ellipse cx="25" cy="40" rx="10" ry="16" fill={`rgba(255,220,100,0.3)`}/>
-      {/* Bottom tassel */}
-      <line x1="25" y1="63" x2="25" y2="72" stroke={J.gold} strokeWidth="1.5"/>
-      <ellipse cx="25" cy="73" rx="4" ry="2" fill={J.gold} opacity="0.8"/>
-      {/* Kanji character */}
-      <text x="25" y="44" textAnchor="middle" fontSize="12" fill="rgba(255,240,180,0.7)" fontWeight="bold">和</text>
-    </svg>
-    {/* Light glow under lantern */}
-    <motion.div animate={{opacity:[0.3,0.6,0.3],scale:[1,1.2,1]}} transition={{duration:1.8+delay,repeat:Infinity,ease:'easeInOut'}}
-      style={{position:'absolute',bottom:-8,left:'50%',transform:'translateX(-50%)',width:30,height:12,borderRadius:'50%',background:'rgba(255,200,80,0.3)',filter:'blur(6px)'}}/>
-  </motion.div>
-);
-
-/* Enso Circle */
-const Enso:React.FC<{style?:React.CSSProperties;size?:number;opacity?:number}>=({style={},size=120,opacity=0.15})=>(
-  <motion.div style={{position:'absolute',pointerEvents:'none',opacity,...style}}
-    animate={{rotate:360}} transition={{duration:40,repeat:Infinity,ease:'linear'}}>
-    <svg viewBox="0 0 120 120" width={size} height={size}>
-      <motion.path d="M60 10 A50 50 0 1 1 59.9 10" fill="none" stroke={J.gold} strokeWidth="4" strokeLinecap="round"
-        initial={{pathLength:0,opacity:0}} animate={{pathLength:0.92,opacity:1}} transition={{duration:2.5,ease:'easeInOut',delay:0.5}}/>
-      <motion.path d="M60 18 A42 42 0 1 1 59.9 18" fill="none" stroke={J.sakura} strokeWidth="1.5" strokeLinecap="round" opacity="0.5"
-        initial={{pathLength:0}} animate={{pathLength:0.7}} transition={{duration:3,ease:'easeInOut',delay:1}}/>
-    </svg>
-  </motion.div>
-);
-
-/* Koi Fish */
-const KoiFish:React.FC<{style?:React.CSSProperties;delay?:number;flip?:boolean}>=({style={},delay=0,flip=false})=>(
-  <motion.div style={{position:'absolute',pointerEvents:'none',transform:flip?'scaleY(-1)':'none',...style}}
-    animate={{x:[0,80,160,80,0],y:[0,20,-10,30,0],rotate:[0,5,-5,8,0]}}
-    transition={{duration:12+delay,repeat:Infinity,ease:'easeInOut',delay}}>
-    <svg viewBox="0 0 80 30" width="80" height="30">
-      {/* Body */}
-      <ellipse cx="38" cy="15" rx="28" ry="11" fill={J.vermillion} opacity="0.7"/>
-      {/* Scales pattern */}
-      {[[20,10],[28,8],[36,7],[44,8],[20,15],[28,13],[36,12],[44,13],[20,20],[28,18],[36,17],[44,18]].map(([x,y],i)=>
-        <ellipse key={i} cx={x} cy={y} rx="5" ry="3.5" fill="none" stroke="rgba(200,60,40,0.4)" strokeWidth="0.8"/>
-      )}
-      {/* Tail */}
-      <path d="M66 15 Q75 5 78 12 Q75 15 78 18 Q75 25 66 15 Z" fill={J.vermillion} opacity="0.6"/>
-      {/* Fins */}
-      <path d="M38 4 Q45 -2 50 4" fill={J.gold} opacity="0.5"/>
-      <path d="M25 15 Q20 22 28 22" fill={J.gold} opacity="0.4"/>
-      {/* White markings */}
-      <ellipse cx="32" cy="12" rx="7" ry="5" fill="rgba(255,255,255,0.35)"/>
-      {/* Eye */}
-      <circle cx="14" cy="13" r="3" fill="rgba(0,0,0,0.7)"/>
-      <circle cx="13.5" cy="12.5" r="1" fill="white"/>
-    </svg>
-  </motion.div>
-);
-
-/* Wave (Hokusai) */
-const WaveDecor:React.FC<{style?:React.CSSProperties;opacity?:number}>=({style={},opacity=0.12})=>(
-  <motion.div style={{position:'absolute',pointerEvents:'none',opacity,...style}}
-    animate={{x:[-20,20,-20],y:[0,-8,0]}} transition={{duration:6,repeat:Infinity,ease:'easeInOut'}}>
-    <svg viewBox="0 0 300 80" width="300" height="80">
-      <path d="M0 50 Q30 20 60 40 Q90 60 120 35 Q150 10 180 35 Q210 60 240 38 Q270 16 300 42" fill="none" stroke={J.indigo} strokeWidth="2.5" strokeLinecap="round"/>
-      <path d="M0 60 Q30 30 60 50 Q90 70 120 45 Q150 20 180 45 Q210 70 240 48 Q270 26 300 52" fill="none" stroke={J.indigoL} strokeWidth="2" strokeLinecap="round" opacity="0.7"/>
-      {/* Foam tips */}
-      {[60,120,180,240].map(x=><ellipse key={x} cx={x} cy={35} rx="8" ry="4" fill="rgba(232,232,245,0.3)"/>)}
-    </svg>
-  </motion.div>
-);
-
-/* Floating particles (mon circles) */
-const MonCircle:React.FC<{style?:React.CSSProperties;delay?:number;size?:number}>=({style={},delay=0,size=30})=>(
-  <motion.div style={{position:'absolute',pointerEvents:'none',...style}}
-    animate={{y:[0,-20,0],rotate:[0,180,360],opacity:[0.15,0.35,0.15]}} transition={{duration:8+delay,repeat:Infinity,ease:'easeInOut',delay}}>
-    <svg viewBox="0 0 40 40" width={size} height={size}>
-      <circle cx="20" cy="20" r="18" fill="none" stroke={J.gold} strokeWidth="1.5" opacity="0.8"/>
-      <circle cx="20" cy="20" r="12" fill="none" stroke={J.gold} strokeWidth="1" opacity="0.5"/>
-      {[...Array(8)].map((_,i)=>{const a=i*45*Math.PI/180;return <circle key={i} cx={20+Math.cos(a)*14} cy={20+Math.sin(a)*14} r="2" fill={J.gold} opacity="0.6"/>;  })}
-      <circle cx="20" cy="20" r="3" fill={J.gold} opacity="0.7"/>
-    </svg>
-  </motion.div>
-);
-
-/* Ink Drop Ripple on hover */
-const InkRipple:React.FC<{children:React.ReactNode;style?:React.CSSProperties}>=({children,style={}})=>{
-  const [ripples,setRipples]=useState<{id:number;x:number;y:number}[]>([]);
-  const handleClick=(e:React.MouseEvent<HTMLDivElement>)=>{
-    const r=e.currentTarget.getBoundingClientRect();
-    const id=Date.now();
-    setRipples(p=>[...p,{id,x:e.clientX-r.left,y:e.clientY-r.top}]);
-    setTimeout(()=>setRipples(p=>p.filter(r=>r.id!==id)),800);
-  };
-  return <div style={{position:'relative',overflow:'hidden',...style}} onClick={handleClick}>
-    {children}
-    {ripples.map(r=><motion.div key={r.id} style={{position:'absolute',left:r.x,top:r.y,width:0,height:0,borderRadius:'50%',border:`2px solid ${J.sakura}`,transform:'translate(-50%,-50%)',pointerEvents:'none'}}
-      animate={{width:200,height:200,opacity:[0.6,0]}} transition={{duration:0.8,ease:'easeOut'}}/>)}
-  </div>;
+/* Animated ink brush stroke canvas */
+const InkBrushCanvas:React.FC=()=>{
+  const ref=useRef<HTMLCanvasElement>(null);
+  useEffect(()=>{
+    const c=ref.current;if(!c)return;const ctx=c.getContext('2d');if(!ctx)return;let raf:number;
+    const resize=()=>{c.width=c.offsetWidth;c.height=c.offsetHeight;};resize();window.addEventListener('resize',resize);
+    interface Stroke{x:number;y:number;pts:{x:number;y:number}[];len:number;maxLen:number;vx:number;vy:number;w:number;color:string;alpha:number;life:number;}
+    const strokes:Stroke[]=[];let next=0,t=0;
+    const spawnStroke=()=>{
+      const isRed=Math.random()<0.3;
+      const color=isRed?`rgba(139,26,26,`:`rgba(201,160,48,`;
+      const maxLen=Math.floor(Math.random()*80+40);
+      strokes.push({
+        x:Math.random()*c.width,y:Math.random()*c.height,
+        pts:[],len:0,maxLen,
+        vx:(Math.random()-0.5)*3,vy:(Math.random()-0.5)*1.5,
+        w:Math.random()*3+1,
+        color,alpha:Math.random()*0.35+0.1,life:maxLen+60,
+      });
+    };
+    const tick=()=>{
+      ctx.clearRect(0,0,c.width,c.height);
+      t++;if(t>=next){spawnStroke();next=t+Math.floor(Math.random()*120+60);}
+      for(let i=strokes.length-1;i>=0;i--){
+        const s=strokes[i];
+        if(s.pts.length<s.maxLen){s.pts.push({x:s.x,y:s.y});s.x+=s.vx+(Math.random()-0.5)*0.5;s.y+=s.vy+(Math.random()-0.5)*0.5;}
+        if(s.pts.length>1){
+          for(let j=1;j<s.pts.length;j++){
+            const fade=j/s.pts.length;const decay=s.life<40?s.life/40:1;
+            ctx.beginPath();ctx.moveTo(s.pts[j-1].x,s.pts[j-1].y);ctx.lineTo(s.pts[j].x,s.pts[j].y);
+            ctx.strokeStyle=`${s.color}${(s.alpha*fade*decay).toFixed(2)})`;
+            ctx.lineWidth=s.w*(0.5+fade*0.5)*decay;ctx.lineCap='round';ctx.stroke();
+          }
+        }
+        s.life--;if(s.life<=0)strokes.splice(i,1);
+      }
+      raf=requestAnimationFrame(tick);
+    };
+    tick();return()=>{cancelAnimationFrame(raf);window.removeEventListener('resize',resize);};
+  },[]);
+  return <canvas ref={ref} style={{position:'absolute',inset:0,width:'100%',height:'100%',pointerEvents:'none',zIndex:1}}/>;
 };
 
-
-/* ════════════════════════════════════════
-   JAPAN BACKGROUND SYSTEM 和の背景
-════════════════════════════════════════ */
-
-/* Gold circuit line canvas */
+/* Gold circuit lines */
 const GoldLines:React.FC=()=>{
   const ref=useRef<HTMLCanvasElement>(null);
   useEffect(()=>{
-    const c=ref.current;if(!c)return;
-    const ctx=c.getContext('2d');if(!ctx)return;
-    let raf:number;
-    const resize=()=>{c.width=c.offsetWidth;c.height=c.offsetHeight;};
-    resize();window.addEventListener('resize',resize);
-    interface Line{x1:number;y1:number;x2:number;y2:number;prog:number;speed:number;alpha:number;dir:1|-1;}
-    const lines:Line[]=Array.from({length:18},()=>({
-      x1:Math.random()*1400,y1:Math.random()*900,
-      x2:Math.random()*1400,y2:Math.random()*900,
-      prog:Math.random(),speed:Math.random()*0.003+0.001,
-      alpha:Math.random()*0.3+0.1,dir:(Math.random()<0.5?1:-1) as 1|-1,
-    }));
-    const tick=()=>{
-      ctx.clearRect(0,0,c.width,c.height);
-      lines.forEach(l=>{
-        l.prog+=l.speed*l.dir;
-        if(l.prog>1){l.prog=1;l.dir=-1;l.x2=Math.random()*c.width;l.y2=Math.random()*c.height;}
-        if(l.prog<0){l.prog=0;l.dir=1;l.x1=Math.random()*c.width;l.y1=Math.random()*c.height;}
-        const grd=ctx.createLinearGradient(l.x1,l.y1,l.x2,l.y2);
-        grd.addColorStop(0,`rgba(184,146,42,0)`);
-        grd.addColorStop(l.prog*0.4,`rgba(184,146,42,${l.alpha*0.5})`);
-        grd.addColorStop(l.prog,`rgba(212,176,80,${l.alpha})`);
-        grd.addColorStop(Math.min(l.prog+0.05,1),`rgba(184,146,42,${l.alpha*0.5})`);
-        grd.addColorStop(1,`rgba(184,146,42,0)`);
-        ctx.beginPath();ctx.moveTo(l.x1,l.y1);ctx.lineTo(l.x2,l.y2);
-        ctx.strokeStyle=grd;ctx.lineWidth=0.8;ctx.stroke();
-        // node dots
-        const nx=l.x1+(l.x2-l.x1)*l.prog;
-        const ny=l.y1+(l.y2-l.y1)*l.prog;
-        ctx.beginPath();ctx.arc(nx,ny,1.5,0,Math.PI*2);
-        ctx.fillStyle=`rgba(212,176,80,${l.alpha*1.5})`;ctx.fill();
-      });
-      raf=requestAnimationFrame(tick);
-    };
+    const c=ref.current;if(!c)return;const ctx=c.getContext('2d');if(!ctx)return;let raf:number;
+    const resize=()=>{c.width=c.offsetWidth;c.height=c.offsetHeight;};resize();window.addEventListener('resize',resize);
+    const lines=Array.from({length:16},()=>({x1:Math.random()*1400,y1:Math.random()*900,x2:Math.random()*1400,y2:Math.random()*900,prog:Math.random(),speed:Math.random()*0.003+0.001,alpha:Math.random()*0.25+0.08,dir:(Math.random()<0.5?1:-1) as 1|-1}));
+    const tick=()=>{ctx.clearRect(0,0,c.width,c.height);lines.forEach(l=>{l.prog+=l.speed*l.dir;if(l.prog>1){l.prog=1;l.dir=-1;l.x2=Math.random()*c.width;l.y2=Math.random()*c.height;}if(l.prog<0){l.prog=0;l.dir=1;l.x1=Math.random()*c.width;l.y1=Math.random()*c.height;}const g=ctx.createLinearGradient(l.x1,l.y1,l.x2,l.y2);g.addColorStop(0,'rgba(201,160,48,0)');g.addColorStop(l.prog,`rgba(212,175,55,${l.alpha})`);g.addColorStop(Math.min(l.prog+0.05,1),`rgba(201,160,48,${l.alpha*0.5})`);g.addColorStop(1,'rgba(201,160,48,0)');ctx.beginPath();ctx.moveTo(l.x1,l.y1);ctx.lineTo(l.x2,l.y2);ctx.strokeStyle=g;ctx.lineWidth=0.8;ctx.stroke();const nx=l.x1+(l.x2-l.x1)*l.prog;const ny=l.y1+(l.y2-l.y1)*l.prog;ctx.beginPath();ctx.arc(nx,ny,1.5,0,Math.PI*2);ctx.fillStyle=`rgba(212,175,55,${l.alpha*1.5})`;ctx.fill();});raf=requestAnimationFrame(tick);};
     tick();return()=>{cancelAnimationFrame(raf);window.removeEventListener('resize',resize);};
   },[]);
   return <canvas ref={ref} style={{position:'absolute',inset:0,width:'100%',height:'100%',pointerEvents:'none',zIndex:2}}/>;
 };
 
-/* Crack texture SVG overlay */
+/* Crack texture SVG */
 const CrackOverlay:React.FC=()=>(
-  <svg style={{position:'absolute',inset:0,width:'100%',height:'100%',pointerEvents:'none',zIndex:1,opacity:0.18}} preserveAspectRatio="xMidYMid slice" viewBox="0 0 400 900">
-    <path d="M120 50 L180 120 L140 200 L200 280 L160 380 L220 450 L180 560 L240 640 L200 750 L260 850" stroke="rgba(180,140,80,0.7)" strokeWidth="0.8" fill="none" strokeLinecap="round"/>
-    <path d="M280 30 L240 100 L290 180 L250 260 L300 350 L260 440 L310 520 L270 620 L320 720 L280 820" stroke="rgba(180,140,80,0.6)" strokeWidth="0.6" fill="none" strokeLinecap="round"/>
-    <path d="M60 150 L120 180 L80 230 L150 260 L100 320" stroke="rgba(160,120,60,0.5)" strokeWidth="0.5" fill="none" strokeLinecap="round"/>
-    <path d="M320 200 L360 240 L310 290 L370 340 L330 400" stroke="rgba(160,120,60,0.4)" strokeWidth="0.5" fill="none" strokeLinecap="round"/>
-    <path d="M180 120 L230 140 L200 160 L250 185" stroke="rgba(180,140,80,0.45)" strokeWidth="0.4" fill="none" strokeLinecap="round"/>
-    <path d="M140 200 L100 220 L130 245 L90 265" stroke="rgba(160,120,60,0.4)" strokeWidth="0.4" fill="none" strokeLinecap="round"/>
-    <path d="M240 450 L280 470 L260 500 L300 520" stroke="rgba(180,140,80,0.35)" strokeWidth="0.4" fill="none" strokeLinecap="round"/>
-    {/* Diamond pattern scattered */}
-    {[[90,300],[210,400],[330,500],[150,600],[270,700],[100,800],[350,750]].map(([x,y],i)=>(
+  <svg style={{position:'absolute',inset:0,width:'100%',height:'100%',pointerEvents:'none',zIndex:1,opacity:0.15}} preserveAspectRatio="xMidYMid slice" viewBox="0 0 400 900">
+    <path d="M120 50 L180 120 L140 200 L200 280 L160 380 L220 450 L180 560 L240 640 L200 750 L260 850" stroke="rgba(201,160,48,0.6)" strokeWidth="0.8" fill="none" strokeLinecap="round"/>
+    <path d="M280 30 L240 100 L290 180 L250 260 L300 350 L260 440 L310 520 L270 620 L320 720 L280 820" stroke="rgba(201,160,48,0.5)" strokeWidth="0.6" fill="none" strokeLinecap="round"/>
+    <path d="M60 150 L120 180 L80 230 L150 260 L100 320" stroke="rgba(139,26,26,0.4)" strokeWidth="0.5" fill="none" strokeLinecap="round"/>
+    <path d="M320 200 L360 240 L310 290 L370 340 L330 400" stroke="rgba(139,26,26,0.35)" strokeWidth="0.5" fill="none" strokeLinecap="round"/>
+    {[[90,300],[210,400],[330,500],[150,600],[270,700]].map(([x,y],i)=>(
       <g key={i} transform={`translate(${x},${y}) rotate(45)`}>
-        <rect x="-4" y="-4" width="8" height="8" fill="none" stroke="rgba(180,140,80,0.3)" strokeWidth="0.5"/>
+        <rect x="-5" y="-5" width="10" height="10" fill="none" stroke="rgba(201,160,48,0.25)" strokeWidth="0.6"/>
       </g>
     ))}
   </svg>
 );
 
-/* Smoke cloud SVG */
+/* Smoke */
 const SmokeCloud:React.FC<{style?:React.CSSProperties;delay?:number;flip?:boolean}>=({style={},delay=0,flip=false})=>(
-  <motion.div style={{position:'absolute',pointerEvents:'none',filter:'blur(18px)',transform:flip?'scaleX(-1)':'none',...style}}
-    animate={{x:[0,15,0,-10,0],y:[0,-8,0,-5,0],opacity:[0.5,0.7,0.4,0.6,0.5]}}
-    transition={{duration:8+delay,repeat:Infinity,ease:'easeInOut',delay}}>
+  <motion.div style={{position:'absolute',pointerEvents:'none',filter:'blur(20px)',transform:flip?'scaleX(-1)':'none',...style}}
+    animate={{x:[0,12,0,-8,0],y:[0,-6,0,-4,0],opacity:[0.55,0.75,0.45,0.65,0.55]}}
+    transition={{duration:9+delay,repeat:Infinity,ease:'easeInOut',delay}}>
     <svg viewBox="0 0 200 100" width="200" height="100">
-      <ellipse cx="100" cy="60" rx="90" ry="40" fill="rgba(15,10,5,0.85)"/>
-      <ellipse cx="70"  cy="45" rx="55" ry="35" fill="rgba(20,12,6,0.8)"/>
-      <ellipse cx="130" cy="48" rx="50" ry="30" fill="rgba(18,10,5,0.75)"/>
-      <ellipse cx="100" cy="35" rx="40" ry="28" fill="rgba(25,15,8,0.7)"/>
+      <ellipse cx="100" cy="60" rx="90" ry="40" fill="rgba(8,5,0,0.9)"/>
+      <ellipse cx="70"  cy="45" rx="55" ry="35" fill="rgba(12,6,0,0.85)"/>
+      <ellipse cx="130" cy="48" rx="50" ry="30" fill="rgba(10,5,0,0.8)"/>
+      <ellipse cx="100" cy="35" rx="40" ry="28" fill="rgba(15,8,0,0.75)"/>
     </svg>
   </motion.div>
 );
 
-/* Kamon floor glow circle */
-const KamonFloor:React.FC<{style?:React.CSSProperties;delay?:number;size?:number}>=({style={},delay=0,size=120})=>(
+/* Samurai Mon — bold geometric crest */
+const SamuraiMon:React.FC<{style?:React.CSSProperties;delay?:number;size?:number;variant?:number}>=({style={},delay=0,size=90,variant=0})=>(
   <motion.div style={{position:'absolute',pointerEvents:'none',...style}}
-    animate={{opacity:[0.15,0.4,0.15],scale:[0.95,1.05,0.95]}}
-    transition={{duration:4+delay,repeat:Infinity,ease:'easeInOut',delay}}>
-    <svg viewBox="0 0 120 120" width={size} height={size}>
-      {/* Outer glow ring */}
-      <circle cx="60" cy="60" r="56" fill="none" stroke={J.vermillion} strokeWidth="1" opacity="0.6"/>
-      <circle cx="60" cy="60" r="52" fill="none" stroke={J.gold} strokeWidth="0.5" opacity="0.4"/>
-      {/* Inner sakura pattern */}
-      <circle cx="60" cy="60" r="30" fill="none" stroke={J.vermillion} strokeWidth="1.2" opacity="0.7"/>
-      {/* 6 petals */}
-      {[...Array(6)].map((_,i)=>{
-        const a=i*60*Math.PI/180;
-        return <ellipse key={i} cx={60+Math.cos(a)*20} cy={60+Math.sin(a)*20} rx="10" ry="7"
-          fill={`rgba(146,32,24,0.25)`} stroke={J.vermillion} strokeWidth="0.8" opacity="0.7"
-          transform={`rotate(${i*60+30},${60+Math.cos(a)*20},${60+Math.sin(a)*20})`}/>;
-      })}
-      {/* Center */}
-      <circle cx="60" cy="60" r="6" fill={`rgba(146,32,24,0.4)`} stroke={J.gold} strokeWidth="1"/>
-      {/* Radial glow */}
-      <circle cx="60" cy="60" r="56" fill={`rgba(146,32,24,0.04)`}/>
+    animate={{opacity:[0.15,0.4,0.15],rotate:[0,variant%2===0?3:-3,0]}}
+    transition={{duration:5+delay,repeat:Infinity,ease:'easeInOut',delay}}>
+    <svg viewBox="0 0 100 100" width={size} height={size}>
+      {/* Outer ring */}
+      <circle cx="50" cy="50" r="46" fill="none" stroke={J.gold} strokeWidth="1.5" opacity="0.7"/>
+      <circle cx="50" cy="50" r="40" fill="none" stroke={J.red} strokeWidth="0.8" opacity="0.5"/>
+      {variant===0 && <>
+        {/* Tomoe (tomoe pattern - 3 comma swirls) */}
+        {[0,120,240].map((_,i)=>{const a=(i*120-90)*Math.PI/180;return <path key={i} d={`M50 50 Q${50+Math.cos(a)*28} ${50+Math.sin(a)*28} ${50+Math.cos(a+Math.PI/3)*20} ${50+Math.sin(a+Math.PI/3)*20} A8 8 0 1 0 ${50+Math.cos(a)*12} ${50+Math.sin(a)*12} Z`} fill={`rgba(201,160,48,0.35)`} stroke={J.gold} strokeWidth="0.8"/>;})}
+        <circle cx="50" cy="50" r="6" fill={`rgba(139,26,26,0.5)`} stroke={J.red} strokeWidth="1"/>
+      </>}
+      {variant===1 && <>
+        {/* Diamond cross */}
+        {[0,45,90,135].map((_,i)=>{const a=i*45*Math.PI/180;return <line key={i} x1={50+Math.cos(a)*8} y1={50+Math.sin(a)*8} x2={50+Math.cos(a)*38} y2={50+Math.sin(a)*38} stroke={J.gold} strokeWidth="1.5" opacity="0.7"strokeLinecap="round"/>;})}
+        {[0,45,90,135,180,225,270,315].map((_,i)=>{const a=i*45*Math.PI/180;return <circle key={i} cx={50+Math.cos(a)*28} cy={50+Math.sin(a)*28} r="2.5" fill={J.gold} opacity="0.6"/>;})  }
+        <polygon points="50,35 57,47 50,59 43,47" fill="none" stroke={J.red} strokeWidth="1.2" opacity="0.7"/>
+      </>}
+      {variant===2 && <>
+        {/* Six-pointed pattern */}
+        {[...Array(6)].map((_,i)=>{const a=i*60*Math.PI/180;return <polygon key={i} points={`${50+Math.cos(a)*35},${50+Math.sin(a)*35} ${50+Math.cos(a+Math.PI/6)*18},${50+Math.sin(a+Math.PI/6)*18} ${50+Math.cos(a-Math.PI/6)*18},${50+Math.sin(a-Math.PI/6)*18}`} fill={`rgba(201,160,48,0.2)`} stroke={J.gold} strokeWidth="0.8" opacity="0.7"/>;})  }
+        <circle cx="50" cy="50" r="8" fill={`rgba(139,26,26,0.4)`} stroke={J.red} strokeWidth="1.2"/>
+      </>}
     </svg>
-    {/* Ground glow under */}
-    <motion.div animate={{opacity:[0.2,0.5,0.2],scale:[1,1.15,1]}} transition={{duration:3+delay,repeat:Infinity}}
-      style={{position:'absolute',inset:-20,borderRadius:'50%',background:`radial-gradient(circle,rgba(146,32,24,0.25) 0%,transparent 70%)`,filter:'blur(8px)'}}/>
+    <motion.div animate={{opacity:[0.1,0.3,0.1],scale:[1,1.2,1]}} transition={{duration:3+delay,repeat:Infinity}}
+      style={{position:'absolute',inset:-15,borderRadius:'50%',background:`radial-gradient(circle,rgba(139,26,26,0.2) 0%,transparent 70%)`,filter:'blur(6px)'}}/>
   </motion.div>
 );
 
-/* Rising Sun element */
+/* Katana blade silhouette */
+const Katana:React.FC<{style?:React.CSSProperties;delay?:number;vertical?:boolean}>=({style={},delay=0,vertical=false})=>(
+  <motion.div style={{position:'absolute',pointerEvents:'none',transform:vertical?'rotate(90deg)':'none',...style}}
+    animate={{opacity:[0.2,0.45,0.2],x:[0,3,0]}}
+    transition={{duration:6+delay,repeat:Infinity,ease:'easeInOut',delay}}>
+    <svg viewBox="0 0 280 20" width="280" height="20">
+      {/* Blade */}
+      <path d="M0 10 L240 10 L270 8 L280 6" stroke={`rgba(245,245,240,0.6)`} strokeWidth="1" fill="none" strokeLinecap="round"/>
+      <path d="M0 10 L240 10 L270 12 L280 14" stroke={`rgba(245,245,240,0.3)`} strokeWidth="0.5" fill="none" strokeLinecap="round"/>
+      {/* Gold edge line */}
+      <path d="M10 9 L240 9" stroke={J.gold} strokeWidth="0.8" opacity="0.5"/>
+      {/* Tsuba (guard) */}
+      <ellipse cx="28" cy="10" rx="6" ry="9" fill={`rgba(201,160,48,0.3)`} stroke={J.gold} strokeWidth="1"/>
+      {/* Handle */}
+      <rect x="0" y="7" width="28" height="6" rx="2" fill={`rgba(139,26,26,0.4)`} stroke={J.red} strokeWidth="0.8"/>
+      {[5,10,15,20,25].map(x=><line key={x} x1={x} y1="7" x2={x+2} y2="13" stroke={`rgba(201,160,48,0.4)`} strokeWidth="0.8"/>)}
+      {/* Blood groove */}
+      <line x1="35" y1="9.5" x2="200" y2="9.5" stroke={`rgba(139,26,26,0.3)`} strokeWidth="0.6"/>
+      {/* Tip glow */}
+      <motion.circle cx="278" cy="7" r="2" fill={J.gold} animate={{opacity:[0.3,0.8,0.3]}} transition={{duration:2,repeat:Infinity,delay}}/>
+    </svg>
+  </motion.div>
+);
+
+/* Bold Kanji stamp effect */
+const KanjiStamp:React.FC<{kanji:string;style?:React.CSSProperties;delay?:number;size?:number}>=({kanji,style={},delay=0,size=80})=>(
+  <motion.div style={{position:'absolute',pointerEvents:'none',...style}}
+    initial={{scale:0,opacity:0}} animate={{scale:[0,1.15,1],opacity:[0,0.4,0.25]}}
+    transition={{duration:1.2,delay,ease:[0.22,1,0.36,1]}}>
+    <motion.div animate={{opacity:[0.25,0.45,0.25]}} transition={{duration:4+delay,repeat:Infinity}}>
+      <svg viewBox="0 0 100 100" width={size} height={size}>
+        <rect x="2" y="2" width="96" height="96" rx="4" fill="none" stroke={J.red} strokeWidth="3" opacity="0.8"/>
+        <rect x="6" y="6" width="88" height="88" rx="2" fill="none" stroke={J.red} strokeWidth="1" opacity="0.5"/>
+        <text x="50" y="68" textAnchor="middle" fontSize="54" fontFamily="serif" fill={`rgba(139,26,26,0.85)`} fontWeight="bold">{kanji}</text>
+      </svg>
+    </motion.div>
+  </motion.div>
+);
+
+/* Ink ground circle (replaces kamon floor) */
+const InkCircle:React.FC<{style?:React.CSSProperties;delay?:number;size?:number;color?:'red'|'gold'}>=({style={},delay=0,size=120,color='red'})=>{
+  const c=color==='red'?J.red:J.gold;
+  return (
+    <motion.div style={{position:'absolute',pointerEvents:'none',...style}}
+      animate={{opacity:[0.1,0.3,0.1],scale:[0.96,1.04,0.96]}}
+      transition={{duration:4+delay,repeat:Infinity,ease:'easeInOut',delay}}>
+      <svg viewBox="0 0 120 120" width={size} height={size}>
+        <motion.circle cx="60" cy="60" r="55" fill="none" stroke={c} strokeWidth="2"
+          initial={{pathLength:0}} animate={{pathLength:1}} transition={{duration:2,delay:delay+0.5}}/>
+        <motion.circle cx="60" cy="60" r="44" fill="none" stroke={c} strokeWidth="0.8" opacity="0.5"
+          initial={{pathLength:0}} animate={{pathLength:0.8}} transition={{duration:2.5,delay:delay+1}}/>
+        {[...Array(8)].map((_,i)=>{const a=i*45*Math.PI/180;return <motion.line key={i} x1={60+Math.cos(a)*46} y1={60+Math.sin(a)*46} x2={60+Math.cos(a)*56} y2={60+Math.sin(a)*56} stroke={c} strokeWidth="1.5" opacity="0.6" initial={{opacity:0}} animate={{opacity:0.6}} transition={{delay:delay+0.1*i}}/>;})  }
+        <circle cx="60" cy="60" r="6" fill={`rgba(139,26,26,0.3)`} stroke={c} strokeWidth="1"/>
+      </svg>
+      <motion.div animate={{opacity:[0.15,0.4,0.15]}} transition={{duration:3+delay,repeat:Infinity}}
+        style={{position:'absolute',inset:-20,borderRadius:'50%',background:`radial-gradient(circle,${c}22 0%,transparent 70%)`,filter:'blur(8px)'}}/>
+    </motion.div>
+  );
+};
+
+/* War banner / Nobori flag */
+const Nobori:React.FC<{style?:React.CSSProperties;delay?:number;kanji?:string}>=({style={},delay=0,kanji='武'})=>(
+  <motion.div style={{position:'absolute',pointerEvents:'none',...style}}
+    animate={{rotate:[0,1.5,-1,0.8,0],opacity:[0.35,0.55,0.35]}}
+    transition={{duration:5+delay,repeat:Infinity,ease:'easeInOut',delay}}>
+    <svg viewBox="0 0 40 140" width="40" height="140">
+      {/* Pole */}
+      <line x1="20" y1="0" x2="20" y2="140" stroke="rgba(139,90,40,0.6)" strokeWidth="3" strokeLinecap="round"/>
+      {/* Flag body */}
+      <rect x="4" y="8" width="32" height="100" rx="2" fill={`rgba(139,26,26,0.5)`} stroke={J.red} strokeWidth="1"/>
+      {/* Gold trim */}
+      <rect x="4" y="8" width="32" height="6" rx="1" fill={`rgba(201,160,48,0.4)`}/>
+      <rect x="4" y="102" width="32" height="6" rx="1" fill={`rgba(201,160,48,0.4)`}/>
+      {/* Kanji */}
+      <text x="20" y="65" textAnchor="middle" fontSize="22" fontFamily="serif" fill="rgba(245,240,220,0.8)" fontWeight="bold">{kanji}</text>
+      {/* Decorative line */}
+      <line x1="10" y1="80" x2="30" y2="80" stroke={`rgba(201,160,48,0.4)`} strokeWidth="0.8"/>
+    </svg>
+  </motion.div>
+);
+
+/* Bold horizontal brush stroke */
+const BrushStroke:React.FC<{style?:React.CSSProperties;width?:number;color?:string;delay?:number}>=({style={},width=300,color=J.red,delay=0})=>(
+  <motion.div style={{position:'absolute',pointerEvents:'none',...style}}
+    initial={{scaleX:0,opacity:0}} whileInView={{scaleX:1,opacity:1}} viewport={{once:true}}
+    transition={{duration:0.9,ease:[0.22,1,0.36,1],delay}}>
+    <svg viewBox={`0 0 ${width} 12`} width={width} height="12">
+      <path d={`M0 6 Q${width*0.3} 3 ${width*0.6} 6 Q${width*0.8} 8 ${width} 5`} stroke={color} strokeWidth="3.5" fill="none" strokeLinecap="round" opacity="0.9"/>
+      <path d={`M0 8 Q${width*0.3} 6 ${width*0.6} 8 Q${width*0.8} 10 ${width} 7`} stroke={color} strokeWidth="1.5" fill="none" strokeLinecap="round" opacity="0.4"/>
+    </svg>
+  </motion.div>
+);
+
+/* Torii gate — black with gold/red */
+const ToriiGate:React.FC<{style?:React.CSSProperties;opacity?:number}>=({style={},opacity=0.15})=>(
+  <motion.div style={{position:'absolute',pointerEvents:'none',opacity,...style}}
+    animate={{opacity:[opacity,opacity*1.4,opacity]}} transition={{duration:6,repeat:Infinity,ease:'easeInOut'}}>
+    <svg viewBox="0 0 200 260" width="200" height="260">
+      <rect x="5" y="20" width="190" height="16" rx="3" fill={J.redD}/>
+      <path d="M5 36 Q100 10 195 36" stroke={J.redD} strokeWidth="8" fill="none"/>
+      <rect x="18" y="55" width="164" height="12" rx="2" fill={J.redV}/>
+      <rect x="28" y="67" width="18" height="193" rx="4" fill={J.redL}/>
+      <rect x="154" y="67" width="18" height="193" rx="4" fill={J.redL}/>
+      <rect x="20" y="110" width="160" height="9" rx="2" fill={J.redD} opacity="0.7"/>
+      {/* Gold accents */}
+      <rect x="5" y="20" width="190" height="2" fill={J.gold} opacity="0.4"/>
+      <rect x="18" y="55" width="164" height="2" fill={J.gold} opacity="0.3"/>
+    </svg>
+  </motion.div>
+);
+
+/* Rising sun — bold geometric */
 const RisingSun:React.FC<{style?:React.CSSProperties;opacity?:number}>=({style={},opacity=0.12})=>(
   <motion.div style={{position:'absolute',pointerEvents:'none',opacity,...style}}
-    animate={{scale:[1,1.04,1],opacity:[opacity,opacity*1.6,opacity]}}
-    transition={{duration:6,repeat:Infinity,ease:'easeInOut'}}>
+    animate={{scale:[1,1.05,1],opacity:[opacity,opacity*1.5,opacity]}} transition={{duration:6,repeat:Infinity}}>
     <svg viewBox="0 0 160 160" width="160" height="160">
-      {/* Outer rays */}
-      {[...Array(12)].map((_,i)=>{
-        const a=i*30*Math.PI/180;
-        return <line key={i} x1={80+Math.cos(a)*62} y1={80+Math.sin(a)*62}
-          x2={80+Math.cos(a)*76} y2={80+Math.sin(a)*76}
-          stroke={J.vermillion} strokeWidth="1.5" opacity="0.5" strokeLinecap="round"/>;
-      })}
-      {/* Main circle */}
-      <circle cx="80" cy="80" r="55" fill={`rgba(146,32,24,0.18)`} stroke={J.vermillion} strokeWidth="2"/>
-      <circle cx="80" cy="80" r="42" fill={`rgba(146,32,24,0.22)`} stroke={J.vermillionL} strokeWidth="1"/>
-      <circle cx="80" cy="80" r="28" fill={`rgba(146,32,24,0.3)`}/>
-      {/* Wave pattern inside */}
-      <path d="M50 80 Q60 70 70 80 Q80 90 90 80 Q100 70 110 80" fill="none" stroke="rgba(200,80,60,0.3)" strokeWidth="1.5"/>
+      {[...Array(16)].map((_,i)=>{const a=i*22.5*Math.PI/180;return <line key={i} x1={80+Math.cos(a)*62} y1={80+Math.sin(a)*62} x2={80+Math.cos(a)*76} y2={80+Math.sin(a)*76} stroke={J.red} strokeWidth={i%2===0?"2":"1"} opacity="0.6" strokeLinecap="round"/>;})  }
+      <circle cx="80" cy="80" r="55" fill={`rgba(139,26,26,0.12)`} stroke={J.red} strokeWidth="2.5"/>
+      <circle cx="80" cy="80" r="38" fill={`rgba(139,26,26,0.18)`} stroke={J.redL} strokeWidth="1.5"/>
+      <circle cx="80" cy="80" r="22" fill={`rgba(139,26,26,0.28)`}/>
+      <circle cx="80" cy="80" r="55" fill="none" stroke={J.gold} strokeWidth="0.8" opacity="0.35"/>
     </svg>
   </motion.div>
 );
 
-/* Isometric building silhouette */
-const IsoBuilding:React.FC<{style?:React.CSSProperties;flip?:boolean;delay?:number}>=({style={},flip=false,delay=0})=>(
+/* Ink building/structure (strong, masculine) */
+const StrucBuilding:React.FC<{style?:React.CSSProperties;flip?:boolean;delay?:number}>=({style={},flip=false,delay=0})=>(
   <motion.div style={{position:'absolute',pointerEvents:'none',transform:flip?'scaleX(-1)':'none',...style}}
-    animate={{opacity:[0.3,0.5,0.3]}} transition={{duration:5+delay,repeat:Infinity,ease:'easeInOut',delay}}>
-    <svg viewBox="0 0 120 140" width="120" height="140">
+    animate={{opacity:[0.3,0.5,0.3]}} transition={{duration:5+delay,repeat:Infinity,delay}}>
+    <svg viewBox="0 0 110 150" width="110" height="150">
+      {/* Castle-style silhouette */}
+      <rect x="5" y="60" width="100" height="90" fill="rgba(8,4,0,0.9)" stroke="rgba(201,160,48,0.25)" strokeWidth="1"/>
+      {/* Battlements */}
+      {[10,28,46,64,82].map(x=><rect key={x} x={x} y="48" width="14" height="14" fill="rgba(8,4,0,0.9)" stroke="rgba(201,160,48,0.2)" strokeWidth="0.8"/>)}
       {/* Roof */}
-      <polygon points="10,50 60,10 110,50" fill={`rgba(15,10,6,0.9)`} stroke={`rgba(180,140,80,0.3)`} strokeWidth="1"/>
-      <polygon points="20,50 60,18 100,50" fill={`rgba(25,15,8,0.8)`}/>
+      <path d="M0 62 L55 20 L110 62" fill="rgba(12,6,0,0.92)" stroke="rgba(201,160,48,0.3)" strokeWidth="1"/>
       {/* Roof curve tips */}
-      <path d="M10 50 Q5 45 8 40" stroke={`rgba(180,140,80,0.4)`} strokeWidth="1.5" fill="none"/>
-      <path d="M110 50 Q115 45 112 40" stroke={`rgba(180,140,80,0.4)`} strokeWidth="1.5" fill="none"/>
-      {/* Walls */}
-      <rect x="20" y="50" width="80" height="60" fill={`rgba(12,8,4,0.88)`} stroke={`rgba(180,140,80,0.2)`} strokeWidth="1"/>
-      {/* Windows */}
-      {[[35,65],[60,65],[85,65],[45,90],[75,90]].map(([x,y],i)=>(
-        <rect key={i} x={x-5} y={y-7} width="10" height="14" rx="1"
-          fill={`rgba(212,160,60,0.15)`} stroke={`rgba(212,160,60,0.3)`} strokeWidth="0.5"/>
+      <path d="M2 60 Q-2 54 2 48" stroke="rgba(201,160,48,0.4)" strokeWidth="1.5" fill="none"/>
+      <path d="M108 60 Q112 54 108 48" stroke="rgba(201,160,48,0.4)" strokeWidth="1.5" fill="none"/>
+      {/* Windows — glowing */}
+      {[[25,90],[50,90],[75,90],[35,115],[65,115]].map(([x,y],i)=>(
+        <g key={i}>
+          <rect x={x-7} y={y-10} width="14" height="18" rx="1" fill="rgba(201,160,48,0.08)" stroke="rgba(201,160,48,0.3)" strokeWidth="0.8"/>
+          <motion.rect x={x-7} y={y-10} width="14" height="18" rx="1" fill="rgba(201,160,48,0.06)" animate={{opacity:[0.06,0.18,0.06]}} transition={{duration:2+i*0.3,repeat:Infinity,delay:i*0.4}}/>
+        </g>
       ))}
-      {/* Lantern hanging */}
-      <line x1="60" y1="10" x2="60" y2="22" stroke={`rgba(180,140,80,0.4)`} strokeWidth="1"/>
-      <rect x="54" y="22" width="12" height="18" rx="3" fill={`rgba(180,40,20,0.5)`} stroke={`rgba(212,160,60,0.4)`} strokeWidth="0.8"/>
-      <motion.rect x="54" y="22" width="12" height="18" rx="3" fill={`rgba(255,180,60,0.1)`}
-        animate={{opacity:[0.1,0.3,0.1]}} transition={{duration:1.5+delay,repeat:Infinity}}/>
-      {/* Kamon on wall */}
-      <circle cx="60" cy="75" r="8" fill="none" stroke={`rgba(180,40,20,0.35)`} strokeWidth="0.8"/>
-      <circle cx="60" cy="75" r="3" fill={`rgba(180,40,20,0.3)`}/>
+      {/* Gate */}
+      <path d="M42 150 L42 125 Q55 115 68 125 L68 150" fill="rgba(5,2,0,0.95)" stroke="rgba(201,160,48,0.25)" strokeWidth="1"/>
+      {/* Red banner */}
+      <rect x="48" y="48" width="14" height="30" fill="rgba(139,26,26,0.5)" stroke={J.red} strokeWidth="0.8"/>
+      <text x="55" y="68" textAnchor="middle" fontSize="10" fill="rgba(245,240,220,0.7)" fontFamily="serif">武</text>
     </svg>
   </motion.div>
 );
 
-/* Shared Japan background wrapper - uses image as fixed bg */
-const JapanBgSection:React.FC<{children:React.ReactNode;overlayColor?:string;style?:React.CSSProperties}>=({
-  children,
-  overlayColor='rgba(12,8,5,0.78)',
-  style={},
-})=>(
-  <section style={{
-    position:'relative',
-    padding:'clamp(4rem,10vw,8rem) clamp(1rem,5vw,2rem)',
-    overflow:'hidden',
-    backgroundImage:"url('/japan-bg.jpg')",
-    backgroundSize:'cover',
-    backgroundPosition:'center top',
-    backgroundAttachment:'fixed',
-    ...style,
-  }}>
-    {/* Primary dark overlay — key for text readability */}
+/* JapanBgSection wrapper */
+const JapanBgSection:React.FC<{children:React.ReactNode;overlayColor?:string;style?:React.CSSProperties}>=({children,overlayColor=J.ov78,style={}})=>(
+  <section style={{position:'relative',padding:'clamp(4rem,10vw,8rem) clamp(1rem,5vw,2rem)',overflow:'hidden',backgroundImage:"url('/japan-bg.jpg')",backgroundSize:'cover',backgroundPosition:'center top',backgroundAttachment:'fixed',...style}}>
     <div style={{position:'absolute',inset:0,background:overlayColor,zIndex:0}}/>
-    {/* Warm vignette */}
-    <div style={{position:'absolute',inset:0,background:'radial-gradient(ellipse at 50% 50%,rgba(30,10,5,0.1) 0%,rgba(8,4,2,0.55) 100%)',zIndex:0}}/>
-    {/* Top/bottom fades to J.ink for seamless section joins */}
+    <div style={{position:'absolute',inset:0,background:'radial-gradient(ellipse at 50% 50%,rgba(20,5,0,0.1) 0%,rgba(5,0,0,0.5) 100%)',zIndex:0}}/>
     <div style={{position:'absolute',top:0,left:0,right:0,height:100,background:`linear-gradient(to bottom,${J.ink},transparent)`,zIndex:3,pointerEvents:'none'}}/>
     <div style={{position:'absolute',bottom:0,left:0,right:0,height:100,background:`linear-gradient(to top,${J.ink},transparent)`,zIndex:3,pointerEvents:'none'}}/>
-    {/* Crack texture */}
     <CrackOverlay/>
-    {/* Gold circuit lines */}
     <GoldLines/>
-    {/* Content */}
-    <div style={{position:'relative',zIndex:4}}>
-      {children}
-    </div>
+    <div style={{position:'relative',zIndex:4}}>{children}</div>
   </section>
 );
 
-/* ════════════════════════════════════════
-   MARQUEE
-════════════════════════════════════════ */
+/* ══════════════════════════════════════════
+   MARQUEE — Red bar
+══════════════════════════════════════════ */
 const Marquee:React.FC<{contact:ContactData}>=({contact})=>{
   const items=[
-    contact.instagram&&{icon:'📸',label:'Instagram',value:'@'+contact.instagram,href:'https://instagram.com/'+contact.instagram},
-    contact.linkedin &&{icon:'💼',label:'LinkedIn', value:contact.linkedin,      href:'https://linkedin.com/in/'+contact.linkedin},
-    contact.twitter  &&{icon:'🐦',label:'Twitter',  value:'@'+contact.twitter,  href:'https://twitter.com/'+contact.twitter},
-    contact.email    &&{icon:'📧',label:'Email',    value:contact.email,         href:'mailto:'+contact.email},
-    contact.website  &&{icon:'🌐',label:'Website',  value:contact.website,       href:'https://'+contact.website},
-    contact.location &&{icon:'🗾',label:'Location', value:contact.location,      href:null},
-    {icon:'🌸',label:'Japanese Portfolio',value:'和モダン',href:null},
-    {icon:'⛩️',label:'Hikimori',value:'Creative Works',href:null},
+    contact.instagram&&{icon:'▶',label:'Instagram',value:'@'+contact.instagram,href:'https://instagram.com/'+contact.instagram},
+    contact.linkedin &&{icon:'▶',label:'LinkedIn', value:contact.linkedin,      href:'https://linkedin.com/in/'+contact.linkedin},
+    contact.twitter  &&{icon:'▶',label:'Twitter',  value:'@'+contact.twitter,  href:'https://twitter.com/'+contact.twitter},
+    contact.email    &&{icon:'▶',label:'Email',    value:contact.email,         href:'mailto:'+contact.email},
+    contact.website  &&{icon:'▶',label:'Website',  value:contact.website,       href:'https://'+contact.website},
+    contact.location &&{icon:'▶',label:'Location', value:contact.location,      href:null},
+    {icon:'▶',label:'Portfolio',value:'書道スタイル',href:null},
+    {icon:'▶',label:'Open to Work',value:'Indonesia',href:null},
   ].filter(Boolean) as {icon:string;label:string;value:string;href:string|null}[];
   const doubled=[...items,...items,...items];
   return (
-    <div style={{width:'100%',overflow:'hidden',background:`linear-gradient(90deg,${J.vermillion},#a82d22,${J.vermillion})`,padding:'10px 0',position:'relative',zIndex:10,borderTop:`1px solid rgba(255,255,255,0.1)`,borderBottom:`1px solid rgba(255,255,255,0.1)`}}>
-      <motion.div style={{display:'flex',width:'max-content'}}
-        animate={{x:['0%','-33.33%']}} transition={{duration:24,repeat:Infinity,ease:'linear'}}>
+    <div style={{width:'100%',overflow:'hidden',background:`linear-gradient(90deg,${J.redD},${J.red},${J.redD})`,padding:'10px 0',position:'relative',zIndex:10,borderTop:`1px solid rgba(201,160,48,0.3)`,borderBottom:`1px solid rgba(201,160,48,0.3)`}}>
+      <motion.div style={{display:'flex',width:'max-content'}} animate={{x:['0%','-33.33%']}} transition={{duration:26,repeat:Infinity,ease:'linear'}}>
         {doubled.map((item,i)=>(
           <div key={i} style={{display:'flex',alignItems:'center',gap:8,padding:'0 24px',flexShrink:0,whiteSpace:'nowrap'}}>
-            <span style={{fontSize:'0.88rem'}}>{item.icon}</span>
-            <span style={{fontFamily:'var(--font-body)',fontSize:'0.72rem',fontWeight:700,color:'rgba(255,230,200,0.7)',textTransform:'uppercase',letterSpacing:'1.5px'}}>{item.label}</span>
-            <span style={{color:'rgba(255,255,255,0.3)',fontSize:'0.8rem'}}>·</span>
+            <span style={{color:J.gold,fontSize:'0.65rem'}}>◆</span>
+            <span style={{fontFamily:'var(--font-body)',fontSize:'0.72rem',fontWeight:700,color:'rgba(245,240,220,0.55)',textTransform:'uppercase',letterSpacing:'2px'}}>{item.label}</span>
+            <span style={{color:'rgba(201,160,48,0.4)',fontSize:'0.8rem'}}>·</span>
             {item.href
-              ?<a href={item.href} target={item.href.startsWith('http')?'_blank':undefined} rel="noreferrer" style={{fontFamily:'var(--font-body)',fontSize:'0.78rem',fontWeight:600,color:'rgba(255,240,220,0.9)',textDecoration:'none'}}>{item.value}</a>
-              :<span style={{fontFamily:'var(--font-body)',fontSize:'0.78rem',fontWeight:600,color:'rgba(255,240,220,0.9)'}}>{item.value}</span>}
-            <span style={{color:'rgba(255,255,255,0.2)',marginLeft:8}}>✦</span>
+              ?<a href={item.href} target={item.href.startsWith('http')?'_blank':undefined} rel="noreferrer" style={{fontFamily:'var(--font-body)',fontSize:'0.78rem',fontWeight:600,color:'rgba(245,240,220,0.9)',textDecoration:'none'}}>{item.value}</a>
+              :<span style={{fontFamily:'var(--font-body)',fontSize:'0.78rem',fontWeight:600,color:'rgba(245,240,220,0.9)'}}>{item.value}</span>}
           </div>
         ))}
       </motion.div>
@@ -608,9 +440,9 @@ const Marquee:React.FC<{contact:ContactData}>=({contact})=>{
   );
 };
 
-/* ════════════════════════════════════════
-   CERT CARD
-════════════════════════════════════════ */
+/* ══════════════════════════════════════════
+   CERT CARD — Red seal style
+══════════════════════════════════════════ */
 const CertCard:React.FC<{cert:CertItem;index:number}>=({cert,index})=>{
   const [open,setOpen]=useState(false);
   const [imgLoaded,setImgLoaded]=useState(false);
@@ -618,52 +450,51 @@ const CertCard:React.FC<{cert:CertItem;index:number}>=({cert,index})=>{
     <Reveal direction="up" delay={index*0.09}>
       <InkRipple>
         <motion.div
-          whileHover={!open?{y:-4,boxShadow:`0 20px 60px rgba(192,57,43,0.15), 0 0 0 1px rgba(192,57,43,0.25)`}:{}}
-          style={{borderRadius:16,overflow:'hidden',border:`1px solid rgba(192,57,43,${open?0.5:0.15})`,background:`linear-gradient(135deg,rgba(18,12,8,0.92),rgba(26,16,10,0.88))`,backdropFilter:'blur(16px)',transition:'all 0.3s'}}>
-          <button onClick={()=>setOpen(o=>!o)} style={{width:'100%',background:'none',border:'none',cursor:'pointer',padding:'1.3rem 1.5rem',display:'flex',alignItems:'center',gap:'1.1rem',textAlign:'left'}}>
-            {/* Wax seal */}
-            <div style={{flexShrink:0,width:52,height:52,borderRadius:'50%',background:`radial-gradient(circle,${J.vermillion} 0%,#8b1a12 100%)`,display:'flex',alignItems:'center',justifyContent:'center',boxShadow:`0 4px 16px rgba(192,57,43,0.4)`,position:'relative'}}>
-              <span style={{fontSize:'1.3rem'}}>🎓</span>
-              <div style={{position:'absolute',inset:0,borderRadius:'50%',border:`2px solid rgba(255,200,180,0.3)`}}/>
+          whileHover={!open?{y:-4,boxShadow:`0 20px 60px rgba(139,26,26,0.2),0 0 0 1px rgba(139,26,26,0.35)`}:{}}
+          style={{borderRadius:12,overflow:'hidden',border:`1px solid rgba(139,26,26,${open?0.6:0.2})`,background:'rgba(8,4,0,0.9)',backdropFilter:'blur(16px)',transition:'all 0.3s'}}>
+          <button onClick={()=>setOpen(o=>!o)} style={{width:'100%',background:'none',border:'none',cursor:'pointer',padding:'1.2rem 1.5rem',display:'flex',alignItems:'center',gap:'1.1rem',textAlign:'left'}}>
+            {/* Red wax seal */}
+            <div style={{flexShrink:0,width:50,height:50,borderRadius:'50%',background:`radial-gradient(circle,${J.red} 0%,${J.redD} 100%)`,display:'flex',alignItems:'center',justifyContent:'center',boxShadow:`0 4px 16px rgba(139,26,26,0.5)`,position:'relative',border:`1px solid rgba(201,160,48,0.3)`}}>
+              <span style={{fontFamily:'serif',fontSize:'1.2rem',color:'rgba(245,240,220,0.9)'}}>証</span>
             </div>
             <div style={{flex:1,minWidth:0,display:'flex',flexDirection:'column',gap:'0.2rem'}}>
-              <div style={{fontFamily:'var(--font-body)',fontWeight:700,fontSize:'clamp(0.9rem,2.2vw,1.05rem)',color:J.moon,lineHeight:1.3,wordBreak:'break-word'}}>{cert.name||'—'}</div>
-              <div style={{fontFamily:'var(--font-body)',fontSize:'0.82rem',color:J.sakura,fontWeight:600,display:'flex',alignItems:'center',gap:'0.4rem',flexWrap:'wrap'}}>
-                <span style={{display:'inline-block',width:5,height:5,borderRadius:'50%',background:J.sakura,flexShrink:0}}/>
+              <div style={{fontFamily:'var(--font-body)',fontWeight:700,fontSize:'clamp(0.9rem,2.2vw,1.05rem)',color:J.white,lineHeight:1.3,wordBreak:'break-word'}}>{cert.name||'—'}</div>
+              <div style={{fontFamily:'var(--font-body)',fontSize:'0.82rem',color:J.goldL,fontWeight:600,display:'flex',alignItems:'center',gap:'0.4rem',flexWrap:'wrap'}}>
+                <span style={{display:'inline-block',width:5,height:5,borderRadius:'50%',background:J.gold,flexShrink:0}}/>
                 {cert.issuer||'—'}
-                {cert.subtitle&&<span style={{color:'rgba(242,167,184,0.5)',fontWeight:400}}>· {cert.subtitle}</span>}
+                {cert.subtitle&&<span style={{color:'rgba(201,160,48,0.5)',fontWeight:400}}>· {cert.subtitle}</span>}
               </div>
               <div style={{display:'flex',alignItems:'center',gap:'0.5rem',marginTop:'0.1rem'}}>
-                <span style={{fontFamily:'var(--font-body)',fontSize:'0.73rem',fontWeight:700,color:J.gold,background:'rgba(201,168,76,0.1)',border:`1px solid rgba(201,168,76,0.3)`,borderRadius:5,padding:'2px 10px',letterSpacing:'0.5px'}}>{cert.year||'—'}</span>
+                <span style={{fontFamily:'var(--font-body)',fontSize:'0.73rem',fontWeight:700,color:J.gold,background:'rgba(201,160,48,0.1)',border:`1px solid rgba(201,160,48,0.35)`,borderRadius:4,padding:'2px 10px',letterSpacing:'0.5px'}}>{cert.year||'—'}</span>
               </div>
             </div>
-            <motion.div animate={{rotate:open?180:0}} transition={{duration:0.35,ease:[0.4,0,0.2,1]}} style={{flexShrink:0,color:J.sakura}}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            <motion.div animate={{rotate:open?180:0}} transition={{duration:0.3}} style={{flexShrink:0,color:J.gold}}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="6 9 12 15 18 9"/></svg>
             </motion.div>
           </button>
           <AnimatePresence>
-            {open&&<motion.div key="sep" initial={{scaleX:0}} animate={{scaleX:1}} exit={{scaleX:0}} style={{height:1,background:`linear-gradient(to right,transparent,${J.vermillion}66,transparent)`,margin:'0 1.5rem'}}/>}
+            {open&&<motion.div key="sep" initial={{scaleX:0}} animate={{scaleX:1}} exit={{scaleX:0}} style={{height:1,background:`linear-gradient(to right,transparent,${J.red},${J.gold},transparent)`,margin:'0 1.5rem'}}/>}
           </AnimatePresence>
           <AnimatePresence initial={false}>
             {open&&(
               <motion.div key="img" initial={{height:0,opacity:0}} animate={{height:'auto',opacity:1}} exit={{height:0,opacity:0}} transition={{duration:0.45,ease:[0.4,0,0.2,1]}} style={{overflow:'hidden'}}>
                 <div style={{padding:'1rem 1.5rem 1.5rem'}}>
                   <div style={{display:'flex',flexWrap:'wrap',gap:'0.4rem',marginBottom:'1rem'}}>
-                    {[{label:`📋 ${cert.name}`,color:J.moon,bg:'rgba(255,255,255,0.05)'},{label:cert.issuer,color:J.sakura,bg:'rgba(242,167,184,0.08)'},{label:cert.subtitle,color:'rgba(242,167,184,0.6)',bg:'rgba(255,255,255,0.04)'},{label:`📅 ${cert.year}`,color:J.gold,bg:'rgba(201,168,76,0.1)'}].filter(t=>t.label).map((t,i)=>(
-                      <span key={i} style={{fontFamily:'var(--font-body)',fontSize:'0.73rem',fontWeight:600,color:t.color,background:t.bg,border:`1px solid ${t.color}22`,borderRadius:6,padding:'3px 10px'}}>{t.label}</span>
+                    {[{t:`📋 ${cert.name}`,c:J.white,bg:'rgba(255,255,255,0.05)'},{t:cert.issuer,c:J.goldL,bg:J.goldBg},{t:cert.subtitle,c:'rgba(201,160,48,0.6)',bg:'rgba(255,255,255,0.04)'},{t:`📅 ${cert.year}`,c:J.gold,bg:J.goldBg}].filter(x=>x.t).map((x,i)=>(
+                      <span key={i} style={{fontFamily:'var(--font-body)',fontSize:'0.73rem',fontWeight:600,color:x.c,background:x.bg,border:`1px solid ${x.c}22`,borderRadius:5,padding:'3px 10px'}}>{x.t}</span>
                     ))}
                   </div>
-                  <div style={{borderRadius:12,overflow:'hidden',border:`1px solid rgba(192,57,43,0.2)`,background:'rgba(0,0,0,0.4)',minHeight:200,display:'flex',alignItems:'center',justifyContent:'center',position:'relative'}}>
+                  <div style={{borderRadius:10,overflow:'hidden',border:`1px solid rgba(139,26,26,0.3)`,background:'rgba(0,0,0,0.5)',minHeight:200,display:'flex',alignItems:'center',justifyContent:'center',position:'relative'}}>
                     {cert.imageUrl?(
                       <>{!imgLoaded&&<div style={{position:'absolute',inset:0,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:'0.8rem'}}>
-                        <motion.div animate={{rotate:360}} transition={{duration:1,repeat:Infinity,ease:'linear'}} style={{width:36,height:36,borderRadius:'50%',border:`2.5px solid ${J.sakura}`,borderTopColor:'transparent'}}/>
-                        <span style={{fontFamily:'var(--font-body)',fontSize:'0.78rem',color:'rgba(242,167,184,0.5)'}}>Memuat...</span>
+                        <motion.div animate={{rotate:360}} transition={{duration:1,repeat:Infinity,ease:'linear'}} style={{width:36,height:36,borderRadius:'50%',border:`2.5px solid ${J.gold}`,borderTopColor:'transparent'}}/>
+                        <span style={{color:'rgba(201,160,48,0.5)',fontSize:'0.78rem',fontFamily:'var(--font-body)'}}>Memuat...</span>
                       </div>}
                       <img src={cert.imageUrl} alt={cert.name} onLoad={()=>setImgLoaded(true)} style={{width:'100%',display:'block',objectFit:'contain',maxHeight:400,opacity:imgLoaded?1:0,transition:'opacity 0.4s'}}/></>
                     ):(
-                      <div style={{textAlign:'center',padding:'3rem 2rem',color:'rgba(242,167,184,0.4)'}}>
-                        <motion.div animate={{y:[0,-8,0]}} transition={{duration:2.5,repeat:Infinity}} style={{fontSize:'3rem',marginBottom:'0.8rem'}}>🎓</motion.div>
-                        <p style={{fontFamily:'var(--font-body)',fontSize:'0.85rem',lineHeight:1.6}}>Gambar belum diupload<br/><span style={{fontSize:'0.75rem',opacity:0.6}}>Upload via Admin Panel → Sertifikasi</span></p>
+                      <div style={{textAlign:'center',padding:'3rem 2rem',color:'rgba(201,160,48,0.4)'}}>
+                        <motion.div animate={{y:[0,-8,0]}} transition={{duration:2.5,repeat:Infinity}} style={{fontSize:'3rem',marginBottom:'0.8rem'}}>📜</motion.div>
+                        <p style={{fontFamily:'var(--font-body)',fontSize:'0.85rem',lineHeight:1.6}}>Gambar belum diupload<br/><span style={{fontSize:'0.75rem',opacity:0.6}}>Upload via Admin Panel</span></p>
                       </div>
                     )}
                   </div>
@@ -677,21 +508,19 @@ const CertCard:React.FC<{cert:CertItem;index:number}>=({cert,index})=>{
   );
 };
 
-/* ════════════════════════════════════════
+/* ══════════════════════════════════════════
    CONTACT SECTION (dipertahankan)
-════════════════════════════════════════ */
+══════════════════════════════════════════ */
 const ContactSection:React.FC=()=>{
-  const [sel,setSel]=useState<string[]>([]);
-  const [name,setName]=useState('');const [email,setEmail]=useState('');const [msg,setMsg]=useState('');
-  const [sending,setSending]=useState(false);const [sent,setSent]=useState(false);
+  const [sel,setSel]=useState<string[]>([]);const [name,setName]=useState('');const [email,setEmail]=useState('');const [msg,setMsg]=useState('');const [sending,setSending]=useState(false);const [sent,setSent]=useState(false);
   const contact:ContactData=ls(LS_CONTACT,D_CONTACT);
   const toggle=(s:string)=>setSel(p=>p.includes(s)?p.filter(x=>x!==s):[...p,s]);
   const submit=async(e:React.FormEvent)=>{e.preventDefault();setSending(true);await new Promise(r=>setTimeout(r,1000));setSending(false);setSent(true);};
-  const inp:React.CSSProperties={flex:1,minWidth:0,fontSize:'0.875rem',padding:'10px 12px',borderRadius:12,border:'1px solid #e5e7eb',background:'transparent',outline:'none',fontFamily:'var(--font-body)',color:'#111',boxSizing:'border-box'};
+  const inp:React.CSSProperties={flex:1,minWidth:0,fontSize:'0.875rem',padding:'10px 12px',borderRadius:10,border:'1px solid #e5e7eb',background:'transparent',outline:'none',fontFamily:'var(--font-body)',color:'#111',boxSizing:'border-box'};
   const IcoTW=()=><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>;
   const IcoIG=()=><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>;
   const IcoLI=()=><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>;
-  const SBtn:React.FC<{icon:React.ReactNode;bg:string;color:string}>=({icon,bg,color})=><button type="button" style={{width:32,height:32,borderRadius:12,border:'none',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',background:bg,color,flexShrink:0}}>{icon}</button>;
+  const SBtn:React.FC<{icon:React.ReactNode;bg:string;color:string}>=({icon,bg,color})=><button type="button" style={{width:32,height:32,borderRadius:10,border:'none',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',background:bg,color,flexShrink:0}}>{icon}</button>;
   return (
     <section style={{width:'100%',padding:'12px',background:'#fff',boxSizing:'border-box'}}>
       <div style={{position:'relative',borderRadius:24,overflow:'hidden',minHeight:'calc(100vh - 24px)',display:'flex',flexDirection:'column'}}>
@@ -731,41 +560,33 @@ const ContactSection:React.FC=()=>{
   );
 };
 
-/* ════════════════════════════════════════
+/* ══════════════════════════════════════════
    HOME PAGE
-════════════════════════════════════════ */
+══════════════════════════════════════════ */
 const Home:React.FC=()=>{
-  const [hero,setHero]       =useState<HomeData>(()=>ls(LS_HOME,D_HOME));
-  const [about,setAbout]     =useState<AboutData>(()=>ls(LS_ABOUT,D_ABOUT));
-  const [skills,setSkills]   =useState<SkillItem[]>(()=>ls(LS_SKILLS,D_SKILLS));
-  const [exps,setExps]       =useState<ExpItem[]>(()=>ls(LS_EXP,D_EXP));
-  const [contact,setContact] =useState<ContactData>(()=>ls(LS_CONTACT,D_CONTACT));
-  const [certs,setCerts]     =useState<CertItem[]>(()=>ls(LS_CERT,D_CERT));
+  const [hero,setHero]=useState<HomeData>(()=>ls(LS_HOME,D_HOME));
+  const [about,setAbout]=useState<AboutData>(()=>ls(LS_ABOUT,D_ABOUT));
+  const [skills,setSkills]=useState<SkillItem[]>(()=>ls(LS_SKILLS,D_SKILLS));
+  const [exps,setExps]=useState<ExpItem[]>(()=>ls(LS_EXP,D_EXP));
+  const [contact,setContact]=useState<ContactData>(()=>ls(LS_CONTACT,D_CONTACT));
+  const [certs,setCerts]=useState<CertItem[]>(()=>ls(LS_CERT,D_CERT));
   const containerRef=useRef<HTMLDivElement>(null);
   const {scrollYProgress}=useScroll({target:containerRef,offset:['start start','end end']});
-  const parallaxY=useTransform(scrollYProgress,[0,1],[0,-80]);
+  const _py=useTransform(scrollYProgress,[0,1],[0,-60]); // parallax ref (keep for future use)
 
   useEffect(()=>{
-    const onS=(e:StorageEvent)=>{
-      if(e.key===LS_HOME&&e.newValue)try{setHero(JSON.parse(e.newValue));}catch{}
-      if(e.key===LS_ABOUT&&e.newValue)try{setAbout(JSON.parse(e.newValue));}catch{}
-      if(e.key===LS_SKILLS&&e.newValue)try{setSkills(JSON.parse(e.newValue));}catch{}
-      if(e.key===LS_EXP&&e.newValue)try{setExps(JSON.parse(e.newValue));}catch{}
-      if(e.key===LS_CONTACT&&e.newValue)try{setContact(JSON.parse(e.newValue));}catch{}
-      if(e.key===LS_CERT&&e.newValue)try{setCerts(JSON.parse(e.newValue));}catch{}
-    };
+    const onS=(e:StorageEvent)=>{if(e.key===LS_HOME&&e.newValue)try{setHero(JSON.parse(e.newValue));}catch{}if(e.key===LS_ABOUT&&e.newValue)try{setAbout(JSON.parse(e.newValue));}catch{}if(e.key===LS_SKILLS&&e.newValue)try{setSkills(JSON.parse(e.newValue));}catch{}if(e.key===LS_EXP&&e.newValue)try{setExps(JSON.parse(e.newValue));}catch{}if(e.key===LS_CONTACT&&e.newValue)try{setContact(JSON.parse(e.newValue));}catch{}if(e.key===LS_CERT&&e.newValue)try{setCerts(JSON.parse(e.newValue));}catch{}};
     const onC=(e:Event)=>{const{key,value}=(e as CustomEvent).detail;try{if(key===LS_HOME)setHero(JSON.parse(value));if(key===LS_ABOUT)setAbout(JSON.parse(value));if(key===LS_SKILLS)setSkills(JSON.parse(value));if(key===LS_EXP)setExps(JSON.parse(value));if(key===LS_CONTACT)setContact(JSON.parse(value));if(key===LS_CERT)setCerts(JSON.parse(value));}catch{}};
     window.addEventListener('storage',onS);window.addEventListener('hk-update',onC);
     return()=>{window.removeEventListener('storage',onS);window.removeEventListener('hk-update',onC);};
   },[]);
 
   const photo=about.photoUrl||FALLBACK_PHOTO;
-  const heroText=`${hero.heroTitle}\n${hero.heroSubtitle}`;
 
   return (
-    <div ref={containerRef} style={{background:J.inkD,minHeight:'100vh',overflowX:'hidden'}}>
+    <div ref={containerRef} style={{background:J.ink,minHeight:'100vh',overflowX:'hidden'}}>
 
-      {/* ══ HERO (unchanged) ══ */}
+      {/* ══ HERO ══ */}
       <section style={{position:'relative',width:'100%',height:'100vh',overflow:'hidden',display:'flex',flexDirection:'column',background:'#000',color:'#fff'}}>
         <video autoPlay loop muted playsInline style={{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover',zIndex:0}}><source src={HERO_VIDEO} type="video/mp4"/></video>
         <Stars/>
@@ -773,9 +594,9 @@ const Home:React.FC=()=>{
           <div style={{flex:1,display:'flex',flexDirection:'column',justifyContent:'flex-end',paddingBottom:'clamp(2rem,5vw,4rem)'}}>
             <div id="hgrid" style={{display:'grid',gridTemplateColumns:'1fr',alignItems:'flex-end',gap:'1.5rem'}}>
               <div>
-                <AnimatedHeading text={heroText} style={{fontSize:'clamp(2rem,7vw,4.5rem)',fontWeight:400,marginBottom:'0.8rem',letterSpacing:'-0.04em',lineHeight:1.1,color:'#fff',fontFamily:'var(--font-body)',wordBreak:'break-word'}}/>
-                <FadeIn delay={800} duration={1000}><p style={{fontSize:'clamp(0.9rem,2vw,1.125rem)',color:'#d1d5db',marginBottom:'1.25rem',fontWeight:400,lineHeight:1.6,maxWidth:'520px'}}>{hero.heroTagline}</p></FadeIn>
-                <FadeIn delay={1200} duration={1000}>
+                <AnimatedHeading text={`${hero.heroTitle}\n${hero.heroSubtitle}`} style={{fontSize:'clamp(2rem,7vw,4.5rem)',fontWeight:400,marginBottom:'0.8rem',letterSpacing:'-0.04em',lineHeight:1.1,color:'#fff',fontFamily:'var(--font-body)',wordBreak:'break-word'}}/>
+                <FadeIn delay={800}><p style={{fontSize:'clamp(0.9rem,2vw,1.125rem)',color:'#d1d5db',marginBottom:'1.25rem',lineHeight:1.6,maxWidth:'520px'}}>{hero.heroTagline}</p></FadeIn>
+                <FadeIn delay={1200}>
                   <div style={{display:'flex',flexWrap:'wrap',gap:'0.75rem'}}>
                     <a href={hero.heroCtaSecondaryLink||'#contact'} style={{textDecoration:'none'}}><button style={{background:'#fff',color:'#000',border:'none',borderRadius:8,padding:'10px 24px',fontWeight:500,fontSize:'0.9rem',cursor:'pointer',fontFamily:'var(--font-body)',whiteSpace:'nowrap'}}>{hero.heroCtaSecondary||'Start a Chat'}</button></a>
                     <Link to={hero.heroCtaLink||'/portofolio'} style={{textDecoration:'none'}}><button style={{...LG,border:'1px solid rgba(255,255,255,0.2)',color:'#fff',borderRadius:8,padding:'10px 24px',fontWeight:500,fontSize:'0.9rem',cursor:'pointer',fontFamily:'var(--font-body)',whiteSpace:'nowrap'}}>{hero.heroCta}</button></Link>
@@ -783,7 +604,7 @@ const Home:React.FC=()=>{
                 </FadeIn>
               </div>
               <div id="htag" style={{display:'flex',alignItems:'flex-end',justifyContent:'flex-start'}}>
-                <FadeIn delay={1400} duration={1000}>
+                <FadeIn delay={1400}>
                   <div style={{...LG,border:'1px solid rgba(255,255,255,0.2)',borderRadius:12,padding:'10px 20px',display:'inline-block',maxWidth:'100%'}}>
                     <span style={{fontSize:'clamp(1rem,2.5vw,1.5rem)',fontWeight:300,color:'#fff',fontFamily:'var(--font-body)',wordBreak:'break-word'}}>{hero.heroTagRight}</span>
                   </div>
@@ -794,88 +615,76 @@ const Home:React.FC=()=>{
         </div>
       </section>
 
-      {/* ══ MARQUEE ══ */}
       <Marquee contact={contact}/>
 
-      {/* ══════════════════════════════════
-          ABOUT — 桜の庭 (SAKURA GARDEN)
-      ══════════════════════════════════ */}
-      <JapanBgSection overlayColor='rgba(10,6,4,0.80)' style={{padding:'clamp(4rem,10vw,8rem) clamp(1rem,5vw,2rem)'}}>
-        <SakuraCanvas/>
-        {/* Smoke clouds */}
-        <SmokeCloud style={{left:'-5%',bottom:'5%',opacity:0.9}} delay={0}/>
-        <SmokeCloud style={{right:'-5%',bottom:'8%',opacity:0.8}} delay={2} flip/>
-        <SmokeCloud style={{left:'15%',bottom:'2%',opacity:0.7}} delay={1}/>
-        {/* Kamon floor glows */}
-        <KamonFloor style={{left:'8%',bottom:'12%'}} delay={0} size={100}/>
-        <KamonFloor style={{right:'10%',bottom:'15%'}} delay={1.5} size={80}/>
+      {/* ══ ABOUT — 自己紹介 (Jiko Shokai) ══ */}
+      <JapanBgSection overlayColor={J.ov82}>
+        <InkBrushCanvas/>
+        {/* Smoke base */}
+        <SmokeCloud style={{left:'-5%',bottom:'2%',opacity:0.9}} delay={0}/>
+        <SmokeCloud style={{right:'-5%',bottom:'4%',opacity:0.85}} delay={1.5} flip/>
+        {/* Torii gates */}
+        <ToriiGate style={{left:'50%',transform:'translateX(-50%)',top:'3%'}} opacity={0.08}/>
+        {/* Samurai Mon circles */}
+        <SamuraiMon style={{right:'4%',top:'12%'}} delay={0} size={100} variant={0}/>
+        <SamuraiMon style={{left:'3%',bottom:'18%'}} delay={1.5} size={80} variant={1}/>
+        {/* Katana blades */}
+        <Katana style={{right:'5%',bottom:'25%'}} delay={0} vertical/>
+        <Katana style={{left:'3%',top:'35%'}} delay={1}/>
+        {/* Kanji stamps */}
+        <KanjiStamp kanji="人" style={{right:'2%',bottom:'5%'}} delay={0.3} size={70}/>
+        <KanjiStamp kanji="誠" style={{left:'1%',top:'8%'}} delay={0.8} size={60}/>
+        {/* Ink circles */}
+        <InkCircle style={{left:'8%',bottom:'12%'}} delay={0} size={90} color="red"/>
+        <InkCircle style={{right:'8%',top:'20%'}} delay={1} size={70} color="gold"/>
+        {/* Nobori flags */}
+        <Nobori style={{right:'2%',top:'5%',opacity:0.5}} delay={0} kanji="武"/>
+        <Nobori style={{left:'2%',top:'5%',opacity:0.45}} delay={0.8} kanji="道"/>
         {/* Rising sun */}
-        <RisingSun style={{left:'2%',top:'8%'}} opacity={0.14}/>
-        {/* Iso buildings */}
-        <IsoBuilding style={{right:'2%',bottom:'5%',opacity:0.55}} delay={0}/>
-        <IsoBuilding style={{left:'1%',top:'10%',opacity:0.4}} flip delay={1}/>
-        {/* Cherry trees */}
-        <CherryTree style={{left:'-30px',bottom:0,opacity:0.7}} scale={1.2} delay={0}/>
-        <CherryTree style={{left:'120px',bottom:0,opacity:0.45}} scale={0.75} delay={1} flip/>
-        <CherryTree style={{right:'-30px',bottom:0,opacity:0.65}} scale={1.1} delay={0.8} flip/>
-        <CherryTree style={{right:'120px',bottom:0,opacity:0.4}} scale={0.7} delay={0.4}/>
-        {/* Torii gate */}
-        <ToriiGate style={{left:'50%',transform:'translateX(-50%)',top:'5%',opacity:0.1}} opacity={0.1}/>
-        {/* Mon circles */}
-        <MonCircle style={{right:'8%',top:'20%'}} delay={0} size={50}/>
-        <MonCircle style={{left:'6%',top:'40%'}} delay={2} size={35}/>
-        <MonCircle style={{right:'15%',bottom:'15%'}} delay={1} size={28}/>
-        {/* Cranes */}
-        <OrigamiCrane style={{right:'10%',top:'15%'}} delay={0} size={42} color={J.sakura}/>
-        <OrigamiCrane style={{left:'8%',top:'30%'}} delay={2} size={30} color={J.gold}/>
-        <OrigamiCrane style={{right:'20%',bottom:'20%'}} delay={1.2} size={28} color={J.moon}/>
-        {/* Enso */}
-        <Enso style={{right:'3%',top:'10%'}} size={100} opacity={0.12}/>
-        {/* Wave bottom */}
-        <WaveDecor style={{bottom:'5%',left:'-5%',width:'110%'}} opacity={0.1}/>
+        <RisingSun style={{left:'3%',top:'10%'}} opacity={0.1}/>
+        {/* Buildings */}
+        <StrucBuilding style={{right:'0%',bottom:'3%',opacity:0.5}} delay={0}/>
+        <StrucBuilding style={{left:'0%',bottom:'2%',opacity:0.45}} flip delay={1}/>
 
         <div style={{maxWidth:1100,margin:'0 auto',position:'relative',zIndex:2}}>
           <div id="about-row" style={{display:'flex',flexDirection:'column',gap:'3rem',alignItems:'center'}}>
-            {/* Photo */}
             <Reveal direction="left" style={{width:'100%',maxWidth:340,flexShrink:0}}>
-              <TiltCard style={{borderRadius:20,width:'100%'}} intensity={10}>
+              <TiltCard style={{borderRadius:16,width:'100%'}} intensity={10}>
                 <InkRipple>
-                  <div style={{borderRadius:20,overflow:'hidden',position:'relative',aspectRatio:'4/5',border:`2px solid rgba(192,57,43,0.4)`,boxShadow:`0 0 0 6px rgba(192,57,43,0.08),0 30px 80px rgba(0,0,0,0.6),0 0 60px rgba(192,57,43,0.12)`}}>
+                  <div style={{borderRadius:16,overflow:'hidden',position:'relative',aspectRatio:'4/5',border:`2px solid rgba(139,26,26,0.5)`,boxShadow:`0 0 0 6px rgba(139,26,26,0.06),0 30px 80px rgba(0,0,0,0.7),0 0 60px rgba(139,26,26,0.12)`}}>
                     <img src={photo} alt={about.name} style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}}/>
-                    {/* Ink overlay */}
-                    <div style={{position:'absolute',inset:0,background:`linear-gradient(to top,rgba(11,13,20,0.85) 0%,rgba(11,13,20,0.1) 50%,transparent 100%)`}}/>
-                    {/* Floating sakura on photo */}
-                    {[...Array(4)].map((_,i)=>(
-                      <motion.div key={i} style={{position:'absolute',fontSize:'1rem',left:`${15+i*20}%`,top:`${20+i*12}%`,pointerEvents:'none'}}
-                        animate={{y:[0,-14,0],rotate:[0,20,-15,0],opacity:[0.4,0.8,0.4]}} transition={{duration:3+i*0.5,repeat:Infinity,delay:i*0.7}}>🌸</motion.div>
-                    ))}
-                    {/* Location badge */}
+                    <div style={{position:'absolute',inset:0,background:`linear-gradient(to top,rgba(8,4,0,0.9) 0%,rgba(8,4,0,0.1) 50%,transparent 100%)`}}/>
+                    {/* Red corner accents */}
+                    <div style={{position:'absolute',top:8,left:8,width:20,height:20,borderTop:`2px solid ${J.gold}`,borderLeft:`2px solid ${J.gold}`}}/>
+                    <div style={{position:'absolute',top:8,right:8,width:20,height:20,borderTop:`2px solid ${J.gold}`,borderRight:`2px solid ${J.gold}`}}/>
+                    <div style={{position:'absolute',bottom:8,left:8,width:20,height:20,borderBottom:`2px solid ${J.gold}`,borderLeft:`2px solid ${J.gold}`}}/>
+                    <div style={{position:'absolute',bottom:8,right:8,width:20,height:20,borderBottom:`2px solid ${J.gold}`,borderRight:`2px solid ${J.gold}`}}/>
                     <div style={{position:'absolute',bottom:'1rem',left:'1rem',right:'1rem'}}>
-                      <motion.div whileHover={{scale:1.04}} style={{background:'rgba(192,57,43,0.85)',backdropFilter:'blur(8px)',borderRadius:10,padding:'0.5rem 1rem',color:'rgba(255,240,220,0.95)',fontWeight:700,fontSize:'0.82rem',display:'inline-block',wordBreak:'break-word'}}>
-                        🗾 {about.location}
+                      <motion.div whileHover={{scale:1.04}} style={{background:'rgba(139,26,26,0.85)',backdropFilter:'blur(8px)',borderRadius:8,padding:'0.5rem 1rem',color:J.white,fontWeight:700,fontSize:'0.82rem',display:'inline-block',wordBreak:'break-word',border:`1px solid rgba(201,160,48,0.3)`}}>
+                        ⛩️ {about.location}
                       </motion.div>
                     </div>
                   </div>
                 </InkRipple>
               </TiltCard>
             </Reveal>
-            {/* Text */}
             <Reveal direction="right" delay={0.15}>
               <div style={{maxWidth:560}}>
-                {/* Japanese accent label */}
-                <motion.div animate={{opacity:[0.6,1,0.6]}} transition={{duration:3,repeat:Infinity}} style={{fontFamily:'var(--font-body)',color:J.sakura,fontSize:'0.75rem',letterSpacing:'4px',textTransform:'uppercase',fontWeight:700,display:'flex',alignItems:'center',gap:'0.6rem',marginBottom:'0.8rem'}}>
-                  <span style={{fontFamily:'serif',fontSize:'1.2rem',color:J.vermillion}}>桜</span> Sakura Garden
-                </motion.div>
-                <h2 style={{fontFamily:'var(--font-display)',fontSize:'clamp(2.5rem,8vw,5rem)',lineHeight:0.9,marginBottom:'0.3rem',color:J.moon,textShadow:`0 2px 20px rgba(180,140,80,0.2)`}}>ABOUT ME !</h2>
-                {/* Red line accent */}
-                <motion.div initial={{scaleX:0}} whileInView={{scaleX:1}} transition={{duration:0.8,ease:[0.22,1,0.36,1]}} style={{height:3,width:80,background:`linear-gradient(to right,${J.vermillion},transparent)`,marginBottom:'0.8rem',transformOrigin:'left'}}/>
-                <div style={{fontFamily:'var(--font-script)',color:J.sakura,fontSize:'clamp(1.5rem,5vw,2.2rem)',fontWeight:700,marginBottom:'1.5rem',textShadow:`0 0 20px rgba(242,167,184,0.4)`}}>{about.name}</div>
-                <p style={{color:J.moonDim,lineHeight:1.9,marginBottom:'1rem',fontSize:'clamp(0.88rem,2vw,1rem)'}}>{about.bio1}</p>
-                <p style={{color:'rgba(240,220,180,0.6)',lineHeight:1.9,fontSize:'clamp(0.88rem,2vw,1rem)'}}>{about.bio2}</p>
-                <div style={{marginTop:'2rem',display:'flex',gap:'0.8rem',flexWrap:'wrap'}}>
-                  <motion.div whileHover={{scale:1.05,boxShadow:`0 8px 30px rgba(192,57,43,0.35)`}} whileTap={{scale:0.97}} style={{display:'inline-block'}}>
-                    <Link to="/about" style={{display:'inline-flex',alignItems:'center',gap:8,background:`rgba(192,57,43,0.12)`,color:J.sakura,textDecoration:'none',borderRadius:50,padding:'11px 26px',fontFamily:'var(--font-body)',fontWeight:700,fontSize:'0.9rem',border:`1px solid rgba(192,57,43,0.4)`,backdropFilter:'blur(6px)'}}>
-                      🌸 Selengkapnya →
+                <div style={{display:'flex',alignItems:'center',gap:'0.8rem',marginBottom:'0.8rem'}}>
+                  <span style={{fontFamily:'serif',fontSize:'1.8rem',color:J.red}}>自</span>
+                  <div>
+                    <div style={{fontFamily:'var(--font-body)',color:J.gold,fontSize:'0.72rem',letterSpacing:'4px',textTransform:'uppercase',fontWeight:700}}>Jiko Shokai · Profile</div>
+                  </div>
+                </div>
+                <h2 style={{fontFamily:'var(--font-display)',fontSize:'clamp(2.5rem,8vw,5rem)',lineHeight:0.9,marginBottom:'0.2rem',color:J.white}}>ABOUT ME !</h2>
+                <BrushStroke style={{position:'relative',marginBottom:'0.8rem'}} width={100} color={J.red} delay={0.3}/>
+                <div style={{fontFamily:'var(--font-script)',color:J.gold,fontSize:'clamp(1.5rem,5vw,2.2rem)',fontWeight:700,marginBottom:'1.5rem',textShadow:`0 0 20px rgba(201,160,48,0.35)`}}>{about.name}</div>
+                <p style={{color:J.whiteDim,lineHeight:1.9,marginBottom:'1rem',fontSize:'clamp(0.88rem,2vw,1rem)'}}>{about.bio1}</p>
+                <p style={{color:'rgba(245,245,240,0.5)',lineHeight:1.9,fontSize:'clamp(0.88rem,2vw,1rem)'}}>{about.bio2}</p>
+                <div style={{marginTop:'2rem'}}>
+                  <motion.div whileHover={{scale:1.04,boxShadow:`0 8px 30px rgba(139,26,26,0.35)`}} whileTap={{scale:0.97}} style={{display:'inline-block'}}>
+                    <Link to="/about" style={{display:'inline-flex',alignItems:'center',gap:8,background:J.redBg,color:J.goldL,textDecoration:'none',borderRadius:8,padding:'11px 26px',fontFamily:'var(--font-body)',fontWeight:700,fontSize:'0.9rem',border:`1px solid rgba(139,26,26,0.45)`,backdropFilter:'blur(6px)'}}>
+                      詳細を見る → Selengkapnya
                     </Link>
                   </motion.div>
                 </div>
@@ -883,169 +692,116 @@ const Home:React.FC=()=>{
             </Reveal>
           </div>
         </div>
-
       </JapanBgSection>
 
-      {/* ══════════════════════════════════
-          SERTIFIKASI — 巻物 (MAKIMONO SCROLL)
-      ══════════════════════════════════ */}
-      <JapanBgSection overlayColor='rgba(12,6,3,0.82)' style={{padding:'clamp(4rem,10vw,8rem) clamp(1rem,5vw,2rem)'}}>
-        {/* Smoke */}
-        <SmokeCloud style={{left:'-3%',bottom:'3%',opacity:0.8}} delay={0.5}/>
-        <SmokeCloud style={{right:'-3%',bottom:'6%',opacity:0.75}} delay={2} flip/>
-        {/* Kamon floors */}
-        <KamonFloor style={{left:'50%',bottom:'8%',transform:'translateX(-50%)'}} delay={0} size={140}/>
-        <KamonFloor style={{left:'5%',top:'30%'}} delay={1} size={70}/>
-        <KamonFloor style={{right:'5%',top:'35%'}} delay={2} size={65}/>
-        {/* Rising sun subtle */}
-        <RisingSun style={{right:'3%',top:'5%'}} opacity={0.1}/>
-        {/* Iso buildings */}
-        <IsoBuilding style={{left:'0%',bottom:'3%',opacity:0.5}} delay={0}/>
-        <IsoBuilding style={{right:'0%',bottom:'5%',opacity:0.45}} flip delay={1.5}/>
-        {/* Torii gate bg */}
-        <ToriiGate style={{right:'5%',top:'5%',opacity:0.08}} opacity={0.08}/>
-        <ToriiGate style={{left:'-2%',bottom:'10%',opacity:0.06}} opacity={0.06}/>
-        {/* Falling sakura */}
-        {[...Array(8)].map((_,i)=>(
-          <motion.div key={i} style={{position:'absolute',fontSize:'0.9rem',left:`${8+i*12}%`,top:'-5%',pointerEvents:'none',zIndex:1}}
-            animate={{y:['0vh','105vh'],rotate:[0,360],opacity:[0,0.7,0]}} transition={{duration:6+i*0.8,repeat:Infinity,delay:i*0.9,ease:'linear'}}>🌸</motion.div>
-        ))}
-        {/* Lanterns */}
-        <Lantern style={{left:'3%',top:'15%'}} delay={0} size={45}/>
-        <Lantern style={{right:'4%',top:'20%'}} delay={1.2} size={38}/>
-        <Lantern style={{left:'12%',bottom:'15%'}} delay={0.6} size={30}/>
-        {/* Mon circles */}
-        <MonCircle style={{left:'2%',top:'50%'}} delay={1.5} size={40}/>
-        <MonCircle style={{right:'3%',bottom:'30%'}} delay={0.3} size={32}/>
-        {/* Cranes */}
-        <OrigamiCrane style={{right:'8%',top:'35%'}} delay={1} size={35} color={J.gold}/>
-        <OrigamiCrane style={{left:'5%',bottom:'25%'}} delay={2.5} size={28} color={J.sakura}/>
+      {/* ══ SERTIFIKASI — 証明書 (Shomeisho) ══ */}
+      <JapanBgSection overlayColor={J.ov85}>
+        <InkBrushCanvas/>
+        <SmokeCloud style={{left:'-4%',bottom:'0%',opacity:0.9}} delay={0}/>
+        <SmokeCloud style={{right:'-4%',bottom:'3%',opacity:0.85}} delay={1.8} flip/>
+        <ToriiGate style={{right:'5%',top:'5%'}} opacity={0.07}/>
+        <ToriiGate style={{left:'-2%',bottom:'8%'}} opacity={0.06}/>
+        <SamuraiMon style={{left:'3%',top:'20%'}} delay={0} size={85} variant={2}/>
+        <SamuraiMon style={{right:'3%',bottom:'20%'}} delay={1} size={75} variant={0}/>
+        <InkCircle style={{left:'50%',bottom:'5%',transform:'translateX(-50%)'}} delay={0} size={150} color="red"/>
+        <KanjiStamp kanji="証" style={{left:'2%',bottom:'8%'}} delay={0.5} size={75}/>
+        <KanjiStamp kanji="明" style={{right:'2%',top:'10%'}} delay={1} size={65}/>
+        <Nobori style={{left:'2%',top:'5%',opacity:0.45}} delay={0} kanji="証"/>
+        <Nobori style={{right:'2%',top:'5%',opacity:0.45}} delay={1} kanji="書"/>
+        <StrucBuilding style={{left:'0%',bottom:'2%',opacity:0.45}} flip delay={0}/>
+        <StrucBuilding style={{right:'0%',bottom:'2%',opacity:0.4}} delay={1}/>
 
         <div style={{maxWidth:900,margin:'0 auto',position:'relative',zIndex:2}}>
           <Reveal direction="up">
             <div style={{textAlign:'center',marginBottom:'3rem'}}>
               <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:'1rem',marginBottom:'0.8rem'}}>
-                <motion.div animate={{scaleX:[0.5,1,0.5]}} transition={{duration:3,repeat:Infinity}} style={{height:1,width:40,background:`linear-gradient(to right,transparent,${J.vermillion})`}}/>
-                <span style={{fontFamily:'serif',fontSize:'1.4rem',color:J.vermillion}}>巻物</span>
-                <motion.div animate={{scaleX:[0.5,1,0.5]}} transition={{duration:3,repeat:Infinity,delay:1.5}} style={{height:1,width:40,background:`linear-gradient(to left,transparent,${J.vermillion})`}}/>
+                <motion.div style={{height:1,width:50,background:`linear-gradient(to right,transparent,${J.red})`}} initial={{scaleX:0}} whileInView={{scaleX:1}} transition={{duration:0.8}}/>
+                <span style={{fontFamily:'serif',fontSize:'1.6rem',color:J.red}}>証</span>
+                <motion.div style={{height:1,width:50,background:`linear-gradient(to left,transparent,${J.red})`}} initial={{scaleX:0}} whileInView={{scaleX:1}} transition={{duration:0.8}}/>
               </div>
-              <h2 style={{fontFamily:'var(--font-display)',fontSize:'clamp(2.2rem,8vw,5rem)',lineHeight:0.9,color:J.moon,wordBreak:'break-word'}}>
-                SERTIFI<span style={{color:J.sakura,textShadow:`0 0 30px rgba(242,167,184,0.5)`}}>KASI</span>
+              <h2 style={{fontFamily:'var(--font-display)',fontSize:'clamp(2.2rem,8vw,5rem)',lineHeight:0.9,color:J.white,wordBreak:'break-word'}}>
+                SERTIFI<span style={{color:J.red,textShadow:`0 0 30px rgba(139,26,26,0.6)`}}>KASI</span>
               </h2>
-              <motion.div initial={{scaleX:0}} whileInView={{scaleX:1}} transition={{duration:1}} style={{height:2,width:120,background:`linear-gradient(to right,transparent,${J.vermillion},transparent)`,margin:'0.8rem auto 0',transformOrigin:'center'}}/>
-              <p style={{color:'rgba(232,232,245,0.5)',marginTop:'0.6rem',fontSize:'0.88rem'}}>Klik kartu untuk melihat sertifikat ·  証明書</p>
+              <BrushStroke style={{position:'relative',margin:'0.8rem auto 0',display:'block',width:'fit-content'}} width={120} color={J.gold} delay={0.3}/>
+              <p style={{color:'rgba(245,245,240,0.45)',marginTop:'0.8rem',fontSize:'0.88rem'}}>Klik kartu untuk melihat · 証明書</p>
             </div>
           </Reveal>
           {certs.length===0?(
-            <Reveal direction="up"><div style={{textAlign:'center',padding:'3rem',color:'rgba(242,167,184,0.4)',border:`1px dashed rgba(192,57,43,0.25)`,borderRadius:16}}><div style={{fontSize:'3rem',marginBottom:'0.8rem'}}>🎓</div><p style={{fontFamily:'var(--font-body)',fontSize:'0.9rem'}}>Belum ada sertifikasi.</p></div></Reveal>
+            <Reveal direction="up"><div style={{textAlign:'center',padding:'3rem',color:'rgba(201,160,48,0.4)',border:`1px dashed rgba(139,26,26,0.3)`,borderRadius:12}}><div style={{fontSize:'3rem',marginBottom:'0.8rem'}}>📜</div><p>Belum ada sertifikasi.</p></div></Reveal>
           ):(
             <div style={{display:'flex',flexDirection:'column',gap:'0.75rem'}}>
               {certs.map((cert,i)=><CertCard key={cert.id} cert={cert} index={i}/>)}
             </div>
           )}
         </div>
-
       </JapanBgSection>
 
-      {/* ══════════════════════════════════
-          EXPERIENCE — 道 (MICHI / THE PATH)
-      ══════════════════════════════════ */}
-      <JapanBgSection overlayColor='rgba(8,5,3,0.84)' style={{padding:'clamp(4rem,10vw,8rem) clamp(1rem,5vw,2rem)'}}>
-        {/* Heavy smoke for moody atmosphere */}
-        <SmokeCloud style={{left:'-8%',bottom:'0%',opacity:0.95,width:280}} delay={0}/>
-        <SmokeCloud style={{right:'-8%',bottom:'2%',opacity:0.9,width:250}} delay={1.5} flip/>
-        <SmokeCloud style={{left:'20%',bottom:'0%',opacity:0.6}} delay={0.8}/>
-        <SmokeCloud style={{right:'25%',bottom:'1%',opacity:0.55}} delay={2.2} flip/>
-        {/* Kamon floor path */}
-        <KamonFloor style={{left:'50%',top:'15%',transform:'translateX(-50%)'}} delay={0} size={100}/>
-        <KamonFloor style={{left:'8%',bottom:'20%'}} delay={1} size={60}/>
-        <KamonFloor style={{right:'8%',bottom:'18%'}} delay={2} size={55}/>
-        {/* Iso buildings */}
-        <IsoBuilding style={{left:'0%',top:'8%',opacity:0.45}} delay={0}/>
-        <IsoBuilding style={{right:'0%',top:'10%',opacity:0.4}} flip delay={0.8}/>
+      {/* ══ EXPERIENCE — 経歴 (Keireki / Career Path) ══ */}
+      <JapanBgSection overlayColor={J.ov82}>
+        <InkBrushCanvas/>
         {/* Stars */}
-        {[...Array(20)].map((_,i)=>(
-          <motion.div key={i} style={{position:'absolute',width:2,height:2,borderRadius:'50%',background:J.moon,left:`${Math.random()*100}%`,top:`${Math.random()*100}%`,pointerEvents:'none'}}
-            animate={{opacity:[0.1,0.7,0.1]}} transition={{duration:2+Math.random()*3,repeat:Infinity,delay:Math.random()*4}}/>
+        {[...Array(18)].map((_,i)=>(
+          <motion.div key={i} style={{position:'absolute',width:2,height:2,borderRadius:'50%',background:J.white,left:`${Math.random()*100}%`,top:`${Math.random()*100}%`,pointerEvents:'none'}}
+            animate={{opacity:[0.1,0.6,0.1]}} transition={{duration:2+Math.random()*3,repeat:Infinity,delay:Math.random()*4}}/>
         ))}
-        {/* Mount Fuji bg */}
-        <MountFuji style={{bottom:'0%',left:'50%',transform:'translateX(-50%)',width:500}} opacity={0.08}/>
-        {/* Bamboo sides */}
-        <BambooForest style={{left:0,bottom:0,opacity:0.5}} count={4}/>
-        <BambooForest style={{right:0,bottom:0,opacity:0.45,transform:'scaleX(-1)'}} count={3}/>
-        {/* Koi */}
-        <KoiFish style={{top:'20%',left:'5%'}} delay={0}/>
-        <KoiFish style={{top:'60%',right:'5%'}} delay={3} flip/>
-        {/* Lanterns */}
-        <Lantern style={{left:'3%',top:'30%'}} delay={0.5} size={36}/>
-        <Lantern style={{right:'3%',top:'25%'}} delay={1.5} size={32}/>
-        {/* Cranes flying */}
-        <OrigamiCrane style={{top:'10%',left:'20%'}} delay={0} size={32} color={J.moon}/>
-        <OrigamiCrane style={{top:'15%',right:'25%'}} delay={1.5} size={26} color={J.sakura}/>
-        <OrigamiCrane style={{top:'8%',left:'60%'}} delay={0.8} size={20} color={J.gold}/>
-        {/* Wave pattern */}
-        <WaveDecor style={{bottom:'3%',left:0,width:'100%'}} opacity={0.1}/>
+        <SmokeCloud style={{left:'-6%',bottom:'0%',opacity:0.95}} delay={0}/>
+        <SmokeCloud style={{right:'-6%',bottom:'2%',opacity:0.9}} delay={1.2} flip/>
+        <SmokeCloud style={{left:'25%',bottom:'0%',opacity:0.6}} delay={0.7}/>
+        <ToriiGate style={{left:'50%',transform:'translateX(-50%)',bottom:'5%'}} opacity={0.07}/>
+        <SamuraiMon style={{right:'3%',top:'15%'}} delay={0} size={90} variant={1}/>
+        <SamuraiMon style={{left:'3%',bottom:'20%'}} delay={1.5} size={70} variant={2}/>
+        <Katana style={{top:'12%',left:'5%',opacity:0.5}} delay={0}/>
+        <Katana style={{bottom:'18%',right:'5%',opacity:0.45}} delay={1.2}/>
+        <KanjiStamp kanji="歴" style={{right:'1%',bottom:'5%'}} delay={0.4} size={70}/>
+        <KanjiStamp kanji="仕" style={{left:'1%',top:'8%'}} delay={0.9} size={60}/>
+        <Nobori style={{left:'2%',top:'4%',opacity:0.4}} delay={0} kanji="経"/>
+        <Nobori style={{right:'2%',top:'4%',opacity:0.4}} delay={0.6} kanji="道"/>
+        <StrucBuilding style={{left:'0%',top:'8%',opacity:0.4}} delay={0}/>
+        <StrucBuilding style={{right:'0%',top:'10%',opacity:0.35}} flip delay={0.8}/>
 
         <div style={{maxWidth:1000,margin:'0 auto',position:'relative',zIndex:2}}>
           <Reveal direction="up">
             <div style={{textAlign:'center',marginBottom:'3rem'}}>
               <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:'0.8rem',marginBottom:'0.6rem'}}>
-                <span style={{fontFamily:'serif',fontSize:'1.4rem',color:J.gold}}>道</span>
-                <span style={{fontFamily:'var(--font-body)',color:J.gold,fontSize:'0.75rem',letterSpacing:'4px',textTransform:'uppercase',fontWeight:700}}>Michi · The Path</span>
+                <span style={{fontFamily:'serif',fontSize:'1.6rem',color:J.gold}}>経</span>
+                <span style={{fontFamily:'var(--font-body)',color:J.gold,fontSize:'0.72rem',letterSpacing:'4px',textTransform:'uppercase',fontWeight:700}}>Keireki · Career Path</span>
               </div>
-              <h2 style={{fontFamily:'var(--font-display)',fontSize:'clamp(2rem,8vw,5rem)',lineHeight:0.9,color:J.moon,wordBreak:'break-word'}}>
-                PENGALAMAN <span style={{fontFamily:'var(--font-script)',color:J.gold,fontSize:'55%',textShadow:`0 0 20px rgba(201,168,76,0.5)`}}>Kerja</span>
+              <h2 style={{fontFamily:'var(--font-display)',fontSize:'clamp(2rem,8vw,5rem)',lineHeight:0.9,color:J.white,wordBreak:'break-word'}}>
+                PENGALAMAN <span style={{fontFamily:'var(--font-script)',color:J.gold,fontSize:'55%',textShadow:`0 0 20px rgba(201,160,48,0.5)`}}>Kerja</span>
               </h2>
-              <p style={{color:'rgba(232,232,245,0.45)',marginTop:'0.8rem',fontSize:'0.88rem'}}>Pengalaman Profesional &amp; Riwayat Kerja</p>
+              <p style={{color:'rgba(245,245,240,0.4)',marginTop:'0.8rem',fontSize:'0.88rem'}}>Pengalaman Profesional &amp; Riwayat Kerja</p>
             </div>
           </Reveal>
-
           {/* Timeline */}
           <div style={{position:'relative'}}>
             <motion.div initial={{scaleY:0}} whileInView={{scaleY:1}} viewport={{once:true}} transition={{duration:1.8,ease:'easeOut'}}
-              style={{position:'absolute',left:'clamp(16px,5vw,32px)',top:0,bottom:0,width:2,background:`linear-gradient(to bottom,transparent,${J.vermillion},${J.gold},transparent)`,transformOrigin:'top',zIndex:1}}/>
+              style={{position:'absolute',left:'clamp(16px,5vw,32px)',top:0,bottom:0,width:2,background:`linear-gradient(to bottom,transparent,${J.red},${J.gold},transparent)`,transformOrigin:'top',zIndex:1}}/>
             <div style={{display:'flex',flexDirection:'column',gap:'1.2rem'}}>
               {exps.map((exp,i)=>(
                 <Reveal key={exp.id} direction="right" delay={i*0.14}>
                   <div style={{display:'flex',gap:'clamp(1rem,4vw,2rem)',position:'relative'}}>
-                    {/* Node */}
                     <div style={{flexShrink:0,width:'clamp(32px,10vw,64px)',display:'flex',flexDirection:'column',alignItems:'center'}}>
                       <motion.div
-                        animate={{boxShadow:[`0 0 8px rgba(192,57,43,0.4)`,`0 0 20px rgba(192,57,43,0.8)`,`0 0 8px rgba(192,57,43,0.4)`]}}
-                        transition={{duration:2,repeat:Infinity,delay:i*0.5}}
-                        whileHover={{scale:1.25}}
-                        style={{width:44,height:44,borderRadius:'50%',background:`radial-gradient(circle,rgba(192,57,43,0.2),rgba(192,57,43,0.05))`,border:`2px solid ${J.vermillion}`,display:'flex',alignItems:'center',justifyContent:'center',fontSize:'1.2rem',position:'relative',zIndex:2,cursor:'default'}}>
+                        animate={{boxShadow:[`0 0 8px ${J.red}44`,`0 0 20px ${J.red}88`,`0 0 8px ${J.red}44`]}}
+                        transition={{duration:2,repeat:Infinity,delay:i*0.5}} whileHover={{scale:1.25}}
+                        style={{width:44,height:44,borderRadius:'50%',background:`radial-gradient(circle,rgba(139,26,26,0.2),rgba(139,26,26,0.05))`,border:`2px solid ${J.red}`,display:'flex',alignItems:'center',justifyContent:'center',fontSize:'1.2rem',position:'relative',zIndex:2}}>
                         {exp.icon}
-                        {/* Inner ring */}
-                        <motion.div animate={{scale:[1,1.4,1],opacity:[0.5,0,0.5]}} transition={{duration:2,repeat:Infinity,delay:i*0.5}}
-                          style={{position:'absolute',inset:-4,borderRadius:'50%',border:`1px solid ${J.vermillion}`,pointerEvents:'none'}}/>
+                        <motion.div animate={{scale:[1,1.4,1],opacity:[0.5,0,0.5]}} transition={{duration:2,repeat:Infinity,delay:i*0.5}} style={{position:'absolute',inset:-4,borderRadius:'50%',border:`1px solid ${J.red}`,pointerEvents:'none'}}/>
                       </motion.div>
                     </div>
-                    {/* Card */}
-                    <TiltCard style={{flex:1,borderRadius:16}} intensity={5}>
+                    <TiltCard style={{flex:1,borderRadius:12}} intensity={5}>
                       <InkRipple>
-                        <motion.div whileHover={{borderColor:`rgba(192,57,43,0.5)`,background:'rgba(26,22,45,0.9)'}}
-                          style={{background:`rgba(16,10,6,0.88)`,border:`1px solid rgba(192,57,43,0.15)`,borderRadius:16,padding:'1.4rem clamp(1rem,3vw,1.8rem)',backdropFilter:'blur(12px)',transition:'all 0.3s',position:'relative',overflow:'hidden'}}>
-                          {/* Ink splash bg */}
-                          <motion.div animate={{opacity:[0.06,0.12,0.06],scale:[1,1.05,1]}} transition={{duration:4+i,repeat:Infinity}}
-                            style={{position:'absolute',top:-20,right:-20,width:120,height:120,borderRadius:'50%',background:`radial-gradient(circle,${J.vermillion}33,transparent 70%)`}}/>
-                          {/* Kanji accent */}
-                          <div style={{position:'absolute',right:'1rem',top:'0.5rem',fontFamily:'serif',fontSize:'2.5rem',color:`rgba(192,57,43,0.08)`,userSelect:'none',lineHeight:1}}>{['仕','事','技'][i%3]}</div>
+                        <motion.div whileHover={{borderColor:`rgba(139,26,26,0.55)`,background:'rgba(15,6,2,0.92)'}}
+                          style={{background:'rgba(10,4,0,0.88)',border:`1px solid rgba(139,26,26,0.18)`,borderRadius:12,padding:'1.3rem clamp(1rem,3vw,1.8rem)',backdropFilter:'blur(12px)',transition:'all 0.3s',position:'relative',overflow:'hidden'}}>
+                          <motion.div animate={{opacity:[0.04,0.1,0.04]}} transition={{duration:4+i,repeat:Infinity}} style={{position:'absolute',top:-20,right:-20,width:120,height:120,borderRadius:'50%',background:`radial-gradient(circle,${J.red}33,transparent 70%)`}}/>
+                          {/* Kanji watermark */}
+                          <div style={{position:'absolute',right:'1rem',top:'0.5rem',fontFamily:'serif',fontSize:'2.5rem',color:`rgba(139,26,26,0.07)`,userSelect:'none',lineHeight:1}}>{['業','功','術'][i%3]}</div>
                           <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',gap:'0.5rem',marginBottom:'0.3rem',flexWrap:'wrap',position:'relative',zIndex:1}}>
-                            <h3 style={{fontFamily:'var(--font-display)',fontSize:'clamp(1rem,3vw,1.4rem)',color:J.moon,lineHeight:1.2}}>{exp.position}</h3>
-                            {exp.period&&<motion.span whileHover={{scale:1.05}} style={{background:`rgba(192,57,43,0.12)`,color:J.sakura,borderRadius:6,padding:'3px 12px',fontSize:'0.72rem',fontWeight:700,flexShrink:0,whiteSpace:'nowrap',border:`1px solid rgba(192,57,43,0.3)`}}>{exp.period}</motion.span>}
+                            <h3 style={{fontFamily:'var(--font-display)',fontSize:'clamp(1rem,3vw,1.4rem)',color:J.white,lineHeight:1.2}}>{exp.position}</h3>
+                            {exp.period&&<span style={{background:J.redBg,color:J.goldL,borderRadius:5,padding:'3px 10px',fontSize:'0.72rem',fontWeight:700,flexShrink:0,whiteSpace:'nowrap',border:`1px solid rgba(139,26,26,0.3)`}}>{exp.period}</span>}
                           </div>
                           {exp.company&&<div style={{fontFamily:'var(--font-script)',color:J.gold,fontSize:'1.05rem',marginBottom:'0.8rem',position:'relative',zIndex:1}}>{exp.company}</div>}
-                          {exp.tags&&(
-                            <div style={{display:'flex',flexWrap:'wrap',gap:'0.35rem',position:'relative',zIndex:1}}>
-                              {exp.tags.split(',').map(t=>t.trim()).filter(Boolean).map((tag,ti)=>(
-                                <motion.span key={tag} initial={{opacity:0,scale:0.8}} whileInView={{opacity:1,scale:1}} transition={{delay:ti*0.04+i*0.08}}
-                                  style={{background:'rgba(242,167,184,0.07)',border:`1px solid rgba(242,167,184,0.18)`,color:'rgba(230,180,150,0.75)',borderRadius:5,padding:'3px 10px',fontSize:'0.72rem',fontWeight:500}}>
-                                  {tag}
-                                </motion.span>
-                              ))}
-                            </div>
-                          )}
+                          {exp.tags&&<div style={{display:'flex',flexWrap:'wrap',gap:'0.35rem',position:'relative',zIndex:1}}>{exp.tags.split(',').map(t=>t.trim()).filter(Boolean).map((tag,ti)=>(<motion.span key={tag} initial={{opacity:0,scale:0.8}} whileInView={{opacity:1,scale:1}} transition={{delay:ti*0.04+i*0.08}} style={{background:'rgba(201,160,48,0.07)',border:`1px solid rgba(201,160,48,0.18)`,color:'rgba(201,160,48,0.8)',borderRadius:4,padding:'3px 10px',fontSize:'0.72rem',fontWeight:500}}>{tag}</motion.span>))}</div>}
                         </motion.div>
                       </InkRipple>
                     </TiltCard>
@@ -1055,79 +811,68 @@ const Home:React.FC=()=>{
             </div>
           </div>
         </div>
-
       </JapanBgSection>
 
-      {/* ══════════════════════════════════
-          SKILLS — 山 (YAMA / MOUNTAIN)
-      ══════════════════════════════════ */}
-      <JapanBgSection overlayColor='rgba(10,6,3,0.83)' style={{padding:'clamp(4rem,10vw,8rem) clamp(1rem,5vw,2rem)'}}>
-        {/* Smoke at base */}
+      {/* ══ SKILLS — 技術 (Gijutsu / Technique) ══ */}
+      <JapanBgSection overlayColor={J.ov80}>
+        <InkBrushCanvas/>
         <SmokeCloud style={{left:'-5%',bottom:'0%',opacity:0.9}} delay={0}/>
-        <SmokeCloud style={{right:'-5%',bottom:'1%',opacity:0.85}} delay={1.8} flip/>
-        {/* Kamon floors */}
-        <KamonFloor style={{left:'3%',top:'20%'}} delay={0} size={80}/>
-        <KamonFloor style={{right:'3%',top:'25%'}} delay={1.2} size={70}/>
-        <KamonFloor style={{left:'50%',bottom:'10%',transform:'translateX(-50%)'}} delay={0.6} size={110}/>
-        {/* Rising sun center-top */}
-        <RisingSun style={{left:'50%',top:'2%',transform:'translateX(-50%)'}} opacity={0.1}/>
-        {/* Iso buildings sides */}
-        <IsoBuilding style={{left:'0%',bottom:'3%',opacity:0.5}} delay={0}/>
-        <IsoBuilding style={{right:'0%',bottom:'4%',opacity:0.45}} flip delay={1}/>
-        {/* Mt Fuji */}
-        <MountFuji style={{bottom:0,left:'50%',transform:'translateX(-50%)',width:600,opacity:0.1}} opacity={0.1}/>
-        {/* Bamboo */}
-        <BambooForest style={{left:0,bottom:0,opacity:0.4}} count={3}/>
-        <BambooForest style={{right:0,bottom:0,opacity:0.35,transform:'scaleX(-1)'}} count={3}/>
-        {/* Torii gate far */}
-        <ToriiGate style={{left:'50%',transform:'translateX(-50%)',bottom:'5%',opacity:0.06}} opacity={0.06}/>
-        {/* Cranes */}
-        {[...Array(5)].map((_,i)=><OrigamiCrane key={i} style={{top:`${8+i*12}%`,left:`${10+i*18}%`}} delay={i*0.6} size={20+i*4} color={[J.sakura,J.gold,J.moon,J.sakuraL,J.gold][i]}/>)}
-        {/* Enso circles */}
-        <Enso style={{right:'2%',top:'10%'}} size={90} opacity={0.1}/>
-        <Enso style={{left:'1%',bottom:'15%'}} size={70} opacity={0.08}/>
-        {/* Wave top */}
-        <WaveDecor style={{top:'3%',left:0,width:'100%'}} opacity={0.08}/>
+        <SmokeCloud style={{right:'-5%',bottom:'1%',opacity:0.85}} delay={2} flip/>
+        <ToriiGate style={{left:'50%',transform:'translateX(-50%)',bottom:'3%'}} opacity={0.06}/>
+        <SamuraiMon style={{left:'2%',top:'15%'}} delay={0} size={90} variant={0}/>
+        <SamuraiMon style={{right:'2%',bottom:'18%'}} delay={1} size={80} variant={2}/>
+        <SamuraiMon style={{left:'50%',top:'5%',transform:'translateX(-50%)'}} delay={0.5} size={65} variant={1}/>
+        <Katana style={{top:'8%',left:'3%'}} delay={0}/>
+        <Katana style={{bottom:'12%',right:'3%'}} delay={1.5}/>
+        <InkCircle style={{right:'3%',top:'12%'}} delay={0} size={80} color="red"/>
+        <InkCircle style={{left:'3%',bottom:'12%'}} delay={1.2} size={70} color="gold"/>
+        <RisingSun style={{right:'3%',top:'5%'}} opacity={0.08}/>
+        <KanjiStamp kanji="技" style={{left:'1%',bottom:'5%'}} delay={0.5} size={70}/>
+        <KanjiStamp kanji="術" style={{right:'1%',top:'5%'}} delay={1} size={65}/>
+        <Nobori style={{left:'2%',top:'3%',opacity:0.4}} delay={0} kanji="技"/>
+        <Nobori style={{right:'2%',top:'3%',opacity:0.4}} delay={0.8} kanji="術"/>
+        <StrucBuilding style={{left:'0%',bottom:'2%',opacity:0.45}} flip delay={0}/>
+        <StrucBuilding style={{right:'0%',bottom:'3%',opacity:0.4}} delay={1}/>
 
         <div style={{maxWidth:1100,margin:'0 auto',position:'relative',zIndex:2}}>
           <Reveal direction="up">
             <div style={{textAlign:'center',marginBottom:'3.5rem'}}>
-              <motion.div animate={{y:[0,-5,0]}} transition={{duration:4,repeat:Infinity,ease:'easeInOut'}}>
+              <motion.div animate={{y:[0,-5,0]}} transition={{duration:4,repeat:Infinity}}>
                 <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:'0.8rem',marginBottom:'0.6rem'}}>
-                  <span style={{fontFamily:'serif',fontSize:'1.4rem',color:J.sakura}}>山</span>
-                  <span style={{fontFamily:'var(--font-body)',color:J.sakura,fontSize:'0.75rem',letterSpacing:'4px',textTransform:'uppercase',fontWeight:700}}>Yama · Mountain</span>
+                  <span style={{fontFamily:'serif',fontSize:'1.6rem',color:J.red}}>技</span>
+                  <span style={{fontFamily:'var(--font-body)',color:J.red,fontSize:'0.72rem',letterSpacing:'4px',textTransform:'uppercase',fontWeight:700}}>Gijutsu · Technique</span>
                 </div>
-                <h2 style={{fontFamily:'var(--font-display)',fontSize:'clamp(2.5rem,8vw,5.5rem)',lineHeight:0.9,color:J.moon,wordBreak:'break-word'}}>
-                  SKILLS &amp; <span style={{color:J.sakura,textShadow:`0 0 30px rgba(242,167,184,0.4)`}}>TOOLS</span>
+                <h2 style={{fontFamily:'var(--font-display)',fontSize:'clamp(2.5rem,8vw,5.5rem)',lineHeight:0.9,color:J.white,wordBreak:'break-word'}}>
+                  SKILLS &amp; <span style={{color:J.red,textShadow:`0 0 30px rgba(139,26,26,0.5)`}}>TOOLS</span>
                 </h2>
-                <motion.div initial={{scaleX:0}} whileInView={{scaleX:1}} transition={{duration:1}} style={{height:2,width:100,background:`linear-gradient(to right,transparent,${J.sakura},transparent)`,margin:'0.8rem auto 0',transformOrigin:'center'}}/>
+                <BrushStroke style={{position:'relative',margin:'0.8rem auto 0',display:'block',width:'fit-content'}} width={100} color={J.gold} delay={0.4}/>
               </motion.div>
             </div>
           </Reveal>
           <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(min(100%,260px),1fr))',gap:'1rem'}}>
             {skills.map((sk,i)=>(
               <Reveal key={sk.id} direction="up" delay={i*0.09}>
-                <TiltCard style={{borderRadius:18,height:'100%'}} intensity={12}>
+                <TiltCard style={{borderRadius:14,height:'100%'}} intensity={10}>
                   <InkRipple>
-                    <motion.div
-                      whileHover={{boxShadow:`0 24px 70px rgba(192,57,43,0.25),0 0 0 1px rgba(192,57,43,0.35)`}}
-                      style={{background:`linear-gradient(135deg,rgba(18,12,6,0.92),rgba(28,18,10,0.88))`,border:`1px solid rgba(192,57,43,0.15)`,borderRadius:18,padding:'1.8rem',position:'relative',overflow:'hidden',height:'100%',backdropFilter:'blur(14px)',transition:'all 0.3s'}}>
+                    <motion.div whileHover={{boxShadow:`0 24px 70px rgba(139,26,26,0.25),0 0 0 1px rgba(139,26,26,0.4)`}}
+                      style={{background:'rgba(8,3,0,0.9)',border:`1px solid rgba(139,26,26,0.18)`,borderRadius:14,padding:'1.8rem',position:'relative',overflow:'hidden',height:'100%',backdropFilter:'blur(14px)',transition:'all 0.3s'}}>
                       {/* Kanji watermark */}
-                      <div style={{position:'absolute',right:8,top:4,fontFamily:'serif',fontSize:'4.5rem',color:`rgba(192,57,43,0.07)`,lineHeight:1,userSelect:'none'}}>{['技','能','術','間'][i%4]}</div>
-                      {/* Glow orb */}
-                      <motion.div animate={{scale:[1,1.4,1],opacity:[0.15,0.35,0.15]}} transition={{duration:3+i*0.4,repeat:Infinity}}
-                        style={{position:'absolute',top:-15,left:-15,width:80,height:80,borderRadius:'50%',background:`radial-gradient(circle,rgba(192,57,43,0.2),transparent 70%)`}}/>
-                      {/* Number with vermillion accent */}
+                      <div style={{position:'absolute',right:8,top:4,fontFamily:'serif',fontSize:'4.5rem',color:`rgba(139,26,26,0.07)`,lineHeight:1,userSelect:'none'}}>{['技','能','術','力'][i%4]}</div>
+                      <motion.div animate={{scale:[1,1.4,1],opacity:[0.12,0.28,0.12]}} transition={{duration:3+i*0.4,repeat:Infinity}} style={{position:'absolute',top:-15,left:-15,width:80,height:80,borderRadius:'50%',background:`radial-gradient(circle,rgba(139,26,26,0.2),transparent 70%)`}}/>
+                      {/* Number */}
                       <div style={{display:'flex',alignItems:'center',gap:'0.5rem',marginBottom:'0.7rem',position:'relative',zIndex:1}}>
-                        <motion.div animate={{y:[0,-3,0]}} transition={{duration:2.5+i*0.3,repeat:Infinity,ease:'easeInOut'}}
-                          style={{fontFamily:'var(--font-display)',fontSize:'1.6rem',color:J.vermillion,textShadow:`0 0 15px rgba(192,57,43,0.6)`,lineHeight:1}}>{sk.number}</motion.div>
-                        <div style={{flex:1,height:1,background:`linear-gradient(to right,rgba(192,57,43,0.4),transparent)`}}/>
+                        <motion.div animate={{y:[0,-3,0]}} transition={{duration:2.5+i*0.3,repeat:Infinity}}
+                          style={{fontFamily:'var(--font-display)',fontSize:'1.6rem',color:J.red,textShadow:`0 0 15px rgba(139,26,26,0.6)`,lineHeight:1}}>{sk.number}</motion.div>
+                        <div style={{flex:1,height:1,background:`linear-gradient(to right,rgba(139,26,26,0.5),transparent)`}}/>
                       </div>
-                      <h3 style={{fontFamily:'var(--font-body)',fontWeight:700,fontSize:'0.88rem',color:J.moon,textTransform:'uppercase',letterSpacing:'0.5px',marginBottom:'0.6rem',position:'relative',zIndex:1}}>{sk.title}</h3>
-                      <p style={{color:'rgba(240,220,180,0.6)',fontSize:'0.85rem',lineHeight:1.6,position:'relative',zIndex:1}}>{sk.desc}</p>
+                      {/* Corner accents */}
+                      <div style={{position:'absolute',top:8,right:8,width:12,height:12,borderTop:`1px solid ${J.gold}`,borderRight:`1px solid ${J.gold}`,opacity:0.4}}/>
+                      <div style={{position:'absolute',bottom:8,left:8,width:12,height:12,borderBottom:`1px solid ${J.gold}`,borderLeft:`1px solid ${J.gold}`,opacity:0.4}}/>
+                      <h3 style={{fontFamily:'var(--font-body)',fontWeight:700,fontSize:'0.88rem',color:J.white,textTransform:'uppercase',letterSpacing:'0.5px',marginBottom:'0.6rem',position:'relative',zIndex:1}}>{sk.title}</h3>
+                      <p style={{color:'rgba(245,245,240,0.55)',fontSize:'0.85rem',lineHeight:1.6,position:'relative',zIndex:1}}>{sk.desc}</p>
                       {/* Bottom shimmer */}
                       <motion.div animate={{scaleX:[0,1,0]}} transition={{duration:3,repeat:Infinity,delay:i*0.35}}
-                        style={{position:'absolute',bottom:0,left:0,right:0,height:2,background:`linear-gradient(to right,transparent,${J.vermillion},${J.sakura},transparent)`,transformOrigin:'left'}}/>
+                        style={{position:'absolute',bottom:0,left:0,right:0,height:2,background:`linear-gradient(to right,transparent,${J.red},${J.gold},transparent)`,transformOrigin:'left'}}/>
                     </motion.div>
                   </InkRipple>
                 </TiltCard>
@@ -1135,80 +880,77 @@ const Home:React.FC=()=>{
             ))}
           </div>
         </div>
-
       </JapanBgSection>
 
-      {/* ══════════════════════════════════
-          CTA — 月 (TSUKI / MOON)
-      ══════════════════════════════════ */}
-      <JapanBgSection overlayColor='rgba(8,4,2,0.85)' style={{padding:'clamp(4rem,10vw,8rem) clamp(1rem,5vw,2rem)',textAlign:'center'}}>
-        {/* Dense smoke for atmosphere */}
-        <SmokeCloud style={{left:'-10%',bottom:'0%',opacity:1}} delay={0}/>
-        <SmokeCloud style={{right:'-10%',bottom:'2%',opacity:0.95}} delay={1} flip/>
-        <SmokeCloud style={{left:'10%',bottom:'1%',opacity:0.7}} delay={0.5}/>
-        <SmokeCloud style={{right:'15%',bottom:'0%',opacity:0.65}} delay={1.8} flip/>
-        {/* Large kamon center floor */}
-        <KamonFloor style={{left:'50%',bottom:'12%',transform:'translateX(-50%)'}} delay={0} size={180}/>
-        {/* Iso buildings */}
-        <IsoBuilding style={{left:'0%',bottom:'3%',opacity:0.55}} delay={0}/>
-        <IsoBuilding style={{right:'0%',bottom:'4%',opacity:0.5}} flip delay={1}/>
-        <IsoBuilding style={{left:'15%',bottom:'2%',opacity:0.35}} delay={0.6}/>
-        <IsoBuilding style={{right:'15%',bottom:'3%',opacity:0.3}} flip delay={1.2}/>
-        {/* Full moon */}
-        <motion.div animate={{opacity:[0.06,0.14,0.06],scale:[1,1.04,1]}} transition={{duration:5,repeat:Infinity,ease:'easeInOut'}}
-          style={{position:'absolute',top:'10%',left:'50%',transform:'translateX(-50%)',width:280,height:280,borderRadius:'50%',background:`radial-gradient(circle,rgba(232,232,245,0.15) 0%,rgba(200,200,225,0.06) 60%,transparent 100%)`,boxShadow:`0 0 80px rgba(232,232,245,0.08)`,pointerEvents:'none'}}/>
-        {/* Bamboo forest */}
-        <BambooForest style={{left:0,bottom:0,opacity:0.55}} count={5}/>
-        <BambooForest style={{right:0,bottom:0,opacity:0.5,transform:'scaleX(-1)'}} count={5}/>
-        {/* Lanterns */}
-        <Lantern style={{left:'8%',top:'20%'}} delay={0} size={50}/>
-        <Lantern style={{right:'8%',top:'18%'}} delay={1} size={44}/>
-        <Lantern style={{left:'22%',top:'40%'}} delay={0.5} size={32}/>
-        <Lantern style={{right:'22%',top:'38%'}} delay={1.5} size={30}/>
-        {/* Cranes */}
-        {[...Array(7)].map((_,i)=><OrigamiCrane key={i} style={{top:`${5+i*8}%`,left:`${8+i*12}%`}} delay={i*0.5} size={16+i*3} color={[J.moon,J.sakura,J.gold,J.moon,J.sakura,J.gold,J.moon][i]}/>)}
-        {/* Cherry petals floating */}
-        {[...Array(10)].map((_,i)=>(
-          <motion.div key={i} style={{position:'absolute',fontSize:'0.9rem',left:`${5+i*9}%`,top:'-5%',pointerEvents:'none'}}
-            animate={{y:['0vh','110vh'],rotate:[0,360],opacity:[0,0.6,0]}} transition={{duration:7+i*0.6,repeat:Infinity,delay:i*0.7,ease:'linear'}}>🌸</motion.div>
-        ))}
-        {/* Enso large */}
-        <Enso style={{left:'50%',top:'5%',transform:'translateX(-50%)'}} size={160} opacity={0.1}/>
+      {/* ══ CTA — 覇道 (Hado / Path of Dominance) ══ */}
+      <JapanBgSection overlayColor={J.ov88} style={{textAlign:'center'}}>
+        <InkBrushCanvas/>
+        {/* Dense smoke */}
+        <SmokeCloud style={{left:'-8%',bottom:'0%',opacity:1}} delay={0}/>
+        <SmokeCloud style={{right:'-8%',bottom:'2%',opacity:0.95}} delay={1} flip/>
+        <SmokeCloud style={{left:'15%',bottom:'0%',opacity:0.7}} delay={0.5}/>
+        <SmokeCloud style={{right:'18%',bottom:'1%',opacity:0.65}} delay={1.5} flip/>
+        {/* Large rising sun center */}
+        <RisingSun style={{left:'50%',top:'8%',transform:'translateX(-50%)'}} opacity={0.1}/>
+        {/* Torii gates */}
+        <ToriiGate style={{left:'12%',bottom:'5%'}} opacity={0.1}/>
+        <ToriiGate style={{right:'12%',bottom:'5%'}} opacity={0.1}/>
+        {/* Buildings flanking */}
+        <StrucBuilding style={{left:'0%',bottom:'3%',opacity:0.55}} delay={0}/>
+        <StrucBuilding style={{right:'0%',bottom:'4%',opacity:0.5}} flip delay={1}/>
+        <StrucBuilding style={{left:'14%',bottom:'2%',opacity:0.3}} delay={0.6}/>
+        <StrucBuilding style={{right:'14%',bottom:'3%',opacity:0.3}} flip delay={1.2}/>
+        {/* Mon circles flanking */}
+        <SamuraiMon style={{left:'3%',top:'20%'}} delay={0} size={100} variant={0}/>
+        <SamuraiMon style={{right:'3%',top:'22%'}} delay={1} size={90} variant={1}/>
+        {/* Large ink circles */}
+        <InkCircle style={{left:'50%',bottom:'10%',transform:'translateX(-50%)'}} delay={0} size={200} color="red"/>
+        {/* Katana crossed */}
+        <Katana style={{top:'25%',left:'5%',transform:'rotate(-15deg)'}} delay={0}/>
+        <Katana style={{top:'25%',right:'5%',transform:'rotate(15deg) scaleX(-1)'}} delay={0.8}/>
+        {/* War banners */}
+        <Nobori style={{left:'8%',top:'8%',opacity:0.5}} delay={0} kanji="覇"/>
+        <Nobori style={{right:'8%',top:'8%',opacity:0.5}} delay={0.5} kanji="道"/>
+        <Nobori style={{left:'20%',top:'12%',opacity:0.35}} delay={1} kanji="武"/>
+        <Nobori style={{right:'20%',top:'12%',opacity:0.35}} delay={1.5} kanji="魂"/>
+        {/* Kanji stamps */}
+        <KanjiStamp kanji="覇" style={{left:'2%',bottom:'5%'}} delay={0.3} size={80}/>
+        <KanjiStamp kanji="魂" style={{right:'2%',bottom:'5%'}} delay={0.8} size={75}/>
 
         <div style={{position:'relative',zIndex:2,maxWidth:700,margin:'0 auto'}}>
           <Reveal direction="scale">
-            {/* Kanji */}
-            <motion.div animate={{opacity:[0.4,0.8,0.4]}} transition={{duration:3,repeat:Infinity}} style={{fontFamily:'serif',fontSize:'clamp(2.5rem,6vw,4rem)',color:J.vermillion,marginBottom:'0.5rem',textShadow:`0 0 30px rgba(192,57,43,0.4)`}}>月</motion.div>
-            <div style={{fontFamily:'var(--font-body)',color:J.sakura,fontSize:'0.75rem',letterSpacing:'4px',textTransform:'uppercase',fontWeight:700,marginBottom:'0.8rem'}}>Tsuki · Under the Moon</div>
-            <h2 style={{fontFamily:'var(--font-display)',fontSize:'clamp(2rem,8vw,5rem)',lineHeight:0.95,color:J.moon,wordBreak:'break-word',marginBottom:'1rem',textShadow:`0 2px 30px rgba(180,140,80,0.25)`}}>
+            {/* Large kanji */}
+            <motion.div animate={{opacity:[0.5,0.9,0.5]}} transition={{duration:3,repeat:Infinity}}
+              style={{fontFamily:'serif',fontSize:'clamp(3rem,8vw,5rem)',color:J.red,marginBottom:'0.3rem',textShadow:`0 0 40px rgba(139,26,26,0.5),0 0 80px rgba(139,26,26,0.2)`}}>
+              覇
+            </motion.div>
+            <div style={{fontFamily:'var(--font-body)',color:J.gold,fontSize:'0.72rem',letterSpacing:'4px',textTransform:'uppercase',fontWeight:700,marginBottom:'1rem'}}>
+              Hado · Path of Dominance
+            </div>
+            <h2 style={{fontFamily:'var(--font-display)',fontSize:'clamp(2rem,8vw,5rem)',lineHeight:0.95,color:J.white,wordBreak:'break-word',marginBottom:'0.8rem'}}>
               SIAP BERKOLABORASI?
             </h2>
-            {/* Red divider */}
-            <motion.div initial={{scaleX:0}} whileInView={{scaleX:1}} transition={{duration:1}} style={{height:2,width:80,background:`linear-gradient(to right,transparent,${J.vermillion},transparent)`,margin:'0 auto 1.2rem',transformOrigin:'center'}}/>
-            <p style={{color:'rgba(232,232,245,0.6)',marginBottom:'2.5rem',fontSize:'clamp(0.9rem,2vw,1.05rem)',lineHeight:1.7,maxWidth:480,margin:'0 auto 2.5rem'}}>
-              Di bawah cahaya bulan, setiap karya lahir dari ketenangan dan ketelitian. Mari wujudkan visi Anda.
+            <BrushStroke style={{position:'relative',margin:'0 auto 1.2rem',display:'block',width:'fit-content'}} width={80} color={J.red} delay={0.3}/>
+            <p style={{color:'rgba(245,245,240,0.55)',marginBottom:'2.5rem',fontSize:'clamp(0.9rem,2vw,1.05rem)',lineHeight:1.7,maxWidth:480,margin:'0 auto 2.5rem'}}>
+              Seperti seorang samurai yang menguasai pedangnya — saya siap membawa setiap proyek ke puncaknya.
             </p>
-            {/* CTA button */}
+            {/* CTA Button */}
             <div style={{position:'relative',display:'inline-block'}}>
-              {/* Pulse rings */}
               {[...Array(3)].map((_,i)=>(
-                <motion.div key={i} style={{position:'absolute',inset:-(i+1)*12,borderRadius:50,border:`1.5px solid rgba(192,57,43,${0.4-i*0.1})`,pointerEvents:'none'}}
-                  animate={{scale:[1,1.2,1],opacity:[0.5,0,0.5]}} transition={{duration:2.2,repeat:Infinity,delay:i*0.6}}/>
+                <motion.div key={i} style={{position:'absolute',inset:-(i+1)*10,borderRadius:8,border:`1.5px solid rgba(139,26,26,${0.4-i*0.1})`,pointerEvents:'none'}}
+                  animate={{scale:[1,1.2,1],opacity:[0.5,0,0.5]}} transition={{duration:2.2,repeat:Infinity,delay:i*0.7}}/>
               ))}
               <motion.a href={`mailto:${contact.email}`}
-                whileHover={{scale:1.06,boxShadow:`0 15px 50px rgba(192,57,43,0.5)`}} whileTap={{scale:0.97}}
-                style={{display:'inline-flex',alignItems:'center',gap:'0.6rem',background:`linear-gradient(135deg,${J.vermillion},#a82d22)`,color:'rgba(255,240,220,0.95)',textDecoration:'none',borderRadius:50,padding:'16px 48px',fontFamily:'var(--font-body)',fontWeight:800,fontSize:'1rem',letterSpacing:'0.5px',position:'relative',boxShadow:`0 8px 30px rgba(192,57,43,0.4)`,border:`1px solid rgba(255,200,180,0.2)`}}>
-                🌸 Mulai Perjalanan →
+                whileHover={{scale:1.06,boxShadow:`0 15px 50px rgba(139,26,26,0.55)`}} whileTap={{scale:0.97}}
+                style={{display:'inline-flex',alignItems:'center',gap:'0.6rem',background:`linear-gradient(135deg,${J.red},${J.redD})`,color:J.white,textDecoration:'none',borderRadius:8,padding:'16px 48px',fontFamily:'var(--font-body)',fontWeight:800,fontSize:'1rem',letterSpacing:'0.5px',position:'relative',boxShadow:`0 8px 30px rgba(139,26,26,0.45)`,border:`1px solid rgba(201,160,48,0.25)`}}>
+                ⛩ Mulai Sekarang →
               </motion.a>
             </div>
           </Reveal>
         </div>
-
       </JapanBgSection>
 
-      {/* ══ CONTACT ══ */}
       <ContactSection/>
-      {/* ══ FOOTER ══ */}
       <Footer/>
 
       <style>{`
