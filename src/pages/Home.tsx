@@ -814,7 +814,7 @@ const Home:React.FC=()=>{
       </JapanBgSection>
 
       {/* ══ SKILLS — 技術 (Gijutsu / Technique) ══ */}
-      <JapanBgSection overlayColor={J.ov80}>
+      <JapanBgSection overlayColor={J.ov82}>
         <InkBrushCanvas/>
         <SmokeCloud style={{left:'-5%',bottom:'0%',opacity:0.9}} delay={0}/>
         <SmokeCloud style={{right:'-5%',bottom:'1%',opacity:0.85}} delay={2} flip/>
