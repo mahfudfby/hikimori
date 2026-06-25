@@ -23,7 +23,7 @@ const D_EXP:ExpItem[]=[{id:'1',position:'HR / General Affairs',company:'UD Duta 
 const D_CONTACT:ContactData={email:'mahfudfebry@hikimori.web.id',location:'Nganjuk, Indonesia',website:'hikimori.web.id',instagram:'',linkedin:'',twitter:''};
 const D_CERT:CertItem[]=[{id:'1',name:'Google Digital Marketing',year:'2023',issuer:'Google',subtitle:'Fundamentals of Digital Marketing',imageUrl:''},{id:'2',name:'HR Management Professional',year:'2022',issuer:'BNSP Indonesia',subtitle:'Sertifikasi Kompetensi SDM',imageUrl:''}];
 const FALLBACK_PHOTO='https://res.cloudinary.com/dl4pyan8v/image/upload/WhatsApp_Image_2026-06-16_at_03.45.15_axvhg3';
-const HERO_VIDEO='https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260403_050628_c4e32401-fab4-4a27-b7a8-6e9291cd5959.mp4';
+const HERO_VIDEO='https://res.cloudinary.com/dl4pyan8v/video/upload/v1782351994/HeroHIKIMORI_iktwhe.mp4';
 const CONTACT_VIDEO='https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260602_150901_c45b90ec-18d7-42ff-90e2-b95d7109e330.mp4';
 const SERVICES_LIST=['Website','Mobile App','Web App','E-Commerce','Visual Identity','3D & Motion','Digital Marketing','Growth & Consulting','Other'];
 const ls=<T,>(key:string,fb:T):T=>{try{return JSON.parse(localStorage.getItem(key)||'null')??fb;}catch{return fb;}};
@@ -587,30 +587,26 @@ const Home:React.FC=()=>{
     <div ref={containerRef} style={{background:J.ink,minHeight:'100vh',overflowX:'hidden'}}>
 
       {/* ══ HERO ══ */}
-      <section style={{position:'relative',width:'100%',height:'100vh',overflow:'hidden',display:'flex',flexDirection:'column',background:'#000',color:'#fff'}}>
+      <section style={{position:'relative',width:'100%',aspectRatio:'1920/1080',minHeight:480,maxHeight:'100vh',overflow:'hidden',display:'flex',flexDirection:'column',background:'#000',color:'#fff'}}>
         <video autoPlay loop muted playsInline style={{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover',zIndex:0}}><source src={HERO_VIDEO} type="video/mp4"/></video>
         <Stars/>
-        <div style={{position:'relative',zIndex:1,display:'flex',flexDirection:'column',height:'100%',padding:'70px clamp(1rem,5vw,4rem) 0 clamp(1rem,5vw,4rem)'}}>
-          <div style={{flex:1,display:'flex',flexDirection:'column',justifyContent:'flex-end',paddingBottom:'clamp(2rem,5vw,4rem)'}}>
-            <div id="hgrid" style={{display:'grid',gridTemplateColumns:'1fr',alignItems:'flex-end',gap:'1.5rem'}}>
-              <div>
-                <AnimatedHeading text={`${hero.heroTitle}\n${hero.heroSubtitle}`} style={{fontSize:'clamp(2rem,7vw,4.5rem)',fontWeight:400,marginBottom:'0.8rem',letterSpacing:'-0.04em',lineHeight:1.1,color:'#fff',fontFamily:'var(--font-body)',wordBreak:'break-word'}}/>
-                <FadeIn delay={800}><p style={{fontSize:'clamp(0.9rem,2vw,1.125rem)',color:'#d1d5db',marginBottom:'1.25rem',lineHeight:1.6,maxWidth:'520px'}}>{hero.heroTagline}</p></FadeIn>
-                <FadeIn delay={1200}>
-                  <div style={{display:'flex',flexWrap:'wrap',gap:'0.75rem'}}>
-                    <a href={hero.heroCtaSecondaryLink||'#contact'} style={{textDecoration:'none'}}><button style={{background:'#fff',color:'#000',border:'none',borderRadius:8,padding:'10px 24px',fontWeight:500,fontSize:'0.9rem',cursor:'pointer',fontFamily:'var(--font-body)',whiteSpace:'nowrap'}}>{hero.heroCtaSecondary||'Start a Chat'}</button></a>
-                    <Link to={hero.heroCtaLink||'/portofolio'} style={{textDecoration:'none'}}><button style={{...LG,border:'1px solid rgba(255,255,255,0.2)',color:'#fff',borderRadius:8,padding:'10px 24px',fontWeight:500,fontSize:'0.9rem',cursor:'pointer',fontFamily:'var(--font-body)',whiteSpace:'nowrap'}}>{hero.heroCta}</button></Link>
-                  </div>
-                </FadeIn>
-              </div>
-              <div id="htag" style={{display:'flex',alignItems:'flex-end',justifyContent:'flex-start'}}>
-                <FadeIn delay={1400}>
-                  <div style={{...LG,border:'1px solid rgba(255,255,255,0.2)',borderRadius:12,padding:'10px 20px',display:'inline-block',maxWidth:'100%'}}>
-                    <span style={{fontSize:'clamp(1rem,2.5vw,1.5rem)',fontWeight:300,color:'#fff',fontFamily:'var(--font-body)',wordBreak:'break-word'}}>{hero.heroTagRight}</span>
-                  </div>
-                </FadeIn>
-              </div>
+        <div style={{position:'relative',zIndex:1,display:'flex',flexDirection:'column',height:'100%',padding:'70px clamp(1rem,5vw,4rem)'}}>
+          <div style={{flex:1,display:'flex',flexDirection:'column',justifyContent:'center',alignItems:'center',textAlign:'center',gap:'1.5rem'}}>
+            <div style={{display:'flex',flexDirection:'column',alignItems:'center',maxWidth:760}}>
+              <AnimatedHeading text={`${hero.heroTitle}\n${hero.heroSubtitle}`} style={{fontSize:'clamp(2rem,7vw,4.5rem)',fontWeight:400,marginBottom:'0.8rem',letterSpacing:'-0.04em',lineHeight:1.1,color:'#fff',fontFamily:'var(--font-body)',wordBreak:'break-word',textAlign:'center'}}/>
+              <FadeIn delay={800}><p style={{fontSize:'clamp(0.9rem,2vw,1.125rem)',color:'#d1d5db',margin:'0 auto 1.25rem',lineHeight:1.6,maxWidth:'520px'}}>{hero.heroTagline}</p></FadeIn>
+              <FadeIn delay={1200}>
+                <div style={{display:'flex',flexWrap:'wrap',gap:'0.75rem',justifyContent:'center'}}>
+                  <a href={hero.heroCtaSecondaryLink||'#contact'} style={{textDecoration:'none'}}><button style={{background:'#fff',color:'#000',border:'none',borderRadius:8,padding:'10px 24px',fontWeight:500,fontSize:'0.9rem',cursor:'pointer',fontFamily:'var(--font-body)',whiteSpace:'nowrap'}}>{hero.heroCtaSecondary||'Start a Chat'}</button></a>
+                  <Link to={hero.heroCtaLink||'/portofolio'} style={{textDecoration:'none'}}><button style={{...LG,border:'1px solid rgba(255,255,255,0.2)',color:'#fff',borderRadius:8,padding:'10px 24px',fontWeight:500,fontSize:'0.9rem',cursor:'pointer',fontFamily:'var(--font-body)',whiteSpace:'nowrap'}}>{hero.heroCta}</button></Link>
+                </div>
+              </FadeIn>
             </div>
+            <FadeIn delay={1400}>
+              <div style={{...LG,border:'1px solid rgba(255,255,255,0.2)',borderRadius:12,padding:'10px 20px',display:'inline-block',maxWidth:'100%'}}>
+                <span style={{fontSize:'clamp(1rem,2.5vw,1.5rem)',fontWeight:300,color:'#fff',fontFamily:'var(--font-body)',wordBreak:'break-word'}}>{hero.heroTagRight}</span>
+              </div>
+            </FadeIn>
           </div>
         </div>
       </section>
@@ -955,7 +951,6 @@ const Home:React.FC=()=>{
 
       <style>{`
         @media(min-width:768px){#about-row{flex-direction:row!important;align-items:flex-start!important;}#about-row>*{width:50%;}}
-        @media(min-width:1024px){#hgrid{grid-template-columns:1fr 1fr!important;}#htag{justify-content:flex-end!important;}}
       `}</style>
     </div>
   );
