@@ -587,11 +587,11 @@ const Home:React.FC=()=>{
     <div ref={containerRef} style={{background:J.ink,minHeight:'100vh',overflowX:'hidden'}}>
 
       {/* ══ HERO ══ */}
-      <section style={{position:'relative',width:'100%',aspectRatio:'1920/1080',maxHeight:'100vh',overflow:'hidden',display:'flex',flexDirection:'column',background:'#000',color:'#fff'}}>
+      <section style={{position:'relative',width:'100%',aspectRatio:'1920/1080',minHeight:440,maxHeight:'100vh',overflow:'hidden',display:'flex',flexDirection:'column',background:'#000',color:'#fff'}}>
         <video autoPlay loop muted playsInline style={{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover',zIndex:0}}><source src={HERO_VIDEO} type="video/mp4"/></video>
         <Stars/>
-        <div style={{position:'relative',zIndex:1,display:'flex',flexDirection:'column',height:'100%',padding:'70px clamp(1rem,5vw,4rem)'}}>
-          <div style={{flex:1,display:'flex',flexDirection:'column',justifyContent:'center',alignItems:'center',textAlign:'center',gap:'1.5rem'}}>
+        <div style={{position:'relative',zIndex:1,display:'flex',flexDirection:'column',height:'100%',padding:'clamp(56px,12vw,70px) clamp(1rem,5vw,4rem) clamp(16px,4vw,32px)'}}>
+          <div style={{flex:1,display:'flex',flexDirection:'column',justifyContent:'center',alignItems:'center',textAlign:'center',gap:'clamp(0.8rem,3vw,1.5rem)'}}>
             <div style={{display:'flex',flexDirection:'column',alignItems:'center',maxWidth:760}}>
               <AnimatedHeading text={hero.heroTitle} style={{fontSize:'clamp(2.5rem,9vw,6rem)',fontWeight:800,marginBottom:'0.3rem',letterSpacing:'-0.02em',lineHeight:1,color:'#fff',fontFamily:'var(--font-display)',textTransform:'uppercase',wordBreak:'break-word',textAlign:'center'}}/>
               <AnimatedHeading text={hero.heroSubtitle} style={{fontSize:'clamp(0.9rem,2.4vw,1.5rem)',fontWeight:800,marginBottom:'0.8rem',letterSpacing:'0.03em',lineHeight:1.3,color:'#fff',fontFamily:'var(--font-display)',textTransform:'uppercase',wordBreak:'break-word',textAlign:'center'}}/>
