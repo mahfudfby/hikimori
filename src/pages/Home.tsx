@@ -587,13 +587,14 @@ const Home:React.FC=()=>{
     <div ref={containerRef} style={{background:J.ink,minHeight:'100vh',overflowX:'hidden'}}>
 
       {/* ══ HERO ══ */}
-      <section style={{position:'relative',width:'100%',aspectRatio:'1920/1080',minHeight:480,maxHeight:'100vh',overflow:'hidden',display:'flex',flexDirection:'column',background:'#000',color:'#fff'}}>
+      <section style={{position:'relative',width:'100%',aspectRatio:'1920/1080',maxHeight:'100vh',overflow:'hidden',display:'flex',flexDirection:'column',background:'#000',color:'#fff'}}>
         <video autoPlay loop muted playsInline style={{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover',zIndex:0}}><source src={HERO_VIDEO} type="video/mp4"/></video>
         <Stars/>
         <div style={{position:'relative',zIndex:1,display:'flex',flexDirection:'column',height:'100%',padding:'70px clamp(1rem,5vw,4rem)'}}>
           <div style={{flex:1,display:'flex',flexDirection:'column',justifyContent:'center',alignItems:'center',textAlign:'center',gap:'1.5rem'}}>
             <div style={{display:'flex',flexDirection:'column',alignItems:'center',maxWidth:760}}>
-              <AnimatedHeading text={`${hero.heroTitle}\n${hero.heroSubtitle}`} style={{fontSize:'clamp(2rem,7vw,4.5rem)',fontWeight:400,marginBottom:'0.8rem',letterSpacing:'-0.04em',lineHeight:1.1,color:'#fff',fontFamily:'var(--font-body)',wordBreak:'break-word',textAlign:'center'}}/>
+              <AnimatedHeading text={hero.heroTitle} style={{fontSize:'clamp(2.5rem,9vw,6rem)',fontWeight:800,marginBottom:'0.3rem',letterSpacing:'-0.04em',lineHeight:1.05,color:'#fff',fontFamily:'var(--font-body)',wordBreak:'break-word',textAlign:'center'}}/>
+              <AnimatedHeading text={hero.heroSubtitle} style={{fontSize:'clamp(0.9rem,2.2vw,1.4rem)',fontWeight:700,marginBottom:'0.8rem',letterSpacing:'0.02em',lineHeight:1.3,color:'#fff',fontFamily:'var(--font-body)',wordBreak:'break-word',textAlign:'center'}}/>
               <FadeIn delay={800}><p style={{fontSize:'clamp(0.9rem,2vw,1.125rem)',color:'#d1d5db',margin:'0 auto 1.25rem',lineHeight:1.6,maxWidth:'520px'}}>{hero.heroTagline}</p></FadeIn>
               <FadeIn delay={1200}>
                 <div style={{display:'flex',flexWrap:'wrap',gap:'0.75rem',justifyContent:'center'}}>
