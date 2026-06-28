@@ -80,13 +80,13 @@ const ShineHeading:React.FC<{text:string;style?:React.CSSProperties}>=({text,sty
     `}</style>
     <motion.h1
       className="shine-wrap"
-      whileHover={{scale:1.06,textShadow:'3px 3px 0px rgba(139,26,26,1),6px 6px 0px rgba(100,10,10,0.8),10px 10px 0px rgba(60,5,5,0.6),14px 14px 20px rgba(0,0,0,0.9),0 0 60px rgba(201,160,48,0.5),0 0 100px rgba(139,26,26,0.3)'}}
-      transition={{type:'spring',stiffness:280,damping:22}}
+      whileHover={{scale:1.14,textShadow:'4px 4px 0px rgba(139,26,26,1),8px 8px 0px rgba(100,10,10,0.85),13px 13px 0px rgba(60,5,5,0.65),18px 18px 28px rgba(0,0,0,0.95),0 0 80px rgba(201,160,48,0.65),0 0 140px rgba(139,26,26,0.45),0 0 200px rgba(139,26,26,0.2)'}}
+      transition={{type:'spring',stiffness:220,damping:18}}
       style={{
         margin:0,
         cursor:'default',
         whiteSpace:isMobile?'normal':'nowrap',
-        fontSize:isMobile?'clamp(1.05rem,5.5vw,1.6rem)':'clamp(1.1rem,3.2vw,2.8rem)',
+        fontSize:isMobile?'clamp(1.3rem,6.5vw,2.2rem)':'clamp(2rem,5.5vw,5rem)',
         textAlign:'center',
         display:'inline-block',
         textShadow:`2px 2px 0px rgba(139,26,26,0.9),4px 4px 0px rgba(100,10,10,0.7),6px 6px 0px rgba(60,5,5,0.5),8px 8px 12px rgba(0,0,0,0.8),0 0 30px rgba(201,160,48,0.3)`,
@@ -625,34 +625,55 @@ const Home:React.FC=()=>{
       <section style={{position:'relative',width:'100%',height:'100vh',minHeight:500,overflow:'hidden',display:'flex',flexDirection:'column',background:'#000',color:'#fff'}}>
         <video autoPlay loop muted playsInline style={{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover',zIndex:0}}><source src={HERO_VIDEO} type="video/mp4"/></video>
         <Stars/>
-        {/* Main content area */}
-        <div style={{position:'relative',zIndex:1,display:'flex',flexDirection:'column',flex:1,padding:'clamp(56px,10vw,70px) clamp(1rem,5vw,4rem) 0'}}>
-          <div style={{flex:1,display:'flex',flexDirection:'column',justifyContent:'center',alignItems:'center',textAlign:'center',gap:'clamp(0.5rem,2vw,1rem)'}}>
-            <div style={{display:'flex',flexDirection:'column',alignItems:'center',maxWidth:860}}>
-              <ShineHeading text={hero.heroTitle} style={{fontWeight:800,marginBottom:'0.3rem',letterSpacing:'-0.01em',lineHeight:1.1,color:'#fff',fontFamily:'var(--font-display)',textTransform:'uppercase'}}/>
-              <div className="hk-hero-subtitle" style={{marginBottom:'0.6rem',textAlign:'center'}}>
+        {/* Main content area — column layout: subtitle top-center, title+cta bottom-center */}
+        <div style={{position:'relative',zIndex:1,display:'flex',flexDirection:'column',flex:1,padding:'clamp(64px,10vw,80px) clamp(1rem,5vw,4rem) 0'}}>
+          <div style={{flex:1,display:'flex',flexDirection:'column',justifyContent:'space-between',alignItems:'center',textAlign:'center'}}>
+
+            {/* TOP: Subtitle + Tagline */}
+            <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:'0.4rem',paddingTop:'clamp(1rem,3vw,2rem)'}}>
+              <div className="hk-hero-subtitle" style={{textAlign:'center'}}>
                 {(hero.heroSubtitle||'').split('\n').map((line,li)=>(
-                  <div key={li} style={{fontFamily:'var(--font-display)',fontWeight:700,textTransform:'uppercase',letterSpacing:'0.06em',color:'rgba(255,255,255,0.9)',fontSize:'clamp(0.65rem,1.5vw,1rem)',lineHeight:1.7,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>
+                  <div key={li} style={{
+                    fontFamily:'var(--font-display)',fontWeight:700,textTransform:'uppercase',
+                    letterSpacing:'0.06em',lineHeight:1.7,whiteSpace:'nowrap',
+                    fontSize:'clamp(0.65rem,1.5vw,1rem)',
+                    color:'rgba(255,255,255,0.95)',
+                    textShadow:'0 2px 8px rgba(0,0,0,0.9),0 0 20px rgba(139,26,26,0.5),1px 1px 0 rgba(0,0,0,0.8)'
+                  }}>
                     {line}
                   </div>
                 ))}
               </div>
-              <FadeIn delay={800}><p style={{fontSize:'clamp(0.82rem,1.8vw,1.05rem)',color:'#d1d5db',margin:'0 auto 1rem',lineHeight:1.6,maxWidth:'520px'}}>{hero.heroTagline}</p></FadeIn>
-              <FadeIn delay={1200}>
-                <div className="hk-hero-cta-row" style={{display:'flex',flexWrap:'wrap',gap:'0.75rem',justifyContent:'center',marginBottom:'0.8rem'}}>
-                  <a href={hero.heroCtaSecondaryLink||'#contact'} style={{textDecoration:'none'}}><button style={{background:'#fff',color:'#000',border:'none',borderRadius:8,padding:'10px 24px',fontWeight:500,fontSize:'0.9rem',cursor:'pointer',fontFamily:'var(--font-body)',whiteSpace:'nowrap'}}>{hero.heroCtaSecondary||'Start a Chat'}</button></a>
-                  <Link to={hero.heroCtaLink||'/portofolio'} style={{textDecoration:'none'}}><button style={{...LG,border:'1px solid rgba(255,255,255,0.2)',color:'#fff',borderRadius:8,padding:'10px 24px',fontWeight:500,fontSize:'0.9rem',cursor:'pointer',fontFamily:'var(--font-body)',whiteSpace:'nowrap'}}>{hero.heroCta}</button></Link>
+              <FadeIn delay={600}>
+                <p style={{fontSize:'clamp(0.78rem,1.6vw,0.95rem)',color:'rgba(209,213,219,0.85)',margin:0,lineHeight:1.6,maxWidth:'480px',textShadow:'0 2px 6px rgba(0,0,0,0.8)'}}>
+                  {hero.heroTagline}
+                </p>
+              </FadeIn>
+            </div>
+
+            {/* BOTTOM: HeroTitle besar + Buttons + Location */}
+            <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:'0.7rem',paddingBottom:'clamp(0.5rem,2vw,1rem)'}}>
+              <ShineHeading text={hero.heroTitle} style={{fontWeight:800,letterSpacing:'-0.01em',lineHeight:1,color:'#fff',fontFamily:'var(--font-display)',textTransform:'uppercase'}}/>
+              <FadeIn delay={1000}>
+                <div className="hk-hero-cta-row" style={{display:'flex',flexWrap:'wrap',gap:'0.5rem',justifyContent:'center'}}>
+                  <a href={hero.heroCtaSecondaryLink||'#contact'} style={{textDecoration:'none'}}>
+                    <button style={{background:'rgba(255,255,255,0.92)',color:'#000',border:'none',borderRadius:6,padding:'7px 18px',fontWeight:600,fontSize:'0.78rem',cursor:'pointer',fontFamily:'var(--font-body)',whiteSpace:'nowrap'}}>{hero.heroCtaSecondary||'Start a Chat'}</button>
+                  </a>
+                  <Link to={hero.heroCtaLink||'/portofolio'} style={{textDecoration:'none'}}>
+                    <button style={{...LG,border:'1px solid rgba(255,255,255,0.25)',color:'#fff',borderRadius:6,padding:'7px 18px',fontWeight:600,fontSize:'0.78rem',cursor:'pointer',fontFamily:'var(--font-body)',whiteSpace:'nowrap'}}>{hero.heroCta}</button>
+                  </Link>
                 </div>
               </FadeIn>
-              <FadeIn delay={1400}>
-                <div style={{...LG,border:'1px solid rgba(255,255,255,0.2)',borderRadius:12,padding:'8px 20px',display:'inline-block',maxWidth:'100%'}}>
-                  <span style={{fontSize:'clamp(0.85rem,2vw,1.2rem)',fontWeight:300,color:'#fff',fontFamily:'var(--font-body)',wordBreak:'break-word',display:'inline-flex',alignItems:'center',gap:'6px'}}>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style={{width:'1em',height:'1em',flexShrink:0,color:J.red}}><path fillRule="evenodd" d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-2.013 3.5-4.697 3.5-8.027a8.25 8.25 0 00-16.5 0c0 3.33 1.556 6.014 3.5 8.027a19.58 19.58 0 002.683 2.282 16.975 16.975 0 001.144.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd"/></svg>
+              <FadeIn delay={1200}>
+                <div style={{...LG,border:'1px solid rgba(255,255,255,0.18)',borderRadius:8,padding:'5px 14px',display:'inline-block'}}>
+                  <span style={{fontSize:'clamp(0.72rem,1.5vw,0.9rem)',fontWeight:400,color:'rgba(255,255,255,0.88)',fontFamily:'var(--font-body)',display:'inline-flex',alignItems:'center',gap:'5px'}}>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style={{width:'0.9em',height:'0.9em',flexShrink:0,color:J.red}}><path fillRule="evenodd" d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-2.013 3.5-4.697 3.5-8.027a8.25 8.25 0 00-16.5 0c0 3.33 1.556 6.014 3.5 8.027a19.58 19.58 0 002.683 2.282 16.975 16.975 0 001.144.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd"/></svg>
                     {hero.heroTagRight}
                   </span>
                 </div>
               </FadeIn>
             </div>
+
           </div>
         </div>
         {/* Marquee pinned to bottom of hero */}
