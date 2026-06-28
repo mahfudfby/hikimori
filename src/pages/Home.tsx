@@ -678,11 +678,10 @@ const Home:React.FC=()=>{
 
           </div>
         </div>
-        {/* Marquee pinned to bottom of hero */}
-        <div style={{position:'relative',zIndex:2,width:'100%'}}>
-          <Marquee contact={contact}/>
-        </div>
       </section>
+
+      {/* Marquee — di luar hero agar tidak terpotong di mobile */}
+      <Marquee contact={contact}/>
 
       {/* ══ ABOUT — 自己紹介 (Jiko Shokai) ══ */}
       <JapanBgSection overlayColor={J.ov82}>
@@ -1036,12 +1035,12 @@ const Home:React.FC=()=>{
           .hk-hero-subtitle>div{font-size:clamp(0.65rem,1.5vw,1rem)!important;}
         }
 
-        /* ── HERO LANDSCAPE PAKSA DI MOBILE ── */
+        /* ── HERO 3/4 LAYAR DI MOBILE ── */
         @media(max-width:767px){
           #hk-hero{
-            height:56.25vw !important;
-            min-height:220px !important;
-            max-height:440px !important;
+            height:75vh !important;
+            min-height:300px !important;
+            max-height:none !important;
           }
           #hk-hero video{
             width:100% !important;
@@ -1050,42 +1049,41 @@ const Home:React.FC=()=>{
           }
           /* Hero title LEBIH BESAR di mobile */
           #hk-hero .shine-wrap{
-            font-size:clamp(1.2rem,5.5vw,2rem)!important;
+            font-size:clamp(1.2rem,7vw,2.2rem)!important;
             white-space:nowrap!important;
           }
-          /* Subtitle fit di landscape */
+          /* Subtitle */
           #hk-hero .hk-hero-subtitle>div{
-            font-size:clamp(0.4rem,1.6vw,0.58rem)!important;
-            line-height:1.4!important;
+            font-size:clamp(0.5rem,2.2vw,0.72rem)!important;
+            line-height:1.5!important;
             white-space:nowrap!important;
           }
-          /* Tagline sembunyikan di mobile landscape */
-          #hk-hero .hk-hero-tagline{display:none!important;}
-          /* Buttons kecil */
+          /* Tagline tampil di mobile portrait */
+          #hk-hero .hk-hero-tagline{display:block!important;font-size:0.78rem!important;}
+          /* Buttons */
           #hk-hero .hk-hero-cta-row button{
-            padding:5px 12px!important;
-            font-size:0.62rem!important;
+            padding:8px 16px!important;
+            font-size:0.72rem!important;
           }
           /* Location badge */
           #hk-hero .hk-location-badge span{
-            font-size:0.58rem!important;
+            font-size:0.68rem!important;
           }
-          /* Gap semua elemen dalam hero */
+          /* Gap elemen dalam hero */
           #hk-hero>div>div{
-            gap:0.2rem!important;
-            padding-bottom:0.4rem!important;
+            gap:0.5rem!important;
+            padding-bottom:1rem!important;
           }
         }
 
-        /* Portrait phone kecil */
+        /* Portrait phone kecil (<480px) */
         @media(max-width:480px) and (orientation:portrait){
           #hk-hero{
-            height:56.25vw !important;
-            min-height:180px !important;
-            max-height:360px !important;
+            height:75vh !important;
+            min-height:280px !important;
           }
           #hk-hero .shine-wrap{
-            font-size:clamp(1rem,4.8vw,1.6rem)!important;
+            font-size:clamp(1rem,6.5vw,1.8rem)!important;
           }
         }
 
