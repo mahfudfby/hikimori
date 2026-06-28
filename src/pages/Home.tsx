@@ -625,54 +625,56 @@ const Home:React.FC=()=>{
       <section id="hk-hero" style={{position:'relative',width:'100%',height:'100vh',minHeight:500,overflow:'hidden',display:'flex',flexDirection:'column',background:'#000',color:'#fff'}}>
         <video autoPlay loop muted playsInline style={{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover',zIndex:0}}><source src={HERO_VIDEO} type="video/mp4"/></video>
         <Stars/>
-        {/* Main content area — column layout: subtitle top-center, title+cta bottom-center */}
-        <div style={{position:'relative',zIndex:1,display:'flex',flexDirection:'column',flex:1,padding:'clamp(64px,10vw,80px) clamp(1rem,5vw,4rem) 0'}}>
-          <div style={{flex:1,display:'flex',flexDirection:'column',justifyContent:'space-between',alignItems:'center',textAlign:'center',gap:0}}>
+        {/* Main content: semua elemen rapat di bagian bawah, tidak overlap navbar */}
+        <div style={{position:'relative',zIndex:1,display:'flex',flexDirection:'column',flex:1}}>
+          <div style={{flex:1,display:'flex',flexDirection:'column',justifyContent:'flex-end',alignItems:'center',textAlign:'center',padding:'0 clamp(1rem,5vw,4rem) clamp(0.5rem,2vw,1rem)',gap:'0.3rem'}}>
 
-            {/* TOP: Subtitle + Tagline */}
-            <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:'0.3rem',paddingTop:'clamp(0.5rem,1.5vw,1rem)'}}>
-              <div className="hk-hero-subtitle" style={{textAlign:'center'}}>
-                {(hero.heroSubtitle||'').split('\n').map((line,li)=>(
-                  <div key={li} style={{
-                    fontFamily:'var(--font-display)',fontWeight:700,textTransform:'uppercase',
-                    letterSpacing:'0.06em',lineHeight:1.6,whiteSpace:'nowrap',
-                    fontSize:'clamp(0.65rem,1.5vw,1rem)',
-                    color:'rgba(255,255,255,0.95)',
-                    textShadow:'0 2px 8px rgba(0,0,0,0.9),0 0 20px rgba(139,26,26,0.5),1px 1px 0 rgba(0,0,0,0.8)'
-                  }}>
-                    {line}
-                  </div>
-                ))}
+            {/* Subtitle langsung di atas title — rapat */}
+            <div className="hk-hero-subtitle" style={{textAlign:'center',marginBottom:'0.05rem'}}>
+              {(hero.heroSubtitle||'').split('\n').map((line,li)=>(
+                <div key={li} style={{
+                  fontFamily:'var(--font-display)',fontWeight:700,textTransform:'uppercase',
+                  letterSpacing:'0.06em',lineHeight:1.5,whiteSpace:'nowrap',
+                  fontSize:'clamp(0.65rem,1.5vw,1rem)',
+                  color:'rgba(255,255,255,0.95)',
+                  textShadow:'0 2px 8px rgba(0,0,0,0.9),0 0 20px rgba(139,26,26,0.5),1px 1px 0 rgba(0,0,0,0.8)'
+                }}>
+                  {line}
+                </div>
+              ))}
+            </div>
+
+            {/* Hero Title */}
+            <ShineHeading text={hero.heroTitle} style={{fontWeight:800,letterSpacing:'-0.01em',lineHeight:1,color:'#fff',fontFamily:'var(--font-display)',textTransform:'uppercase'}}/>
+
+            {/* Tagline */}
+            <FadeIn delay={600}>
+              <p className="hk-hero-tagline" style={{fontSize:'clamp(0.78rem,1.6vw,0.95rem)',color:'rgba(209,213,219,0.85)',margin:0,lineHeight:1.5,maxWidth:'480px',textShadow:'0 2px 6px rgba(0,0,0,0.8)'}}>
+                {hero.heroTagline}
+              </p>
+            </FadeIn>
+
+            {/* Buttons */}
+            <FadeIn delay={1000}>
+              <div className="hk-hero-cta-row" style={{display:'flex',flexWrap:'wrap',gap:'0.5rem',justifyContent:'center'}}>
+                <a href={hero.heroCtaSecondaryLink||'#contact'} style={{textDecoration:'none'}}>
+                  <button style={{background:'rgba(255,255,255,0.92)',color:'#000',border:'none',borderRadius:6,padding:'7px 18px',fontWeight:600,fontSize:'0.78rem',cursor:'pointer',fontFamily:'var(--font-body)',whiteSpace:'nowrap'}}>{hero.heroCtaSecondary||'Start a Chat'}</button>
+                </a>
+                <Link to={hero.heroCtaLink||'/portofolio'} style={{textDecoration:'none'}}>
+                  <button style={{...LG,border:'1px solid rgba(255,255,255,0.25)',color:'#fff',borderRadius:6,padding:'7px 18px',fontWeight:600,fontSize:'0.78rem',cursor:'pointer',fontFamily:'var(--font-body)',whiteSpace:'nowrap'}}>{hero.heroCta}</button>
+                </Link>
               </div>
-              <FadeIn delay={600}>
-                <p style={{fontSize:'clamp(0.78rem,1.6vw,0.95rem)',color:'rgba(209,213,219,0.85)',margin:0,lineHeight:1.5,maxWidth:'480px',textShadow:'0 2px 6px rgba(0,0,0,0.8)'}}>
-                  {hero.heroTagline}
-                </p>
-              </FadeIn>
-            </div>
+            </FadeIn>
 
-            {/* BOTTOM: HeroTitle besar + Buttons + Location */}
-            <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:'0.5rem',paddingBottom:'clamp(0.3rem,1.5vw,0.8rem)'}}>
-              <ShineHeading text={hero.heroTitle} style={{fontWeight:800,letterSpacing:'-0.01em',lineHeight:1,color:'#fff',fontFamily:'var(--font-display)',textTransform:'uppercase'}}/>
-              <FadeIn delay={1000}>
-                <div className="hk-hero-cta-row" style={{display:'flex',flexWrap:'wrap',gap:'0.5rem',justifyContent:'center'}}>
-                  <a href={hero.heroCtaSecondaryLink||'#contact'} style={{textDecoration:'none'}}>
-                    <button style={{background:'rgba(255,255,255,0.92)',color:'#000',border:'none',borderRadius:6,padding:'7px 18px',fontWeight:600,fontSize:'0.78rem',cursor:'pointer',fontFamily:'var(--font-body)',whiteSpace:'nowrap'}}>{hero.heroCtaSecondary||'Start a Chat'}</button>
-                  </a>
-                  <Link to={hero.heroCtaLink||'/portofolio'} style={{textDecoration:'none'}}>
-                    <button style={{...LG,border:'1px solid rgba(255,255,255,0.25)',color:'#fff',borderRadius:6,padding:'7px 18px',fontWeight:600,fontSize:'0.78rem',cursor:'pointer',fontFamily:'var(--font-body)',whiteSpace:'nowrap'}}>{hero.heroCta}</button>
-                  </Link>
-                </div>
-              </FadeIn>
-              <FadeIn delay={1200}>
-                <div style={{...LG,border:'1px solid rgba(255,255,255,0.18)',borderRadius:8,padding:'5px 14px',display:'inline-block'}}>
-                  <span style={{fontSize:'clamp(0.72rem,1.5vw,0.9rem)',fontWeight:400,color:'rgba(255,255,255,0.88)',fontFamily:'var(--font-body)',display:'inline-flex',alignItems:'center',gap:'5px'}}>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style={{width:'0.9em',height:'0.9em',flexShrink:0,color:J.red}}><path fillRule="evenodd" d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-2.013 3.5-4.697 3.5-8.027a8.25 8.25 0 00-16.5 0c0 3.33 1.556 6.014 3.5 8.027a19.58 19.58 0 002.683 2.282 16.975 16.975 0 001.144.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd"/></svg>
-                    {hero.heroTagRight}
-                  </span>
-                </div>
-              </FadeIn>
-            </div>
+            {/* Location */}
+            <FadeIn delay={1200}>
+              <div className="hk-location-badge" style={{...LG,border:'1px solid rgba(255,255,255,0.18)',borderRadius:8,padding:'5px 14px',display:'inline-block'}}>
+                <span style={{fontSize:'clamp(0.72rem,1.5vw,0.9rem)',fontWeight:400,color:'rgba(255,255,255,0.88)',fontFamily:'var(--font-body)',display:'inline-flex',alignItems:'center',gap:'5px'}}>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style={{width:'0.9em',height:'0.9em',flexShrink:0,color:J.red}}><path fillRule="evenodd" d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-2.013 3.5-4.697 3.5-8.027a8.25 8.25 0 00-16.5 0c0 3.33 1.556 6.014 3.5 8.027a19.58 19.58 0 002.683 2.282 16.975 16.975 0 001.144.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd"/></svg>
+                  {hero.heroTagRight}
+                </span>
+              </div>
+            </FadeIn>
 
           </div>
         </div>
@@ -1038,49 +1040,52 @@ const Home:React.FC=()=>{
         @media(max-width:767px){
           #hk-hero{
             height:56.25vw !important;
-            min-height:200px !important;
-            max-height:420px !important;
+            min-height:220px !important;
+            max-height:440px !important;
           }
           #hk-hero video{
             width:100% !important;
             height:100% !important;
             object-fit:cover !important;
-            object-position:center center !important;
           }
-          /* Subtitle lebih kecil di landscape mobile */
-          #hk-hero .hk-hero-subtitle>div{
-            font-size:clamp(0.42rem,1.8vw,0.6rem)!important;
-            line-height:1.5!important;
-            white-space:nowrap!important;
-          }
-          /* Shine heading lebih kecil fit 1 baris */
+          /* Hero title LEBIH BESAR di mobile */
           #hk-hero .shine-wrap{
-            font-size:clamp(0.9rem,4.5vw,1.8rem)!important;
+            font-size:clamp(1.2rem,5.5vw,2rem)!important;
             white-space:nowrap!important;
           }
-          /* Tagline hide di mobile kecil */
+          /* Subtitle fit di landscape */
+          #hk-hero .hk-hero-subtitle>div{
+            font-size:clamp(0.4rem,1.6vw,0.58rem)!important;
+            line-height:1.4!important;
+            white-space:nowrap!important;
+          }
+          /* Tagline sembunyikan di mobile landscape */
           #hk-hero .hk-hero-tagline{display:none!important;}
-          /* Buttons lebih kecil */
+          /* Buttons kecil */
           #hk-hero .hk-hero-cta-row button{
             padding:5px 12px!important;
-            font-size:0.65rem!important;
-          }
-          /* Location badge lebih kecil */
-          #hk-hero .hk-location-badge span{
             font-size:0.62rem!important;
           }
-          /* Padding dalam hero lebih rapat */
-          #hk-hero>div:last-of-type>div{
-            padding-top:4px!important;
+          /* Location badge */
+          #hk-hero .hk-location-badge span{
+            font-size:0.58rem!important;
+          }
+          /* Gap semua elemen dalam hero */
+          #hk-hero>div>div{
+            gap:0.2rem!important;
+            padding-bottom:0.4rem!important;
           }
         }
 
-        /* Portrait phone — paksa hero tetap landscape feel */
+        /* Portrait phone kecil */
         @media(max-width:480px) and (orientation:portrait){
           #hk-hero{
             height:56.25vw !important;
             min-height:180px !important;
-            max-height:340px !important;
+            max-height:360px !important;
+          }
+          #hk-hero .shine-wrap{
+            font-size:clamp(1rem,4.8vw,1.6rem)!important;
           }
         }
 
