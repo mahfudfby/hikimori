@@ -622,41 +622,44 @@ const Home:React.FC=()=>{
     <div ref={containerRef} style={{background:J.ink,minHeight:'100vh',overflowX:'hidden'}}>
 
       {/* ══ HERO ══ */}
-      <section style={{position:'relative',width:'100%',aspectRatio:'1920/1080',minHeight:440,maxHeight:'100vh',overflow:'hidden',display:'flex',flexDirection:'column',background:'#000',color:'#fff'}}>
+      <section style={{position:'relative',width:'100%',height:'100vh',minHeight:500,overflow:'hidden',display:'flex',flexDirection:'column',background:'#000',color:'#fff'}}>
         <video autoPlay loop muted playsInline style={{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover',zIndex:0}}><source src={HERO_VIDEO} type="video/mp4"/></video>
         <Stars/>
-        <div style={{position:'relative',zIndex:1,display:'flex',flexDirection:'column',height:'100%',padding:'clamp(56px,12vw,70px) clamp(1rem,5vw,4rem) clamp(16px,4vw,32px)'}}>
-          <div style={{flex:1,display:'flex',flexDirection:'column',justifyContent:'center',alignItems:'center',textAlign:'center',gap:'clamp(0.8rem,3vw,1.5rem)'}}>
-            <div style={{display:'flex',flexDirection:'column',alignItems:'center',maxWidth:760}}>
+        {/* Main content area */}
+        <div style={{position:'relative',zIndex:1,display:'flex',flexDirection:'column',flex:1,padding:'clamp(56px,10vw,70px) clamp(1rem,5vw,4rem) 0'}}>
+          <div style={{flex:1,display:'flex',flexDirection:'column',justifyContent:'center',alignItems:'center',textAlign:'center',gap:'clamp(0.5rem,2vw,1rem)'}}>
+            <div style={{display:'flex',flexDirection:'column',alignItems:'center',maxWidth:860}}>
               <ShineHeading text={hero.heroTitle} style={{fontWeight:800,marginBottom:'0.3rem',letterSpacing:'-0.01em',lineHeight:1.1,color:'#fff',fontFamily:'var(--font-display)',textTransform:'uppercase'}}/>
-              <div className="hk-hero-subtitle" style={{marginBottom:'0.8rem',textAlign:'center'}}>
+              <div className="hk-hero-subtitle" style={{marginBottom:'0.6rem',textAlign:'center'}}>
                 {(hero.heroSubtitle||'').split('\n').map((line,li)=>(
                   <div key={li} style={{fontFamily:'var(--font-display)',fontWeight:700,textTransform:'uppercase',letterSpacing:'0.06em',color:'rgba(255,255,255,0.9)',fontSize:'clamp(0.65rem,1.5vw,1rem)',lineHeight:1.7,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>
                     {line}
                   </div>
                 ))}
               </div>
-              <FadeIn delay={800}><p style={{fontSize:'clamp(0.9rem,2vw,1.125rem)',color:'#d1d5db',margin:'0 auto 1.25rem',lineHeight:1.6,maxWidth:'520px'}}>{hero.heroTagline}</p></FadeIn>
+              <FadeIn delay={800}><p style={{fontSize:'clamp(0.82rem,1.8vw,1.05rem)',color:'#d1d5db',margin:'0 auto 1rem',lineHeight:1.6,maxWidth:'520px'}}>{hero.heroTagline}</p></FadeIn>
               <FadeIn delay={1200}>
-                <div className="hk-hero-cta-row" style={{display:'flex',flexWrap:'wrap',gap:'0.75rem',justifyContent:'center'}}>
+                <div className="hk-hero-cta-row" style={{display:'flex',flexWrap:'wrap',gap:'0.75rem',justifyContent:'center',marginBottom:'0.8rem'}}>
                   <a href={hero.heroCtaSecondaryLink||'#contact'} style={{textDecoration:'none'}}><button style={{background:'#fff',color:'#000',border:'none',borderRadius:8,padding:'10px 24px',fontWeight:500,fontSize:'0.9rem',cursor:'pointer',fontFamily:'var(--font-body)',whiteSpace:'nowrap'}}>{hero.heroCtaSecondary||'Start a Chat'}</button></a>
                   <Link to={hero.heroCtaLink||'/portofolio'} style={{textDecoration:'none'}}><button style={{...LG,border:'1px solid rgba(255,255,255,0.2)',color:'#fff',borderRadius:8,padding:'10px 24px',fontWeight:500,fontSize:'0.9rem',cursor:'pointer',fontFamily:'var(--font-body)',whiteSpace:'nowrap'}}>{hero.heroCta}</button></Link>
                 </div>
               </FadeIn>
+              <FadeIn delay={1400}>
+                <div style={{...LG,border:'1px solid rgba(255,255,255,0.2)',borderRadius:12,padding:'8px 20px',display:'inline-block',maxWidth:'100%'}}>
+                  <span style={{fontSize:'clamp(0.85rem,2vw,1.2rem)',fontWeight:300,color:'#fff',fontFamily:'var(--font-body)',wordBreak:'break-word',display:'inline-flex',alignItems:'center',gap:'6px'}}>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style={{width:'1em',height:'1em',flexShrink:0,color:J.red}}><path fillRule="evenodd" d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-2.013 3.5-4.697 3.5-8.027a8.25 8.25 0 00-16.5 0c0 3.33 1.556 6.014 3.5 8.027a19.58 19.58 0 002.683 2.282 16.975 16.975 0 001.144.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd"/></svg>
+                    {hero.heroTagRight}
+                  </span>
+                </div>
+              </FadeIn>
             </div>
-            <FadeIn delay={1400}>
-              <div style={{...LG,border:'1px solid rgba(255,255,255,0.2)',borderRadius:12,padding:'10px 20px',display:'inline-block',maxWidth:'100%'}}>
-                <span style={{fontSize:'clamp(1rem,2.5vw,1.5rem)',fontWeight:300,color:'#fff',fontFamily:'var(--font-body)',wordBreak:'break-word',display:'inline-flex',alignItems:'center',gap:'6px'}}>
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style={{width:'1em',height:'1em',flexShrink:0,color:J.red}}><path fillRule="evenodd" d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-2.013 3.5-4.697 3.5-8.027a8.25 8.25 0 00-16.5 0c0 3.33 1.556 6.014 3.5 8.027a19.58 19.58 0 002.683 2.282 16.975 16.975 0 001.144.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd"/></svg>
-                  {hero.heroTagRight}
-                </span>
-              </div>
-            </FadeIn>
           </div>
         </div>
+        {/* Marquee pinned to bottom of hero */}
+        <div style={{position:'relative',zIndex:2,width:'100%'}}>
+          <Marquee contact={contact}/>
+        </div>
       </section>
-
-      <Marquee contact={contact}/>
 
       {/* ══ ABOUT — 自己紹介 (Jiko Shokai) ══ */}
       <JapanBgSection overlayColor={J.ov82}>
