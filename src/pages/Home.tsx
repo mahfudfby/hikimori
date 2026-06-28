@@ -622,7 +622,7 @@ const Home:React.FC=()=>{
     <div ref={containerRef} style={{background:J.ink,minHeight:'100vh',overflowX:'hidden'}}>
 
       {/* ══ HERO ══ */}
-      <section style={{position:'relative',width:'100%',height:'100vh',minHeight:500,overflow:'hidden',display:'flex',flexDirection:'column',background:'#000',color:'#fff'}}>
+      <section id="hk-hero" style={{position:'relative',width:'100%',height:'100vh',minHeight:500,overflow:'hidden',display:'flex',flexDirection:'column',background:'#000',color:'#fff'}}>
         <video autoPlay loop muted playsInline style={{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover',zIndex:0}}><source src={HERO_VIDEO} type="video/mp4"/></video>
         <Stars/>
         {/* Main content area — column layout: subtitle top-center, title+cta bottom-center */}
@@ -1034,25 +1034,64 @@ const Home:React.FC=()=>{
           .hk-hero-subtitle>div{font-size:clamp(0.65rem,1.5vw,1rem)!important;}
         }
 
+        /* ── HERO LANDSCAPE PAKSA DI MOBILE ── */
+        @media(max-width:767px){
+          #hk-hero{
+            height:56.25vw !important;
+            min-height:200px !important;
+            max-height:420px !important;
+          }
+          #hk-hero video{
+            width:100% !important;
+            height:100% !important;
+            object-fit:cover !important;
+            object-position:center center !important;
+          }
+          /* Subtitle lebih kecil di landscape mobile */
+          #hk-hero .hk-hero-subtitle>div{
+            font-size:clamp(0.42rem,1.8vw,0.6rem)!important;
+            line-height:1.5!important;
+            white-space:nowrap!important;
+          }
+          /* Shine heading lebih kecil fit 1 baris */
+          #hk-hero .shine-wrap{
+            font-size:clamp(0.9rem,4.5vw,1.8rem)!important;
+            white-space:nowrap!important;
+          }
+          /* Tagline hide di mobile kecil */
+          #hk-hero .hk-hero-tagline{display:none!important;}
+          /* Buttons lebih kecil */
+          #hk-hero .hk-hero-cta-row button{
+            padding:5px 12px!important;
+            font-size:0.65rem!important;
+          }
+          /* Location badge lebih kecil */
+          #hk-hero .hk-location-badge span{
+            font-size:0.62rem!important;
+          }
+          /* Padding dalam hero lebih rapat */
+          #hk-hero>div:last-of-type>div{
+            padding-top:4px!important;
+          }
+        }
+
+        /* Portrait phone — paksa hero tetap landscape feel */
+        @media(max-width:480px) and (orientation:portrait){
+          #hk-hero{
+            height:56.25vw !important;
+            min-height:180px !important;
+            max-height:340px !important;
+          }
+        }
+
         /* ── GLOBAL MOBILE OPTIMIZATIONS ── */
         @media(max-width:767px){
-          /* Prevent horizontal overflow */
           body,#root{overflow-x:hidden!important;}
-
-          /* Section padding */
           .hk-section-inner{padding-left:1rem!important;padding-right:1rem!important;}
-
-          /* Section headings */
           .hk-section-h2{font-size:clamp(1.8rem,9vw,3rem)!important;}
-
-          /* About section photo full width */
           #about-row>*:first-child{max-width:100%!important;width:100%!important;}
-
-          /* Experience timeline – indent smaller */
           .hk-exp-timeline-line{left:12px!important;}
           .hk-exp-icon{width:36px!important;height:36px!important;font-size:1rem!important;}
-
-          /* Skills grid – 1 col on tiny, 2 col on mid-mobile */
           .hk-skills-grid{grid-template-columns:1fr!important;}
         }
         @media(min-width:480px) and (max-width:767px){
@@ -1066,8 +1105,7 @@ const Home:React.FC=()=>{
 
         /* ── CTA BUTTON STACK ON MOBILE ── */
         @media(max-width:480px){
-          .hk-hero-cta-row{flex-direction:column!important;width:100%!important;}
-          .hk-hero-cta-row a,.hk-hero-cta-row button{width:100%!important;justify-content:center!important;}
+          .hk-hero-cta-row{flex-direction:row!important;gap:0.4rem!important;}
         }
 
         /* ── CERT CARDS ── */
