@@ -28,6 +28,9 @@ const CONTACT_VIDEO='https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttw
 const SERVICES_LIST=['Website','Mobile App','Web App','E-Commerce','Visual Identity','3D & Motion','Digital Marketing','Growth & Consulting','Other'];
 const ls=<T,>(key:string,fb:T):T=>{try{return JSON.parse(localStorage.getItem(key)||'null')??fb;}catch{return fb;}};
 
+/* ─── Responsive hook ─── */
+const useIsMobile=()=>{const [m,setM]=useState(()=>typeof window!=='undefined'&&window.innerWidth<768);useEffect(()=>{const h=()=>setM(window.innerWidth<768);window.addEventListener('resize',h);return()=>window.removeEventListener('resize',h);},[]);return m;};
+
 /* ══════════════════════════════════════════
    PALETTE — Red · Black · Gold · White
    書道カラー
@@ -63,6 +66,32 @@ const AnimatedHeading:React.FC<{text:string;style?:React.CSSProperties}>=({text,
   useEffect(()=>{const t=setTimeout(()=>setA(true),200);return()=>clearTimeout(t);},[]);
   const lines=text.split('\n');
   return <h1 style={{margin:0,...style}}>{lines.map((line,li)=>{const prev=lines.slice(0,li).reduce((acc,l)=>acc+l.length,0);return <span key={li} style={{display:'block'}}>{line.split('').map((char,ci)=>{const d=(200+(prev+ci)*30)/1000;return <span key={ci} style={{display:'inline-block',opacity:a?1:0,transform:a?'none':'translateX(-18px)',transition:`opacity 500ms ease ${d}s,transform 500ms ease ${d}s`}}>{char===' '?'\u00A0':char}</span>;})}</span>;})}  </h1>;
+};
+
+const ShineHeading:React.FC<{text:string;style?:React.CSSProperties}>=({text,style={}})=>{
+  const [a,setA]=useState(false);
+  const isMobile=useIsMobile();
+  useEffect(()=>{const t=setTimeout(()=>setA(true),200);return()=>clearTimeout(t);},[]);
+  return <>
+    <style>{`
+      @keyframes shine-sweep{0%{left:-120%}100%{left:150%}}
+      .shine-wrap{position:relative;display:inline-block;overflow:hidden;}
+      .shine-wrap::after{content:'';position:absolute;top:0;left:-120%;width:60%;height:100%;background:linear-gradient(105deg,transparent 20%,rgba(255,255,255,0.55) 50%,rgba(255,220,100,0.35) 60%,transparent 80%);animation:shine-sweep 3s ease-in-out infinite;pointer-events:none;}
+    `}</style>
+    <h1 className="shine-wrap" style={{
+      margin:0,
+      whiteSpace:isMobile?'normal':'nowrap',
+      fontSize:isMobile?'clamp(1.05rem,5.5vw,1.6rem)':'clamp(1.1rem,3.2vw,2.8rem)',
+      textAlign:'center',
+      textShadow:`2px 2px 0px rgba(139,26,26,0.9),4px 4px 0px rgba(100,10,10,0.7),6px 6px 0px rgba(60,5,5,0.5),8px 8px 12px rgba(0,0,0,0.8),0 0 30px rgba(201,160,48,0.3)`,
+      ...style
+    }}>
+      {text.split('').map((char,ci)=>{
+        const d=(200+ci*25)/1000;
+        return <span key={ci} style={{display:'inline-block',opacity:a?1:0,transform:a?'none':'translateX(-18px)',transition:`opacity 500ms ease ${d}s,transform 500ms ease ${d}s`}}>{char===' '?'\u00A0':char}</span>;
+      })}
+    </h1>
+  </>;
 };
 
 const TiltCard:React.FC<{children:React.ReactNode;style?:React.CSSProperties;intensity?:number}>=({children,style={},intensity=8})=>{
@@ -593,11 +622,11 @@ const Home:React.FC=()=>{
         <div style={{position:'relative',zIndex:1,display:'flex',flexDirection:'column',height:'100%',padding:'clamp(56px,12vw,70px) clamp(1rem,5vw,4rem) clamp(16px,4vw,32px)'}}>
           <div style={{flex:1,display:'flex',flexDirection:'column',justifyContent:'center',alignItems:'center',textAlign:'center',gap:'clamp(0.8rem,3vw,1.5rem)'}}>
             <div style={{display:'flex',flexDirection:'column',alignItems:'center',maxWidth:760}}>
-              <AnimatedHeading text={hero.heroTitle} style={{fontSize:'clamp(2.5rem,9vw,6rem)',fontWeight:800,marginBottom:'0.3rem',letterSpacing:'-0.02em',lineHeight:1,color:'#fff',fontFamily:'var(--font-display)',textTransform:'uppercase',wordBreak:'break-word',textAlign:'center'}}/>
-              <AnimatedHeading text={hero.heroSubtitle} style={{fontSize:'clamp(0.9rem,2.4vw,1.5rem)',fontWeight:800,marginBottom:'0.8rem',letterSpacing:'0.03em',lineHeight:1.3,color:'#fff',fontFamily:'var(--font-display)',textTransform:'uppercase',wordBreak:'break-word',textAlign:'center'}}/>
+              <ShineHeading text={hero.heroTitle} style={{fontWeight:800,marginBottom:'0.3rem',letterSpacing:'-0.01em',lineHeight:1.1,color:'#fff',fontFamily:'var(--font-display)',textTransform:'uppercase'}}/>
+              <div className="hk-hero-subtitle"><AnimatedHeading text={hero.heroSubtitle} style={{fontSize:'clamp(0.45rem,1.1vw,0.8rem)',fontWeight:700,marginBottom:'0.8rem',letterSpacing:'0.04em',lineHeight:1.5,color:'rgba(255,255,255,0.85)',fontFamily:'var(--font-display)',textTransform:'uppercase',wordBreak:'break-word',textAlign:'center',maxWidth:'90vw'}}/></div>
               <FadeIn delay={800}><p style={{fontSize:'clamp(0.9rem,2vw,1.125rem)',color:'#d1d5db',margin:'0 auto 1.25rem',lineHeight:1.6,maxWidth:'520px'}}>{hero.heroTagline}</p></FadeIn>
               <FadeIn delay={1200}>
-                <div style={{display:'flex',flexWrap:'wrap',gap:'0.75rem',justifyContent:'center'}}>
+                <div className="hk-hero-cta-row" style={{display:'flex',flexWrap:'wrap',gap:'0.75rem',justifyContent:'center'}}>
                   <a href={hero.heroCtaSecondaryLink||'#contact'} style={{textDecoration:'none'}}><button style={{background:'#fff',color:'#000',border:'none',borderRadius:8,padding:'10px 24px',fontWeight:500,fontSize:'0.9rem',cursor:'pointer',fontFamily:'var(--font-body)',whiteSpace:'nowrap'}}>{hero.heroCtaSecondary||'Start a Chat'}</button></a>
                   <Link to={hero.heroCtaLink||'/portofolio'} style={{textDecoration:'none'}}><button style={{...LG,border:'1px solid rgba(255,255,255,0.2)',color:'#fff',borderRadius:8,padding:'10px 24px',fontWeight:500,fontSize:'0.9rem',cursor:'pointer',fontFamily:'var(--font-body)',whiteSpace:'nowrap'}}>{hero.heroCta}</button></Link>
                 </div>
@@ -954,7 +983,67 @@ const Home:React.FC=()=>{
       <Footer/>
 
       <style>{`
-        @media(min-width:768px){#about-row{flex-direction:row!important;align-items:flex-start!important;}#about-row>*{width:50%;}}
+        /* ── ABOUT ROW ── */
+        @media(min-width:768px){
+          #about-row{flex-direction:row!important;align-items:flex-start!important;}
+          #about-row>*{width:50%;}
+        }
+
+        /* ── HERO SUBTITLE ── */
+        @media(max-width:767px){
+          .shine-wrap{white-space:normal!important;word-break:break-word;}
+          .hk-hero-subtitle h1{font-size:clamp(0.52rem,2.8vw,0.72rem)!important;line-height:1.6!important;}
+        }
+        @media(min-width:768px){
+          .hk-hero-subtitle h1{font-size:clamp(0.45rem,1.1vw,0.82rem)!important;}
+        }
+
+        /* ── GLOBAL MOBILE OPTIMIZATIONS ── */
+        @media(max-width:767px){
+          /* Prevent horizontal overflow */
+          body,#root{overflow-x:hidden!important;}
+
+          /* Section padding */
+          .hk-section-inner{padding-left:1rem!important;padding-right:1rem!important;}
+
+          /* Section headings */
+          .hk-section-h2{font-size:clamp(1.8rem,9vw,3rem)!important;}
+
+          /* About section photo full width */
+          #about-row>*:first-child{max-width:100%!important;width:100%!important;}
+
+          /* Experience timeline – indent smaller */
+          .hk-exp-timeline-line{left:12px!important;}
+          .hk-exp-icon{width:36px!important;height:36px!important;font-size:1rem!important;}
+
+          /* Skills grid – 1 col on tiny, 2 col on mid-mobile */
+          .hk-skills-grid{grid-template-columns:1fr!important;}
+        }
+        @media(min-width:480px) and (max-width:767px){
+          .hk-skills-grid{grid-template-columns:1fr 1fr!important;}
+        }
+
+        /* ── HIDE HEAVY SVG DECORATIONS ON MOBILE ── */
+        @media(max-width:480px){
+          .hk-bg-deco{display:none!important;}
+        }
+
+        /* ── CTA BUTTON STACK ON MOBILE ── */
+        @media(max-width:480px){
+          .hk-hero-cta-row{flex-direction:column!important;width:100%!important;}
+          .hk-hero-cta-row a,.hk-hero-cta-row button{width:100%!important;justify-content:center!important;}
+        }
+
+        /* ── CERT CARDS ── */
+        @media(max-width:767px){
+          .hk-cert-card{flex-direction:column!important;}
+          .hk-cert-img{width:100%!important;height:140px!important;}
+        }
+
+        /* ── MARQUEE ── */
+        @media(max-width:480px){
+          .hk-marquee-item{font-size:0.75rem!important;padding:0 0.8rem!important;}
+        }
       `}</style>
     </div>
   );
