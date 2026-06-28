@@ -16,7 +16,7 @@ interface ExpItem     {id:string;position:string;company:string;period:string;ic
 interface ContactData {email:string;location:string;website:string;instagram:string;linkedin:string;twitter:string;}
 interface CertItem    {id:string;name:string;year:string;issuer:string;subtitle:string;imageUrl:string;}
 
-const D_HOME:HomeData={heroTitle:'Mahfud Febry Styanto, S.Kom,. CHRO',heroSubtitle:"HR Professional Officer' | General Affairs | IT Support Specialist | Website Developer | Network Engineer | Content Writer | F&B Operations",heroTagline:'We back visionaries and craft ventures that define what comes next.',heroCtaSecondary:'Start a Chat',heroCtaSecondaryLink:'#contact',heroCta:'Explore Now',heroCtaLink:'/portofolio',heroPhotoUrl:'',heroTagRight:'Nganjuk, Jawa Timur'};
+const D_HOME:HomeData={heroTitle:'Mahfud Febry Styanto, S.Kom,. CHRO',heroSubtitle:"HR Professional Officer' | General Affairs | IT Support Specialist | Website Developer\nNetwork Engineer | Content Writer | F&B Operations",heroTagline:'We back visionaries and craft ventures that define what comes next.',heroCtaSecondary:'Start a Chat',heroCtaSecondaryLink:'#contact',heroCta:'Explore Now',heroCtaLink:'/portofolio',heroPhotoUrl:'',heroTagRight:'Nganjuk, Jawa Timur'};
 const D_ABOUT:AboutData={name:'Mahfudfebry',location:'Nganjuk, Indonesia',bio1:'Halo! Nama saya Mahfudfebry, seorang profesional muda dari Nganjuk, Indonesia. Portfolio ini adalah kumpulan karya dan proyek terbaik saya yang mencerminkan keahlian, kreativitas, dan pertumbuhan profesional.',bio2:'Di setiap proyek, saya selalu berusaha memberikan hasil terbaik — dari desain visual yang kuat hingga solusi HR dan IT yang efisien dan berdampak.',photoUrl:''};
 const D_SKILLS:SkillItem[]=[{id:'1',number:'01',title:'Branding & Identity Design',desc:"Crafting memorable logos and visual systems that reflect a brand's essence."},{id:'2',number:'02',title:'Creativity & Problem-Solving',desc:'Thinking outside the box while solving design challenges with strategic insight.'},{id:'3',number:'03',title:'Concept Development',desc:'Skilled in brainstorming and translating abstract ideas into visual narratives.'},{id:'4',number:'04',title:'Proper Time Management',desc:'Capable of handling multiple projects and meeting tight deadlines.'}];
 const D_EXP:ExpItem[]=[{id:'1',position:'HR / General Affairs',company:'UD Duta Pangan',period:'2020–2023',icon:'👥',tags:'Vendor Management,Stock Monitoring,Facility Maintenance,Workload Analysis'},{id:'2',position:'Staff Administrasi',company:'UD Duta Pangan',period:'2020–2023',icon:'📋',tags:'Document Processing,Administrative Support,Filing & Archiving,Reporting'},{id:'3',position:'IT Support',company:'UD Duta Pangan',period:'2020–2023',icon:'💻',tags:'Hardware Troubleshooting,Software Installation,Network Setup,User Training'}];
@@ -75,22 +75,28 @@ const ShineHeading:React.FC<{text:string;style?:React.CSSProperties}>=({text,sty
   return <>
     <style>{`
       @keyframes shine-sweep{0%{left:-120%}100%{left:150%}}
-      .shine-wrap{position:relative;display:inline-block;overflow:hidden;}
+      .shine-wrap{position:relative;display:inline-block;overflow:visible;}
       .shine-wrap::after{content:'';position:absolute;top:0;left:-120%;width:60%;height:100%;background:linear-gradient(105deg,transparent 20%,rgba(255,255,255,0.55) 50%,rgba(255,220,100,0.35) 60%,transparent 80%);animation:shine-sweep 3s ease-in-out infinite;pointer-events:none;}
     `}</style>
-    <h1 className="shine-wrap" style={{
-      margin:0,
-      whiteSpace:isMobile?'normal':'nowrap',
-      fontSize:isMobile?'clamp(1.05rem,5.5vw,1.6rem)':'clamp(1.1rem,3.2vw,2.8rem)',
-      textAlign:'center',
-      textShadow:`2px 2px 0px rgba(139,26,26,0.9),4px 4px 0px rgba(100,10,10,0.7),6px 6px 0px rgba(60,5,5,0.5),8px 8px 12px rgba(0,0,0,0.8),0 0 30px rgba(201,160,48,0.3)`,
-      ...style
-    }}>
+    <motion.h1
+      className="shine-wrap"
+      whileHover={{scale:1.06,textShadow:'3px 3px 0px rgba(139,26,26,1),6px 6px 0px rgba(100,10,10,0.8),10px 10px 0px rgba(60,5,5,0.6),14px 14px 20px rgba(0,0,0,0.9),0 0 60px rgba(201,160,48,0.5),0 0 100px rgba(139,26,26,0.3)'}}
+      transition={{type:'spring',stiffness:280,damping:22}}
+      style={{
+        margin:0,
+        cursor:'default',
+        whiteSpace:isMobile?'normal':'nowrap',
+        fontSize:isMobile?'clamp(1.05rem,5.5vw,1.6rem)':'clamp(1.1rem,3.2vw,2.8rem)',
+        textAlign:'center',
+        display:'inline-block',
+        textShadow:`2px 2px 0px rgba(139,26,26,0.9),4px 4px 0px rgba(100,10,10,0.7),6px 6px 0px rgba(60,5,5,0.5),8px 8px 12px rgba(0,0,0,0.8),0 0 30px rgba(201,160,48,0.3)`,
+        ...style
+      }}>
       {text.split('').map((char,ci)=>{
         const d=(200+ci*25)/1000;
         return <span key={ci} style={{display:'inline-block',opacity:a?1:0,transform:a?'none':'translateX(-18px)',transition:`opacity 500ms ease ${d}s,transform 500ms ease ${d}s`}}>{char===' '?'\u00A0':char}</span>;
       })}
-    </h1>
+    </motion.h1>
   </>;
 };
 
@@ -623,7 +629,13 @@ const Home:React.FC=()=>{
           <div style={{flex:1,display:'flex',flexDirection:'column',justifyContent:'center',alignItems:'center',textAlign:'center',gap:'clamp(0.8rem,3vw,1.5rem)'}}>
             <div style={{display:'flex',flexDirection:'column',alignItems:'center',maxWidth:760}}>
               <ShineHeading text={hero.heroTitle} style={{fontWeight:800,marginBottom:'0.3rem',letterSpacing:'-0.01em',lineHeight:1.1,color:'#fff',fontFamily:'var(--font-display)',textTransform:'uppercase'}}/>
-              <div className="hk-hero-subtitle"><AnimatedHeading text={hero.heroSubtitle} style={{fontSize:'clamp(0.45rem,1.1vw,0.8rem)',fontWeight:700,marginBottom:'0.8rem',letterSpacing:'0.04em',lineHeight:1.5,color:'rgba(255,255,255,0.85)',fontFamily:'var(--font-display)',textTransform:'uppercase',wordBreak:'break-word',textAlign:'center',maxWidth:'90vw'}}/></div>
+              <div className="hk-hero-subtitle" style={{marginBottom:'0.8rem',textAlign:'center'}}>
+                {(hero.heroSubtitle||'').split('\n').map((line,li)=>(
+                  <div key={li} style={{fontFamily:'var(--font-display)',fontWeight:700,textTransform:'uppercase',letterSpacing:'0.06em',color:'rgba(255,255,255,0.9)',fontSize:'clamp(0.65rem,1.5vw,1rem)',lineHeight:1.7,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>
+                    {line}
+                  </div>
+                ))}
+              </div>
               <FadeIn delay={800}><p style={{fontSize:'clamp(0.9rem,2vw,1.125rem)',color:'#d1d5db',margin:'0 auto 1.25rem',lineHeight:1.6,maxWidth:'520px'}}>{hero.heroTagline}</p></FadeIn>
               <FadeIn delay={1200}>
                 <div className="hk-hero-cta-row" style={{display:'flex',flexWrap:'wrap',gap:'0.75rem',justifyContent:'center'}}>
@@ -992,10 +1004,10 @@ const Home:React.FC=()=>{
         /* ── HERO SUBTITLE ── */
         @media(max-width:767px){
           .shine-wrap{white-space:normal!important;word-break:break-word;}
-          .hk-hero-subtitle h1{font-size:clamp(0.52rem,2.8vw,0.72rem)!important;line-height:1.6!important;}
+          .hk-hero-subtitle>div{font-size:clamp(0.55rem,2.8vw,0.75rem)!important;white-space:normal!important;overflow:visible!important;text-overflow:unset!important;line-height:1.8!important;}
         }
         @media(min-width:768px){
-          .hk-hero-subtitle h1{font-size:clamp(0.45rem,1.1vw,0.82rem)!important;}
+          .hk-hero-subtitle>div{font-size:clamp(0.65rem,1.5vw,1rem)!important;}
         }
 
         /* ── GLOBAL MOBILE OPTIMIZATIONS ── */
