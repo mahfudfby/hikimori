@@ -627,15 +627,15 @@ const Home:React.FC=()=>{
         <Stars/>
         {/* Main content area — column layout: subtitle top-center, title+cta bottom-center */}
         <div style={{position:'relative',zIndex:1,display:'flex',flexDirection:'column',flex:1,padding:'clamp(64px,10vw,80px) clamp(1rem,5vw,4rem) 0'}}>
-          <div style={{flex:1,display:'flex',flexDirection:'column',justifyContent:'space-between',alignItems:'center',textAlign:'center'}}>
+          <div style={{flex:1,display:'flex',flexDirection:'column',justifyContent:'space-between',alignItems:'center',textAlign:'center',gap:0}}>
 
             {/* TOP: Subtitle + Tagline */}
-            <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:'0.4rem',paddingTop:'clamp(1rem,3vw,2rem)'}}>
+            <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:'0.3rem',paddingTop:'clamp(0.5rem,1.5vw,1rem)'}}>
               <div className="hk-hero-subtitle" style={{textAlign:'center'}}>
                 {(hero.heroSubtitle||'').split('\n').map((line,li)=>(
                   <div key={li} style={{
                     fontFamily:'var(--font-display)',fontWeight:700,textTransform:'uppercase',
-                    letterSpacing:'0.06em',lineHeight:1.7,whiteSpace:'nowrap',
+                    letterSpacing:'0.06em',lineHeight:1.6,whiteSpace:'nowrap',
                     fontSize:'clamp(0.65rem,1.5vw,1rem)',
                     color:'rgba(255,255,255,0.95)',
                     textShadow:'0 2px 8px rgba(0,0,0,0.9),0 0 20px rgba(139,26,26,0.5),1px 1px 0 rgba(0,0,0,0.8)'
@@ -645,14 +645,14 @@ const Home:React.FC=()=>{
                 ))}
               </div>
               <FadeIn delay={600}>
-                <p style={{fontSize:'clamp(0.78rem,1.6vw,0.95rem)',color:'rgba(209,213,219,0.85)',margin:0,lineHeight:1.6,maxWidth:'480px',textShadow:'0 2px 6px rgba(0,0,0,0.8)'}}>
+                <p style={{fontSize:'clamp(0.78rem,1.6vw,0.95rem)',color:'rgba(209,213,219,0.85)',margin:0,lineHeight:1.5,maxWidth:'480px',textShadow:'0 2px 6px rgba(0,0,0,0.8)'}}>
                   {hero.heroTagline}
                 </p>
               </FadeIn>
             </div>
 
             {/* BOTTOM: HeroTitle besar + Buttons + Location */}
-            <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:'0.7rem',paddingBottom:'clamp(0.5rem,2vw,1rem)'}}>
+            <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:'0.5rem',paddingBottom:'clamp(0.3rem,1.5vw,0.8rem)'}}>
               <ShineHeading text={hero.heroTitle} style={{fontWeight:800,letterSpacing:'-0.01em',lineHeight:1,color:'#fff',fontFamily:'var(--font-display)',textTransform:'uppercase'}}/>
               <FadeIn delay={1000}>
                 <div className="hk-hero-cta-row" style={{display:'flex',flexWrap:'wrap',gap:'0.5rem',justifyContent:'center'}}>
