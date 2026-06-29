@@ -30,7 +30,7 @@ const LS_EXP='hk_experience_data', LS_CONTACT='hk_contact_data', LS_CERT='hk_cer
 
 /* ─── Types ─── */
 interface HomeData    { heroTitle:string; heroSubtitle:string; heroTagline:string; heroCtaSecondary:string; heroCtaSecondaryLink:string; heroCta:string; heroCtaLink:string; heroPhotoUrl:string; heroTagRight:string; }
-interface AboutData   { name:string; location:string; bio1:string; bio2:string; photoUrl:string; }
+interface AboutData   { name:string; location:string; bio1:string; bio2:string; photoUrl:string; instagram?:string; linkedin?:string; whatsapp?:string; threads?:string; tiktok?:string; email?:string; }
 interface SkillItem   { id:string; number:string; title:string; desc:string; }
 interface ExpItem     { id:string; position:string; company:string; period:string; icon:string; tags:string; }
 interface ContactData { email:string; location:string; website:string; instagram:string; linkedin:string; twitter:string; }
@@ -38,7 +38,7 @@ interface CertItem    { id:string; name:string; year:string; issuer:string; subt
 
 /* ─── Defaults ─── */
 const D_HOME:HomeData    = { heroTitle:'Shaping tomorrow', heroSubtitle:'with vision and action.', heroTagline:'We back visionaries and craft ventures that define what comes next.', heroCtaSecondary:'Start a Chat', heroCtaSecondaryLink:'#contact', heroCta:'Explore Now', heroCtaLink:'/portofolio', heroPhotoUrl:'', heroTagRight:'Investing. Building. Advisory.' };
-const D_ABOUT:AboutData  = { name:'Mahfudfebry', location:'Nganjuk, Indonesia', bio1:'Halo! Nama saya Mahfudfebry, seorang profesional muda dari Nganjuk, Indonesia.', bio2:'Di setiap proyek, saya selalu berusaha memberikan hasil terbaik.', photoUrl:'' };
+const D_ABOUT:AboutData  = { name:'Mahfudfebry', location:'Nganjuk, Indonesia', bio1:'Halo! Nama saya Mahfudfebry, seorang profesional muda dari Nganjuk, Indonesia.', bio2:'Di setiap proyek, saya selalu berusaha memberikan hasil terbaik.', photoUrl:'', instagram:'mahfudfebry', linkedin:'mahfud-febry-styanto', whatsapp:'6282234651413', threads:'mahfudfebry', tiktok:'mahfudfebry', email:'Mahfudfebrys@gmail.com' };
 const D_SKILLS:SkillItem[]= [{id:'1',number:'01',title:'Branding & Identity Design',desc:"Crafting memorable logos and visual systems."},{id:'2',number:'02',title:'Creativity & Problem-Solving',desc:'Thinking outside the box while solving design challenges.'},{id:'3',number:'03',title:'Concept Development',desc:'Skilled in brainstorming and translating abstract ideas.'},{id:'4',number:'04',title:'Proper Time Management',desc:'Capable of handling multiple projects and meeting deadlines.'}];
 const D_EXP:ExpItem[]    = [{id:'1',position:'HR / General Affairs',company:'UD Duta Pangan',period:'2020–2023',icon:'👥',tags:'Vendor Management,Stock Monitoring,Facility Maintenance'},{id:'2',position:'Staff Administrasi',company:'UD Duta Pangan',period:'2020–2023',icon:'📋',tags:'Document Processing,Administrative Support,Filing'},{id:'3',position:'IT Support',company:'UD Duta Pangan',period:'2020–2023',icon:'💻',tags:'Hardware Troubleshooting,Software Installation,Network Setup'}];
 const D_CONTACT:ContactData = { email:'mahfudfebry@hikimori.web.id', location:'Nganjuk, Indonesia', website:'hikimori.web.id', instagram:'', linkedin:'', twitter:'' };
@@ -492,6 +492,18 @@ const AdminPanel: React.FC = () => {
                   <div><label style={lbl}>Lokasi</label><input style={inp} value={about.location} onChange={e => setAbout({ ...about, location:e.target.value })} /></div>
                   <div><label style={lbl}>Bio Paragraf 1</label><textarea style={{ ...inp, minHeight:90, resize:'vertical' }} value={about.bio1} onChange={e => setAbout({ ...about, bio1:e.target.value })} /></div>
                   <div><label style={lbl}>Bio Paragraf 2</label><textarea style={{ ...inp, minHeight:90, resize:'vertical' }} value={about.bio2} onChange={e => setAbout({ ...about, bio2:e.target.value })} /></div>
+                  {/* ── Sosial Media ── */}
+                  <div style={{borderTop:'1px solid rgba(255,255,255,0.08)',paddingTop:'1rem'}}>
+                    <p style={{color:'rgba(255,255,255,0.5)',fontSize:'0.78rem',fontWeight:700,letterSpacing:'2px',textTransform:'uppercase',marginBottom:'0.8rem'}}>🔗 Sosial Media</p>
+                    <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(220px,1fr))',gap:'0.6rem'}}>
+                      <div><label style={lbl}>📸 Instagram (username)</label><input style={inp} placeholder="mahfudfebry" value={about.instagram||''} onChange={e=>setAbout({...about,instagram:e.target.value})}/></div>
+                      <div><label style={lbl}>💼 LinkedIn (username/slug)</label><input style={inp} placeholder="mahfud-febry-styanto" value={about.linkedin||''} onChange={e=>setAbout({...about,linkedin:e.target.value})}/></div>
+                      <div><label style={lbl}>💬 WhatsApp (nomor intl)</label><input style={inp} placeholder="6282234651413" value={about.whatsapp||''} onChange={e=>setAbout({...about,whatsapp:e.target.value})}/></div>
+                      <div><label style={lbl}>🧵 Threads (username)</label><input style={inp} placeholder="mahfudfebry" value={about.threads||''} onChange={e=>setAbout({...about,threads:e.target.value})}/></div>
+                      <div><label style={lbl}>🎵 TikTok (username)</label><input style={inp} placeholder="mahfudfebry" value={about.tiktok||''} onChange={e=>setAbout({...about,tiktok:e.target.value})}/></div>
+                      <div><label style={lbl}>✉️ Email</label><input style={inp} placeholder="Mahfudfebrys@gmail.com" value={about.email||''} onChange={e=>setAbout({...about,email:e.target.value})}/></div>
+                    </div>
+                  </div>
                   <button onClick={saveAbout} disabled={aboutSaving} style={btn(true)}>{aboutSaving ? '⌛ Menyimpan...' : '💾 Simpan & Sinkron'}</button>
                 </div>
               </div>
