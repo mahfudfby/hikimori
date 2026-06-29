@@ -8,18 +8,26 @@ import Footer from '../components/Footer';
 /* ─── localStorage keys ─── */
 const LS_HOME='hk_home_data',LS_ABOUT='hk_home_about_data',LS_SKILLS='hk_skills_data';
 const LS_EXP='hk_experience_data',LS_CONTACT='hk_contact_data',LS_CERT='hk_cert_data';
+const LS_VER='hk_data_version';
+const DATA_VERSION='v7'; // Naikkan versi ini setiap kali ada perubahan default data
+/* Auto-reset localStorage jika versi berubah */
+(()=>{try{if(localStorage.getItem(LS_VER)!==DATA_VERSION){[LS_HOME,LS_ABOUT,LS_SKILLS,LS_EXP,LS_CONTACT,LS_CERT].forEach(k=>localStorage.removeItem(k));localStorage.setItem(LS_VER,DATA_VERSION);}}catch{}})();
 
 interface HomeData    {heroTitle:string;heroSubtitle:string;heroTagline:string;heroCtaSecondary:string;heroCtaSecondaryLink:string;heroCta:string;heroCtaLink:string;heroPhotoUrl:string;heroTagRight:string;}
-interface AboutData   {name:string;location:string;bio1:string;bio2:string;photoUrl:string;}
+interface AboutData   {name:string;location:string;bio1:string;bio2:string;photoUrl:string;instagram?:string;linkedin?:string;whatsapp?:string;threads?:string;tiktok?:string;email?:string;}
 interface SkillItem   {id:string;number:string;title:string;desc:string;}
-interface ExpItem     {id:string;position:string;company:string;period:string;icon:string;tags:string;}
+interface ExpItem     {id:string;position:string;company:string;period:string;icon:string;tags:string;desc?:string;}
 interface ContactData {email:string;location:string;website:string;instagram:string;linkedin:string;twitter:string;}
 interface CertItem    {id:string;name:string;year:string;issuer:string;subtitle:string;imageUrl:string;}
 
-const D_HOME:HomeData={heroTitle:'Mahfud Febry Styanto, S.Kom,. CHRO',heroSubtitle:"HR Professional Officer' | General Affairs | IT Support Specialist | Website Developer\nNetwork Engineer | Content Writer | F&B Operations",heroTagline:'We back visionaries and craft ventures that define what comes next.',heroCtaSecondary:'Start a Chat',heroCtaSecondaryLink:'#contact',heroCta:'Explore Now',heroCtaLink:'/portofolio',heroPhotoUrl:'',heroTagRight:'Nganjuk, Jawa Timur'};
-const D_ABOUT:AboutData={name:'Mahfudfebry',location:'Nganjuk, Indonesia',bio1:'Halo! Nama saya Mahfudfebry, seorang profesional muda dari Nganjuk, Indonesia. Portfolio ini adalah kumpulan karya dan proyek terbaik saya yang mencerminkan keahlian, kreativitas, dan pertumbuhan profesional.',bio2:'Di setiap proyek, saya selalu berusaha memberikan hasil terbaik — dari desain visual yang kuat hingga solusi HR dan IT yang efisien dan berdampak.',photoUrl:''};
+const D_HOME:HomeData={heroTitle:'Mahfud Febry Styanto, S.Kom,. CHRO',heroSubtitle:"HR Professional Officer' | General Affairs | IT Support Specialist | Website Developer\nNetwork Engineer | Content Writer | F&B Operations",heroTagline:'We back visionaries and craft ventures that define what comes next.',heroCtaSecondary:'Start a Chat',heroCtaSecondaryLink:'https://wa.me/6282234651413',heroCta:'Explore Now',heroCtaLink:'/portofolio',heroPhotoUrl:'',heroTagRight:'Nganjuk, Jawa Timur'};
+const D_ABOUT:AboutData={name:'Mahfudfebry',location:'Nganjuk, Indonesia',bio1:'Halo! Nama saya Mahfudfebry, seorang profesional muda dari Nganjuk, Indonesia. Portfolio ini adalah kumpulan karya dan proyek terbaik saya yang mencerminkan keahlian, kreativitas, dan pertumbuhan profesional.',bio2:'Di setiap proyek, saya selalu berusaha memberikan hasil terbaik — dari desain visual yang kuat hingga solusi HR dan IT yang efisien dan berdampak.',photoUrl:'',instagram:'mahfudfebry',linkedin:'mahfud-febry-styanto',whatsapp:'6282234651413',threads:'mahfudfebry',tiktok:'mahfudfebry',email:'Mahfudfebrys@gmail.com'};
 const D_SKILLS:SkillItem[]=[{id:'1',number:'01',title:'Branding & Identity Design',desc:"Crafting memorable logos and visual systems that reflect a brand's essence."},{id:'2',number:'02',title:'Creativity & Problem-Solving',desc:'Thinking outside the box while solving design challenges with strategic insight.'},{id:'3',number:'03',title:'Concept Development',desc:'Skilled in brainstorming and translating abstract ideas into visual narratives.'},{id:'4',number:'04',title:'Proper Time Management',desc:'Capable of handling multiple projects and meeting tight deadlines.'}];
-const D_EXP:ExpItem[]=[{id:'1',position:'HR / General Affairs',company:'UD Duta Pangan',period:'2020–2023',icon:'👥',tags:'Vendor Management,Stock Monitoring,Facility Maintenance,Workload Analysis'},{id:'2',position:'Staff Administrasi',company:'UD Duta Pangan',period:'2020–2023',icon:'📋',tags:'Document Processing,Administrative Support,Filing & Archiving,Reporting'},{id:'3',position:'IT Support',company:'UD Duta Pangan',period:'2020–2023',icon:'💻',tags:'Hardware Troubleshooting,Software Installation,Network Setup,User Training'}];
+const D_EXP:ExpItem[]=[
+  {id:'1',position:'Administrasi Produksi',company:'UD Duta Pangan',period:'Juli 2024 – Desember 2024',icon:'🏭',tags:'Administrasi Produksi Pabrik,Monitoring Bahan Baku,Monitoring Hasil Produksi,Penyusunan Laporan Produksi,Pengendalian Dokumen,Manajemen FiFO',desc:'• Mengelola administrasi produksi dan dokumentasi pabrik secara akurat\n• Monitoring produksi, stok bahan baku, dan distribusi produk\n• Menyusun laporan produksi dan koordinasi dengan tim terkait\n• Menjamin kelancaran proses produksi dan ketepatan distribusi'},
+  {id:'2',position:'IT Support',company:'UD Duta Pangan',period:'Januari 2025 – Agustus 2025',icon:'💻',tags:'Troubleshooting Hardware & Software,Konfigurasi LAN/WiFi,Pemeliharaan Jaringan,Dukungan Pengguna (User Support),Penanganan Insiden TI,Inventarisasi Perangkat TI',desc:'• Menangani 30+ perangkat komputer dan jaringan kantor\n• Melakukan troubleshooting hardware, software, LAN, dan WiFi dengan downtime minimal\n• Menangani insiden IT harian dan pemeliharaan sistem berkala'},
+  {id:'3',position:'Staff HRD & General Affairs',company:'UD Duta Pangan',period:'Agustus 2025 – April 2026',icon:'👥',tags:'Pengelolaan Fasilitas & Aset,Koordinasi Lintas Divisi,Payroll & Penghitungan Gaji,Jaminan Sosial BPJS & BPJS-Tk,Penyusunan Jobdesk,Analisa Beban Kerja,Laporan Harian Mingguan Bulanan',desc:'• Mengelola fasilitas dan aset operasional perusahaan\n• Menangani koordinasi lintas divisi untuk kelancaran operasional harian\n• Penghitungan Gaji, Potongan, & Bonus (Payroll)\n• Penghitungan Jaminan Sosial (BPJS & BPJS-Tk)\n• Menyusun Uraian Jabatan (Jobdesk)\n• Analisa Beban Kerja setiap Divisi\n• Menyusun Laporan Harian, Mingguan, Bulanan'}
+];
 const D_CONTACT:ContactData={email:'mahfudfebry@hikimori.web.id',location:'Nganjuk, Indonesia',website:'hikimori.web.id',instagram:'',linkedin:'',twitter:''};
 const D_CERT:CertItem[]=[{id:'1',name:'Google Digital Marketing',year:'2023',issuer:'Google',subtitle:'Fundamentals of Digital Marketing',imageUrl:''},{id:'2',name:'HR Management Professional',year:'2022',issuer:'BNSP Indonesia',subtitle:'Sertifikasi Kompetensi SDM',imageUrl:''}];
 const FALLBACK_PHOTO='https://res.cloudinary.com/dl4pyan8v/image/upload/WhatsApp_Image_2026-06-16_at_03.45.15_axvhg3';
@@ -28,7 +36,42 @@ const CONTACT_VIDEO='https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttw
 const SERVICES_LIST=['Website','Mobile App','Web App','E-Commerce','Visual Identity','3D & Motion','Digital Marketing','Growth & Consulting','Other'];
 const ls=<T,>(key:string,fb:T):T=>{try{return JSON.parse(localStorage.getItem(key)||'null')??fb;}catch{return fb;}};
 
-/* ─── Responsive hook ─── */
+/* ─── Sosmed Button: hanya icon, hover slide muncul username ─── */
+const SOSMED_CFG:{key:keyof AboutData;label:string;color:string;href:(v:string)=>string;svg:React.ReactNode}[]=[
+  {key:'instagram',label:'Instagram',color:'#E1306C',href:v=>`https://instagram.com/${v}`,svg:<svg viewBox="0 0 24 24" fill="currentColor" style={{width:'1.1em',height:'1.1em'}}><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>},
+  {key:'linkedin',label:'LinkedIn',color:'#0A66C2',href:v=>`https://linkedin.com/in/${v}`,svg:<svg viewBox="0 0 24 24" fill="currentColor" style={{width:'1.1em',height:'1.1em'}}><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>},
+  {key:'whatsapp',label:'WhatsApp',color:'#25D366',href:v=>`https://wa.me/${v}`,svg:<svg viewBox="0 0 24 24" fill="currentColor" style={{width:'1.1em',height:'1.1em'}}><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>},
+  {key:'threads',label:'Threads',color:'#fff',href:v=>`https://threads.net/@${v}`,svg:<svg viewBox="0 0 24 24" fill="currentColor" style={{width:'1.1em',height:'1.1em'}}><path d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.017c.03-3.579.879-6.43 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.826 2.098 1.677 1.29 2.858 3.13 3.513 5.465l-2.167.578c-1.084-4.015-3.897-6.084-8.18-6.115-2.909.024-5.11.936-6.54 2.717C4.307 6.35 3.616 8.73 3.589 12c.027 3.27.718 5.65 2.057 7.259 1.429 1.78 3.631 2.692 6.54 2.717 1.866-.016 3.421-.425 4.597-1.215 1.355-.908 2.095-2.346 2.206-4.28a6.44 6.44 0 00-.123-1.517c-.22-1.036-.71-1.833-1.394-2.301-.43-.295-.933-.481-1.489-.552-.24 2.058-1.017 3.488-2.315 4.252-1.146.679-2.566.775-3.972.269-1.237-.45-2.204-1.354-2.72-2.542-.47-1.094-.513-2.32-.121-3.45.6-1.726 1.997-2.742 3.787-2.781.577-.013 1.133.068 1.647.238-.036-.264-.054-.538-.054-.819 0-.666.12-1.316.358-1.933.239-.617.588-1.177 1.039-1.669l1.619 1.48c-.574.63-.868 1.413-.868 2.122 0 .276.025.548.075.812.356.108.696.257 1.014.448 1.16.697 1.904 1.873 2.19 3.4.147.786.19 1.59.128 2.389-.178 2.507-1.224 4.434-3.028 5.573-1.464.924-3.311 1.398-5.493 1.411zm-.56-9.72c-.851.018-1.538.478-1.826 1.213-.196.502-.18 1.066.047 1.594.25.585.76 1.038 1.417 1.27.732.264 1.53.208 2.186-.152.723-.393 1.236-1.177 1.42-2.188a6.39 6.39 0 00-1.516-.604 6.57 6.57 0 00-1.728-.133z"/></svg>},
+  {key:'tiktok',label:'TikTok',color:'#ff0050',href:v=>`https://tiktok.com/@${v}`,svg:<svg viewBox="0 0 24 24" fill="currentColor" style={{width:'1.1em',height:'1.1em'}}><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>},
+  {key:'email',label:'Email',color:J.gold,href:v=>`mailto:${v}`,svg:<svg viewBox="0 0 24 24" fill="currentColor" style={{width:'1.1em',height:'1.1em'}}><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>},
+];
+const SosmedButtons:React.FC<{about:AboutData}>=({about})=>(
+  <div style={{display:'flex',gap:'0.5rem',flexWrap:'wrap',marginBottom:'1.2rem'}}>
+    {SOSMED_CFG.map(({key,label,color,href,svg})=>{
+      const val=(about as any)[key] as string|undefined;
+      if(!val) return null;
+      return (
+        <motion.a key={key} href={href(val)} target="_blank" rel="noopener noreferrer"
+          initial="rest" whileHover="hover" animate="rest"
+          style={{display:'inline-flex',alignItems:'center',overflow:'hidden',borderRadius:8,background:'rgba(255,255,255,0.06)',border:`1px solid rgba(255,255,255,0.12)`,textDecoration:'none',cursor:'pointer',height:36}}>
+          {/* Icon */}
+          <motion.span style={{color,display:'flex',alignItems:'center',justifyContent:'center',width:36,height:36,flexShrink:0,fontSize:'1.1rem'}}>
+            {svg}
+          </motion.span>
+          {/* Username slide */}
+          <motion.span
+            variants={{rest:{width:0,opacity:0,paddingRight:0},hover:{width:'auto',opacity:1,paddingRight:12}}}
+            transition={{duration:0.25,ease:'easeOut'}}
+            style={{color:'rgba(255,255,255,0.88)',fontSize:'0.72rem',fontWeight:600,fontFamily:'var(--font-body)',whiteSpace:'nowrap',overflow:'hidden',display:'block',paddingLeft:2}}>
+            {val}
+          </motion.span>
+        </motion.a>
+      );
+    })}
+  </div>
+);
+
+
 const useIsMobile=()=>{const [m,setM]=useState(()=>typeof window!=='undefined'&&window.innerWidth<768);useEffect(()=>{const h=()=>setM(window.innerWidth<768);window.addEventListener('resize',h);return()=>window.removeEventListener('resize',h);},[]);return m;};
 
 /* ══════════════════════════════════════════
@@ -657,7 +700,7 @@ const Home:React.FC=()=>{
             {/* Buttons */}
             <FadeIn delay={1000}>
               <div className="hk-hero-cta-row" style={{display:'flex',flexWrap:'wrap',gap:'0.5rem',justifyContent:'center'}}>
-                <a href={hero.heroCtaSecondaryLink||'#contact'} style={{textDecoration:'none'}}>
+                <a href={hero.heroCtaSecondaryLink||'https://wa.me/6282234651413'} target="_blank" rel="noopener noreferrer" style={{textDecoration:'none'}}>
                   <button style={{background:'rgba(255,255,255,0.92)',color:'#000',border:'none',borderRadius:6,padding:'7px 18px',fontWeight:600,fontSize:'0.78rem',cursor:'pointer',fontFamily:'var(--font-body)',whiteSpace:'nowrap'}}>{hero.heroCtaSecondary||'Start a Chat'}</button>
                 </a>
                 <Link to={hero.heroCtaLink||'/portofolio'} style={{textDecoration:'none'}}>
@@ -738,16 +781,14 @@ const Home:React.FC=()=>{
               <div style={{maxWidth:560}}>
                 <div style={{display:'flex',alignItems:'center',gap:'0.8rem',marginBottom:'0.8rem'}}>
                   <span style={{fontFamily:'serif',fontSize:'1.8rem',color:J.red}}>自</span>
-                  <div>
-                    <div style={{fontFamily:'var(--font-body)',color:J.gold,fontSize:'0.72rem',letterSpacing:'4px',textTransform:'uppercase',fontWeight:700}}>Jiko Shokai · Profile</div>
-                  </div>
                 </div>
                 <h2 style={{fontFamily:'var(--font-display)',fontSize:'clamp(2.5rem,8vw,5rem)',lineHeight:0.9,marginBottom:'0.2rem',color:J.white}}>ABOUT ME !</h2>
                 <BrushStroke style={{position:'relative',marginBottom:'0.8rem'}} width={100} color={J.red} delay={0.3}/>
                 <div style={{fontFamily:'var(--font-script)',color:J.gold,fontSize:'clamp(1.5rem,5vw,2.2rem)',fontWeight:700,marginBottom:'1.5rem',textShadow:`0 0 20px rgba(201,160,48,0.35)`}}>{about.name}</div>
                 <p style={{color:J.whiteDim,lineHeight:1.9,marginBottom:'1rem',fontSize:'clamp(0.88rem,2vw,1rem)'}}>{about.bio1}</p>
-                <p style={{color:'rgba(245,245,240,0.5)',lineHeight:1.9,fontSize:'clamp(0.88rem,2vw,1rem)'}}>{about.bio2}</p>
-                <div style={{marginTop:'2rem'}}>
+                <p style={{color:'rgba(245,245,240,0.5)',lineHeight:1.9,fontSize:'clamp(0.88rem,2vw,1rem)',marginBottom:'1.5rem'}}>{about.bio2}</p>
+                <SosmedButtons about={about}/>
+                <div style={{marginTop:'0.5rem'}}>
                   <motion.div whileHover={{scale:1.04,boxShadow:`0 8px 30px rgba(139,26,26,0.35)`}} whileTap={{scale:0.97}} style={{display:'inline-block'}}>
                     <Link to="/about" style={{display:'inline-flex',alignItems:'center',gap:8,background:J.redBg,color:J.goldL,textDecoration:'none',borderRadius:8,padding:'11px 26px',fontFamily:'var(--font-body)',fontWeight:700,fontSize:'0.9rem',border:`1px solid rgba(139,26,26,0.45)`,backdropFilter:'blur(6px)'}}>
                       詳細を見る → Selengkapnya
@@ -843,7 +884,9 @@ const Home:React.FC=()=>{
             <motion.div initial={{scaleY:0}} whileInView={{scaleY:1}} viewport={{once:true}} transition={{duration:1.8,ease:'easeOut'}}
               style={{position:'absolute',left:'clamp(16px,5vw,32px)',top:0,bottom:0,width:2,background:`linear-gradient(to bottom,transparent,${J.red},${J.gold},transparent)`,transformOrigin:'top',zIndex:1}}/>
             <div style={{display:'flex',flexDirection:'column',gap:'1.2rem'}}>
-              {exps.map((exp,i)=>(
+              {exps.map((exp,i)=>{
+                const [open,setOpen]=React.useState(false);
+                return (
                 <Reveal key={exp.id} direction="right" delay={i*0.14}>
                   <div style={{display:'flex',gap:'clamp(1rem,4vw,2rem)',position:'relative'}}>
                     <div style={{flexShrink:0,width:'clamp(32px,10vw,64px)',display:'flex',flexDirection:'column',alignItems:'center'}}>
@@ -860,20 +903,46 @@ const Home:React.FC=()=>{
                         <motion.div whileHover={{borderColor:`rgba(139,26,26,0.55)`,background:'rgba(15,6,2,0.92)'}}
                           style={{background:'rgba(10,4,0,0.88)',border:`1px solid rgba(139,26,26,0.18)`,borderRadius:12,padding:'1.3rem clamp(1rem,3vw,1.8rem)',backdropFilter:'blur(12px)',transition:'all 0.3s',position:'relative',overflow:'hidden'}}>
                           <motion.div animate={{opacity:[0.04,0.1,0.04]}} transition={{duration:4+i,repeat:Infinity}} style={{position:'absolute',top:-20,right:-20,width:120,height:120,borderRadius:'50%',background:`radial-gradient(circle,${J.red}33,transparent 70%)`}}/>
-                          {/* Kanji watermark */}
                           <div style={{position:'absolute',right:'1rem',top:'0.5rem',fontFamily:'serif',fontSize:'2.5rem',color:`rgba(139,26,26,0.07)`,userSelect:'none',lineHeight:1}}>{['業','功','術'][i%3]}</div>
                           <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',gap:'0.5rem',marginBottom:'0.3rem',flexWrap:'wrap',position:'relative',zIndex:1}}>
                             <h3 style={{fontFamily:'var(--font-display)',fontSize:'clamp(1rem,3vw,1.4rem)',color:J.white,lineHeight:1.2}}>{exp.position}</h3>
                             {exp.period&&<span style={{background:J.redBg,color:J.goldL,borderRadius:5,padding:'3px 10px',fontSize:'0.72rem',fontWeight:700,flexShrink:0,whiteSpace:'nowrap',border:`1px solid rgba(139,26,26,0.3)`}}>{exp.period}</span>}
                           </div>
                           {exp.company&&<div style={{fontFamily:'var(--font-script)',color:J.gold,fontSize:'1.05rem',marginBottom:'0.8rem',position:'relative',zIndex:1}}>{exp.company}</div>}
-                          {exp.tags&&<div style={{display:'flex',flexWrap:'wrap',gap:'0.35rem',position:'relative',zIndex:1}}>{exp.tags.split(',').map(t=>t.trim()).filter(Boolean).map((tag,ti)=>(<motion.span key={tag} initial={{opacity:0,scale:0.8}} whileInView={{opacity:1,scale:1}} transition={{delay:ti*0.04+i*0.08}} style={{background:'rgba(201,160,48,0.07)',border:`1px solid rgba(201,160,48,0.18)`,color:'rgba(201,160,48,0.8)',borderRadius:4,padding:'3px 10px',fontSize:'0.72rem',fontWeight:500}}>{tag}</motion.span>))}</div>}
+                          {exp.tags&&<div style={{display:'flex',flexWrap:'wrap',gap:'0.35rem',position:'relative',zIndex:1,marginBottom:'0.8rem'}}>{exp.tags.split(',').map(t=>t.trim()).filter(Boolean).map((tag,ti)=>(<motion.span key={tag} initial={{opacity:0,scale:0.8}} whileInView={{opacity:1,scale:1}} transition={{delay:ti*0.04+i*0.08}} style={{background:'rgba(201,160,48,0.07)',border:`1px solid rgba(201,160,48,0.18)`,color:'rgba(201,160,48,0.8)',borderRadius:4,padding:'3px 10px',fontSize:'0.72rem',fontWeight:500}}>{tag}</motion.span>))}</div>}
+                          {/* Tombol Dropdown */}
+                          {exp.desc&&(
+                            <div style={{position:'relative',zIndex:1}}>
+                              <motion.button
+                                onClick={()=>setOpen(o=>!o)}
+                                whileHover={{scale:1.03,boxShadow:`0 4px 18px rgba(139,26,26,0.35)`}}
+                                whileTap={{scale:0.97}}
+                                style={{display:'inline-flex',alignItems:'center',gap:'0.4rem',background:`linear-gradient(135deg,rgba(139,26,26,0.25),rgba(60,5,5,0.3))`,border:`1px solid rgba(139,26,26,0.45)`,color:J.goldL,borderRadius:7,padding:'6px 16px',fontSize:'0.75rem',fontWeight:700,cursor:'pointer',fontFamily:'var(--font-body)',letterSpacing:'0.03em',transition:'all 0.2s'}}>
+                                <span style={{fontSize:'0.85rem'}}>{open?'▲':'▼'}</span>
+                                {open?'Tutup Rincian':'⛩ Buka Rincian Pekerjaan'}
+                              </motion.button>
+                              <motion.div
+                                initial={false}
+                                animate={{height:open?'auto':0,opacity:open?1:0}}
+                                transition={{duration:0.35,ease:'easeInOut'}}
+                                style={{overflow:'hidden'}}>
+                                <div style={{marginTop:'0.8rem',padding:'1rem 1.2rem',background:'rgba(139,26,26,0.06)',border:`1px solid rgba(139,26,26,0.2)`,borderRadius:8,borderLeft:`3px solid ${J.red}`}}>
+                                  {exp.desc.split('\n').map((line,li)=>(
+                                    <div key={li} style={{color:'rgba(245,245,240,0.82)',fontSize:'0.82rem',lineHeight:1.75,fontFamily:'var(--font-body)',padding:'0.1rem 0'}}>
+                                      {line}
+                                    </div>
+                                  ))}
+                                </div>
+                              </motion.div>
+                            </div>
+                          )}
                         </motion.div>
                       </InkRipple>
                     </TiltCard>
                   </div>
                 </Reveal>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>
