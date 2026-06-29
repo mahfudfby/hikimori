@@ -639,6 +639,68 @@ const ContactSection:React.FC=()=>{
 };
 
 /* ══════════════════════════════════════════
+   EXP CARD — extracted so useState is valid
+══════════════════════════════════════════ */
+const ExpCard:React.FC<{exp:ExpItem;index:number}>=({exp,index:i})=>{
+  const [open,setOpen]=useState(false);
+  return (
+    <Reveal direction="right" delay={i*0.14}>
+      <div style={{display:'flex',gap:'clamp(1rem,4vw,2rem)',position:'relative'}}>
+        <div style={{flexShrink:0,width:'clamp(32px,10vw,64px)',display:'flex',flexDirection:'column',alignItems:'center'}}>
+          <motion.div
+            animate={{boxShadow:[`0 0 8px ${J.red}44`,`0 0 20px ${J.red}88`,`0 0 8px ${J.red}44`]}}
+            transition={{duration:2,repeat:Infinity,delay:i*0.5}} whileHover={{scale:1.25}}
+            style={{width:44,height:44,borderRadius:'50%',background:`radial-gradient(circle,rgba(139,26,26,0.2),rgba(139,26,26,0.05))`,border:`2px solid ${J.red}`,display:'flex',alignItems:'center',justifyContent:'center',fontSize:'1.2rem',position:'relative',zIndex:2}}>
+            {exp.icon}
+            <motion.div animate={{scale:[1,1.4,1],opacity:[0.5,0,0.5]}} transition={{duration:2,repeat:Infinity,delay:i*0.5}} style={{position:'absolute',inset:-4,borderRadius:'50%',border:`1px solid ${J.red}`,pointerEvents:'none'}}/>
+          </motion.div>
+        </div>
+        <TiltCard style={{flex:1,borderRadius:12}} intensity={5}>
+          <InkRipple>
+            <motion.div whileHover={{borderColor:`rgba(139,26,26,0.55)`,background:'rgba(15,6,2,0.92)'}}
+              style={{background:'rgba(10,4,0,0.88)',border:`1px solid rgba(139,26,26,0.18)`,borderRadius:12,padding:'1.3rem clamp(1rem,3vw,1.8rem)',backdropFilter:'blur(12px)',transition:'all 0.3s',position:'relative',overflow:'hidden'}}>
+              <motion.div animate={{opacity:[0.04,0.1,0.04]}} transition={{duration:4+i,repeat:Infinity}} style={{position:'absolute',top:-20,right:-20,width:120,height:120,borderRadius:'50%',background:`radial-gradient(circle,${J.red}33,transparent 70%)`}}/>
+              <div style={{position:'absolute',right:'1rem',top:'0.5rem',fontFamily:'serif',fontSize:'2.5rem',color:`rgba(139,26,26,0.07)`,userSelect:'none',lineHeight:1}}>{['業','功','術'][i%3]}</div>
+              <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',gap:'0.5rem',marginBottom:'0.3rem',flexWrap:'wrap',position:'relative',zIndex:1}}>
+                <h3 style={{fontFamily:'var(--font-display)',fontSize:'clamp(1rem,3vw,1.4rem)',color:J.white,lineHeight:1.2}}>{exp.position}</h3>
+                {exp.period&&<span style={{background:J.redBg,color:J.goldL,borderRadius:5,padding:'3px 10px',fontSize:'0.72rem',fontWeight:700,flexShrink:0,whiteSpace:'nowrap',border:`1px solid rgba(139,26,26,0.3)`}}>{exp.period}</span>}
+              </div>
+              {exp.company&&<div style={{fontFamily:'var(--font-script)',color:J.gold,fontSize:'1.05rem',marginBottom:'0.8rem',position:'relative',zIndex:1}}>{exp.company}</div>}
+              {exp.tags&&<div style={{display:'flex',flexWrap:'wrap',gap:'0.35rem',position:'relative',zIndex:1,marginBottom:'0.8rem'}}>{exp.tags.split(',').map(t=>t.trim()).filter(Boolean).map((tag,ti)=>(<motion.span key={tag} initial={{opacity:0,scale:0.8}} whileInView={{opacity:1,scale:1}} transition={{delay:ti*0.04+i*0.08}} style={{background:'rgba(201,160,48,0.07)',border:`1px solid rgba(201,160,48,0.18)`,color:'rgba(201,160,48,0.8)',borderRadius:4,padding:'3px 10px',fontSize:'0.72rem',fontWeight:500}}>{tag}</motion.span>))}</div>}
+              {exp.desc&&(
+                <div style={{position:'relative',zIndex:1}}>
+                  <motion.button
+                    onClick={()=>setOpen(o=>!o)}
+                    whileHover={{scale:1.03,boxShadow:`0 4px 18px rgba(139,26,26,0.35)`}}
+                    whileTap={{scale:0.97}}
+                    style={{display:'inline-flex',alignItems:'center',gap:'0.4rem',background:`linear-gradient(135deg,rgba(139,26,26,0.25),rgba(60,5,5,0.3))`,border:`1px solid rgba(139,26,26,0.45)`,color:J.goldL,borderRadius:7,padding:'6px 16px',fontSize:'0.75rem',fontWeight:700,cursor:'pointer',fontFamily:'var(--font-body)',letterSpacing:'0.03em',transition:'all 0.2s'}}>
+                    <span style={{fontSize:'0.85rem'}}>{open?'▲':'▼'}</span>
+                    {open?'Tutup Rincian':'⛩ Buka Rincian Pekerjaan'}
+                  </motion.button>
+                  <motion.div
+                    initial={false}
+                    animate={{height:open?'auto':0,opacity:open?1:0}}
+                    transition={{duration:0.35,ease:'easeInOut'}}
+                    style={{overflow:'hidden'}}>
+                    <div style={{marginTop:'0.8rem',padding:'1rem 1.2rem',background:'rgba(139,26,26,0.06)',border:`1px solid rgba(139,26,26,0.2)`,borderRadius:8,borderLeft:`3px solid ${J.red}`}}>
+                      {exp.desc.split('\n').map((line,li)=>(
+                        <div key={li} style={{color:'rgba(245,245,240,0.82)',fontSize:'0.82rem',lineHeight:1.75,fontFamily:'var(--font-body)',padding:'0.1rem 0'}}>
+                          {line}
+                        </div>
+                      ))}
+                    </div>
+                  </motion.div>
+                </div>
+              )}
+            </motion.div>
+          </InkRipple>
+        </TiltCard>
+      </div>
+    </Reveal>
+  );
+};
+
+/* ══════════════════════════════════════════
    HOME PAGE
 ══════════════════════════════════════════ */
 const Home:React.FC=()=>{
@@ -884,65 +946,9 @@ const Home:React.FC=()=>{
             <motion.div initial={{scaleY:0}} whileInView={{scaleY:1}} viewport={{once:true}} transition={{duration:1.8,ease:'easeOut'}}
               style={{position:'absolute',left:'clamp(16px,5vw,32px)',top:0,bottom:0,width:2,background:`linear-gradient(to bottom,transparent,${J.red},${J.gold},transparent)`,transformOrigin:'top',zIndex:1}}/>
             <div style={{display:'flex',flexDirection:'column',gap:'1.2rem'}}>
-              {exps.map((exp,i)=>{
-                const [open,setOpen]=React.useState(false);
-                return (
-                <Reveal key={exp.id} direction="right" delay={i*0.14}>
-                  <div style={{display:'flex',gap:'clamp(1rem,4vw,2rem)',position:'relative'}}>
-                    <div style={{flexShrink:0,width:'clamp(32px,10vw,64px)',display:'flex',flexDirection:'column',alignItems:'center'}}>
-                      <motion.div
-                        animate={{boxShadow:[`0 0 8px ${J.red}44`,`0 0 20px ${J.red}88`,`0 0 8px ${J.red}44`]}}
-                        transition={{duration:2,repeat:Infinity,delay:i*0.5}} whileHover={{scale:1.25}}
-                        style={{width:44,height:44,borderRadius:'50%',background:`radial-gradient(circle,rgba(139,26,26,0.2),rgba(139,26,26,0.05))`,border:`2px solid ${J.red}`,display:'flex',alignItems:'center',justifyContent:'center',fontSize:'1.2rem',position:'relative',zIndex:2}}>
-                        {exp.icon}
-                        <motion.div animate={{scale:[1,1.4,1],opacity:[0.5,0,0.5]}} transition={{duration:2,repeat:Infinity,delay:i*0.5}} style={{position:'absolute',inset:-4,borderRadius:'50%',border:`1px solid ${J.red}`,pointerEvents:'none'}}/>
-                      </motion.div>
-                    </div>
-                    <TiltCard style={{flex:1,borderRadius:12}} intensity={5}>
-                      <InkRipple>
-                        <motion.div whileHover={{borderColor:`rgba(139,26,26,0.55)`,background:'rgba(15,6,2,0.92)'}}
-                          style={{background:'rgba(10,4,0,0.88)',border:`1px solid rgba(139,26,26,0.18)`,borderRadius:12,padding:'1.3rem clamp(1rem,3vw,1.8rem)',backdropFilter:'blur(12px)',transition:'all 0.3s',position:'relative',overflow:'hidden'}}>
-                          <motion.div animate={{opacity:[0.04,0.1,0.04]}} transition={{duration:4+i,repeat:Infinity}} style={{position:'absolute',top:-20,right:-20,width:120,height:120,borderRadius:'50%',background:`radial-gradient(circle,${J.red}33,transparent 70%)`}}/>
-                          <div style={{position:'absolute',right:'1rem',top:'0.5rem',fontFamily:'serif',fontSize:'2.5rem',color:`rgba(139,26,26,0.07)`,userSelect:'none',lineHeight:1}}>{['業','功','術'][i%3]}</div>
-                          <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',gap:'0.5rem',marginBottom:'0.3rem',flexWrap:'wrap',position:'relative',zIndex:1}}>
-                            <h3 style={{fontFamily:'var(--font-display)',fontSize:'clamp(1rem,3vw,1.4rem)',color:J.white,lineHeight:1.2}}>{exp.position}</h3>
-                            {exp.period&&<span style={{background:J.redBg,color:J.goldL,borderRadius:5,padding:'3px 10px',fontSize:'0.72rem',fontWeight:700,flexShrink:0,whiteSpace:'nowrap',border:`1px solid rgba(139,26,26,0.3)`}}>{exp.period}</span>}
-                          </div>
-                          {exp.company&&<div style={{fontFamily:'var(--font-script)',color:J.gold,fontSize:'1.05rem',marginBottom:'0.8rem',position:'relative',zIndex:1}}>{exp.company}</div>}
-                          {exp.tags&&<div style={{display:'flex',flexWrap:'wrap',gap:'0.35rem',position:'relative',zIndex:1,marginBottom:'0.8rem'}}>{exp.tags.split(',').map(t=>t.trim()).filter(Boolean).map((tag,ti)=>(<motion.span key={tag} initial={{opacity:0,scale:0.8}} whileInView={{opacity:1,scale:1}} transition={{delay:ti*0.04+i*0.08}} style={{background:'rgba(201,160,48,0.07)',border:`1px solid rgba(201,160,48,0.18)`,color:'rgba(201,160,48,0.8)',borderRadius:4,padding:'3px 10px',fontSize:'0.72rem',fontWeight:500}}>{tag}</motion.span>))}</div>}
-                          {/* Tombol Dropdown */}
-                          {exp.desc&&(
-                            <div style={{position:'relative',zIndex:1}}>
-                              <motion.button
-                                onClick={()=>setOpen(o=>!o)}
-                                whileHover={{scale:1.03,boxShadow:`0 4px 18px rgba(139,26,26,0.35)`}}
-                                whileTap={{scale:0.97}}
-                                style={{display:'inline-flex',alignItems:'center',gap:'0.4rem',background:`linear-gradient(135deg,rgba(139,26,26,0.25),rgba(60,5,5,0.3))`,border:`1px solid rgba(139,26,26,0.45)`,color:J.goldL,borderRadius:7,padding:'6px 16px',fontSize:'0.75rem',fontWeight:700,cursor:'pointer',fontFamily:'var(--font-body)',letterSpacing:'0.03em',transition:'all 0.2s'}}>
-                                <span style={{fontSize:'0.85rem'}}>{open?'▲':'▼'}</span>
-                                {open?'Tutup Rincian':'⛩ Buka Rincian Pekerjaan'}
-                              </motion.button>
-                              <motion.div
-                                initial={false}
-                                animate={{height:open?'auto':0,opacity:open?1:0}}
-                                transition={{duration:0.35,ease:'easeInOut'}}
-                                style={{overflow:'hidden'}}>
-                                <div style={{marginTop:'0.8rem',padding:'1rem 1.2rem',background:'rgba(139,26,26,0.06)',border:`1px solid rgba(139,26,26,0.2)`,borderRadius:8,borderLeft:`3px solid ${J.red}`}}>
-                                  {exp.desc.split('\n').map((line,li)=>(
-                                    <div key={li} style={{color:'rgba(245,245,240,0.82)',fontSize:'0.82rem',lineHeight:1.75,fontFamily:'var(--font-body)',padding:'0.1rem 0'}}>
-                                      {line}
-                                    </div>
-                                  ))}
-                                </div>
-                              </motion.div>
-                            </div>
-                          )}
-                        </motion.div>
-                      </InkRipple>
-                    </TiltCard>
-                  </div>
-                </Reveal>
-                );
-              })}
+              {exps.map((exp,i)=>(
+                <ExpCard key={exp.id} exp={exp} index={i}/>
+              ))}
             </div>
           </div>
         </div>
