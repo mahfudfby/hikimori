@@ -14,14 +14,14 @@ const DATA_VERSION='v7'; // Naikkan versi ini setiap kali ada perubahan default 
 (()=>{try{if(localStorage.getItem(LS_VER)!==DATA_VERSION){[LS_HOME,LS_ABOUT,LS_SKILLS,LS_EXP,LS_CONTACT,LS_CERT].forEach(k=>localStorage.removeItem(k));localStorage.setItem(LS_VER,DATA_VERSION);}}catch{}})();
 
 interface HomeData    {heroTitle:string;heroSubtitle:string;heroTagline:string;heroCtaSecondary:string;heroCtaSecondaryLink:string;heroCta:string;heroCtaLink:string;heroPhotoUrl:string;heroTagRight:string;}
-interface AboutData   {name:string;location:string;bio1:string;bio2:string;photoUrl:string;instagram?:string;linkedin?:string;whatsapp?:string;threads?:string;tiktok?:string;email?:string;}
+interface AboutData   {name:string;location:string;bio1:string;bio2:string;photoUrl:string;instagram?:string;linkedin?:string;whatsapp?:string;threads?:string;tiktok?:string;email?:string;jobstreet?:string;ibenews?:string;}
 interface SkillItem   {id:string;number:string;title:string;desc:string;}
 interface ExpItem     {id:string;position:string;company:string;period:string;icon:string;tags:string;desc?:string;}
 interface ContactData {email:string;location:string;website:string;instagram:string;linkedin:string;twitter:string;}
 interface CertItem    {id:string;name:string;year:string;issuer:string;subtitle:string;imageUrl:string;}
 
 const D_HOME:HomeData={heroTitle:'Mahfud Febry Styanto, S.Kom,. CHRG',heroSubtitle:"HR Professional Officer' | General Affairs | IT Support Specialist | Website Developer\nNetwork Engineer | Content Writer | F&B Operations",heroTagline:'We back visionaries and craft ventures that define what comes next.',heroCtaSecondary:'Start a Chat',heroCtaSecondaryLink:'https://wa.me/6282234651413',heroCta:'Explore Now',heroCtaLink:'/portofolio',heroPhotoUrl:'',heroTagRight:'Nganjuk, Jawa Timur'};
-const D_ABOUT:AboutData={name:'Mahfudfebry',location:'Nganjuk, Indonesia',bio1:'Halo! Nama saya Mahfudfebry, seorang profesional muda dari Nganjuk, Indonesia. Portfolio ini adalah kumpulan karya dan proyek terbaik saya yang mencerminkan keahlian, kreativitas, dan pertumbuhan profesional.',bio2:'Di setiap proyek, saya selalu berusaha memberikan hasil terbaik — dari desain visual yang kuat hingga solusi HR dan IT yang efisien dan berdampak.',photoUrl:'',instagram:'mahfudfebry',linkedin:'mahfud-febry-styanto',whatsapp:'6282234651413',threads:'mahfudfebry',tiktok:'mahfudfebry',email:'Mahfudfebrys@gmail.com'};
+const D_ABOUT:AboutData={name:'Mahfudfebry',location:'Nganjuk, Indonesia',bio1:'Halo! Nama saya Mahfudfebry, seorang profesional muda dari Nganjuk, Indonesia. Portfolio ini adalah kumpulan karya dan proyek terbaik saya yang mencerminkan keahlian, kreativitas, dan pertumbuhan profesional.',bio2:'Di setiap proyek, saya selalu berusaha memberikan hasil terbaik — dari desain visual yang kuat hingga solusi HR dan IT yang efisien dan berdampak.',photoUrl:'',instagram:'mahfudfebry',linkedin:'mahfud-febry-styanto',whatsapp:'6282234651413',threads:'mahfudfebry',tiktok:'mahfudfebry',email:'Mahfudfebrys@gmail.com',jobstreet:'https://id.jobstreet.com/id/profiles/xT4NqdPjhP',ibenews:'https://www.ibenews.id/author/10521/Mahfud-Febry-Styanto'};
 const D_SKILLS:SkillItem[]=[{id:'1',number:'01',title:'Branding & Identity Design',desc:"Crafting memorable logos and visual systems that reflect a brand's essence."},{id:'2',number:'02',title:'Creativity & Problem-Solving',desc:'Thinking outside the box while solving design challenges with strategic insight.'},{id:'3',number:'03',title:'Concept Development',desc:'Skilled in brainstorming and translating abstract ideas into visual narratives.'},{id:'4',number:'04',title:'Proper Time Management',desc:'Capable of handling multiple projects and meeting tight deadlines.'}];
 const D_EXP:ExpItem[]=[
   {id:'1',position:'Administrasi Produksi',company:'UD Duta Pangan',period:'Juli 2024 – Desember 2024',icon:'🏭',tags:'Administrasi Produksi Pabrik,Monitoring Bahan Baku,Monitoring Hasil Produksi,Penyusunan Laporan Produksi,Pengendalian Dokumen,Manajemen FiFO',desc:'• Mengelola administrasi produksi dan dokumentasi pabrik secara akurat\n• Monitoring produksi, stok bahan baku, dan distribusi produk\n• Menyusun laporan produksi dan koordinasi dengan tim terkait\n• Menjamin kelancaran proses produksi dan ketepatan distribusi'},
@@ -850,12 +850,41 @@ const Home:React.FC=()=>{
                 <p style={{color:J.whiteDim,lineHeight:1.9,marginBottom:'1rem',fontSize:'clamp(0.88rem,2vw,1rem)'}}>{about.bio1}</p>
                 <p style={{color:'rgba(245,245,240,0.5)',lineHeight:1.9,fontSize:'clamp(0.88rem,2vw,1rem)',marginBottom:'1.5rem'}}>{about.bio2}</p>
                 <SosmedButtons about={about}/>
-                <div style={{marginTop:'0.5rem'}}>
-                  <motion.div whileHover={{scale:1.04,boxShadow:`0 8px 30px rgba(139,26,26,0.35)`}} whileTap={{scale:0.97}} style={{display:'inline-block'}}>
-                    <Link to="/about" style={{display:'inline-flex',alignItems:'center',gap:8,background:J.redBg,color:J.goldL,textDecoration:'none',borderRadius:8,padding:'11px 26px',fontFamily:'var(--font-body)',fontWeight:700,fontSize:'0.9rem',border:`1px solid rgba(139,26,26,0.45)`,backdropFilter:'blur(6px)'}}>
+                <div style={{display:'flex',alignItems:'center',gap:'0.8rem',margin:'1.2rem 0 1rem'}}>
+                  <div style={{flex:1,height:1,background:'linear-gradient(to right, rgba(201,160,48,0.5), rgba(201,160,48,0.05))'}}/>
+                  <span style={{fontFamily:'var(--font-body)',fontSize:'0.68rem',fontWeight:700,letterSpacing:'0.12em',textTransform:'uppercase',color:J.gold,whiteSpace:'nowrap'}}>
+                    portfolio · Link Portofolio
+                  </span>
+                  <div style={{flex:1,height:1,background:'linear-gradient(to left, rgba(201,160,48,0.5), rgba(201,160,48,0.05))'}}/>
+                </div>
+                <div className="hk-btn-grid" style={{marginTop:'0.5rem',display:'grid',gridTemplateColumns:'repeat(auto-fit, minmax(180px, 1fr))',gap:'0.8rem',maxWidth:520}}>
+                  <motion.div whileHover={{scale:1.04,boxShadow:`0 8px 30px rgba(139,26,26,0.35)`}} whileTap={{scale:0.97}}>
+                    <Link to="/about" style={{display:'flex',alignItems:'center',justifyContent:'center',gap:8,background:J.redBg,color:J.goldL,textDecoration:'none',borderRadius:8,padding:'11px 18px',fontFamily:'var(--font-body)',fontWeight:700,fontSize:'0.85rem',border:`1px solid rgba(139,26,26,0.45)`,backdropFilter:'blur(6px)',whiteSpace:'nowrap'}}>
                       詳細を見る → Selengkapnya
                     </Link>
                   </motion.div>
+                  {about.jobstreet && (
+                    <motion.div whileHover={{scale:1.04,boxShadow:`0 8px 30px rgba(0,110,224,0.35)`}} whileTap={{scale:0.97}}>
+                      <a href={about.jobstreet} target="_blank" rel="noopener noreferrer" style={{display:'flex',alignItems:'center',justifyContent:'center',gap:8,background:'rgba(0,110,224,0.15)',color:'#4ea1ff',textDecoration:'none',borderRadius:8,padding:'11px 18px',fontFamily:'var(--font-body)',fontWeight:700,fontSize:'0.85rem',border:'1px solid rgba(0,110,224,0.45)',backdropFilter:'blur(6px)',whiteSpace:'nowrap'}}>
+                        💼 Jobstreet
+                      </a>
+                    </motion.div>
+                  )}
+                  {about.linkedin && (
+                    <motion.div whileHover={{scale:1.04,boxShadow:`0 8px 30px rgba(10,102,194,0.35)`}} whileTap={{scale:0.97}}>
+                      <a href={`https://linkedin.com/in/${about.linkedin}`} target="_blank" rel="noopener noreferrer" style={{display:'flex',alignItems:'center',justifyContent:'center',gap:8,background:'rgba(10,102,194,0.15)',color:'#4fa3ff',textDecoration:'none',borderRadius:8,padding:'11px 18px',fontFamily:'var(--font-body)',fontWeight:700,fontSize:'0.85rem',border:'1px solid rgba(10,102,194,0.45)',backdropFilter:'blur(6px)',whiteSpace:'nowrap'}}>
+                        <svg viewBox="0 0 24 24" fill="currentColor" style={{width:'1em',height:'1em',flexShrink:0}}><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                        LinkedIn
+                      </a>
+                    </motion.div>
+                  )}
+                  {about.ibenews && (
+                    <motion.div whileHover={{scale:1.04,boxShadow:`0 8px 30px rgba(220,20,20,0.35)`}} whileTap={{scale:0.97}}>
+                      <a href={about.ibenews} target="_blank" rel="noopener noreferrer" style={{display:'flex',alignItems:'center',justifyContent:'center',gap:8,background:'rgba(220,20,20,0.12)',color:'#ff5c5c',textDecoration:'none',borderRadius:8,padding:'11px 18px',fontFamily:'var(--font-body)',fontWeight:700,fontSize:'0.85rem',border:'1px solid rgba(220,20,20,0.45)',backdropFilter:'blur(6px)',whiteSpace:'nowrap'}}>
+                        ✍️ iBenews.id
+                      </a>
+                    </motion.div>
+                  )}
                 </div>
               </div>
             </Reveal>
