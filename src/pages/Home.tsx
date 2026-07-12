@@ -15,14 +15,27 @@ const DATA_VERSION='v8'; // Naikkan versi ini setiap kali ada perubahan default 
 
 interface HomeData    {heroTitle:string;heroSubtitle:string;heroTagline:string;heroCtaSecondary:string;heroCtaSecondaryLink:string;heroCta:string;heroCtaLink:string;heroPhotoUrl:string;heroTagRight:string;}
 interface AboutData   {name:string;location:string;bio1:string;bio2:string;photoUrl:string;instagram?:string;linkedin?:string;whatsapp?:string;threads?:string;tiktok?:string;email?:string;jobstreet?:string;ibenews?:string;}
-interface SkillItem   {id:string;number:string;title:string;desc:string;}
+interface SkillItem   {id:string;number:string;title:string;desc:string;category?:'hard'|'soft';}
 interface ExpItem     {id:string;position:string;company:string;period:string;icon:string;tags:string;desc?:string;logoUrl?:string;}
 interface ContactData {email:string;location:string;website:string;instagram:string;linkedin:string;twitter:string;}
 interface CertItem    {id:string;name:string;year:string;issuer:string;subtitle:string;imageUrl:string;}
 
 const D_HOME:HomeData={heroTitle:'Mahfud Febry Styanto, S.Kom,. CHRG',heroSubtitle:"HR Professional Officer' | General Affairs | IT Support Specialist | Website Developer\nNetwork Engineer | Content Writer | F&B Operations",heroTagline:'We back visionaries and craft ventures that define what comes next.',heroCtaSecondary:'Start a Chat',heroCtaSecondaryLink:'https://wa.me/6282234651413',heroCta:'Explore Now',heroCtaLink:'/portofolio',heroPhotoUrl:'',heroTagRight:'Nganjuk, Jawa Timur'};
 const D_ABOUT:AboutData={name:'Mahfudfebry',location:'Nganjuk, Indonesia',bio1:'Profesional multidisiplin di bidang HRD Payroll, General Affairs, IT Support, FMCG, Manufacturing dan Administrasi Operasional dengan pengalaman nyata di industri manufaktur. Telah melewati perjalanan lintas divisi dalam satu perusahaan pada periode berbeda sebagai bukti loyalitas dan kepercayaan yang diberikan atas pencapaian di setiap peran.',bio2:'Kompeten dalam payroll, analisa beban kerja, BPJS, pengelolaan 100+ perangkat IT, serta koordinasi operasional. Bersertifikasi BNSP CHRG, S.Kom., IPK 3.39.',photoUrl:'',instagram:'mahfudfebry',linkedin:'mahfud-febry-styanto',whatsapp:'6282234651413',threads:'mahfudfebry',tiktok:'mahfudfebry',email:'Mahfudfebrys@gmail.com',jobstreet:'https://id.jobstreet.com/id/profiles/xT4NqdPjhP',ibenews:'https://www.ibenews.id/author/10521/Mahfud-Febry-Styanto'};
-const D_SKILLS:SkillItem[]=[{id:'1',number:'01',title:'Branding & Identity Design',desc:"Crafting memorable logos and visual systems that reflect a brand's essence."},{id:'2',number:'02',title:'Creativity & Problem-Solving',desc:'Thinking outside the box while solving design challenges with strategic insight.'},{id:'3',number:'03',title:'Concept Development',desc:'Skilled in brainstorming and translating abstract ideas into visual narratives.'},{id:'4',number:'04',title:'Proper Time Management',desc:'Capable of handling multiple projects and meeting tight deadlines.'}];
+const D_SKILLS:SkillItem[]=[
+  {id:'1',number:'01',title:'Payroll & Administrasi Penggajian',desc:'Menghitung gaji, potongan, bonus, serta iuran BPJS & BPJS-Tk karyawan (UD Duta Pangan).',category:'hard'},
+  {id:'2',number:'02',title:'HR & General Affairs Management',desc:'Mengelola fasilitas, aset operasional, uraian jabatan (jobdesk), dan analisa beban kerja tiap divisi.',category:'hard'},
+  {id:'3',number:'03',title:'IT Technical Support',desc:'Troubleshooting hardware/software dan dukungan pengguna untuk operasional kantor sehari-hari.',category:'hard'},
+  {id:'4',number:'04',title:'Food Production & Food Safety (SOP)',desc:'Food preparation, kontrol kualitas bahan baku, dan kepatuhan standar food safety di dapur produksi.',category:'hard'},
+  {id:'5',number:'05',title:'Welding & Fabrication',desc:'Pengelasan dan pemasangan pagar, tralis, kanopi, hingga rolling door di lapangan.',category:'hard'},
+  {id:'6',number:'06',title:'Sales, Marketing & Administrasi Operasional',desc:'Penjualan lapangan, dokumentasi administrasi, dan koordinasi operasional harian perusahaan.',category:'hard'},
+  {id:'7',number:'01',title:'Pelayanan Pelanggan (Customer Service)',desc:'Menjaga kepuasan dan rating pelanggan lewat interaksi ramah dan responsif di berbagai peran layanan.',category:'soft'},
+  {id:'8',number:'02',title:'Kerja Tim & Koordinasi Lintas Divisi',desc:'Terbiasa berkoordinasi dengan tim dapur, kasir, hingga divisi lain untuk kelancaran operasional.',category:'soft'},
+  {id:'9',number:'03',title:'Disiplin & Keselamatan Kerja',desc:'Konsisten mematuhi SOP dan standar keselamatan, baik di jalan raya maupun lokasi kerja lapangan.',category:'soft'},
+  {id:'10',number:'04',title:'Manajemen Waktu & Target Kerja',desc:'Mampu bekerja dengan target service time dan tenggat penjualan tanpa mengorbankan kualitas.',category:'soft'},
+  {id:'11',number:'05',title:'Adaptasi & Fleksibilitas Lintas Industri',desc:'Terbukti mampu beradaptasi cepat di berbagai bidang berbeda — F&B, IT, HR, hingga manufaktur.',category:'soft'},
+  {id:'12',number:'06',title:'Kepedulian Sosial & Tanggung Jawab Komunitas',desc:'Berpengalaman menyusun program sosialisasi kesehatan dan perlindungan anak bersama instansi pemerintah.',category:'soft'}
+];
 const D_EXP:ExpItem[]=[
   {id:'1',position:'HR / General Affairs',company:'UD Duta Pangan (Food Manufacturing)',period:'Agustus 2025 – April 2026 · 9 bln · Full-time',icon:'👥',tags:'Payroll & Penggajian,BPJS & BPJS-Tk,Pengelolaan Fasilitas & Aset,Koordinasi Lintas Divisi,Penyusunan Jobdesk,Analisa Beban Kerja',desc:'• Mengelola fasilitas dan aset operasional perusahaan\n• Menangani koordinasi lintas divisi untuk kelancaran operasional harian\n• Penghitungan Gaji, Potongan, & Bonus (Payroll)\n• Penghitungan Jaminan Sosial (BPJS & BPJS-Tk)\n• Menyusun Uraian Jabatan (Jobdesk)\n• Analisa Beban Kerja setiap Divisi'},
   {id:'2',position:'Human Resources Generalist',company:'UD Duta Pangan (Food Manufacturing)',period:'Agustus 2025 – April 2026 · 9 bln · Full-time',icon:'🧑\u200d💼',tags:'BPJS,Analisa Beban Kerja',desc:''},
@@ -692,11 +705,11 @@ const ExpCard:React.FC<{exp:ExpItem;index:number}>=({exp,index:i})=>{
               style={{background:'rgba(10,4,0,0.88)',border:`1px solid rgba(139,26,26,0.18)`,borderRadius:12,padding:'1.3rem clamp(1rem,3vw,1.8rem)',backdropFilter:'blur(12px)',transition:'all 0.3s',position:'relative',overflow:'hidden'}}>
               <motion.div animate={{opacity:[0.04,0.1,0.04]}} transition={{duration:4+i,repeat:Infinity}} style={{position:'absolute',top:-20,right:-20,width:120,height:120,borderRadius:'50%',background:`radial-gradient(circle,${J.red}33,transparent 70%)`}}/>
               <div style={{position:'absolute',right:'1rem',top:'0.5rem',fontFamily:'serif',fontSize:'2.5rem',color:`rgba(139,26,26,0.07)`,userSelect:'none',lineHeight:1}}>{['業','功','術'][i%3]}</div>
-              <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',gap:'0.5rem',marginBottom:'0.3rem',flexWrap:'wrap',position:'relative',zIndex:1}}>
-                <h3 style={{fontFamily:'var(--font-display)',fontSize:'clamp(1rem,3vw,1.4rem)',color:J.white,lineHeight:1.2}}>{exp.position}</h3>
-                {exp.period&&<span style={{background:J.redBg,color:J.goldL,borderRadius:5,padding:'3px 10px',fontSize:'0.72rem',fontWeight:700,flexShrink:0,whiteSpace:'nowrap',border:`1px solid rgba(139,26,26,0.3)`}}>{exp.period}</span>}
+              <div style={{position:'relative',zIndex:1,marginBottom:'0.9rem'}}>
+                <h3 style={{fontFamily:'var(--font-display)',fontSize:'clamp(1rem,3vw,1.4rem)',color:J.white,lineHeight:1.3,marginBottom:'0.3rem'}}>{exp.position}</h3>
+                {exp.company&&<div style={{fontFamily:'var(--font-body)',fontWeight:600,color:J.gold,fontSize:'0.92rem',lineHeight:1.4,marginBottom:'0.45rem'}}>{exp.company}</div>}
+                {exp.period&&<div style={{display:'inline-flex',alignItems:'center',gap:'0.35rem',background:J.redBg,color:J.goldL,borderRadius:5,padding:'3px 10px',fontSize:'0.72rem',fontWeight:700,border:`1px solid rgba(139,26,26,0.3)`}}><span>🕐</span>{exp.period}</div>}
               </div>
-              {exp.company&&<div style={{fontFamily:'var(--font-script)',color:J.gold,fontSize:'1.05rem',marginBottom:'0.8rem',position:'relative',zIndex:1}}>{exp.company}</div>}
               {exp.tags&&<div style={{display:'flex',flexWrap:'wrap',gap:'0.35rem',position:'relative',zIndex:1,marginBottom:'0.8rem'}}>{exp.tags.split(',').map(t=>t.trim()).filter(Boolean).map((tag,ti)=>(<motion.span key={tag} initial={{opacity:0,scale:0.8}} whileInView={{opacity:1,scale:1}} transition={{delay:ti*0.04+i*0.08}} style={{background:'rgba(201,160,48,0.07)',border:`1px solid rgba(201,160,48,0.18)`,color:'rgba(201,160,48,0.8)',borderRadius:4,padding:'3px 10px',fontSize:'0.72rem',fontWeight:500}}>{tag}</motion.span>))}</div>}
               {exp.desc&&(
                 <div style={{position:'relative',zIndex:1}}>
@@ -1055,36 +1068,85 @@ const Home:React.FC=()=>{
               </motion.div>
             </div>
           </Reveal>
-          <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(min(100%,260px),1fr))',gap:'1rem'}}>
-            {skills.map((sk,i)=>(
-              <Reveal key={sk.id} direction="up" delay={i*0.09}>
-                <TiltCard style={{borderRadius:14,height:'100%'}} intensity={10}>
-                  <InkRipple>
-                    <motion.div whileHover={{boxShadow:`0 24px 70px rgba(139,26,26,0.25),0 0 0 1px rgba(139,26,26,0.4)`}}
-                      style={{background:'rgba(8,3,0,0.9)',border:`1px solid rgba(139,26,26,0.18)`,borderRadius:14,padding:'1.8rem',position:'relative',overflow:'hidden',height:'100%',backdropFilter:'blur(14px)',transition:'all 0.3s'}}>
-                      {/* Kanji watermark */}
-                      <div style={{position:'absolute',right:8,top:4,fontFamily:'serif',fontSize:'4.5rem',color:`rgba(139,26,26,0.07)`,lineHeight:1,userSelect:'none'}}>{['技','能','術','力'][i%4]}</div>
-                      <motion.div animate={{scale:[1,1.4,1],opacity:[0.12,0.28,0.12]}} transition={{duration:3+i*0.4,repeat:Infinity}} style={{position:'absolute',top:-15,left:-15,width:80,height:80,borderRadius:'50%',background:`radial-gradient(circle,rgba(139,26,26,0.2),transparent 70%)`}}/>
-                      {/* Number */}
-                      <div style={{display:'flex',alignItems:'center',gap:'0.5rem',marginBottom:'0.7rem',position:'relative',zIndex:1}}>
-                        <motion.div animate={{y:[0,-3,0]}} transition={{duration:2.5+i*0.3,repeat:Infinity}}
-                          style={{fontFamily:'var(--font-display)',fontSize:'1.6rem',color:J.red,textShadow:`0 0 15px rgba(139,26,26,0.6)`,lineHeight:1}}>{sk.number}</motion.div>
-                        <div style={{flex:1,height:1,background:`linear-gradient(to right,rgba(139,26,26,0.5),transparent)`}}/>
-                      </div>
-                      {/* Corner accents */}
-                      <div style={{position:'absolute',top:8,right:8,width:12,height:12,borderTop:`1px solid ${J.gold}`,borderRight:`1px solid ${J.gold}`,opacity:0.4}}/>
-                      <div style={{position:'absolute',bottom:8,left:8,width:12,height:12,borderBottom:`1px solid ${J.gold}`,borderLeft:`1px solid ${J.gold}`,opacity:0.4}}/>
-                      <h3 style={{fontFamily:'var(--font-body)',fontWeight:700,fontSize:'0.88rem',color:J.white,textTransform:'uppercase',letterSpacing:'0.5px',marginBottom:'0.6rem',position:'relative',zIndex:1}}>{sk.title}</h3>
-                      <p style={{color:'rgba(245,245,240,0.55)',fontSize:'0.85rem',lineHeight:1.6,position:'relative',zIndex:1}}>{sk.desc}</p>
-                      {/* Bottom shimmer */}
-                      <motion.div animate={{scaleX:[0,1,0]}} transition={{duration:3,repeat:Infinity,delay:i*0.35}}
-                        style={{position:'absolute',bottom:0,left:0,right:0,height:2,background:`linear-gradient(to right,transparent,${J.red},${J.gold},transparent)`,transformOrigin:'left'}}/>
-                    </motion.div>
-                  </InkRipple>
-                </TiltCard>
+          <div className="skills-columns" style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'2.5rem',alignItems:'start'}}>
+            {/* ── Kolom Hard Skill ── */}
+            <div>
+              <Reveal direction="left">
+                <div style={{display:'flex',alignItems:'center',gap:'0.6rem',marginBottom:'1.3rem'}}>
+                  <div style={{flex:1,height:1,background:`linear-gradient(to right,transparent,rgba(139,26,26,0.5))`}}/>
+                  <h3 style={{fontFamily:'var(--font-display)',fontSize:'clamp(1.3rem,4vw,1.9rem)',color:J.red,letterSpacing:'1px',whiteSpace:'nowrap'}}>HARD <span style={{color:J.white}}>SKILL</span></h3>
+                  <div style={{flex:1,height:1,background:`linear-gradient(to left,transparent,rgba(139,26,26,0.5))`}}/>
+                </div>
               </Reveal>
-            ))}
+              <div style={{display:'flex',flexDirection:'column',gap:'1rem'}}>
+                {skills.filter(sk=>sk.category!=='soft').map((sk,i)=>(
+                  <Reveal key={sk.id} direction="up" delay={i*0.09}>
+                    <TiltCard style={{borderRadius:14}} intensity={10}>
+                      <InkRipple>
+                        <motion.div whileHover={{boxShadow:`0 24px 70px rgba(139,26,26,0.25),0 0 0 1px rgba(139,26,26,0.4)`}}
+                          style={{background:'rgba(8,3,0,0.9)',border:`1px solid rgba(139,26,26,0.18)`,borderRadius:14,padding:'1.5rem',position:'relative',overflow:'hidden',backdropFilter:'blur(14px)',transition:'all 0.3s'}}>
+                          <div style={{position:'absolute',right:8,top:4,fontFamily:'serif',fontSize:'4rem',color:`rgba(139,26,26,0.07)`,lineHeight:1,userSelect:'none'}}>{['技','能','術','力'][i%4]}</div>
+                          <motion.div animate={{scale:[1,1.4,1],opacity:[0.12,0.28,0.12]}} transition={{duration:3+i*0.4,repeat:Infinity}} style={{position:'absolute',top:-15,left:-15,width:70,height:70,borderRadius:'50%',background:`radial-gradient(circle,rgba(139,26,26,0.2),transparent 70%)`}}/>
+                          <div style={{display:'flex',alignItems:'center',gap:'0.5rem',marginBottom:'0.6rem',position:'relative',zIndex:1}}>
+                            <motion.div animate={{y:[0,-3,0]}} transition={{duration:2.5+i*0.3,repeat:Infinity}}
+                              style={{fontFamily:'var(--font-display)',fontSize:'1.4rem',color:J.red,textShadow:`0 0 15px rgba(139,26,26,0.6)`,lineHeight:1}}>{sk.number}</motion.div>
+                            <div style={{flex:1,height:1,background:`linear-gradient(to right,rgba(139,26,26,0.5),transparent)`}}/>
+                          </div>
+                          <div style={{position:'absolute',top:8,right:8,width:10,height:10,borderTop:`1px solid ${J.gold}`,borderRight:`1px solid ${J.gold}`,opacity:0.4}}/>
+                          <div style={{position:'absolute',bottom:8,left:8,width:10,height:10,borderBottom:`1px solid ${J.gold}`,borderLeft:`1px solid ${J.gold}`,opacity:0.4}}/>
+                          <h4 style={{fontFamily:'var(--font-body)',fontWeight:700,fontSize:'0.85rem',color:J.white,textTransform:'uppercase',letterSpacing:'0.5px',marginBottom:'0.5rem',position:'relative',zIndex:1}}>{sk.title}</h4>
+                          <p style={{color:'rgba(245,245,240,0.55)',fontSize:'0.82rem',lineHeight:1.6,position:'relative',zIndex:1}}>{sk.desc}</p>
+                          <motion.div animate={{scaleX:[0,1,0]}} transition={{duration:3,repeat:Infinity,delay:i*0.35}}
+                            style={{position:'absolute',bottom:0,left:0,right:0,height:2,background:`linear-gradient(to right,transparent,${J.red},${J.gold},transparent)`,transformOrigin:'left'}}/>
+                        </motion.div>
+                      </InkRipple>
+                    </TiltCard>
+                  </Reveal>
+                ))}
+              </div>
+            </div>
+            {/* ── Kolom Soft Skill ── */}
+            <div>
+              <Reveal direction="right">
+                <div style={{display:'flex',alignItems:'center',gap:'0.6rem',marginBottom:'1.3rem'}}>
+                  <div style={{flex:1,height:1,background:`linear-gradient(to right,transparent,rgba(201,160,48,0.5))`}}/>
+                  <h3 style={{fontFamily:'var(--font-display)',fontSize:'clamp(1.3rem,4vw,1.9rem)',color:J.gold,letterSpacing:'1px',whiteSpace:'nowrap'}}>SOFT <span style={{color:J.white}}>SKILL</span></h3>
+                  <div style={{flex:1,height:1,background:`linear-gradient(to left,transparent,rgba(201,160,48,0.5))`}}/>
+                </div>
+              </Reveal>
+              <div style={{display:'flex',flexDirection:'column',gap:'1rem'}}>
+                {skills.filter(sk=>sk.category==='soft').map((sk,i)=>(
+                  <Reveal key={sk.id} direction="up" delay={i*0.09}>
+                    <TiltCard style={{borderRadius:14}} intensity={10}>
+                      <InkRipple>
+                        <motion.div whileHover={{boxShadow:`0 24px 70px rgba(201,160,48,0.2),0 0 0 1px rgba(201,160,48,0.35)`}}
+                          style={{background:'rgba(8,3,0,0.9)',border:`1px solid rgba(201,160,48,0.18)`,borderRadius:14,padding:'1.5rem',position:'relative',overflow:'hidden',backdropFilter:'blur(14px)',transition:'all 0.3s'}}>
+                          <div style={{position:'absolute',right:8,top:4,fontFamily:'serif',fontSize:'4rem',color:`rgba(201,160,48,0.07)`,lineHeight:1,userSelect:'none'}}>{['和','心','絆','善'][i%4]}</div>
+                          <motion.div animate={{scale:[1,1.4,1],opacity:[0.12,0.28,0.12]}} transition={{duration:3+i*0.4,repeat:Infinity}} style={{position:'absolute',top:-15,left:-15,width:70,height:70,borderRadius:'50%',background:`radial-gradient(circle,rgba(201,160,48,0.2),transparent 70%)`}}/>
+                          <div style={{display:'flex',alignItems:'center',gap:'0.5rem',marginBottom:'0.6rem',position:'relative',zIndex:1}}>
+                            <motion.div animate={{y:[0,-3,0]}} transition={{duration:2.5+i*0.3,repeat:Infinity}}
+                              style={{fontFamily:'var(--font-display)',fontSize:'1.4rem',color:J.gold,textShadow:`0 0 15px rgba(201,160,48,0.6)`,lineHeight:1}}>{sk.number}</motion.div>
+                            <div style={{flex:1,height:1,background:`linear-gradient(to right,rgba(201,160,48,0.5),transparent)`}}/>
+                          </div>
+                          <div style={{position:'absolute',top:8,right:8,width:10,height:10,borderTop:`1px solid ${J.red}`,borderRight:`1px solid ${J.red}`,opacity:0.4}}/>
+                          <div style={{position:'absolute',bottom:8,left:8,width:10,height:10,borderBottom:`1px solid ${J.red}`,borderLeft:`1px solid ${J.red}`,opacity:0.4}}/>
+                          <h4 style={{fontFamily:'var(--font-body)',fontWeight:700,fontSize:'0.85rem',color:J.white,textTransform:'uppercase',letterSpacing:'0.5px',marginBottom:'0.5rem',position:'relative',zIndex:1}}>{sk.title}</h4>
+                          <p style={{color:'rgba(245,245,240,0.55)',fontSize:'0.82rem',lineHeight:1.6,position:'relative',zIndex:1}}>{sk.desc}</p>
+                          <motion.div animate={{scaleX:[0,1,0]}} transition={{duration:3,repeat:Infinity,delay:i*0.35}}
+                            style={{position:'absolute',bottom:0,left:0,right:0,height:2,background:`linear-gradient(to right,transparent,${J.gold},${J.red},transparent)`,transformOrigin:'left'}}/>
+                        </motion.div>
+                      </InkRipple>
+                    </TiltCard>
+                  </Reveal>
+                ))}
+              </div>
+            </div>
           </div>
+          <style>{`
+            @media (max-width: 860px) {
+              .skills-columns { grid-template-columns: 1fr !important; gap: 3rem !important; }
+            }
+          `}</style>
         </div>
       </JapanBgSection>
 

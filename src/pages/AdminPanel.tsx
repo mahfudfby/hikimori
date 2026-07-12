@@ -33,7 +33,7 @@ const LS_EXP='hk_experience_data', LS_CONTACT='hk_contact_data', LS_CERT='hk_cer
 interface HomeData    { heroTitle:string; heroSubtitle:string; heroTagline:string; heroCtaSecondary:string; heroCtaSecondaryLink:string; heroCta:string; heroCtaLink:string; heroPhotoUrl:string; heroTagRight:string; }
 interface AboutData   { name:string; location:string; bio1:string; bio2:string; photoUrl:string; instagram?:string; linkedin?:string; whatsapp?:string; threads?:string; tiktok?:string; email?:string; }
 interface GalleryItem { id:string; url:string; caption?:string; size?:'small'|'medium'|'large'|'wide'|'tall'; }
-interface SkillItem   { id:string; number:string; title:string; desc:string; }
+interface SkillItem   { id:string; number:string; title:string; desc:string; category?:'hard'|'soft'; }
 interface ExpItem     { id:string; position:string; company:string; period:string; icon:string; tags:string; desc?:string; logoUrl?:string; }
 interface ContactData { email:string; location:string; website:string; instagram:string; linkedin:string; twitter:string; }
 interface CertItem    { id:string; name:string; year:string; issuer:string; subtitle:string; imageUrl:string; }
@@ -42,7 +42,20 @@ interface CertItem    { id:string; name:string; year:string; issuer:string; subt
 const D_HOME:HomeData    = { heroTitle:'Shaping tomorrow', heroSubtitle:'with vision and action.', heroTagline:'We back visionaries and craft ventures that define what comes next.', heroCtaSecondary:'Start a Chat', heroCtaSecondaryLink:'#contact', heroCta:'Explore Now', heroCtaLink:'/portofolio', heroPhotoUrl:'', heroTagRight:'Investing. Building. Advisory.' };
 const D_ABOUT:AboutData  = { name:'Mahfudfebry', location:'Nganjuk, Indonesia', bio1:'Halo! Nama saya Mahfudfebry, seorang profesional muda dari Nganjuk, Indonesia.', bio2:'Di setiap proyek, saya selalu berusaha memberikan hasil terbaik.', photoUrl:'https://res.cloudinary.com/dl4pyan8v/image/upload/v1783866519/Mahfudfebry_casual_oj8r1d.png', instagram:'mahfudfebry', linkedin:'mahfud-febry-styanto', whatsapp:'6282234651413', threads:'mahfudfebry', tiktok:'mahfudfebry', email:'Mahfudfebrys@gmail.com' };
 const D_GALLERY:GalleryItem[] = [];
-const D_SKILLS:SkillItem[]= [{id:'1',number:'01',title:'Branding & Identity Design',desc:"Crafting memorable logos and visual systems."},{id:'2',number:'02',title:'Creativity & Problem-Solving',desc:'Thinking outside the box while solving design challenges.'},{id:'3',number:'03',title:'Concept Development',desc:'Skilled in brainstorming and translating abstract ideas.'},{id:'4',number:'04',title:'Proper Time Management',desc:'Capable of handling multiple projects and meeting deadlines.'}];
+const D_SKILLS:SkillItem[]= [
+  { id:'1', number:'01', title:'Payroll & Administrasi Penggajian', desc:'Menghitung gaji, potongan, bonus, serta iuran BPJS & BPJS-Tk karyawan (UD Duta Pangan).', category:'hard' },
+  { id:'2', number:'02', title:'HR & General Affairs Management', desc:'Mengelola fasilitas, aset operasional, uraian jabatan (jobdesk), dan analisa beban kerja tiap divisi.', category:'hard' },
+  { id:'3', number:'03', title:'IT Technical Support', desc:'Troubleshooting hardware/software dan dukungan pengguna untuk operasional kantor sehari-hari.', category:'hard' },
+  { id:'4', number:'04', title:'Food Production & Food Safety (SOP)', desc:'Food preparation, kontrol kualitas bahan baku, dan kepatuhan standar food safety di dapur produksi.', category:'hard' },
+  { id:'5', number:'05', title:'Welding & Fabrication', desc:'Pengelasan dan pemasangan pagar, tralis, kanopi, hingga rolling door di lapangan.', category:'hard' },
+  { id:'6', number:'06', title:'Sales, Marketing & Administrasi Operasional', desc:'Penjualan lapangan, dokumentasi administrasi, dan koordinasi operasional harian perusahaan.', category:'hard' },
+  { id:'7', number:'01', title:'Pelayanan Pelanggan (Customer Service)', desc:'Menjaga kepuasan dan rating pelanggan lewat interaksi ramah dan responsif di berbagai peran layanan.', category:'soft' },
+  { id:'8', number:'02', title:'Kerja Tim & Koordinasi Lintas Divisi', desc:'Terbiasa berkoordinasi dengan tim dapur, kasir, hingga divisi lain untuk kelancaran operasional.', category:'soft' },
+  { id:'9', number:'03', title:'Disiplin & Keselamatan Kerja', desc:'Konsisten mematuhi SOP dan standar keselamatan, baik di jalan raya maupun lokasi kerja lapangan.', category:'soft' },
+  { id:'10', number:'04', title:'Manajemen Waktu & Target Kerja', desc:'Mampu bekerja dengan target service time dan tenggat penjualan tanpa mengorbankan kualitas.', category:'soft' },
+  { id:'11', number:'05', title:'Adaptasi & Fleksibilitas Lintas Industri', desc:'Terbukti mampu beradaptasi cepat di berbagai bidang berbeda — F&B, IT, HR, hingga manufaktur.', category:'soft' },
+  { id:'12', number:'06', title:'Kepedulian Sosial & Tanggung Jawab Komunitas', desc:'Berpengalaman menyusun program sosialisasi kesehatan dan perlindungan anak bersama instansi pemerintah.', category:'soft' },
+];
 const D_EXP:ExpItem[]    = [
   { id:'1', position:'HR / General Affairs', company:'UD Duta Pangan (Food Manufacturing)', period:'Agustus 2025 – April 2026 · 9 bln · Full-time', icon:'👥', tags:'Payroll & Penggajian,BPJS & BPJS-Tk,Pengelolaan Fasilitas & Aset,Koordinasi Lintas Divisi,Penyusunan Jobdesk,Analisa Beban Kerja', desc:'• Mengelola fasilitas dan aset operasional perusahaan\n• Menangani koordinasi lintas divisi untuk kelancaran operasional harian\n• Penghitungan Gaji, Potongan, & Bonus (Payroll)\n• Penghitungan Jaminan Sosial (BPJS & BPJS-Tk)\n• Menyusun Uraian Jabatan (Jobdesk)\n• Analisa Beban Kerja setiap Divisi' },
   { id:'2', position:'Human Resources Generalist', company:'UD Duta Pangan (Food Manufacturing)', period:'Agustus 2025 – April 2026 · 9 bln · Full-time', icon:'🧑\u200d💼', tags:'BPJS,Analisa Beban Kerja', desc:'' },
@@ -630,9 +643,24 @@ const AdminPanel: React.FC = () => {
                   <h1 style={{ fontFamily:'var(--font-display)', fontSize:'clamp(1.8rem,5vw,2.5rem)', marginBottom:'0.2rem' }}>SKILLS & TOOLS</h1>
                   <p style={{ color:'var(--white-dim)', fontSize:'0.88rem' }}>{skills.length} skill tersimpan</p>
                 </div>
-                <button onClick={() => setSkillForm({ id:'', number:(skills.length+1).toString().padStart(2,'0'), title:'', desc:'' })} style={btn(true)}>+ Tambah Skill</button>
+                <button onClick={() => setSkillForm({ id:'', number:(skills.length+1).toString().padStart(2,'0'), title:'', desc:'', category:'hard' })} style={btn(true)}>+ Tambah Skill</button>
               </div>
-              {skills.map(sk => (
+              <h3 style={{ color:'var(--amber)', fontSize:'0.85rem', fontWeight:700, textTransform:'uppercase', letterSpacing:'1px', margin:'0.5rem 0 0.8rem' }}>💼 Hard Skill ({skills.filter(s=>s.category!=='soft').length})</h3>
+              {skills.filter(sk=>sk.category!=='soft').map(sk => (
+                <div key={sk.id} style={{ ...card, display:'flex', alignItems:'flex-start', gap:'1rem', marginBottom:'0.6rem' }}>
+                  <div style={{ fontFamily:'var(--font-display)', fontSize:'2rem', color:'var(--amber)', flexShrink:0 }}>{sk.number}</div>
+                  <div style={{ flex:1, minWidth:0 }}>
+                    <div style={{ fontWeight:700, fontSize:'0.9rem', marginBottom:'0.2rem', wordBreak:'break-word' }}>{sk.title}</div>
+                    <div style={{ color:'var(--white-dim)', fontSize:'0.82rem', lineHeight:1.5 }}>{sk.desc}</div>
+                  </div>
+                  <div style={{ display:'flex', gap:6, flexShrink:0 }}>
+                    <button onClick={() => setSkillForm({ ...sk })} style={{ ...btn(), fontSize:'0.78rem', padding:'6px 12px' }}>✏️</button>
+                    <button onClick={() => deleteSkill(sk.id)} style={{ background:'rgba(255,60,60,0.1)', border:'1px solid rgba(255,60,60,0.2)', color:'#ff6b6b', borderRadius:8, padding:'6px 12px', cursor:'pointer', fontSize:'0.78rem' }}>🗑️</button>
+                  </div>
+                </div>
+              ))}
+              <h3 style={{ color:'var(--amber)', fontSize:'0.85rem', fontWeight:700, textTransform:'uppercase', letterSpacing:'1px', margin:'1.5rem 0 0.8rem' }}>🤝 Soft Skill ({skills.filter(s=>s.category==='soft').length})</h3>
+              {skills.filter(sk=>sk.category==='soft').map(sk => (
                 <div key={sk.id} style={{ ...card, display:'flex', alignItems:'flex-start', gap:'1rem', marginBottom:'0.6rem' }}>
                   <div style={{ fontFamily:'var(--font-display)', fontSize:'2rem', color:'var(--amber)', flexShrink:0 }}>{sk.number}</div>
                   <div style={{ flex:1, minWidth:0 }}>
@@ -672,7 +700,7 @@ const AdminPanel: React.FC = () => {
                   )}
                   <div style={{ flex:1, minWidth:0 }}>
                     <div style={{ fontWeight:700, marginBottom:'0.2rem', wordBreak:'break-word' }}>{exp.position}</div>
-                    <div style={{ color:'var(--amber)', fontSize:'0.82rem', fontFamily:'var(--font-script)' }}>{exp.company}</div>
+                    <div style={{ color:'var(--amber)', fontSize:'0.82rem', fontFamily:'var(--font-body)', fontWeight:600 }}>{exp.company}</div>
                     {exp.period && <div style={{ color:'var(--white-dim)', fontSize:'0.78rem', marginTop:'0.2rem' }}>{exp.period}</div>}
                     {exp.tags && <div style={{ color:'var(--white-dim)', fontSize:'0.75rem', marginTop:'0.3rem' }}>{exp.tags}</div>}
                   </div>
@@ -817,6 +845,12 @@ const AdminPanel: React.FC = () => {
                   <div><label style={lbl}>Judul</label><input style={inp} value={skillForm.title} onChange={e => setSkillForm({ ...skillForm, title:e.target.value })} placeholder="Nama skill" /></div>
                 </div>
                 <div><label style={lbl}>Deskripsi</label><textarea style={{ ...inp, minHeight:80, resize:'vertical' }} value={skillForm.desc} onChange={e => setSkillForm({ ...skillForm, desc:e.target.value })} /></div>
+                <div><label style={lbl}>Kategori</label>
+                  <select style={inp} value={skillForm.category||'hard'} onChange={e => setSkillForm({ ...skillForm, category:e.target.value as SkillItem['category'] })}>
+                    <option value="hard">💼 Hard Skill</option>
+                    <option value="soft">🤝 Soft Skill</option>
+                  </select>
+                </div>
                 <div style={{ display:'flex', gap:'0.6rem' }}>
                   <button onClick={saveSkill} style={{ ...btn(true), flex:1 }}>💾 Simpan</button>
                   <button onClick={() => setSkillForm(null)} style={{ ...btn(), padding:'10px 16px' }}>Batal</button>
