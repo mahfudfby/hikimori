@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 const LS_CONTACT = 'hk_contact_data';
 interface ContactData { email:string; location:string; website:string; instagram:string; linkedin:string; twitter:string; }
-const D: ContactData = { email:'mahfudfebry@hikimori.web.id', location:'Nganjuk, Indonesia', website:'hikimori.web.id', instagram:'', linkedin:'', twitter:'' };
+const D: ContactData = { email:'Mahfudfebrys@gmail.com', location:'Nganjuk, Indonesia', website:'hikimori.web.id', instagram:'', linkedin:'', twitter:'' };
 
 const Footer: React.FC = () => {
   let contact: ContactData = D;
