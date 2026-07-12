@@ -20,7 +20,7 @@ interface AboutData {
 }
 interface SkillItem { id: string; number: string; title: string; desc: string; }
 interface GalleryItem { id: string; url: string; caption?: string; size?: 'small'|'medium'|'large'|'wide'|'tall'; }
-interface ExpItem   { id: string; position: string; company: string; period: string; icon: string; tags: string; desc?: string; }
+interface ExpItem   { id: string; position: string; company: string; period: string; icon: string; tags: string; desc?: string; logoUrl?: string; }
 interface CertItem  { id: string; name: string; year: string; issuer: string; subtitle: string; imageUrl: string; }
 
 /* Default data — sama persis dengan D_ABOUT, D_SKILLS, D_EXP, D_CERT di Home.tsx */
@@ -38,10 +38,37 @@ const D_SKILLS: SkillItem[] = [
   { id: '4', number: '04', title: 'Proper Time Management', desc: 'Capable of handling multiple projects and meeting tight deadlines.' },
 ];
 const D_EXP: ExpItem[] = [
-  { id: '1', position: 'Administrasi Produksi', company: 'UD Duta Pangan', period: 'Juli 2024 – Desember 2024', icon: '🏭', tags: 'Administrasi Produksi Pabrik,Monitoring Bahan Baku,Monitoring Hasil Produksi,Penyusunan Laporan Produksi,Pengendalian Dokumen,Manajemen FiFO' },
-  { id: '2', position: 'IT Support', company: 'UD Duta Pangan', period: 'Januari 2025 – Agustus 2025', icon: '💻', tags: 'Troubleshooting Hardware & Software,Konfigurasi LAN/WiFi,Pemeliharaan Jaringan,Dukungan Pengguna (User Support),Penanganan Insiden TI,Inventarisasi Perangkat TI' },
-  { id: '3', position: 'Staff HRD & General Affairs', company: 'UD Duta Pangan', period: 'Agustus 2025 – April 2026', icon: '👥', tags: 'Pengelolaan Fasilitas & Aset,Koordinasi Lintas Divisi,Payroll & Penghitungan Gaji,Jaminan Sosial BPJS & BPJS-Tk,Penyusunan Jobdesk,Analisa Beban Kerja,Laporan Harian Mingguan Bulanan' },
+  { id: '1', position: 'HR / General Affairs', company: 'UD Duta Pangan (Food Manufacturing)', period: 'Agustus 2025 – April 2026 · 9 bln · Full-time', icon: '👥', tags: 'Payroll & Penggajian,BPJS & BPJS-Tk,Pengelolaan Fasilitas & Aset,Koordinasi Lintas Divisi,Penyusunan Jobdesk,Analisa Beban Kerja', desc: '• Mengelola fasilitas dan aset operasional perusahaan\n• Menangani koordinasi lintas divisi untuk kelancaran operasional harian\n• Penghitungan Gaji, Potongan, & Bonus (Payroll)\n• Penghitungan Jaminan Sosial (BPJS & BPJS-Tk)\n• Menyusun Uraian Jabatan (Jobdesk)\n• Analisa Beban Kerja setiap Divisi' },
+  { id: '2', position: 'Human Resources Generalist', company: 'UD Duta Pangan (Food Manufacturing)', period: 'Agustus 2025 – April 2026 · 9 bln · Full-time', icon: '🧑\u200d💼', tags: 'BPJS,Analisa Beban Kerja', desc: '' },
+  { id: '3', position: 'Information Technology Support Specialist', company: 'UD Duta Pangan (Food Manufacturing)', period: 'Januari 2025 – Agustus 2025 · 8 bln · Full-time', icon: '💻', tags: 'Technical Support,General Office Work', desc: '' },
+  { id: '4', position: 'Administrative', company: 'UD Duta Pangan (Food Manufacturing)', period: 'Agustus 2024 – Mei 2025 · 10 bln · Contract', icon: '📋', tags: 'Administrasi', desc: '• Menangani Administrasi' },
+  { id: '5', position: 'Sales Marketing Positions', company: 'UD Duta Pangan (Food Manufacturing)', period: 'April 2024 – Juli 2024 · 4 bln · Contract', icon: '📈', tags: 'Marketing,Sales Operations', desc: '• Sales Lapangan\n• Menjual Produk Premix Tepung Bakso' },
+  { id: '6', position: 'Driver Bike', company: 'Grab', period: 'Februari 2022 – Desember 2025 · 3 thn 11 bln · Part-time', icon: '🏍️', tags: '', desc: '• Mengantar penumpang dengan aman dan tepat waktu\n• Mengantar pesanan makanan (GrabFood)\n• Mengantar paket/barang (GrabExpress)\n• Melayani titip belanja (GrabMart)\n• Menjaga rating dan kepuasan pelanggan\n• Mematuhi standar keselamatan berkendara' },
+  { id: '7', position: 'Crew', company: 'PT. Richeese Kuliner Indonesia', period: 'Oktober 2023 – Maret 2024 · 6 bln · Contract', icon: '🍗', tags: 'Cooking,Platting', desc: '• Memasak ayam goreng crispy sesuai SOP dan standar resep\n• Meracik sauce/saus sesuai standar rasa perusahaan\n• Melakukan food preparation harian (marinasi, potong, susun stok)\n• Menjaga kualitas dan kebersihan bahan baku (food safety)\n• Merekap inventory harian (stok masuk, terpakai, sisa stok)\n• Melaporkan kebutuhan restock ke supervisor/leader shift\n• Berkoordinasi dengan tim dapur dan kasir untuk kelancaran operasional\n• Menjaga kecepatan penyajian sesuai target service time' },
+  { id: '8', position: 'Kitchen Staff', company: 'Mikane Gepuktular', period: 'Januari 2023 – November 2023 · 11 bln · Part-time', icon: '👨\u200d🍳', tags: '', desc: '• Sebagai Juru Masak Dan Persiapan Bahan Mentah' },
+  { id: '9', position: 'Crew', company: 'Mie Gacoan', period: 'Oktober 2022 – Desember 2022 · 3 bln · Contract', icon: '🍜', tags: 'Hospitality Industry,Food and Beverage Operations', desc: '• Hospitality Customer' },
+  { id: '10', position: 'Welding Operator', company: 'Lancar Jaya Kota Malang', period: 'Agustus 2018 – Januari 2021 · 2 thn 6 bln · Freelance', icon: '🔩', tags: 'Welding,Project Planning', desc: '• Operator welder pembuatan pagar, tralis, kanopi, rolling door, dll hingga finishing serta pemasangan di lapangan' },
+  { id: '11', position: 'Human Resources Assistant', company: 'Dinas Sosial PPPA Kab Nganjuk', period: 'Mei 2017 – Juni 2018 · 1 thn 2 bln · Full-time', icon: '🏛️', tags: 'Sumber Daya Manusia (SDM),Project Management', desc: '• Staff SDM bertugas dalam menyiapkan materi untuk anggota Forum Perlindungan Anak Nganjuk untuk mewujudkan nganjuk kabupaten layak anak' },
+  { id: '12', position: 'Human Resources Assistant', company: 'Dinas Kesehatan Nganjuk', period: 'Maret 2016 – Mei 2017 · 1 thn 3 bln · Full-time', icon: '🏛️', tags: 'Sumber Daya Manusia (SDM),Project Management', desc: '• Sebagai staff yang menangani perencanaan kegiatan dan agenda program kerja dalam mensosialisasikan kesehatan remaja di kabupaten nganjuk' },
 ];
+
+/* ─── Logo Perusahaan: upload manual (logoUrl) atau otomatis cari via Clearbit
+   untuk perusahaan/PT besar yang dikenal. Jika tidak ditemukan, fallback ke emoji icon. ─── */
+const KNOWN_LOGO_DOMAINS: Record<string, string> = {
+  'grab': 'grab.com',
+  'richeese': 'richeese.co.id',
+  'mie gacoan': 'miegacoan.co.id',
+};
+const guessLogoDomain = (company: string): string | null => {
+  const c = company.toLowerCase();
+  for (const key in KNOWN_LOGO_DOMAINS) if (c.includes(key)) return KNOWN_LOGO_DOMAINS[key];
+  return null;
+};
+const resolveLogo = (exp: { company: string; logoUrl?: string }): string | null => {
+  if (exp.logoUrl) return exp.logoUrl;
+  const domain = guessLogoDomain(exp.company);
+  return domain ? `https://logo.clearbit.com/${domain}` : null;
+};
 const D_CERT: CertItem[] = [
   { id: '1', name: 'Google Digital Marketing', year: '2023', issuer: 'Google', subtitle: 'Fundamentals of Digital Marketing', imageUrl: '' },
   { id: '2', name: 'HR Management Professional', year: '2022', issuer: 'BNSP Indonesia', subtitle: 'Sertifikasi Kompetensi SDM', imageUrl: '' },
@@ -114,6 +141,8 @@ const useHomeData = () => {
 /* ─── ExpCardAbout: tiap card punya state sendiri (valid hooks) ─── */
 const ExpCardAbout: React.FC<{ exp: ExpItem; index: number }> = ({ exp, index: i }) => {
   const [open, setOpen] = useState(false);
+  const [logoFailed, setLogoFailed] = useState(false);
+  const logo = resolveLogo(exp);
   return (
     <AnimatedSection direction={i % 2 === 0 ? 'left' : 'right'} delay={i * 0.12}>
       <div className="float-hover" style={{
@@ -125,7 +154,13 @@ const ExpCardAbout: React.FC<{ exp: ExpItem; index: number }> = ({ exp, index: i
       }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '0.4rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
-            <span style={{ fontSize: '1.5rem' }}>{exp.icon}</span>
+            {logo && !logoFailed ? (
+              <div style={{ width: 32, height: 32, borderRadius: 8, background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, overflow: 'hidden' }}>
+                <img src={logo} alt={exp.company} onError={() => setLogoFailed(true)} style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 4 }} />
+              </div>
+            ) : (
+              <span style={{ fontSize: '1.5rem' }}>{exp.icon}</span>
+            )}
             <h3 style={{ fontFamily: 'var(--font-body)', fontWeight: 700, color: 'var(--white)', fontSize: '1rem' }}>
               {exp.position}
             </h3>

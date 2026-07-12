@@ -16,18 +16,45 @@ const DATA_VERSION='v8'; // Naikkan versi ini setiap kali ada perubahan default 
 interface HomeData    {heroTitle:string;heroSubtitle:string;heroTagline:string;heroCtaSecondary:string;heroCtaSecondaryLink:string;heroCta:string;heroCtaLink:string;heroPhotoUrl:string;heroTagRight:string;}
 interface AboutData   {name:string;location:string;bio1:string;bio2:string;photoUrl:string;instagram?:string;linkedin?:string;whatsapp?:string;threads?:string;tiktok?:string;email?:string;jobstreet?:string;ibenews?:string;}
 interface SkillItem   {id:string;number:string;title:string;desc:string;}
-interface ExpItem     {id:string;position:string;company:string;period:string;icon:string;tags:string;desc?:string;}
+interface ExpItem     {id:string;position:string;company:string;period:string;icon:string;tags:string;desc?:string;logoUrl?:string;}
 interface ContactData {email:string;location:string;website:string;instagram:string;linkedin:string;twitter:string;}
 interface CertItem    {id:string;name:string;year:string;issuer:string;subtitle:string;imageUrl:string;}
 
 const D_HOME:HomeData={heroTitle:'Mahfud Febry Styanto, S.Kom,. CHRG',heroSubtitle:"HR Professional Officer' | General Affairs | IT Support Specialist | Website Developer\nNetwork Engineer | Content Writer | F&B Operations",heroTagline:'We back visionaries and craft ventures that define what comes next.',heroCtaSecondary:'Start a Chat',heroCtaSecondaryLink:'https://wa.me/6282234651413',heroCta:'Explore Now',heroCtaLink:'/portofolio',heroPhotoUrl:'',heroTagRight:'Nganjuk, Jawa Timur'};
-const D_ABOUT:AboutData={name:'Mahfudfebry',location:'Nganjuk, Indonesia',bio1:'Profesional multidisiplin di bidang HRD Payroll, General Affairs, IT Support, FMGC dan Administrasi Operasional dengan pengalaman nyata di industri manufaktur. Telah melewati perjalanan lintas divisi dalam satu perusahaan pada periode berbeda sebagai bukti loyalitas dan kepercayaan yang diberikan atas pencapaian di setiap peran.',bio2:'Kompeten dalam payroll, analisa beban kerja, BPJS, pengelolaan 100+ perangkat IT, serta koordinasi operasional. Bersertifikasi BNSP CHRG, S.Kom., IPK 3.39.',photoUrl:'',instagram:'mahfudfebry',linkedin:'mahfud-febry-styanto',whatsapp:'6282234651413',threads:'mahfudfebry',tiktok:'mahfudfebry',email:'Mahfudfebrys@gmail.com',jobstreet:'https://id.jobstreet.com/id/profiles/xT4NqdPjhP',ibenews:'https://www.ibenews.id/author/10521/Mahfud-Febry-Styanto'};
+const D_ABOUT:AboutData={name:'Mahfudfebry',location:'Nganjuk, Indonesia',bio1:'Profesional multidisiplin di bidang HRD Payroll, General Affairs, IT Support, FMCG, Manufacturing dan Administrasi Operasional dengan pengalaman nyata di industri manufaktur. Telah melewati perjalanan lintas divisi dalam satu perusahaan pada periode berbeda sebagai bukti loyalitas dan kepercayaan yang diberikan atas pencapaian di setiap peran.',bio2:'Kompeten dalam payroll, analisa beban kerja, BPJS, pengelolaan 100+ perangkat IT, serta koordinasi operasional. Bersertifikasi BNSP CHRG, S.Kom., IPK 3.39.',photoUrl:'',instagram:'mahfudfebry',linkedin:'mahfud-febry-styanto',whatsapp:'6282234651413',threads:'mahfudfebry',tiktok:'mahfudfebry',email:'Mahfudfebrys@gmail.com',jobstreet:'https://id.jobstreet.com/id/profiles/xT4NqdPjhP',ibenews:'https://www.ibenews.id/author/10521/Mahfud-Febry-Styanto'};
 const D_SKILLS:SkillItem[]=[{id:'1',number:'01',title:'Branding & Identity Design',desc:"Crafting memorable logos and visual systems that reflect a brand's essence."},{id:'2',number:'02',title:'Creativity & Problem-Solving',desc:'Thinking outside the box while solving design challenges with strategic insight.'},{id:'3',number:'03',title:'Concept Development',desc:'Skilled in brainstorming and translating abstract ideas into visual narratives.'},{id:'4',number:'04',title:'Proper Time Management',desc:'Capable of handling multiple projects and meeting tight deadlines.'}];
 const D_EXP:ExpItem[]=[
-  {id:'1',position:'Administrasi Produksi',company:'UD Duta Pangan',period:'Juli 2024 – Desember 2024',icon:'🏭',tags:'Administrasi Produksi Pabrik,Monitoring Bahan Baku,Monitoring Hasil Produksi,Penyusunan Laporan Produksi,Pengendalian Dokumen,Manajemen FiFO',desc:'• Mengelola administrasi produksi dan dokumentasi pabrik secara akurat\n• Monitoring produksi, stok bahan baku, dan distribusi produk\n• Menyusun laporan produksi dan koordinasi dengan tim terkait\n• Menjamin kelancaran proses produksi dan ketepatan distribusi'},
-  {id:'2',position:'IT Support',company:'UD Duta Pangan',period:'Januari 2025 – Agustus 2025',icon:'💻',tags:'Troubleshooting Hardware & Software,Konfigurasi LAN/WiFi,Pemeliharaan Jaringan,Dukungan Pengguna (User Support),Penanganan Insiden TI,Inventarisasi Perangkat TI',desc:'• Menangani 30+ perangkat komputer dan jaringan kantor\n• Melakukan troubleshooting hardware, software, LAN, dan WiFi dengan downtime minimal\n• Menangani insiden IT harian dan pemeliharaan sistem berkala'},
-  {id:'3',position:'Staff HRD & General Affairs',company:'UD Duta Pangan',period:'Agustus 2025 – April 2026',icon:'👥',tags:'Pengelolaan Fasilitas & Aset,Koordinasi Lintas Divisi,Payroll & Penghitungan Gaji,Jaminan Sosial BPJS & BPJS-Tk,Penyusunan Jobdesk,Analisa Beban Kerja,Laporan Harian Mingguan Bulanan',desc:'• Mengelola fasilitas dan aset operasional perusahaan\n• Menangani koordinasi lintas divisi untuk kelancaran operasional harian\n• Penghitungan Gaji, Potongan, & Bonus (Payroll)\n• Penghitungan Jaminan Sosial (BPJS & BPJS-Tk)\n• Menyusun Uraian Jabatan (Jobdesk)\n• Analisa Beban Kerja setiap Divisi\n• Menyusun Laporan Harian, Mingguan, Bulanan'}
+  {id:'1',position:'HR / General Affairs',company:'UD Duta Pangan (Food Manufacturing)',period:'Agustus 2025 – April 2026 · 9 bln · Full-time',icon:'👥',tags:'Payroll & Penggajian,BPJS & BPJS-Tk,Pengelolaan Fasilitas & Aset,Koordinasi Lintas Divisi,Penyusunan Jobdesk,Analisa Beban Kerja',desc:'• Mengelola fasilitas dan aset operasional perusahaan\n• Menangani koordinasi lintas divisi untuk kelancaran operasional harian\n• Penghitungan Gaji, Potongan, & Bonus (Payroll)\n• Penghitungan Jaminan Sosial (BPJS & BPJS-Tk)\n• Menyusun Uraian Jabatan (Jobdesk)\n• Analisa Beban Kerja setiap Divisi'},
+  {id:'2',position:'Human Resources Generalist',company:'UD Duta Pangan (Food Manufacturing)',period:'Agustus 2025 – April 2026 · 9 bln · Full-time',icon:'🧑\u200d💼',tags:'BPJS,Analisa Beban Kerja',desc:''},
+  {id:'3',position:'Information Technology Support Specialist',company:'UD Duta Pangan (Food Manufacturing)',period:'Januari 2025 – Agustus 2025 · 8 bln · Full-time',icon:'💻',tags:'Technical Support,General Office Work',desc:''},
+  {id:'4',position:'Administrative',company:'UD Duta Pangan (Food Manufacturing)',period:'Agustus 2024 – Mei 2025 · 10 bln · Contract',icon:'📋',tags:'Administrasi',desc:'• Menangani Administrasi'},
+  {id:'5',position:'Sales Marketing Positions',company:'UD Duta Pangan (Food Manufacturing)',period:'April 2024 – Juli 2024 · 4 bln · Contract',icon:'📈',tags:'Marketing,Sales Operations',desc:'• Sales Lapangan\n• Menjual Produk Premix Tepung Bakso'},
+  {id:'6',position:'Driver Bike',company:'Grab',period:'Februari 2022 – Desember 2025 · 3 thn 11 bln · Part-time',icon:'🏍️',tags:'',desc:'• Mengantar penumpang dengan aman dan tepat waktu\n• Mengantar pesanan makanan (GrabFood)\n• Mengantar paket/barang (GrabExpress)\n• Melayani titip belanja (GrabMart)\n• Menjaga rating dan kepuasan pelanggan\n• Mematuhi standar keselamatan berkendara'},
+  {id:'7',position:'Crew',company:'PT. Richeese Kuliner Indonesia',period:'Oktober 2023 – Maret 2024 · 6 bln · Contract',icon:'🍗',tags:'Cooking,Platting',desc:'• Memasak ayam goreng crispy sesuai SOP dan standar resep\n• Meracik sauce/saus sesuai standar rasa perusahaan\n• Melakukan food preparation harian (marinasi, potong, susun stok)\n• Menjaga kualitas dan kebersihan bahan baku (food safety)\n• Merekap inventory harian (stok masuk, terpakai, sisa stok)\n• Melaporkan kebutuhan restock ke supervisor/leader shift\n• Berkoordinasi dengan tim dapur dan kasir untuk kelancaran operasional\n• Menjaga kecepatan penyajian sesuai target service time'},
+  {id:'8',position:'Kitchen Staff',company:'Mikane Gepuktular',period:'Januari 2023 – November 2023 · 11 bln · Part-time',icon:'👨\u200d🍳',tags:'',desc:'• Sebagai Juru Masak Dan Persiapan Bahan Mentah'},
+  {id:'9',position:'Crew',company:'Mie Gacoan',period:'Oktober 2022 – Desember 2022 · 3 bln · Contract',icon:'🍜',tags:'Hospitality Industry,Food and Beverage Operations',desc:'• Hospitality Customer'},
+  {id:'10',position:'Welding Operator',company:'Lancar Jaya Kota Malang',period:'Agustus 2018 – Januari 2021 · 2 thn 6 bln · Freelance',icon:'🔩',tags:'Welding,Project Planning',desc:'• Operator welder pembuatan pagar, tralis, kanopi, rolling door, dll hingga finishing serta pemasangan di lapangan'},
+  {id:'11',position:'Human Resources Assistant',company:'Dinas Sosial PPPA Kab Nganjuk',period:'Mei 2017 – Juni 2018 · 1 thn 2 bln · Full-time',icon:'🏛️',tags:'Sumber Daya Manusia (SDM),Project Management',desc:'• Staff SDM bertugas dalam menyiapkan materi untuk anggota Forum Perlindungan Anak Nganjuk untuk mewujudkan nganjuk kabupaten layak anak'},
+  {id:'12',position:'Human Resources Assistant',company:'Dinas Kesehatan Nganjuk',period:'Maret 2016 – Mei 2017 · 1 thn 3 bln · Full-time',icon:'🏛️',tags:'Sumber Daya Manusia (SDM),Project Management',desc:'• Sebagai staff yang menangani perencanaan kegiatan dan agenda program kerja dalam mensosialisasikan kesehatan remaja di kabupaten nganjuk'}
 ];
+
+/* ─── Logo Perusahaan: upload manual (logoUrl) atau otomatis cari via Clearbit
+   untuk perusahaan/PT besar yang dikenal. Jika tidak ditemukan, fallback ke emoji icon. ─── */
+const KNOWN_LOGO_DOMAINS:Record<string,string>={
+  'grab':'grab.com',
+  'richeese':'richeese.co.id',
+  'mie gacoan':'miegacoan.co.id',
+};
+const guessLogoDomain=(company:string):string|null=>{
+  const c=company.toLowerCase();
+  for(const key in KNOWN_LOGO_DOMAINS) if(c.includes(key)) return KNOWN_LOGO_DOMAINS[key];
+  return null;
+};
+const resolveLogo=(exp:{company:string;logoUrl?:string}):string|null=>{
+  if(exp.logoUrl) return exp.logoUrl;
+  const domain=guessLogoDomain(exp.company);
+  return domain?`https://logo.clearbit.com/${domain}`:null;
+};
 const D_CONTACT:ContactData={email:'mahfudfebry@hikimori.web.id',location:'Nganjuk, Indonesia',website:'hikimori.web.id',instagram:'',linkedin:'',twitter:''};
 const D_CERT:CertItem[]=[{id:'1',name:'Google Digital Marketing',year:'2023',issuer:'Google',subtitle:'Fundamentals of Digital Marketing',imageUrl:''},{id:'2',name:'HR Management Professional',year:'2022',issuer:'BNSP Indonesia',subtitle:'Sertifikasi Kompetensi SDM',imageUrl:''}];
 const FALLBACK_PHOTO='https://res.cloudinary.com/dl4pyan8v/image/upload/v1783866519/Mahfudfebry_casual_oj8r1d.png';
@@ -643,6 +670,8 @@ const ContactSection:React.FC=()=>{
 ══════════════════════════════════════════ */
 const ExpCard:React.FC<{exp:ExpItem;index:number}>=({exp,index:i})=>{
   const [open,setOpen]=useState(false);
+  const [logoFailed,setLogoFailed]=useState(false);
+  const logo=resolveLogo(exp);
   return (
     <Reveal direction="right" delay={i*0.14}>
       <div style={{display:'flex',gap:'clamp(1rem,4vw,2rem)',position:'relative'}}>
@@ -650,8 +679,10 @@ const ExpCard:React.FC<{exp:ExpItem;index:number}>=({exp,index:i})=>{
           <motion.div
             animate={{boxShadow:[`0 0 8px ${J.red}44`,`0 0 20px ${J.red}88`,`0 0 8px ${J.red}44`]}}
             transition={{duration:2,repeat:Infinity,delay:i*0.5}} whileHover={{scale:1.25}}
-            style={{width:44,height:44,borderRadius:'50%',background:`radial-gradient(circle,rgba(139,26,26,0.2),rgba(139,26,26,0.05))`,border:`2px solid ${J.red}`,display:'flex',alignItems:'center',justifyContent:'center',fontSize:'1.2rem',position:'relative',zIndex:2}}>
-            {exp.icon}
+            style={{width:44,height:44,borderRadius:'50%',background:logo&&!logoFailed?'#fff':`radial-gradient(circle,rgba(139,26,26,0.2),rgba(139,26,26,0.05))`,border:`2px solid ${J.red}`,display:'flex',alignItems:'center',justifyContent:'center',fontSize:'1.2rem',position:'relative',zIndex:2,overflow:'hidden'}}>
+            {logo&&!logoFailed?(
+              <img src={logo} alt={exp.company} onError={()=>setLogoFailed(true)} style={{width:'100%',height:'100%',objectFit:'contain',padding:6}}/>
+            ):(exp.icon)}
             <motion.div animate={{scale:[1,1.4,1],opacity:[0.5,0,0.5]}} transition={{duration:2,repeat:Infinity,delay:i*0.5}} style={{position:'absolute',inset:-4,borderRadius:'50%',border:`1px solid ${J.red}`,pointerEvents:'none'}}/>
           </motion.div>
         </div>

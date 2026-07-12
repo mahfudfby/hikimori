@@ -34,7 +34,7 @@ interface HomeData    { heroTitle:string; heroSubtitle:string; heroTagline:strin
 interface AboutData   { name:string; location:string; bio1:string; bio2:string; photoUrl:string; instagram?:string; linkedin?:string; whatsapp?:string; threads?:string; tiktok?:string; email?:string; }
 interface GalleryItem { id:string; url:string; caption?:string; size?:'small'|'medium'|'large'|'wide'|'tall'; }
 interface SkillItem   { id:string; number:string; title:string; desc:string; }
-interface ExpItem     { id:string; position:string; company:string; period:string; icon:string; tags:string; }
+interface ExpItem     { id:string; position:string; company:string; period:string; icon:string; tags:string; desc?:string; logoUrl?:string; }
 interface ContactData { email:string; location:string; website:string; instagram:string; linkedin:string; twitter:string; }
 interface CertItem    { id:string; name:string; year:string; issuer:string; subtitle:string; imageUrl:string; }
 
@@ -43,7 +43,39 @@ const D_HOME:HomeData    = { heroTitle:'Shaping tomorrow', heroSubtitle:'with vi
 const D_ABOUT:AboutData  = { name:'Mahfudfebry', location:'Nganjuk, Indonesia', bio1:'Halo! Nama saya Mahfudfebry, seorang profesional muda dari Nganjuk, Indonesia.', bio2:'Di setiap proyek, saya selalu berusaha memberikan hasil terbaik.', photoUrl:'https://res.cloudinary.com/dl4pyan8v/image/upload/v1783866519/Mahfudfebry_casual_oj8r1d.png', instagram:'mahfudfebry', linkedin:'mahfud-febry-styanto', whatsapp:'6282234651413', threads:'mahfudfebry', tiktok:'mahfudfebry', email:'Mahfudfebrys@gmail.com' };
 const D_GALLERY:GalleryItem[] = [];
 const D_SKILLS:SkillItem[]= [{id:'1',number:'01',title:'Branding & Identity Design',desc:"Crafting memorable logos and visual systems."},{id:'2',number:'02',title:'Creativity & Problem-Solving',desc:'Thinking outside the box while solving design challenges.'},{id:'3',number:'03',title:'Concept Development',desc:'Skilled in brainstorming and translating abstract ideas.'},{id:'4',number:'04',title:'Proper Time Management',desc:'Capable of handling multiple projects and meeting deadlines.'}];
-const D_EXP:ExpItem[]    = [{id:'1',position:'HR / General Affairs',company:'UD Duta Pangan',period:'2020–2023',icon:'👥',tags:'Vendor Management,Stock Monitoring,Facility Maintenance'},{id:'2',position:'Staff Administrasi',company:'UD Duta Pangan',period:'2020–2023',icon:'📋',tags:'Document Processing,Administrative Support,Filing'},{id:'3',position:'IT Support',company:'UD Duta Pangan',period:'2020–2023',icon:'💻',tags:'Hardware Troubleshooting,Software Installation,Network Setup'}];
+const D_EXP:ExpItem[]    = [
+  { id:'1', position:'HR / General Affairs', company:'UD Duta Pangan (Food Manufacturing)', period:'Agustus 2025 – April 2026 · 9 bln · Full-time', icon:'👥', tags:'Payroll & Penggajian,BPJS & BPJS-Tk,Pengelolaan Fasilitas & Aset,Koordinasi Lintas Divisi,Penyusunan Jobdesk,Analisa Beban Kerja', desc:'• Mengelola fasilitas dan aset operasional perusahaan\n• Menangani koordinasi lintas divisi untuk kelancaran operasional harian\n• Penghitungan Gaji, Potongan, & Bonus (Payroll)\n• Penghitungan Jaminan Sosial (BPJS & BPJS-Tk)\n• Menyusun Uraian Jabatan (Jobdesk)\n• Analisa Beban Kerja setiap Divisi' },
+  { id:'2', position:'Human Resources Generalist', company:'UD Duta Pangan (Food Manufacturing)', period:'Agustus 2025 – April 2026 · 9 bln · Full-time', icon:'🧑\u200d💼', tags:'BPJS,Analisa Beban Kerja', desc:'' },
+  { id:'3', position:'Information Technology Support Specialist', company:'UD Duta Pangan (Food Manufacturing)', period:'Januari 2025 – Agustus 2025 · 8 bln · Full-time', icon:'💻', tags:'Technical Support,General Office Work', desc:'' },
+  { id:'4', position:'Administrative', company:'UD Duta Pangan (Food Manufacturing)', period:'Agustus 2024 – Mei 2025 · 10 bln · Contract', icon:'📋', tags:'Administrasi', desc:'• Menangani Administrasi' },
+  { id:'5', position:'Sales Marketing Positions', company:'UD Duta Pangan (Food Manufacturing)', period:'April 2024 – Juli 2024 · 4 bln · Contract', icon:'📈', tags:'Marketing,Sales Operations', desc:'• Sales Lapangan\n• Menjual Produk Premix Tepung Bakso' },
+  { id:'6', position:'Driver Bike', company:'Grab', period:'Februari 2022 – Desember 2025 · 3 thn 11 bln · Part-time', icon:'🏍️', tags:'', desc:'• Mengantar penumpang dengan aman dan tepat waktu\n• Mengantar pesanan makanan (GrabFood)\n• Mengantar paket/barang (GrabExpress)\n• Melayani titip belanja (GrabMart)\n• Menjaga rating dan kepuasan pelanggan\n• Mematuhi standar keselamatan berkendara' },
+  { id:'7', position:'Crew', company:'PT. Richeese Kuliner Indonesia', period:'Oktober 2023 – Maret 2024 · 6 bln · Contract', icon:'🍗', tags:'Cooking,Platting', desc:'• Memasak ayam goreng crispy sesuai SOP dan standar resep\n• Meracik sauce/saus sesuai standar rasa perusahaan\n• Melakukan food preparation harian (marinasi, potong, susun stok)\n• Menjaga kualitas dan kebersihan bahan baku (food safety)\n• Merekap inventory harian (stok masuk, terpakai, sisa stok)\n• Melaporkan kebutuhan restock ke supervisor/leader shift\n• Berkoordinasi dengan tim dapur dan kasir untuk kelancaran operasional\n• Menjaga kecepatan penyajian sesuai target service time' },
+  { id:'8', position:'Kitchen Staff', company:'Mikane Gepuktular', period:'Januari 2023 – November 2023 · 11 bln · Part-time', icon:'👨\u200d🍳', tags:'', desc:'• Sebagai Juru Masak Dan Persiapan Bahan Mentah' },
+  { id:'9', position:'Crew', company:'Mie Gacoan', period:'Oktober 2022 – Desember 2022 · 3 bln · Contract', icon:'🍜', tags:'Hospitality Industry,Food and Beverage Operations', desc:'• Hospitality Customer' },
+  { id:'10', position:'Welding Operator', company:'Lancar Jaya Kota Malang', period:'Agustus 2018 – Januari 2021 · 2 thn 6 bln · Freelance', icon:'🔩', tags:'Welding,Project Planning', desc:'• Operator welder pembuatan pagar, tralis, kanopi, rolling door, dll hingga finishing serta pemasangan di lapangan' },
+  { id:'11', position:'Human Resources Assistant', company:'Dinas Sosial PPPA Kab Nganjuk', period:'Mei 2017 – Juni 2018 · 1 thn 2 bln · Full-time', icon:'🏛️', tags:'Sumber Daya Manusia (SDM),Project Management', desc:'• Staff SDM bertugas dalam menyiapkan materi untuk anggota Forum Perlindungan Anak Nganjuk untuk mewujudkan nganjuk kabupaten layak anak' },
+  { id:'12', position:'Human Resources Assistant', company:'Dinas Kesehatan Nganjuk', period:'Maret 2016 – Mei 2017 · 1 thn 3 bln · Full-time', icon:'🏛️', tags:'Sumber Daya Manusia (SDM),Project Management', desc:'• Sebagai staff yang menangani perencanaan kegiatan dan agenda program kerja dalam mensosialisasikan kesehatan remaja di kabupaten nganjuk' },
+];
+
+/* ─── Logo Perusahaan: admin bisa upload manual (logoUrl), namun jika kosong
+   sistem otomatis mencoba mencari logo resmi via Clearbit untuk PT/brand besar
+   yang dikenal (mis. Grab, Mie Gacoan). Jika tidak ditemukan, fallback ke emoji icon. ─── */
+const KNOWN_LOGO_DOMAINS:Record<string,string>={
+  'grab':'grab.com',
+  'richeese':'richeese.co.id',
+  'mie gacoan':'miegacoan.co.id',
+};
+const guessLogoDomain=(company:string):string|null=>{
+  const c=company.toLowerCase();
+  for(const key in KNOWN_LOGO_DOMAINS) if(c.includes(key)) return KNOWN_LOGO_DOMAINS[key];
+  return null;
+};
+const resolveLogo=(exp:{company:string;logoUrl?:string}):string|null=>{
+  if(exp.logoUrl) return exp.logoUrl;
+  const domain=guessLogoDomain(exp.company);
+  return domain?`https://logo.clearbit.com/${domain}`:null;
+};
 const D_CONTACT:ContactData = { email:'mahfudfebry@hikimori.web.id', location:'Nganjuk, Indonesia', website:'hikimori.web.id', instagram:'', linkedin:'', twitter:'' };
 const D_CERT:CertItem[]  = [{id:'1',name:'Google Digital Marketing',year:'2023',issuer:'Google',subtitle:'Fundamentals of Digital Marketing',imageUrl:''}];
 
@@ -625,11 +657,19 @@ const AdminPanel: React.FC = () => {
                   <h1 style={{ fontFamily:'var(--font-display)', fontSize:'clamp(1.8rem,5vw,2.5rem)', marginBottom:'0.2rem' }}>PENGALAMAN KERJA</h1>
                   <p style={{ color:'var(--white-dim)', fontSize:'0.88rem' }}>{exps.length} pengalaman tersimpan</p>
                 </div>
-                <button onClick={() => setExpForm({ id:'', position:'', company:'', period:'', icon:'💼', tags:'' })} style={btn(true)}>+ Tambah</button>
+                <button onClick={() => setExpForm({ id:'', position:'', company:'', period:'', icon:'💼', tags:'', desc:'', logoUrl:'' })} style={btn(true)}>+ Tambah</button>
               </div>
-              {exps.map(exp => (
+              {exps.map(exp => {
+                const previewLogo = resolveLogo(exp);
+                return (
                 <div key={exp.id} style={{ ...card, display:'flex', gap:'1rem', alignItems:'flex-start', marginBottom:'0.6rem' }}>
-                  <div style={{ fontSize:'1.5rem', flexShrink:0 }}>{exp.icon}</div>
+                  {previewLogo ? (
+                    <div style={{ width:32, height:32, borderRadius:8, background:'#fff', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, overflow:'hidden' }}>
+                      <img src={previewLogo} alt={exp.company} onError={e => { (e.target as HTMLImageElement).style.display='none'; }} style={{ width:'100%', height:'100%', objectFit:'contain', padding:4 }} />
+                    </div>
+                  ) : (
+                    <div style={{ fontSize:'1.5rem', flexShrink:0 }}>{exp.icon}</div>
+                  )}
                   <div style={{ flex:1, minWidth:0 }}>
                     <div style={{ fontWeight:700, marginBottom:'0.2rem', wordBreak:'break-word' }}>{exp.position}</div>
                     <div style={{ color:'var(--amber)', fontSize:'0.82rem', fontFamily:'var(--font-script)' }}>{exp.company}</div>
@@ -641,7 +681,7 @@ const AdminPanel: React.FC = () => {
                     <button onClick={() => deleteExp(exp.id)} style={{ background:'rgba(255,60,60,0.1)', border:'1px solid rgba(255,60,60,0.2)', color:'#ff6b6b', borderRadius:8, padding:'6px 12px', cursor:'pointer', fontSize:'0.78rem' }}>🗑️</button>
                   </div>
                 </div>
-              ))}
+              );})}
             </div>
           )}
 
@@ -798,12 +838,14 @@ const AdminPanel: React.FC = () => {
               </div>
               <div style={{ display:'flex', flexDirection:'column', gap:'1rem' }}>
                 <div><label style={lbl}>Posisi / Jabatan</label><input style={inp} value={expForm.position} onChange={e => setExpForm({ ...expForm, position:e.target.value })} /></div>
+                <ImageUploader label="Logo Perusahaan (kosongkan agar dicari otomatis untuk brand besar seperti Grab / Mie Gacoan)" value={expForm.logoUrl||''} onChange={url => setExpForm({ ...expForm, logoUrl:url })} />
                 <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'0.8rem' }}>
                   <div><label style={lbl}>Perusahaan</label><input style={inp} value={expForm.company} onChange={e => setExpForm({ ...expForm, company:e.target.value })} /></div>
                   <div><label style={lbl}>Periode</label><input style={inp} value={expForm.period} onChange={e => setExpForm({ ...expForm, period:e.target.value })} placeholder="2020–2023" /></div>
                 </div>
                 <div><label style={lbl}>Emoji Icon</label><input style={inp} value={expForm.icon} onChange={e => setExpForm({ ...expForm, icon:e.target.value })} placeholder="👥" /></div>
                 <div><label style={lbl}>Tags (pisahkan koma)</label><textarea style={{ ...inp, minHeight:70, resize:'vertical' }} value={expForm.tags} onChange={e => setExpForm({ ...expForm, tags:e.target.value })} placeholder="Vendor Management,HR,Training" /></div>
+                <div><label style={lbl}>Rincian Tugas (satu poin per baris, opsional)</label><textarea style={{ ...inp, minHeight:110, resize:'vertical' }} value={expForm.desc||''} onChange={e => setExpForm({ ...expForm, desc:e.target.value })} placeholder={'• Poin tugas pertama\n• Poin tugas kedua'} /></div>
                 <div style={{ display:'flex', gap:'0.6rem' }}>
                   <button onClick={saveExp} style={{ ...btn(true), flex:1 }}>💾 Simpan</button>
                   <button onClick={() => setExpForm(null)} style={{ ...btn(), padding:'10px 16px' }}>Batal</button>
