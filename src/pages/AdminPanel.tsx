@@ -18,6 +18,7 @@ import { db } from '../config/firebase';
 const FS = {
   home:    'siteData/home',
   about:   'siteData/about',
+  gallery: 'siteData/aboutGallery',
   skills:  'siteData/skills',
   exp:     'siteData/experience',
   contact: 'siteData/contact',
@@ -25,12 +26,13 @@ const FS = {
 } as const;
 
 /* ─── localStorage keys (HANYA sebagai cache offline fallback) ─── */
-const LS_HOME='hk_home_data', LS_ABOUT='hk_home_about_data', LS_SKILLS='hk_skills_data';
+const LS_HOME='hk_home_data', LS_ABOUT='hk_home_about_data', LS_GALLERY='hk_about_gallery_data', LS_SKILLS='hk_skills_data';
 const LS_EXP='hk_experience_data', LS_CONTACT='hk_contact_data', LS_CERT='hk_cert_data';
 
 /* ─── Types ─── */
 interface HomeData    { heroTitle:string; heroSubtitle:string; heroTagline:string; heroCtaSecondary:string; heroCtaSecondaryLink:string; heroCta:string; heroCtaLink:string; heroPhotoUrl:string; heroTagRight:string; }
 interface AboutData   { name:string; location:string; bio1:string; bio2:string; photoUrl:string; instagram?:string; linkedin?:string; whatsapp?:string; threads?:string; tiktok?:string; email?:string; }
+interface GalleryItem { id:string; url:string; caption?:string; size?:'small'|'medium'|'large'|'wide'|'tall'; }
 interface SkillItem   { id:string; number:string; title:string; desc:string; }
 interface ExpItem     { id:string; position:string; company:string; period:string; icon:string; tags:string; }
 interface ContactData { email:string; location:string; website:string; instagram:string; linkedin:string; twitter:string; }
@@ -38,7 +40,8 @@ interface CertItem    { id:string; name:string; year:string; issuer:string; subt
 
 /* ─── Defaults ─── */
 const D_HOME:HomeData    = { heroTitle:'Shaping tomorrow', heroSubtitle:'with vision and action.', heroTagline:'We back visionaries and craft ventures that define what comes next.', heroCtaSecondary:'Start a Chat', heroCtaSecondaryLink:'#contact', heroCta:'Explore Now', heroCtaLink:'/portofolio', heroPhotoUrl:'', heroTagRight:'Investing. Building. Advisory.' };
-const D_ABOUT:AboutData  = { name:'Mahfudfebry', location:'Nganjuk, Indonesia', bio1:'Halo! Nama saya Mahfudfebry, seorang profesional muda dari Nganjuk, Indonesia.', bio2:'Di setiap proyek, saya selalu berusaha memberikan hasil terbaik.', photoUrl:'', instagram:'mahfudfebry', linkedin:'mahfud-febry-styanto', whatsapp:'6282234651413', threads:'mahfudfebry', tiktok:'mahfudfebry', email:'Mahfudfebrys@gmail.com' };
+const D_ABOUT:AboutData  = { name:'Mahfudfebry', location:'Nganjuk, Indonesia', bio1:'Halo! Nama saya Mahfudfebry, seorang profesional muda dari Nganjuk, Indonesia.', bio2:'Di setiap proyek, saya selalu berusaha memberikan hasil terbaik.', photoUrl:'https://res.cloudinary.com/dl4pyan8v/image/upload/v1783866519/Mahfudfebry_casual_oj8r1d.png', instagram:'mahfudfebry', linkedin:'mahfud-febry-styanto', whatsapp:'6282234651413', threads:'mahfudfebry', tiktok:'mahfudfebry', email:'Mahfudfebrys@gmail.com' };
+const D_GALLERY:GalleryItem[] = [];
 const D_SKILLS:SkillItem[]= [{id:'1',number:'01',title:'Branding & Identity Design',desc:"Crafting memorable logos and visual systems."},{id:'2',number:'02',title:'Creativity & Problem-Solving',desc:'Thinking outside the box while solving design challenges.'},{id:'3',number:'03',title:'Concept Development',desc:'Skilled in brainstorming and translating abstract ideas.'},{id:'4',number:'04',title:'Proper Time Management',desc:'Capable of handling multiple projects and meeting deadlines.'}];
 const D_EXP:ExpItem[]    = [{id:'1',position:'HR / General Affairs',company:'UD Duta Pangan',period:'2020–2023',icon:'👥',tags:'Vendor Management,Stock Monitoring,Facility Maintenance'},{id:'2',position:'Staff Administrasi',company:'UD Duta Pangan',period:'2020–2023',icon:'📋',tags:'Document Processing,Administrative Support,Filing'},{id:'3',position:'IT Support',company:'UD Duta Pangan',period:'2020–2023',icon:'💻',tags:'Hardware Troubleshooting,Software Installation,Network Setup'}];
 const D_CONTACT:ContactData = { email:'mahfudfebry@hikimori.web.id', location:'Nganjuk, Indonesia', website:'hikimori.web.id', instagram:'', linkedin:'', twitter:'' };
@@ -155,6 +158,8 @@ const AdminPanel: React.FC = () => {
   const [homeSaving, setHomeSaving] = useState(false);
   const [about, setAbout]     = useState<AboutData>(D_ABOUT);
   const [aboutSaving, setAboutSaving] = useState(false);
+  const [gallery, setGallery] = useState<GalleryItem[]>(D_GALLERY);
+  const [galleryUploading, setGalleryUploading] = useState(false);
   const [skills, setSkills]   = useState<SkillItem[]>(D_SKILLS);
   const [skillForm, setSkillForm] = useState<SkillItem|null>(null);
   const [exps, setExps]       = useState<ExpItem[]>(D_EXP);
@@ -181,12 +186,13 @@ const AdminPanel: React.FC = () => {
     Promise.all([
       fsGet<HomeData>(FS.home, LS_HOME, D_HOME),
       fsGet<AboutData>(FS.about, LS_ABOUT, D_ABOUT),
+      fsGet<GalleryItem[]>(FS.gallery, LS_GALLERY, D_GALLERY),
       fsGet<SkillItem[]>(FS.skills, LS_SKILLS, D_SKILLS),
       fsGet<ExpItem[]>(FS.exp, LS_EXP, D_EXP),
       fsGet<ContactData>(FS.contact, LS_CONTACT, D_CONTACT),
       fsGet<CertItem[]>(FS.cert, LS_CERT, D_CERT),
-    ]).then(([h, a, sk, ex, co, ce]) => {
-      setHome(h); setAbout(a); setSkills(sk);
+    ]).then(([h, a, ga, sk, ex, co, ce]) => {
+      setHome(h); setAbout(a); setGallery(ga); setSkills(sk);
       setExps(ex); setContact(co); setCerts(ce);
       setFsReady(true);
     });
@@ -194,6 +200,7 @@ const AdminPanel: React.FC = () => {
     // Real-time listeners — update UI jika ada perubahan dari device lain
     unsubs.push(fsListen<HomeData>(FS.home, LS_HOME, D_HOME, setHome));
     unsubs.push(fsListen<AboutData>(FS.about, LS_ABOUT, D_ABOUT, setAbout));
+    unsubs.push(fsListen<GalleryItem[]>(FS.gallery, LS_GALLERY, D_GALLERY, setGallery));
     unsubs.push(fsListen<SkillItem[]>(FS.skills, LS_SKILLS, D_SKILLS, setSkills));
     unsubs.push(fsListen<ExpItem[]>(FS.exp, LS_EXP, D_EXP, setExps));
     unsubs.push(fsListen<ContactData>(FS.contact, LS_CONTACT, D_CONTACT, setContact));
@@ -217,6 +224,43 @@ const AdminPanel: React.FC = () => {
     try { await fsSave(FS.about, LS_ABOUT, about); toast.success('About Me disimpan! ✓ Sinkron semua device.'); }
     catch { toast.error('Gagal menyimpan.'); }
     finally { setAboutSaving(false); }
+  };
+
+  /* ── Galeri About (Layout Majalah) CRUD ── */
+  const handleGalleryUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []); if (!files.length) return;
+    setGalleryUploading(true);
+    try {
+      const uploaded: GalleryItem[] = [];
+      for (const file of files) {
+        const url = await uploadToCloudinary(file);
+        uploaded.push({ id: uid(), url, caption: '', size: 'small' });
+      }
+      const updated = [...gallery, ...uploaded];
+      setGallery(updated);
+      await fsSave(FS.gallery, LS_GALLERY, updated);
+      toast.success(`${uploaded.length} foto ditambahkan ke galeri! ✓`);
+    } catch { toast.error('Gagal upload salah satu foto.'); }
+    finally { setGalleryUploading(false); e.target.value = ''; }
+  };
+  const updateGalleryItem = async (id: string, patch: Partial<GalleryItem>) => {
+    const updated = gallery.map(g => g.id === id ? { ...g, ...patch } : g);
+    setGallery(updated);
+    try { await fsSave(FS.gallery, LS_GALLERY, updated); } catch { toast.error('Gagal menyimpan perubahan.'); }
+  };
+  const deleteGalleryItem = async (id: string) => {
+    const updated = gallery.filter(g => g.id !== id);
+    setGallery(updated);
+    try { await fsSave(FS.gallery, LS_GALLERY, updated); toast.success('Foto galeri dihapus.'); }
+    catch { toast.error('Gagal menghapus.'); }
+  };
+  const moveGalleryItem = async (id: string, dir: -1 | 1) => {
+    const idx = gallery.findIndex(g => g.id === id); if (idx < 0) return;
+    const newIdx = idx + dir; if (newIdx < 0 || newIdx >= gallery.length) return;
+    const updated = [...gallery];
+    [updated[idx], updated[newIdx]] = [updated[newIdx], updated[idx]];
+    setGallery(updated);
+    try { await fsSave(FS.gallery, LS_GALLERY, updated); } catch { toast.error('Gagal menyimpan urutan.'); }
   };
 
   const saveContact = async () => {
@@ -302,6 +346,7 @@ const AdminPanel: React.FC = () => {
       await Promise.all([
         fsSave(FS.home, LS_HOME, D_HOME),
         fsSave(FS.about, LS_ABOUT, D_ABOUT),
+        fsSave(FS.gallery, LS_GALLERY, D_GALLERY),
         fsSave(FS.skills, LS_SKILLS, D_SKILLS),
         fsSave(FS.exp, LS_EXP, D_EXP),
         fsSave(FS.contact, LS_CONTACT, D_CONTACT),
@@ -315,6 +360,7 @@ const AdminPanel: React.FC = () => {
   const stats = [
     { label:'Total Portfolio', value:items.length, icon:'📁' },
     { label:'Featured', value:items.filter(i=>i.featured).length, icon:'⭐' },
+    { label:'Foto Galeri', value:gallery.length, icon:'🖼️' },
     { label:'Skills', value:skills.length, icon:'💡' },
     { label:'Pengalaman', value:exps.length, icon:'🏢' },
   ];
@@ -506,6 +552,40 @@ const AdminPanel: React.FC = () => {
                   </div>
                   <button onClick={saveAbout} disabled={aboutSaving} style={btn(true)}>{aboutSaving ? '⌛ Menyimpan...' : '💾 Simpan & Sinkron'}</button>
                 </div>
+              </div>
+
+              {/* ── Galeri Foto (Layout Majalah) ── */}
+              <div style={card}>
+                <p style={{color:'rgba(255,255,255,0.5)',fontSize:'0.78rem',fontWeight:700,letterSpacing:'2px',textTransform:'uppercase',marginBottom:'0.4rem'}}>🖼️ Galeri Foto (Layout Majalah)</p>
+                <p style={{color:'var(--white-dim)',fontSize:'0.8rem',marginBottom:'1rem'}}>Upload beberapa foto sekaligus (bisa pilih banyak file). Atur ukuran tiap foto untuk membentuk layout majalah di halaman About — perubahan tersimpan otomatis.</p>
+                <input type="file" accept="image/*" multiple onChange={handleGalleryUpload} style={{ ...inp, padding:'8px' }} />
+                {galleryUploading && <p style={{ color:'var(--amber)', fontSize:'0.8rem', marginTop:6 }}>⌛ Mengupload foto...</p>}
+                {gallery.length === 0 ? (
+                  <p style={{color:'rgba(255,255,255,0.3)',fontSize:'0.82rem',marginTop:'1rem'}}>Belum ada foto galeri. Upload foto di atas untuk menambahkan.</p>
+                ) : (
+                  <div style={{display:'flex',flexDirection:'column',gap:'0.8rem',marginTop:'1.2rem'}}>
+                    {gallery.map((g, i) => (
+                      <div key={g.id} style={{display:'flex',gap:'0.8rem',alignItems:'center',background:'#111',border:'1px solid rgba(255,255,255,0.08)',borderRadius:10,padding:'0.7rem',flexWrap:'wrap'}}>
+                        <img src={g.url} alt="" style={{width:70,height:70,objectFit:'cover',borderRadius:8,flexShrink:0}} />
+                        <div style={{flex:1,display:'flex',flexDirection:'column',gap:'0.4rem',minWidth:180}}>
+                          <input style={{...inp,fontSize:'0.8rem',padding:'6px 10px'}} placeholder="Caption (opsional)" value={g.caption||''} onChange={e=>updateGalleryItem(g.id,{caption:e.target.value})} />
+                          <select style={{...inp,fontSize:'0.8rem',padding:'6px 10px'}} value={g.size||'small'} onChange={e=>updateGalleryItem(g.id,{size:e.target.value as GalleryItem['size']})}>
+                            <option value="small">Kecil (1x1)</option>
+                            <option value="medium">Sedang (2x1)</option>
+                            <option value="large">Besar (2x2)</option>
+                            <option value="wide">Lebar / Panorama (4x1)</option>
+                            <option value="tall">Tinggi / Portrait (1x2)</option>
+                          </select>
+                        </div>
+                        <div style={{display:'flex',flexDirection:'column',gap:'0.3rem'}}>
+                          <button onClick={()=>moveGalleryItem(g.id,-1)} disabled={i===0} style={{...btn(false),padding:'4px 10px',fontSize:'0.7rem',opacity:i===0?0.3:1,cursor:i===0?'default':'pointer'}}>↑</button>
+                          <button onClick={()=>moveGalleryItem(g.id,1)} disabled={i===gallery.length-1} style={{...btn(false),padding:'4px 10px',fontSize:'0.7rem',opacity:i===gallery.length-1?0.3:1,cursor:i===gallery.length-1?'default':'pointer'}}>↓</button>
+                          <button onClick={()=>deleteGalleryItem(g.id)} style={{ background:'rgba(255,60,60,0.1)', border:'1px solid rgba(255,60,60,0.2)', color:'#ff6b6b', borderRadius:8, padding:'4px 10px', cursor:'pointer', fontSize:'0.7rem' }}>🗑️</button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           )}
