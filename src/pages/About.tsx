@@ -7,6 +7,7 @@ import AnimatedSection from '../components/AnimatedSection';
 
 /* ─── localStorage keys — identik dengan Home.tsx ─── */
 const LS_ABOUT  = 'hk_home_about_data';
+const LS_GALLERY = 'hk_about_gallery_data';
 const LS_SKILLS = 'hk_skills_data';
 const LS_EXP    = 'hk_experience_data';
 const LS_CERT   = 'hk_cert_data';
@@ -18,6 +19,7 @@ interface AboutData {
   instagram?: string; linkedin?: string; whatsapp?: string; threads?: string; tiktok?: string; email?: string;
 }
 interface SkillItem { id: string; number: string; title: string; desc: string; }
+interface GalleryItem { id: string; url: string; caption?: string; size?: 'small'|'medium'|'large'|'wide'|'tall'; }
 interface ExpItem   { id: string; position: string; company: string; period: string; icon: string; tags: string; desc?: string; }
 interface CertItem  { id: string; name: string; year: string; issuer: string; subtitle: string; imageUrl: string; }
 
@@ -45,7 +47,16 @@ const D_CERT: CertItem[] = [
   { id: '2', name: 'HR Management Professional', year: '2022', issuer: 'BNSP Indonesia', subtitle: 'Sertifikasi Kompetensi SDM', imageUrl: '' },
 ];
 
-const FALLBACK_PHOTO = 'https://res.cloudinary.com/dl4pyan8v/image/upload/WhatsApp_Image_2026-06-16_at_03.45.15_axvhg3';
+const FALLBACK_PHOTO = 'https://res.cloudinary.com/dl4pyan8v/image/upload/v1783866519/Mahfudfebry_casual_oj8r1d.png';
+const D_GALLERY: GalleryItem[] = [];
+/* Mapping ukuran → span kolom/baris CSS Grid untuk layout majalah */
+const GALLERY_SPAN: Record<string, { col: number; row: number }> = {
+  small:  { col: 1, row: 1 },
+  medium: { col: 2, row: 1 },
+  large:  { col: 2, row: 2 },
+  wide:   { col: 4, row: 1 },
+  tall:   { col: 1, row: 2 },
+};
 
 const ls = <T,>(key: string, fb: T): T => {
   try { return JSON.parse(localStorage.getItem(key) || 'null') ?? fb; } catch { return fb; }
@@ -64,6 +75,7 @@ const useHomeData = () => {
   }, []);
 
   const [about,  setAbout]  = useState<AboutData> (() => ls(LS_ABOUT,  D_ABOUT));
+  const [gallery, setGallery] = useState<GalleryItem[]>(() => ls(LS_GALLERY, D_GALLERY));
   const [skills, setSkills] = useState<SkillItem[]>(() => ls(LS_SKILLS, D_SKILLS));
   const [exps,   setExps]   = useState<ExpItem[]>  (() => ls(LS_EXP,   D_EXP));
   const [certs,  setCerts]  = useState<CertItem[]> (() => ls(LS_CERT,  D_CERT));
@@ -72,6 +84,7 @@ const useHomeData = () => {
     /* Dengarkan perubahan dari tab lain (storage event) */
     const onStorage = (e: StorageEvent) => {
       if (e.key === LS_ABOUT  && e.newValue) try { setAbout(JSON.parse(e.newValue));  } catch {}
+      if (e.key === LS_GALLERY && e.newValue) try { setGallery(JSON.parse(e.newValue)); } catch {}
       if (e.key === LS_SKILLS && e.newValue) try { setSkills(JSON.parse(e.newValue)); } catch {}
       if (e.key === LS_EXP    && e.newValue) try { setExps(JSON.parse(e.newValue));   } catch {}
       if (e.key === LS_CERT   && e.newValue) try { setCerts(JSON.parse(e.newValue));  } catch {}
@@ -81,6 +94,7 @@ const useHomeData = () => {
       const { key, value } = (e as CustomEvent).detail;
       try {
         if (key === LS_ABOUT)  setAbout(JSON.parse(value));
+        if (key === LS_GALLERY) setGallery(JSON.parse(value));
         if (key === LS_SKILLS) setSkills(JSON.parse(value));
         if (key === LS_EXP)    setExps(JSON.parse(value));
         if (key === LS_CERT)   setCerts(JSON.parse(value));
@@ -94,7 +108,7 @@ const useHomeData = () => {
     };
   }, []);
 
-  return { about, skills, exps, certs };
+  return { about, gallery, skills, exps, certs };
 };
 
 /* ─── ExpCardAbout: tiap card punya state sendiri (valid hooks) ─── */
@@ -178,7 +192,7 @@ const ExpCardAbout: React.FC<{ exp: ExpItem; index: number }> = ({ exp, index: i
    ABOUT PAGE
 ══════════════════════════════════════════ */
 const About: React.FC = () => {
-  const { about, skills, exps, certs } = useHomeData();
+  const { about, gallery, skills, exps, certs } = useHomeData();
   const photo = about.photoUrl || FALLBACK_PHOTO;
 
   return (
@@ -232,7 +246,45 @@ const About: React.FC = () => {
         </AnimatedSection>
       </section>
 
-      {/* ── Skills ── */}
+      {/* ── Galeri Foto — Layout Majalah ── */}
+      {gallery.length > 0 && (
+        <section style={{ padding: '1rem 2rem 5rem', maxWidth: '1200px', margin: '0 auto' }}>
+          <AnimatedSection direction="up">
+            <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+              <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2.5rem, 6vw, 5rem)' }}>
+                GALERI{' '}
+                <span style={{ fontFamily: 'var(--font-script)', color: 'var(--amber)', fontSize: '55%' }}>Momen</span>
+              </h2>
+            </div>
+          </AnimatedSection>
+          <div className="magazine-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gridAutoRows: '180px', gap: '1rem' }}>
+            {gallery.map((g, i) => {
+              const span = GALLERY_SPAN[g.size || 'small'];
+              return (
+                <div
+                  key={g.id}
+                  className={`magazine-item mag-${g.size || 'small'}`}
+                  style={{ gridColumn: `span ${span.col}`, gridRow: `span ${span.row}`, height: '100%' }}
+                >
+                  <AnimatedSection direction="up" delay={i * 0.06}>
+                    <div className="float-hover" style={{ position: 'relative', borderRadius: 'var(--radius)', overflow: 'hidden', height: '100%' }}>
+                      <img src={g.url} alt={g.caption || about.name} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                      {g.caption && (
+                        <>
+                          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(10,10,10,0.75) 0%, transparent 55%)' }} />
+                          <div style={{ position: 'absolute', bottom: '1rem', left: '1rem', right: '1rem', color: 'var(--white)', fontSize: '0.88rem', fontWeight: 600, lineHeight: 1.4 }}>
+                            {g.caption}
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </AnimatedSection>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      )}
       <section style={{ padding: '5rem 2rem', background: 'var(--black-2)' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <AnimatedSection direction="up">
@@ -329,6 +381,9 @@ const About: React.FC = () => {
       <style>{`
         @media (max-width: 768px) {
           .about-hero-grid { grid-template-columns: 1fr !important; gap: 2rem !important; }
+          .magazine-grid { grid-template-columns: repeat(2, 1fr) !important; grid-auto-rows: 160px !important; }
+          .magazine-item { grid-column: span 1 !important; grid-row: span 1 !important; }
+          .magazine-item.mag-wide, .magazine-item.mag-large { grid-column: span 2 !important; }
         }
       `}</style>
     </div>
