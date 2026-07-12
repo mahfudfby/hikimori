@@ -18,7 +18,7 @@ interface AboutData {
   name: string; location: string; bio1: string; bio2: string; photoUrl: string;
   instagram?: string; linkedin?: string; whatsapp?: string; threads?: string; tiktok?: string; email?: string;
 }
-interface SkillItem { id: string; number: string; title: string; desc: string; }
+interface SkillItem { id: string; number: string; title: string; desc: string; category?: 'hard'|'soft'; }
 interface GalleryItem { id: string; url: string; caption?: string; size?: 'small'|'medium'|'large'|'wide'|'tall'; }
 interface ExpItem   { id: string; position: string; company: string; period: string; icon: string; tags: string; desc?: string; logoUrl?: string; }
 interface CertItem  { id: string; name: string; year: string; issuer: string; subtitle: string; imageUrl: string; }
@@ -32,10 +32,18 @@ const D_ABOUT: AboutData = {
   whatsapp: '6282234651413', threads: 'mahfudfebry', tiktok: 'mahfudfebry', email: 'Mahfudfebrys@gmail.com',
 };
 const D_SKILLS: SkillItem[] = [
-  { id: '1', number: '01', title: 'Branding & Identity Design', desc: "Crafting memorable logos and visual systems that reflect a brand's essence." },
-  { id: '2', number: '02', title: 'Creativity & Problem-Solving', desc: 'Thinking outside the box while solving design challenges with strategic insight.' },
-  { id: '3', number: '03', title: 'Concept Development', desc: 'Skilled in brainstorming and translating abstract ideas into visual narratives.' },
-  { id: '4', number: '04', title: 'Proper Time Management', desc: 'Capable of handling multiple projects and meeting tight deadlines.' },
+  { id: '1', number: '01', title: 'Payroll & Administrasi Penggajian', desc: 'Menghitung gaji, potongan, bonus, serta iuran BPJS & BPJS-Tk karyawan (UD Duta Pangan).', category: 'hard' },
+  { id: '2', number: '02', title: 'HR & General Affairs Management', desc: 'Mengelola fasilitas, aset operasional, uraian jabatan (jobdesk), dan analisa beban kerja tiap divisi.', category: 'hard' },
+  { id: '3', number: '03', title: 'IT Technical Support', desc: 'Troubleshooting hardware/software dan dukungan pengguna untuk operasional kantor sehari-hari.', category: 'hard' },
+  { id: '4', number: '04', title: 'Food Production & Food Safety (SOP)', desc: 'Food preparation, kontrol kualitas bahan baku, dan kepatuhan standar food safety di dapur produksi.', category: 'hard' },
+  { id: '5', number: '05', title: 'Welding & Fabrication', desc: 'Pengelasan dan pemasangan pagar, tralis, kanopi, hingga rolling door di lapangan.', category: 'hard' },
+  { id: '6', number: '06', title: 'Sales, Marketing & Administrasi Operasional', desc: 'Penjualan lapangan, dokumentasi administrasi, dan koordinasi operasional harian perusahaan.', category: 'hard' },
+  { id: '7', number: '01', title: 'Pelayanan Pelanggan (Customer Service)', desc: 'Menjaga kepuasan dan rating pelanggan lewat interaksi ramah dan responsif di berbagai peran layanan.', category: 'soft' },
+  { id: '8', number: '02', title: 'Kerja Tim & Koordinasi Lintas Divisi', desc: 'Terbiasa berkoordinasi dengan tim dapur, kasir, hingga divisi lain untuk kelancaran operasional.', category: 'soft' },
+  { id: '9', number: '03', title: 'Disiplin & Keselamatan Kerja', desc: 'Konsisten mematuhi SOP dan standar keselamatan, baik di jalan raya maupun lokasi kerja lapangan.', category: 'soft' },
+  { id: '10', number: '04', title: 'Manajemen Waktu & Target Kerja', desc: 'Mampu bekerja dengan target service time dan tenggat penjualan tanpa mengorbankan kualitas.', category: 'soft' },
+  { id: '11', number: '05', title: 'Adaptasi & Fleksibilitas Lintas Industri', desc: 'Terbukti mampu beradaptasi cepat di berbagai bidang berbeda — F&B, IT, HR, hingga manufaktur.', category: 'soft' },
+  { id: '12', number: '06', title: 'Kepedulian Sosial & Tanggung Jawab Komunitas', desc: 'Berpengalaman menyusun program sosialisasi kesehatan dan perlindungan anak bersama instansi pemerintah.', category: 'soft' },
 ];
 const D_EXP: ExpItem[] = [
   { id: '1', position: 'HR / General Affairs', company: 'UD Duta Pangan (Food Manufacturing)', period: 'Agustus 2025 – April 2026 · 9 bln · Full-time', icon: '👥', tags: 'Payroll & Penggajian,BPJS & BPJS-Tk,Pengelolaan Fasilitas & Aset,Koordinasi Lintas Divisi,Penyusunan Jobdesk,Analisa Beban Kerja', desc: '• Mengelola fasilitas dan aset operasional perusahaan\n• Menangani koordinasi lintas divisi untuk kelancaran operasional harian\n• Penghitungan Gaji, Potongan, & Bonus (Payroll)\n• Penghitungan Jaminan Sosial (BPJS & BPJS-Tk)\n• Menyusun Uraian Jabatan (Jobdesk)\n• Analisa Beban Kerja setiap Divisi' },
@@ -152,32 +160,31 @@ const ExpCardAbout: React.FC<{ exp: ExpItem; index: number }> = ({ exp, index: i
         borderRadius: 'var(--radius)',
         padding: '1.8rem 2rem',
       }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '0.4rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
-            {logo && !logoFailed ? (
-              <div style={{ width: 32, height: 32, borderRadius: 8, background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, overflow: 'hidden' }}>
-                <img src={logo} alt={exp.company} onError={() => setLogoFailed(true)} style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 4 }} />
-              </div>
-            ) : (
-              <span style={{ fontSize: '1.5rem' }}>{exp.icon}</span>
-            )}
-            <h3 style={{ fontFamily: 'var(--font-body)', fontWeight: 700, color: 'var(--white)', fontSize: '1rem' }}>
-              {exp.position}
-            </h3>
-          </div>
-          {exp.period && (
-            <span style={{
-              background: 'rgba(245,166,35,0.12)', color: 'var(--amber)',
-              borderRadius: '6px', padding: '3px 10px', fontSize: '0.75rem', fontWeight: 700,
-              border: '1px solid rgba(245,166,35,0.25)', whiteSpace: 'nowrap',
-            }}>
-              {exp.period}
-            </span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginBottom: '0.4rem' }}>
+          {logo && !logoFailed ? (
+            <div style={{ width: 32, height: 32, borderRadius: 8, background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, overflow: 'hidden' }}>
+              <img src={logo} alt={exp.company} onError={() => setLogoFailed(true)} style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 4 }} />
+            </div>
+          ) : (
+            <span style={{ fontSize: '1.5rem', flexShrink: 0 }}>{exp.icon}</span>
           )}
+          <h3 style={{ fontFamily: 'var(--font-body)', fontWeight: 700, color: 'var(--white)', fontSize: '1rem', lineHeight: 1.3, minWidth: 0 }}>
+            {exp.position}
+          </h3>
         </div>
         {exp.company && (
-          <div style={{ fontFamily: 'var(--font-script)', color: 'var(--amber)', fontSize: '1rem', marginBottom: '0.8rem' }}>
+          <div style={{ fontFamily: 'var(--font-body)', fontWeight: 600, color: 'var(--amber)', fontSize: '0.92rem', lineHeight: 1.4, marginBottom: '0.45rem' }}>
             {exp.company}
+          </div>
+        )}
+        {exp.period && (
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: '0.35rem',
+            background: 'rgba(245,166,35,0.12)', color: 'var(--amber)',
+            borderRadius: '6px', padding: '3px 10px', fontSize: '0.75rem', fontWeight: 700,
+            border: '1px solid rgba(245,166,35,0.25)', marginBottom: '0.8rem',
+          }}>
+            <span>🕐</span>{exp.period}
           </div>
         )}
         {exp.tags && (
@@ -330,24 +337,51 @@ const About: React.FC = () => {
               </h2>
             </div>
           </AnimatedSection>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
-            {skills.map((skill, i) => (
-              <AnimatedSection key={skill.id} direction="up" delay={i * 0.1}>
-                <div className="float-hover" style={{
-                  background: 'var(--black-3)', border: '1px solid rgba(245,166,35,0.15)',
-                  borderRadius: 'var(--radius)', padding: '2rem',
-                }}>
-                  <div style={{ fontFamily: 'var(--font-display)', fontSize: '2.5rem', color: 'rgba(245,166,35,0.2)', lineHeight: 1, marginBottom: '0.5rem' }}>
-                    {skill.number}
-                  </div>
-                  <h3 style={{ fontFamily: 'var(--font-body)', fontWeight: 700, color: 'var(--amber)', fontSize: '0.95rem', marginBottom: '0.6rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                    {skill.title}
-                  </h3>
-                  <p style={{ color: 'var(--white-dim)', fontSize: '0.88rem', lineHeight: 1.7 }}>{skill.desc}</p>
-                </div>
-              </AnimatedSection>
-            ))}
+          <div className="skills-columns-about" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2.5rem', alignItems: 'start' }}>
+            {/* ── Hard Skill ── */}
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1.3rem' }}>
+                <div style={{ flex: 1, height: 1, background: 'linear-gradient(to right, transparent, rgba(245,166,35,0.4))' }} />
+                <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.2rem, 3.5vw, 1.8rem)', color: 'var(--amber)', letterSpacing: '1px', whiteSpace: 'nowrap' }}>HARD <span style={{ color: 'var(--white)' }}>SKILL</span></h3>
+                <div style={{ flex: 1, height: 1, background: 'linear-gradient(to left, transparent, rgba(245,166,35,0.4))' }} />
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
+                {skills.filter(sk => sk.category !== 'soft').map((skill, i) => (
+                  <AnimatedSection key={skill.id} direction="left" delay={i * 0.1}>
+                    <div className="float-hover" style={{ background: 'var(--black-3)', border: '1px solid rgba(245,166,35,0.15)', borderRadius: 'var(--radius)', padding: '1.6rem' }}>
+                      <div style={{ fontFamily: 'var(--font-display)', fontSize: '2rem', color: 'rgba(245,166,35,0.2)', lineHeight: 1, marginBottom: '0.4rem' }}>{skill.number}</div>
+                      <h4 style={{ fontFamily: 'var(--font-body)', fontWeight: 700, color: 'var(--amber)', fontSize: '0.9rem', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{skill.title}</h4>
+                      <p style={{ color: 'var(--white-dim)', fontSize: '0.85rem', lineHeight: 1.65 }}>{skill.desc}</p>
+                    </div>
+                  </AnimatedSection>
+                ))}
+              </div>
+            </div>
+            {/* ── Soft Skill ── */}
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1.3rem' }}>
+                <div style={{ flex: 1, height: 1, background: 'linear-gradient(to right, transparent, rgba(255,255,255,0.2))' }} />
+                <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.2rem, 3.5vw, 1.8rem)', color: 'var(--white)', letterSpacing: '1px', whiteSpace: 'nowrap' }}>SOFT <span style={{ color: 'var(--amber)' }}>SKILL</span></h3>
+                <div style={{ flex: 1, height: 1, background: 'linear-gradient(to left, transparent, rgba(255,255,255,0.2))' }} />
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
+                {skills.filter(sk => sk.category === 'soft').map((skill, i) => (
+                  <AnimatedSection key={skill.id} direction="right" delay={i * 0.1}>
+                    <div className="float-hover" style={{ background: 'var(--black-3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 'var(--radius)', padding: '1.6rem' }}>
+                      <div style={{ fontFamily: 'var(--font-display)', fontSize: '2rem', color: 'rgba(255,255,255,0.15)', lineHeight: 1, marginBottom: '0.4rem' }}>{skill.number}</div>
+                      <h4 style={{ fontFamily: 'var(--font-body)', fontWeight: 700, color: 'var(--white)', fontSize: '0.9rem', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{skill.title}</h4>
+                      <p style={{ color: 'var(--white-dim)', fontSize: '0.85rem', lineHeight: 1.65 }}>{skill.desc}</p>
+                    </div>
+                  </AnimatedSection>
+                ))}
+              </div>
+            </div>
           </div>
+          <style>{`
+            @media (max-width: 860px) {
+              .skills-columns-about { grid-template-columns: 1fr !important; gap: 3rem !important; }
+            }
+          `}</style>
         </div>
       </section>
 
