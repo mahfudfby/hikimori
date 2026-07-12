@@ -76,7 +76,7 @@ const resolveLogo=(exp:{company:string;logoUrl?:string}):string|null=>{
   const domain=guessLogoDomain(exp.company);
   return domain?`https://logo.clearbit.com/${domain}`:null;
 };
-const D_CONTACT:ContactData = { email:'mahfudfebry@hikimori.web.id', location:'Nganjuk, Indonesia', website:'hikimori.web.id', instagram:'', linkedin:'', twitter:'' };
+const D_CONTACT:ContactData = { email:'Mahfudfebrys@gmail.com', location:'Nganjuk, Indonesia', website:'hikimori.web.id', instagram:'', linkedin:'', twitter:'' };
 const D_CERT:CertItem[]  = [{id:'1',name:'Google Digital Marketing',year:'2023',issuer:'Google',subtitle:'Fundamentals of Digital Marketing',imageUrl:''}];
 
 /* ─── Firestore helpers ──────────────────────────────────────────────────
@@ -756,7 +756,7 @@ const AdminPanel: React.FC = () => {
               <p style={{ color:'var(--white-dim)', marginBottom:'1.5rem', fontSize:'0.88rem' }}>Ditampilkan di Footer dan Contact Section.</p>
               <div style={card}>
                 <div style={{ display:'flex', flexDirection:'column', gap:'1rem' }}>
-                  {([['email','📧 Email','mahfudfebry@hikimori.web.id'],['location','📍 Lokasi','Nganjuk, Indonesia'],['website','🌐 Website','hikimori.web.id'],['instagram','📸 Instagram (username)',''],['linkedin','💼 LinkedIn (username)',''],['twitter','🐦 Twitter/X (username)','']] as [keyof ContactData, string, string][]).map(([key, label, ph]) => (
+                  {([['email','📧 Email','Mahfudfebrys@gmail.com'],['location','📍 Lokasi','Nganjuk, Indonesia'],['website','🌐 Website','hikimori.web.id'],['instagram','📸 Instagram (username)',''],['linkedin','💼 LinkedIn (username)',''],['twitter','🐦 Twitter/X (username)','']] as [keyof ContactData, string, string][]).map(([key, label, ph]) => (
                     <div key={key}>
                       <label style={lbl}>{label}</label>
                       <input style={inp} value={(contact as any)[key]} onChange={e => setContact({ ...contact, [key]:e.target.value })} placeholder={ph} />
@@ -776,7 +776,7 @@ const AdminPanel: React.FC = () => {
                 <h3 style={{ marginBottom:'0.5rem', fontWeight:700 }}>Informasi Akun</h3>
                 <p style={{ color:'var(--white-dim)', fontSize:'0.88rem', lineHeight:1.8 }}>
                   Username: <strong style={{ color:'var(--amber)' }}>Mahfudfebry</strong><br />
-                  Email: <strong style={{ color:'var(--amber)' }}>mahfudfebry@hikimori.web.id</strong><br />
+                  Email: <strong style={{ color:'var(--amber)' }}>Mahfudfebrys@gmail.com</strong><br />
                   Role: <strong style={{ color:'var(--amber)' }}>Administrator</strong>
                 </p>
               </div>
