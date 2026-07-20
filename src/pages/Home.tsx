@@ -37,18 +37,18 @@ const D_SKILLS:SkillItem[]=[
   {id:'12',number:'06',title:'Kepedulian Sosial & Tanggung Jawab Komunitas',desc:'Berpengalaman menyusun program sosialisasi kesehatan dan perlindungan anak bersama instansi pemerintah.',category:'soft'}
 ];
 const D_EXP:ExpItem[]=[
-  {id:'1',position:'HR / General Affairs',company:'UD Duta Pangan (Food Manufacturing)',period:'Agustus 2025 – April 2026 · 9 bln · Full-time',icon:'👥',tags:'Payroll & Penggajian,BPJS & BPJS-Tk,Pengelolaan Fasilitas & Aset,Koordinasi Lintas Divisi,Penyusunan Jobdesk,Analisa Beban Kerja',desc:'• Mengelola fasilitas dan aset operasional perusahaan\n• Menangani koordinasi lintas divisi untuk kelancaran operasional harian\n• Penghitungan Gaji, Potongan, & Bonus (Payroll)\n• Penghitungan Jaminan Sosial (BPJS & BPJS-Tk)\n• Menyusun Uraian Jabatan (Jobdesk)\n• Analisa Beban Kerja setiap Divisi'},
-  {id:'2',position:'Human Resources Generalist',company:'UD Duta Pangan (Food Manufacturing)',period:'Agustus 2025 – April 2026 · 9 bln · Full-time',icon:'🧑\u200d💼',tags:'BPJS,Analisa Beban Kerja',desc:''},
-  {id:'3',position:'Information Technology Support Specialist',company:'UD Duta Pangan (Food Manufacturing)',period:'Januari 2025 – Agustus 2025 · 8 bln · Full-time',icon:'💻',tags:'Technical Support,General Office Work',desc:''},
-  {id:'4',position:'Administrative',company:'UD Duta Pangan (Food Manufacturing)',period:'Agustus 2024 – Mei 2025 · 10 bln · Contract',icon:'📋',tags:'Administrasi',desc:'• Menangani Administrasi'},
-  {id:'5',position:'Sales Marketing Positions',company:'UD Duta Pangan (Food Manufacturing)',period:'April 2024 – Juli 2024 · 4 bln · Contract',icon:'📈',tags:'Marketing,Sales Operations',desc:'• Sales Lapangan\n• Menjual Produk Premix Tepung Bakso'},
-  {id:'6',position:'Driver Bike',company:'Grab',period:'Februari 2022 – Desember 2025 · 3 thn 11 bln · Part-time',icon:'🏍️',tags:'',desc:'• Mengantar penumpang dengan aman dan tepat waktu\n• Mengantar pesanan makanan (GrabFood)\n• Mengantar paket/barang (GrabExpress)\n• Melayani titip belanja (GrabMart)\n• Menjaga rating dan kepuasan pelanggan\n• Mematuhi standar keselamatan berkendara'},
-  {id:'7',position:'Crew',company:'PT. Richeese Kuliner Indonesia',period:'Oktober 2023 – Maret 2024 · 6 bln · Contract',icon:'🍗',tags:'Cooking,Platting',desc:'• Memasak ayam goreng crispy sesuai SOP dan standar resep\n• Meracik sauce/saus sesuai standar rasa perusahaan\n• Melakukan food preparation harian (marinasi, potong, susun stok)\n• Menjaga kualitas dan kebersihan bahan baku (food safety)\n• Merekap inventory harian (stok masuk, terpakai, sisa stok)\n• Melaporkan kebutuhan restock ke supervisor/leader shift\n• Berkoordinasi dengan tim dapur dan kasir untuk kelancaran operasional\n• Menjaga kecepatan penyajian sesuai target service time'},
-  {id:'8',position:'Kitchen Staff',company:'Mikane Gepuktular',period:'Januari 2023 – November 2023 · 11 bln · Part-time',icon:'👨\u200d🍳',tags:'',desc:'• Sebagai Juru Masak Dan Persiapan Bahan Mentah'},
-  {id:'9',position:'Crew',company:'Mie Gacoan',period:'Oktober 2022 – Desember 2022 · 3 bln · Contract',icon:'🍜',tags:'Hospitality Industry,Food and Beverage Operations',desc:'• Hospitality Customer'},
-  {id:'10',position:'Welding Operator',company:'Lancar Jaya Kota Malang',period:'Agustus 2018 – Januari 2021 · 2 thn 6 bln · Freelance',icon:'🔩',tags:'Welding,Project Planning',desc:'• Operator welder pembuatan pagar, tralis, kanopi, rolling door, dll hingga finishing serta pemasangan di lapangan'},
-  {id:'11',position:'Human Resources Assistant',company:'Dinas Sosial PPPA Kab Nganjuk',period:'Mei 2017 – Juni 2018 · 1 thn 2 bln · Full-time',icon:'🏛️',tags:'Sumber Daya Manusia (SDM),Project Management',desc:'• Staff SDM bertugas dalam menyiapkan materi untuk anggota Forum Perlindungan Anak Nganjuk untuk mewujudkan nganjuk kabupaten layak anak'},
-  {id:'12',position:'Human Resources Assistant',company:'Dinas Kesehatan Nganjuk',period:'Maret 2016 – Mei 2017 · 1 thn 3 bln · Full-time',icon:'🏛️',tags:'Sumber Daya Manusia (SDM),Project Management',desc:'• Sebagai staff yang menangani perencanaan kegiatan dan agenda program kerja dalam mensosialisasikan kesehatan remaja di kabupaten nganjuk'}
+  {id:'1',position:'HR / General Affairs',company:'UD Duta Pangan (Food Manufacturing)',period:'Juni 2025 – Juni 2026 · 1 Tahun 1 Bulan · Full-time',icon:'👥',tags:'Payroll & Penggajian,BPJS & BPJS-Tk,Pengelolaan Fasilitas & Aset,Koordinasi Lintas Divisi,Penyusunan Jobdesk,Analisa Beban Kerja',desc:'• Mengelola fasilitas dan aset operasional perusahaan\n• Menangani koordinasi lintas divisi untuk kelancaran operasional harian\n• Penghitungan Gaji, Potongan, & Bonus (Payroll)\n• Penghitungan Jaminan Sosial (BPJS & BPJS-Tk)\n• Menyusun Uraian Jabatan (Jobdesk)\n• Analisa Beban Kerja setiap Divisi'},
+  {id:'2',position:'Human Resources Generalist',company:'UD Duta Pangan (Food Manufacturing)',period:'Juni 2025 – Juni 2026 · 1 Tahun 1 Bulan · Full-time',icon:'🧑\u200d💼',tags:'BPJS,Analisa Beban Kerja',desc:''},
+  {id:'3',position:'Information Technology Support Specialist',company:'UD Duta Pangan (Food Manufacturing)',period:'Januari 2025 – Juni 2025 · 6 Bulan · Full-time',icon:'💻',tags:'Technical Support,General Office Work',desc:''},
+  {id:'4',position:'Administrative',company:'UD Duta Pangan (Food Manufacturing)',period:'Juli 2024 – Desember 2024 · 6 Bulan · Contract',icon:'📋',tags:'Administrasi',desc:'• Menangani Administrasi'},
+  {id:'5',position:'Sales Marketing Positions',company:'UD Duta Pangan (Food Manufacturing)',period:'Januari 2024 – Juli 2024 · 7 Bulan · Contract',icon:'📈',tags:'Marketing,Sales Operations',desc:'• Sales Lapangan\n• Menjual Produk Premix Tepung Bakso'},
+  {id:'6',position:'Driver Bike',company:'Grab',period:'Februari 2022 – Desember 2025 · 3 Tahun 11 Bulan · Part-time',icon:'🏍️',tags:'',desc:'• Mengantar penumpang dengan aman dan tepat waktu\n• Mengantar pesanan makanan (GrabFood)\n• Mengantar paket/barang (GrabExpress)\n• Melayani titip belanja (GrabMart)\n• Menjaga rating dan kepuasan pelanggan\n• Mematuhi standar keselamatan berkendara'},
+  {id:'7',position:'Crew',company:'PT. Richeese Kuliner Indonesia',period:'Oktober 2023 – Januari 2024 · 4 Bulan · Contract',icon:'🍗',tags:'Cooking,Platting',desc:'• Memasak ayam goreng crispy sesuai SOP dan standar resep\n• Meracik sauce/saus sesuai standar rasa perusahaan\n• Melakukan food preparation harian (marinasi, potong, susun stok)\n• Menjaga kualitas dan kebersihan bahan baku (food safety)\n• Merekap inventory harian (stok masuk, terpakai, sisa stok)\n• Melaporkan kebutuhan restock ke supervisor/leader shift\n• Berkoordinasi dengan tim dapur dan kasir untuk kelancaran operasional\n• Menjaga kecepatan penyajian sesuai target service time'},
+  {id:'8',position:'Kitchen Staff',company:'Mikane Gepuktular',period:'Januari 2023 – November 2023 · 11 Bulan · Part-time',icon:'👨\u200d🍳',tags:'',desc:'• Sebagai Juru Masak Dan Persiapan Bahan Mentah'},
+  {id:'9',position:'Crew',company:'Mie Gacoan',period:'Oktober 2022 – Desember 2022 · 3 Bulan · Contract',icon:'🍜',tags:'Hospitality Industry,Food and Beverage Operations',desc:'• Hospitality Customer'},
+  {id:'10',position:'Welding Operator',company:'Lancar Jaya Kota Malang',period:'Agustus 2018 – Januari 2021 · 2 Tahun 6 Bulan · Freelance',icon:'🔩',tags:'Welding,Project Planning',desc:'• Operator welder pembuatan pagar, tralis, kanopi, rolling door, dll hingga finishing serta pemasangan di lapangan'},
+  {id:'11',position:'Human Resources Assistant',company:'Dinas Sosial PPPA Kab Nganjuk',period:'Mei 2017 – Juni 2018 · 1 Tahun 2 Bulan · Full-time',icon:'🏛️',tags:'Sumber Daya Manusia (SDM),Project Management',desc:'• Staff SDM bertugas dalam menyiapkan materi untuk anggota Forum Perlindungan Anak Nganjuk untuk mewujudkan nganjuk kabupaten layak anak'},
+  {id:'12',position:'Human Resources Assistant',company:'Dinas Kesehatan Nganjuk',period:'Maret 2016 – Mei 2017 · 1 Tahun 3 Bulan · Full-time',icon:'🏛️',tags:'Sumber Daya Manusia (SDM),Project Management',desc:'• Sebagai staff yang menangani perencanaan kegiatan dan agenda program kerja dalam mensosialisasikan kesehatan remaja di kabupaten nganjuk'}
 ];
 
 /* ─── Logo Perusahaan: upload manual (logoUrl) atau otomatis cari via Clearbit
@@ -688,14 +688,11 @@ const ExpCard:React.FC<{exp:ExpItem;index:number}>=({exp,index:i})=>{
   return (
     <Reveal direction="right" delay={i*0.14}>
       <div style={{display:'flex',gap:'clamp(1rem,4vw,2rem)',position:'relative'}}>
-        <div style={{flexShrink:0,width:'clamp(32px,10vw,64px)',display:'flex',flexDirection:'column',alignItems:'center'}}>
+        <div style={{flexShrink:0,width:'clamp(32px,10vw,64px)',display:'flex',flexDirection:'column',alignItems:'center',paddingTop:'1.4rem'}}>
           <motion.div
             animate={{boxShadow:[`0 0 8px ${J.red}44`,`0 0 20px ${J.red}88`,`0 0 8px ${J.red}44`]}}
             transition={{duration:2,repeat:Infinity,delay:i*0.5}} whileHover={{scale:1.25}}
-            style={{width:44,height:44,borderRadius:'50%',background:logo&&!logoFailed?'#fff':`radial-gradient(circle,rgba(139,26,26,0.2),rgba(139,26,26,0.05))`,border:`2px solid ${J.red}`,display:'flex',alignItems:'center',justifyContent:'center',fontSize:'1.2rem',position:'relative',zIndex:2,overflow:'hidden'}}>
-            {logo&&!logoFailed?(
-              <img src={logo} alt={exp.company} onError={()=>setLogoFailed(true)} style={{width:'100%',height:'100%',objectFit:'contain',padding:6}}/>
-            ):(exp.icon)}
+            style={{width:16,height:16,borderRadius:'50%',background:J.red,border:`2px solid ${J.gold}`,position:'relative',zIndex:2}}>
             <motion.div animate={{scale:[1,1.4,1],opacity:[0.5,0,0.5]}} transition={{duration:2,repeat:Infinity,delay:i*0.5}} style={{position:'absolute',inset:-4,borderRadius:'50%',border:`1px solid ${J.red}`,pointerEvents:'none'}}/>
           </motion.div>
         </div>
@@ -706,9 +703,22 @@ const ExpCard:React.FC<{exp:ExpItem;index:number}>=({exp,index:i})=>{
               <motion.div animate={{opacity:[0.04,0.1,0.04]}} transition={{duration:4+i,repeat:Infinity}} style={{position:'absolute',top:-20,right:-20,width:120,height:120,borderRadius:'50%',background:`radial-gradient(circle,${J.red}33,transparent 70%)`}}/>
               <div style={{position:'absolute',right:'1rem',top:'0.5rem',fontFamily:'serif',fontSize:'2.5rem',color:`rgba(139,26,26,0.07)`,userSelect:'none',lineHeight:1}}>{['業','功','術'][i%3]}</div>
               <div style={{position:'relative',zIndex:1,marginBottom:'0.9rem'}}>
+                <div style={{width:48,height:48,borderRadius:'50%',background:logo&&!logoFailed?'#fff':`radial-gradient(circle,rgba(139,26,26,0.2),rgba(139,26,26,0.05))`,border:`2px solid ${J.red}`,display:'flex',alignItems:'center',justifyContent:'center',fontSize:'1.3rem',overflow:'hidden',marginBottom:'0.7rem'}}>
+                  {logo&&!logoFailed?(
+                    <img src={logo} alt={exp.company} onError={()=>setLogoFailed(true)} style={{width:'100%',height:'100%',objectFit:'contain',padding:6}}/>
+                  ):(<span aria-hidden="true">{exp.icon}</span>)}
+                </div>
                 <h3 style={{fontFamily:'var(--font-display)',fontSize:'clamp(1rem,3vw,1.4rem)',color:J.white,lineHeight:1.3,marginBottom:'0.3rem'}}>{exp.position}</h3>
                 {exp.company&&<div style={{fontFamily:'var(--font-body)',fontWeight:600,color:J.gold,fontSize:'0.92rem',lineHeight:1.4,marginBottom:'0.45rem'}}>{exp.company}</div>}
-                {exp.period&&<div style={{display:'inline-flex',alignItems:'center',gap:'0.35rem',background:J.redBg,color:J.goldL,borderRadius:5,padding:'3px 10px',fontSize:'0.72rem',fontWeight:700,border:`1px solid rgba(139,26,26,0.3)`}}><span>🕐</span>{exp.period}</div>}
+                {exp.period&&(()=>{
+                  const [dateRange,duration,type]=exp.period.split('·').map(p=>p.trim());
+                  return (
+                    <div style={{display:'inline-flex',flexDirection:'column',gap:'0.2rem',alignItems:'flex-start',background:J.redBg,color:J.goldL,borderRadius:5,padding:'5px 12px',fontSize:'0.72rem',fontWeight:700,border:`1px solid rgba(139,26,26,0.3)`}}>
+                      <span><span aria-hidden="true">🕐</span> {dateRange}</span>
+                      <span>[ {duration} ]{type?` · ${type}`:''}</span>
+                    </div>
+                  );
+                })()}
               </div>
               {exp.tags&&<div style={{display:'flex',flexWrap:'wrap',gap:'0.35rem',position:'relative',zIndex:1,marginBottom:'0.8rem'}}>{exp.tags.split(',').map(t=>t.trim()).filter(Boolean).map((tag,ti)=>(<motion.span key={tag} initial={{opacity:0,scale:0.8}} whileInView={{opacity:1,scale:1}} transition={{delay:ti*0.04+i*0.08}} style={{background:'rgba(201,160,48,0.07)',border:`1px solid rgba(201,160,48,0.18)`,color:'rgba(201,160,48,0.8)',borderRadius:4,padding:'3px 10px',fontSize:'0.72rem',fontWeight:500}}>{tag}</motion.span>))}</div>}
               {exp.desc&&(
