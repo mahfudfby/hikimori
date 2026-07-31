@@ -797,7 +797,7 @@ const ExpCard:React.FC<{exp:ExpItem;index:number}>=({exp,index:i})=>{
                               <span className="bullet-text text-justify-auto" style={{color:'rgba(245,245,240,0.82)',fontSize:'0.82rem',lineHeight:1.75,fontFamily:'var(--font-body)'}}>{text}</span>
                             </div>
                           ):(
-                            <div key={li} className="text-justify-auto" style={{color:'rgba(245,245,240,0.82)',fontSize:'0.82rem',lineHeight:1.75,fontFamily:'var(--font-body)',padding:'0.1rem 0'}}>
+                            <div key={li} className="text-justify-auto para-indent" style={{color:'rgba(245,245,240,0.82)',fontSize:'0.82rem',lineHeight:1.75,fontFamily:'var(--font-body)',padding:'0.1rem 0'}}>
                               {line}
                             </div>
                           );
@@ -971,9 +971,9 @@ const Home:React.FC=()=>{
                 <BrushStroke style={{position:'relative',marginBottom:'0.8rem'}} width={100} color={J.red} delay={0.3}/>
                 <div style={{fontFamily:'var(--font-script)',color:J.gold,fontSize:'clamp(1.5rem,5vw,2.2rem)',fontWeight:700,marginBottom:'1.8rem',textShadow:`0 0 20px rgba(201,160,48,0.35)`}}>{about.name}</div>
 
-                <p lang={lang} className="text-justify-auto" style={{color:J.whiteDim,lineHeight:1.9,marginBottom:'1.2rem',fontSize:'clamp(0.88rem,2vw,1rem)'}}>{about.bio1}</p>
+                <p lang={lang} className="text-justify-auto para-indent" style={{color:J.whiteDim,lineHeight:1.9,marginBottom:'1.2rem',fontSize:'clamp(0.88rem,2vw,1rem)'}}>{about.bio1}</p>
 
-                <p lang={lang} className="text-justify-auto" style={{color:'rgba(245,245,240,0.5)',lineHeight:1.9,fontSize:'clamp(0.88rem,2vw,1rem)',marginBottom:'1.8rem'}}>{about.bio2}</p>
+                <p lang={lang} className="text-justify-auto para-indent" style={{color:'rgba(245,245,240,0.5)',lineHeight:1.9,fontSize:'clamp(0.88rem,2vw,1rem)',marginBottom:'1.8rem'}}>{about.bio2}</p>
 
                 <SosmedButtons about={about}/>
 

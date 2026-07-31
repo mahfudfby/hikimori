@@ -170,6 +170,13 @@ input, textarea, select, button {
   word-break: normal;
 }
 
+/* Khusus paragraf biasa (bukan bullet): baris pertama menjorok 1 tab,
+   dan tetap menghormati Enter/line-break yang diketik di teksnya. */
+.para-indent {
+  text-indent: 1.8em;
+  white-space: pre-line;
+}
+
 /* ─── Bullet list dengan hanging indent (gaya CV) ───
    Bullet menempel di kiri, teks lanjutan (baris yang wrap) sejajar
    dengan awal teks — bukan ikut menjorok mengikuti bullet. */
