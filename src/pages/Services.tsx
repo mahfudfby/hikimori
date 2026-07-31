@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import AnimatedSection from '../components/AnimatedSection';
+import { useLang } from '../contexts/LanguageContext';
 
 const services = [
   {
@@ -75,6 +76,7 @@ const process = [
 
 const Services: React.FC = () => {
   const [activeCard, setActiveCard] = useState<number | null>(null);
+  const { t } = useLang();
 
   return (
     <div style={{ background: 'var(--black)', minHeight: '100vh', paddingTop: '70px' }}>
@@ -313,7 +315,7 @@ const Services: React.FC = () => {
             SIAP BERKOLABORASI?
           </h2>
           <p style={{ color: 'var(--white-dim)', marginBottom: '2.5rem', fontSize: '1rem' }}>
-            Hubungi saya dan kita mulai wujudkan ide Anda bersama.
+            {t('Hubungi saya dan kita mulai wujudkan ide Anda bersama.', "Let's get in touch and start bringing your ideas to life together.")}
           </p>
           <motion.a
             href="mailto:mahfudfebry@hikimori.web.id"
