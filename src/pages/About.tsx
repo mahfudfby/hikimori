@@ -127,7 +127,7 @@ const ExpCardAbout: React.FC<{ exp: ExpItem; index: number }> = ({ exp, index: i
   const [open, setOpen] = useState(false);
   const [logoFailed, setLogoFailed] = useState(false);
   const logo = resolveLogo(exp);
-  const { t } = useLang();
+  const { t, lang } = useLang();
   return (
     <AnimatedSection direction={i % 2 === 0 ? 'left' : 'right'} delay={i * 0.12}>
       <div className="float-hover" style={{
@@ -198,10 +198,21 @@ const ExpCardAbout: React.FC<{ exp: ExpItem; index: number }> = ({ exp, index: i
               transition={{ duration: 0.32, ease: 'easeInOut' }}
               style={{ overflow: 'hidden' }}
             >
-              <div style={{ marginTop: '0.8rem', padding: '1rem', background: 'rgba(245,166,35,0.04)', borderRadius: '8px', borderLeft: '2px solid rgba(245,166,35,0.3)' }}>
-                {exp.desc.split('\n').map((line, li) => (
-                  <div key={li} style={{ color: 'var(--white-dim)', fontSize: '0.85rem', lineHeight: 1.8 }}>{line}</div>
-                ))}
+              <div style={{ marginTop: '0.8rem', padding: '1rem', background: 'rgba(245,166,35,0.04)', borderRadius: '8px', borderLeft: '2px solid rgba(245,166,35,0.3)' }} lang={lang}>
+                <div className="bullet-list">
+                  {exp.desc.split('\n').map((line, li) => {
+                    const isBullet = line.trim().startsWith('•');
+                    const text = isBullet ? line.trim().slice(1).trim() : line;
+                    return isBullet ? (
+                      <div key={li} className="bullet-line">
+                        <span className="bullet-dot" style={{ color: 'var(--amber)' }}>•</span>
+                        <span className="bullet-text text-justify-auto" style={{ color: 'var(--white-dim)', fontSize: '0.85rem', lineHeight: 1.8 }}>{text}</span>
+                      </div>
+                    ) : (
+                      <div key={li} className="text-justify-auto" style={{ color: 'var(--white-dim)', fontSize: '0.85rem', lineHeight: 1.8 }}>{line}</div>
+                    );
+                  })}
+                </div>
               </div>
             </motion.div>
           </>
@@ -216,7 +227,7 @@ const ExpCardAbout: React.FC<{ exp: ExpItem; index: number }> = ({ exp, index: i
 ══════════════════════════════════════════ */
 const About: React.FC = () => {
   const { about, gallery, skills, exps, certs } = useHomeData();
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const photo = about.photoUrl || FALLBACK_PHOTO;
 
   return (
@@ -235,7 +246,7 @@ const About: React.FC = () => {
             <span style={{ fontFamily: 'var(--font-script)', color: 'var(--amber)', fontSize: '2.5rem', fontWeight: 700, display: 'block', marginBottom: '2rem' }}>
               {about.name}
             </span>
-            <p style={{ color: 'var(--white-dim)', lineHeight: 1.8, fontSize: '1rem' }}>
+            <p lang={lang} className="text-justify-auto" style={{ color: 'var(--white-dim)', lineHeight: 1.8, fontSize: '1rem' }}>
               {about.bio1}
             </p>
 
@@ -423,7 +434,7 @@ const About: React.FC = () => {
                     <div className="float-hover" style={{ background: 'var(--black-3)', border: '1px solid rgba(245,166,35,0.15)', borderRadius: 'var(--radius)', padding: '1.6rem' }}>
                       <div style={{ fontFamily: 'var(--font-display)', fontSize: '2rem', color: 'rgba(245,166,35,0.2)', lineHeight: 1, marginBottom: '0.4rem' }}>{skill.number}</div>
                       <h4 style={{ fontFamily: 'var(--font-body)', fontWeight: 700, color: 'var(--amber)', fontSize: '0.9rem', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{skill.title}</h4>
-                      <p style={{ color: 'var(--white-dim)', fontSize: '0.85rem', lineHeight: 1.65 }}>{skill.desc}</p>
+                      <p lang={lang} className="text-justify-auto" style={{ color: 'var(--white-dim)', fontSize: '0.85rem', lineHeight: 1.65 }}>{skill.desc}</p>
                     </div>
                   </AnimatedSection>
                 ))}
@@ -442,7 +453,7 @@ const About: React.FC = () => {
                     <div className="float-hover" style={{ background: 'var(--black-3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 'var(--radius)', padding: '1.6rem' }}>
                       <div style={{ fontFamily: 'var(--font-display)', fontSize: '2rem', color: 'rgba(255,255,255,0.15)', lineHeight: 1, marginBottom: '0.4rem' }}>{skill.number}</div>
                       <h4 style={{ fontFamily: 'var(--font-body)', fontWeight: 700, color: 'var(--white)', fontSize: '0.9rem', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{skill.title}</h4>
-                      <p style={{ color: 'var(--white-dim)', fontSize: '0.85rem', lineHeight: 1.65 }}>{skill.desc}</p>
+                      <p lang={lang} className="text-justify-auto" style={{ color: 'var(--white-dim)', fontSize: '0.85rem', lineHeight: 1.65 }}>{skill.desc}</p>
                     </div>
                   </AnimatedSection>
                 ))}

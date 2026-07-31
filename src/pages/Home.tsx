@@ -734,7 +734,7 @@ const ExpCard:React.FC<{exp:ExpItem;index:number}>=({exp,index:i})=>{
   const [open,setOpen]=useState(false);
   const [logoFailed,setLogoFailed]=useState(false);
   const logo=resolveLogo(exp);
-  const {t}=useLang();
+  const {t,lang}=useLang();
   return (
     <Reveal direction="right" delay={i*0.14}>
       <div style={{display:'flex',gap:'clamp(1rem,4vw,2rem)',position:'relative'}}>
@@ -786,12 +786,23 @@ const ExpCard:React.FC<{exp:ExpItem;index:number}>=({exp,index:i})=>{
                     animate={{height:open?'auto':0,opacity:open?1:0}}
                     transition={{duration:0.35,ease:'easeInOut'}}
                     style={{overflow:'hidden'}}>
-                    <div style={{marginTop:'0.8rem',padding:'1rem 1.2rem',background:'rgba(139,26,26,0.06)',border:`1px solid rgba(139,26,26,0.2)`,borderRadius:8,borderLeft:`3px solid ${J.red}`}}>
-                      {exp.desc.split('\n').map((line,li)=>(
-                        <div key={li} style={{color:'rgba(245,245,240,0.82)',fontSize:'0.82rem',lineHeight:1.75,fontFamily:'var(--font-body)',padding:'0.1rem 0'}}>
-                          {line}
-                        </div>
-                      ))}
+                    <div style={{marginTop:'0.8rem',padding:'1rem 1.2rem',background:'rgba(139,26,26,0.06)',border:`1px solid rgba(139,26,26,0.2)`,borderRadius:8,borderLeft:`3px solid ${J.red}`}} lang={lang}>
+                      <div className="bullet-list">
+                        {exp.desc.split('\n').map((line,li)=>{
+                          const isBullet=line.trim().startsWith('•');
+                          const text=isBullet?line.trim().slice(1).trim():line;
+                          return isBullet?(
+                            <div key={li} className="bullet-line">
+                              <span className="bullet-dot" style={{color:J.gold}}>•</span>
+                              <span className="bullet-text text-justify-auto" style={{color:'rgba(245,245,240,0.82)',fontSize:'0.82rem',lineHeight:1.75,fontFamily:'var(--font-body)'}}>{text}</span>
+                            </div>
+                          ):(
+                            <div key={li} className="text-justify-auto" style={{color:'rgba(245,245,240,0.82)',fontSize:'0.82rem',lineHeight:1.75,fontFamily:'var(--font-body)',padding:'0.1rem 0'}}>
+                              {line}
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
                   </motion.div>
                 </div>
@@ -960,9 +971,9 @@ const Home:React.FC=()=>{
                 <BrushStroke style={{position:'relative',marginBottom:'0.8rem'}} width={100} color={J.red} delay={0.3}/>
                 <div style={{fontFamily:'var(--font-script)',color:J.gold,fontSize:'clamp(1.5rem,5vw,2.2rem)',fontWeight:700,marginBottom:'1.8rem',textShadow:`0 0 20px rgba(201,160,48,0.35)`}}>{about.name}</div>
 
-                <p style={{color:J.whiteDim,lineHeight:1.9,marginBottom:'1.2rem',fontSize:'clamp(0.88rem,2vw,1rem)'}}>{about.bio1}</p>
+                <p lang={lang} className="text-justify-auto" style={{color:J.whiteDim,lineHeight:1.9,marginBottom:'1.2rem',fontSize:'clamp(0.88rem,2vw,1rem)'}}>{about.bio1}</p>
 
-                <p style={{color:'rgba(245,245,240,0.5)',lineHeight:1.9,fontSize:'clamp(0.88rem,2vw,1rem)',marginBottom:'1.8rem'}}>{about.bio2}</p>
+                <p lang={lang} className="text-justify-auto" style={{color:'rgba(245,245,240,0.5)',lineHeight:1.9,fontSize:'clamp(0.88rem,2vw,1rem)',marginBottom:'1.8rem'}}>{about.bio2}</p>
 
                 <SosmedButtons about={about}/>
 

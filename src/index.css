@@ -154,3 +154,41 @@ img {
 input, textarea, select, button {
   max-width: 100%;
 }
+
+/* ─── Rata Tengah (Justify) + Auto-Hyphenation untuk paragraf panjang ───
+   Dipakai di semua teks/paragraf panjang (bio, deskripsi skill, deskripsi
+   pekerjaan, dsb). hyphens:auto memotong kata di akhir baris secara
+   otomatis sesuai bahasa aktif (lihat atribut lang pada elemen). */
+.text-justify-auto {
+  text-align: justify;
+  text-align-last: left;
+  text-justify: inter-word;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  -ms-hyphens: auto;
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+
+/* ─── Bullet list dengan hanging indent (gaya CV) ───
+   Bullet menempel di kiri, teks lanjutan (baris yang wrap) sejajar
+   dengan awal teks — bukan ikut menjorok mengikuti bullet. */
+.bullet-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35em;
+}
+.bullet-line {
+  display: flex;
+  align-items: baseline;
+  gap: 0.65em;
+}
+.bullet-line .bullet-dot {
+  flex: 0 0 auto;
+  width: 0.5em;
+  text-align: center;
+}
+.bullet-line .bullet-text {
+  flex: 1 1 auto;
+  min-width: 0;
+}
