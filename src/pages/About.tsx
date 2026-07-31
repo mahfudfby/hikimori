@@ -209,7 +209,7 @@ const ExpCardAbout: React.FC<{ exp: ExpItem; index: number }> = ({ exp, index: i
                         <span className="bullet-text text-justify-auto" style={{ color: 'var(--white-dim)', fontSize: '0.85rem', lineHeight: 1.8 }}>{text}</span>
                       </div>
                     ) : (
-                      <div key={li} className="text-justify-auto" style={{ color: 'var(--white-dim)', fontSize: '0.85rem', lineHeight: 1.8 }}>{line}</div>
+                      <div key={li} className="text-justify-auto para-indent" style={{ color: 'var(--white-dim)', fontSize: '0.85rem', lineHeight: 1.8 }}>{line}</div>
                     );
                   })}
                 </div>
@@ -246,7 +246,7 @@ const About: React.FC = () => {
             <span style={{ fontFamily: 'var(--font-script)', color: 'var(--amber)', fontSize: '2.5rem', fontWeight: 700, display: 'block', marginBottom: '2rem' }}>
               {about.name}
             </span>
-            <p lang={lang} className="text-justify-auto" style={{ color: 'var(--white-dim)', lineHeight: 1.8, fontSize: '1rem' }}>
+            <p lang={lang} className="text-justify-auto para-indent" style={{ color: 'var(--white-dim)', lineHeight: 1.8, fontSize: '1rem' }}>
               {about.bio1}
             </p>
 
