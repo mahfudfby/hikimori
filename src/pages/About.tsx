@@ -4,6 +4,15 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import AnimatedSection from '../components/AnimatedSection';
+import { useLang } from '../contexts/LanguageContext';
+import {
+  EDUCATION, TOOLS, CV_SKILL_TAGS, TRAINING_LICENSE,
+  HOBBIES, ORG_EXPERIENCE, REFERENCES,
+} from '../data/cvData';
+import {
+  D_ABOUT, D_ABOUT_EN, D_SKILLS, D_SKILLS_EN, D_EXP, D_EXP_EN,
+} from './Home';
+import type { AboutData, SkillItem, ExpItem } from './Home';
 
 /* ─── localStorage keys — identik dengan Home.tsx ─── */
 const LS_ABOUT  = 'hk_home_about_data';
@@ -14,51 +23,12 @@ const LS_CERT   = 'hk_cert_data';
 const LS_VER    = 'hk_data_version';
 const DATA_VERSION = 'v7'; // Harus sama dengan Home.tsx
 
-interface AboutData {
-  name: string; location: string; bio1: string; bio2: string; photoUrl: string;
-  instagram?: string; linkedin?: string; whatsapp?: string; threads?: string; tiktok?: string; email?: string;
-}
-interface SkillItem { id: string; number: string; title: string; desc: string; category?: 'hard'|'soft'; }
 interface GalleryItem { id: string; url: string; caption?: string; size?: 'small'|'medium'|'large'|'wide'|'tall'; }
-interface ExpItem   { id: string; position: string; company: string; period: string; icon: string; tags: string; desc?: string; logoUrl?: string; }
 interface CertItem  { id: string; name: string; year: string; issuer: string; subtitle: string; imageUrl: string; }
 
-/* Default data — sama persis dengan D_ABOUT, D_SKILLS, D_EXP, D_CERT di Home.tsx */
-const D_ABOUT: AboutData = {
-  name: 'Mahfudfebry', location: 'Nganjuk, Indonesia',
-  bio1: 'Halo! Nama saya Mahfudfebry, seorang profesional muda dari Nganjuk, Indonesia. Portfolio ini adalah kumpulan karya dan proyek terbaik saya yang mencerminkan keahlian, kreativitas, dan pertumbuhan profesional.',
-  bio2: 'Di setiap proyek, saya selalu berusaha memberikan hasil terbaik — dari desain visual yang kuat hingga solusi HR dan IT yang efisien dan berdampak.',
-  photoUrl: '', instagram: 'mahfudfebry', linkedin: 'mahfud-febry-styanto',
-  whatsapp: '6282234651413', threads: 'mahfudfebry', tiktok: 'mahfudfebry', email: 'Mahfudfebrys@gmail.com',
-};
-const D_SKILLS: SkillItem[] = [
-  { id: '1', number: '01', title: 'Payroll & Administrasi Penggajian', desc: 'Menghitung gaji, potongan, bonus, serta iuran BPJS & BPJS-Tk karyawan (UD Duta Pangan).', category: 'hard' },
-  { id: '2', number: '02', title: 'HR & General Affairs Management', desc: 'Mengelola fasilitas, aset operasional, uraian jabatan (jobdesk), dan analisa beban kerja tiap divisi.', category: 'hard' },
-  { id: '3', number: '03', title: 'IT Technical Support', desc: 'Troubleshooting hardware/software dan dukungan pengguna untuk operasional kantor sehari-hari.', category: 'hard' },
-  { id: '4', number: '04', title: 'Food Production & Food Safety (SOP)', desc: 'Food preparation, kontrol kualitas bahan baku, dan kepatuhan standar food safety di dapur produksi.', category: 'hard' },
-  { id: '5', number: '05', title: 'Welding & Fabrication', desc: 'Pengelasan dan pemasangan pagar, tralis, kanopi, hingga rolling door di lapangan.', category: 'hard' },
-  { id: '6', number: '06', title: 'Sales, Marketing & Administrasi Operasional', desc: 'Penjualan lapangan, dokumentasi administrasi, dan koordinasi operasional harian perusahaan.', category: 'hard' },
-  { id: '7', number: '01', title: 'Pelayanan Pelanggan (Customer Service)', desc: 'Menjaga kepuasan dan rating pelanggan lewat interaksi ramah dan responsif di berbagai peran layanan.', category: 'soft' },
-  { id: '8', number: '02', title: 'Kerja Tim & Koordinasi Lintas Divisi', desc: 'Terbiasa berkoordinasi dengan tim dapur, kasir, hingga divisi lain untuk kelancaran operasional.', category: 'soft' },
-  { id: '9', number: '03', title: 'Disiplin & Keselamatan Kerja', desc: 'Konsisten mematuhi SOP dan standar keselamatan, baik di jalan raya maupun lokasi kerja lapangan.', category: 'soft' },
-  { id: '10', number: '04', title: 'Manajemen Waktu & Target Kerja', desc: 'Mampu bekerja dengan target service time dan tenggat penjualan tanpa mengorbankan kualitas.', category: 'soft' },
-  { id: '11', number: '05', title: 'Adaptasi & Fleksibilitas Lintas Industri', desc: 'Terbukti mampu beradaptasi cepat di berbagai bidang berbeda — F&B, IT, HR, hingga manufaktur.', category: 'soft' },
-  { id: '12', number: '06', title: 'Kepedulian Sosial & Tanggung Jawab Komunitas', desc: 'Berpengalaman menyusun program sosialisasi kesehatan dan perlindungan anak bersama instansi pemerintah.', category: 'soft' },
-];
-const D_EXP: ExpItem[] = [
-  { id: '1', position: 'HR / General Affairs', company: 'UD Duta Pangan (Food Manufacturing)', period: 'Juni 2025 – Juni 2026 · 1 Tahun 1 Bulan · Full-time', icon: '👥', tags: 'Payroll & Penggajian,BPJS & BPJS-Tk,Pengelolaan Fasilitas & Aset,Koordinasi Lintas Divisi,Penyusunan Jobdesk,Analisa Beban Kerja', desc: '• Mengelola fasilitas dan aset operasional perusahaan\n• Menangani koordinasi lintas divisi untuk kelancaran operasional harian\n• Penghitungan Gaji, Potongan, & Bonus (Payroll)\n• Penghitungan Jaminan Sosial (BPJS & BPJS-Tk)\n• Menyusun Uraian Jabatan (Jobdesk)\n• Analisa Beban Kerja setiap Divisi' },
-  { id: '2', position: 'Human Resources Generalist', company: 'UD Duta Pangan (Food Manufacturing)', period: 'Juni 2025 – Juni 2026 · 1 Tahun 1 Bulan · Full-time', icon: '🧑\u200d💼', tags: 'BPJS,Analisa Beban Kerja', desc: '' },
-  { id: '3', position: 'Information Technology Support Specialist', company: 'UD Duta Pangan (Food Manufacturing)', period: 'Januari 2025 – Juni 2025 · 6 Bulan · Full-time', icon: '💻', tags: 'Technical Support,General Office Work', desc: '' },
-  { id: '4', position: 'Administrative', company: 'UD Duta Pangan (Food Manufacturing)', period: 'Juli 2024 – Desember 2024 · 6 Bulan · Contract', icon: '📋', tags: 'Administrasi', desc: '• Menangani Administrasi' },
-  { id: '5', position: 'Sales Marketing Positions', company: 'UD Duta Pangan (Food Manufacturing)', period: 'Januari 2024 – Juli 2024 · 7 Bulan · Contract', icon: '📈', tags: 'Marketing,Sales Operations', desc: '• Sales Lapangan\n• Menjual Produk Premix Tepung Bakso' },
-  { id: '6', position: 'Driver Bike', company: 'Grab', period: 'Februari 2022 – Desember 2025 · 3 Tahun 11 Bulan · Part-time', icon: '🏍️', tags: '', desc: '• Mengantar penumpang dengan aman dan tepat waktu\n• Mengantar pesanan makanan (GrabFood)\n• Mengantar paket/barang (GrabExpress)\n• Melayani titip belanja (GrabMart)\n• Menjaga rating dan kepuasan pelanggan\n• Mematuhi standar keselamatan berkendara' },
-  { id: '7', position: 'Crew', company: 'PT. Richeese Kuliner Indonesia', period: 'Oktober 2023 – Januari 2024 · 4 Bulan · Contract', icon: '🍗', tags: 'Cooking,Platting', desc: '• Memasak ayam goreng crispy sesuai SOP dan standar resep\n• Meracik sauce/saus sesuai standar rasa perusahaan\n• Melakukan food preparation harian (marinasi, potong, susun stok)\n• Menjaga kualitas dan kebersihan bahan baku (food safety)\n• Merekap inventory harian (stok masuk, terpakai, sisa stok)\n• Melaporkan kebutuhan restock ke supervisor/leader shift\n• Berkoordinasi dengan tim dapur dan kasir untuk kelancaran operasional\n• Menjaga kecepatan penyajian sesuai target service time' },
-  { id: '8', position: 'Kitchen Staff', company: 'Mikane Gepuktular', period: 'Januari 2023 – November 2023 · 11 Bulan · Part-time', icon: '👨\u200d🍳', tags: '', desc: '• Sebagai Juru Masak Dan Persiapan Bahan Mentah' },
-  { id: '9', position: 'Crew', company: 'Mie Gacoan', period: 'Oktober 2022 – Desember 2022 · 3 Bulan · Contract', icon: '🍜', tags: 'Hospitality Industry,Food and Beverage Operations', desc: '• Hospitality Customer' },
-  { id: '10', position: 'Welding Operator', company: 'Lancar Jaya Kota Malang', period: 'Agustus 2018 – Januari 2021 · 2 Tahun 6 Bulan · Freelance', icon: '🔩', tags: 'Welding,Project Planning', desc: '• Operator welder pembuatan pagar, tralis, kanopi, rolling door, dll hingga finishing serta pemasangan di lapangan' },
-  { id: '11', position: 'Human Resources Assistant', company: 'Dinas Sosial PPPA Kab Nganjuk', period: 'Mei 2017 – Juni 2018 · 1 Tahun 2 Bulan · Full-time', icon: '🏛️', tags: 'Sumber Daya Manusia (SDM),Project Management', desc: '• Staff SDM bertugas dalam menyiapkan materi untuk anggota Forum Perlindungan Anak Nganjuk untuk mewujudkan nganjuk kabupaten layak anak' },
-  { id: '12', position: 'Human Resources Assistant', company: 'Dinas Kesehatan Nganjuk', period: 'Maret 2016 – Mei 2017 · 1 Tahun 3 Bulan · Full-time', icon: '🏛️', tags: 'Sumber Daya Manusia (SDM),Project Management', desc: '• Sebagai staff yang menangani perencanaan kegiatan dan agenda program kerja dalam mensosialisasikan kesehatan remaja di kabupaten nganjuk' },
-];
+/* Sertifikasi ditampilkan di About.tsx memakai data Training & License asli dari CV */
+const D_CERT: CertItem[] = TRAINING_LICENSE.map(t => ({ id: t.id, name: t.name.id, year: t.year, issuer: t.issuer, subtitle: t.subtitle?.id || '', imageUrl: '' }));
+const D_CERT_EN: CertItem[] = TRAINING_LICENSE.map(t => ({ id: t.id, name: t.name.en, year: t.year, issuer: t.issuer, subtitle: t.subtitle?.en || '', imageUrl: '' }));
 
 /* ─── Logo Perusahaan: upload manual (logoUrl) atau otomatis cari via Clearbit
    untuk perusahaan/PT besar yang dikenal. Jika tidak ditemukan, fallback ke emoji icon. ─── */
@@ -77,10 +47,6 @@ const resolveLogo = (exp: { company: string; logoUrl?: string }): string | null 
   const domain = guessLogoDomain(exp.company);
   return domain ? `https://logo.clearbit.com/${domain}` : null;
 };
-const D_CERT: CertItem[] = [
-  { id: '1', name: 'Google Digital Marketing', year: '2023', issuer: 'Google', subtitle: 'Fundamentals of Digital Marketing', imageUrl: '' },
-  { id: '2', name: 'HR Management Professional', year: '2022', issuer: 'BNSP Indonesia', subtitle: 'Sertifikasi Kompetensi SDM', imageUrl: '' },
-];
 
 const FALLBACK_PHOTO = 'https://res.cloudinary.com/dl4pyan8v/image/upload/v1783866519/Mahfudfebry_casual_oj8r1d.png';
 const D_GALLERY: GalleryItem[] = [];
@@ -96,9 +62,13 @@ const GALLERY_SPAN: Record<string, { col: number; row: number }> = {
 const ls = <T,>(key: string, fb: T): T => {
   try { return JSON.parse(localStorage.getItem(key) || 'null') ?? fb; } catch { return fb; }
 };
+const lsRaw = <T,>(key: string): T | null => {
+  try { return JSON.parse(localStorage.getItem(key) || 'null'); } catch { return null; }
+};
 
 /* ─── Hook: auto-reset version & load from localStorage ─── */
 const useHomeData = () => {
+  const { lang } = useLang();
   // Auto-reset jika versi berubah (sama logikanya dengan Home.tsx)
   useEffect(() => {
     try {
@@ -109,11 +79,17 @@ const useHomeData = () => {
     } catch {}
   }, []);
 
-  const [about,  setAbout]  = useState<AboutData> (() => ls(LS_ABOUT,  D_ABOUT));
+  const [aboutCustom,  setAbout]  = useState<AboutData | null> (() => lsRaw<AboutData>(LS_ABOUT));
   const [gallery, setGallery] = useState<GalleryItem[]>(() => ls(LS_GALLERY, D_GALLERY));
-  const [skills, setSkills] = useState<SkillItem[]>(() => ls(LS_SKILLS, D_SKILLS));
-  const [exps,   setExps]   = useState<ExpItem[]>  (() => ls(LS_EXP,   D_EXP));
-  const [certs,  setCerts]  = useState<CertItem[]> (() => ls(LS_CERT,  D_CERT));
+  const [skillsCustom, setSkills] = useState<SkillItem[] | null>(() => lsRaw<SkillItem[]>(LS_SKILLS));
+  const [expsCustom,   setExps]   = useState<ExpItem[] | null>  (() => lsRaw<ExpItem[]>(LS_EXP));
+  const [certsCustom,  setCerts]  = useState<CertItem[] | null> (() => lsRaw<CertItem[]>(LS_CERT));
+
+  /* Data admin selalu diprioritaskan; jika belum ada override, pakai default sesuai bahasa aktif */
+  const about  = aboutCustom  ?? (lang === 'en' ? D_ABOUT_EN  : D_ABOUT);
+  const skills = skillsCustom ?? (lang === 'en' ? D_SKILLS_EN : D_SKILLS);
+  const exps   = expsCustom   ?? (lang === 'en' ? D_EXP_EN    : D_EXP);
+  const certs  = certsCustom  ?? (lang === 'en' ? D_CERT_EN   : D_CERT);
 
   useEffect(() => {
     /* Dengarkan perubahan dari tab lain (storage event) */
@@ -151,6 +127,7 @@ const ExpCardAbout: React.FC<{ exp: ExpItem; index: number }> = ({ exp, index: i
   const [open, setOpen] = useState(false);
   const [logoFailed, setLogoFailed] = useState(false);
   const logo = resolveLogo(exp);
+  const { t } = useLang();
   return (
     <AnimatedSection direction={i % 2 === 0 ? 'left' : 'right'} delay={i * 0.12}>
       <div className="float-hover" style={{
@@ -193,7 +170,7 @@ const ExpCardAbout: React.FC<{ exp: ExpItem; index: number }> = ({ exp, index: i
         })()}
         {exp.tags && (
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem', marginBottom: '0.8rem' }}>
-            {exp.tags.split(',').map(t => t.trim()).filter(Boolean).map(tag => (
+            {exp.tags.split(',').map(tg => tg.trim()).filter(Boolean).map(tag => (
               <span key={tag} style={{
                 background: 'rgba(245,166,35,0.07)', border: '1px solid rgba(245,166,35,0.18)',
                 color: 'rgba(245,166,35,0.85)', borderRadius: '4px', padding: '2px 9px', fontSize: '0.72rem',
@@ -213,7 +190,7 @@ const ExpCardAbout: React.FC<{ exp: ExpItem; index: number }> = ({ exp, index: i
                 fontWeight: 700, cursor: 'pointer', fontFamily: 'var(--font-body)',
               }}
             >
-              {open ? '▲ Tutup Rincian' : '▼ Lihat Rincian'}
+              {open ? t('▲ Tutup Rincian', '▲ Close Details') : t('▼ Lihat Rincian', '▼ View Details')}
             </button>
             <motion.div
               initial={false}
@@ -239,6 +216,7 @@ const ExpCardAbout: React.FC<{ exp: ExpItem; index: number }> = ({ exp, index: i
 ══════════════════════════════════════════ */
 const About: React.FC = () => {
   const { about, gallery, skills, exps, certs } = useHomeData();
+  const { t } = useLang();
   const photo = about.photoUrl || FALLBACK_PHOTO;
 
   return (
@@ -249,7 +227,7 @@ const About: React.FC = () => {
         <div>
           <AnimatedSection direction="left">
             <motion.span style={{ fontFamily: 'var(--font-body)', color: 'var(--amber)', fontSize: '0.85rem', letterSpacing: '3px', textTransform: 'uppercase', fontWeight: 600, display: 'block', marginBottom: '0.5rem' }}>
-              Tentang Saya
+              {t('Tentang Saya', 'About Me')}
             </motion.span>
             <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(3rem, 6vw, 5.5rem)', lineHeight: 0.9, marginBottom: '0.3rem' }}>
               ABOUT ME !
@@ -257,18 +235,15 @@ const About: React.FC = () => {
             <span style={{ fontFamily: 'var(--font-script)', color: 'var(--amber)', fontSize: '2.5rem', fontWeight: 700, display: 'block', marginBottom: '2rem' }}>
               {about.name}
             </span>
-            <p style={{ color: 'var(--white-dim)', lineHeight: 1.8, marginBottom: '1.5rem', fontSize: '1rem' }}>
-              {about.bio1}
-            </p>
             <p style={{ color: 'var(--white-dim)', lineHeight: 1.8, fontSize: '1rem' }}>
-              {about.bio2}
+              {about.bio1}
             </p>
 
             <div style={{ display: 'flex', gap: '2rem', marginTop: '2.5rem', flexWrap: 'wrap' }}>
               {[
-                { label: 'Tahun Pengalaman', value: '3+' },
-                { label: 'Proyek Selesai', value: '20+' },
-                { label: 'Kepuasan Klien', value: '100%' },
+                { label: t('Tahun Pengalaman', 'Years of Experience'), value: '3+' },
+                { label: t('Proyek Selesai', 'Projects Completed'), value: '20+' },
+                { label: t('Kepuasan Klien', 'Client Satisfaction'), value: '100%' },
               ].map(stat => (
                 <div key={stat.label}>
                   <div style={{ fontFamily: 'var(--font-display)', fontSize: '2.5rem', color: 'var(--amber)', lineHeight: 1 }}>{stat.value}</div>
@@ -298,8 +273,8 @@ const About: React.FC = () => {
           <AnimatedSection direction="up">
             <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
               <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2.5rem, 6vw, 5rem)' }}>
-                GALERI{' '}
-                <span style={{ fontFamily: 'var(--font-script)', color: 'var(--amber)', fontSize: '55%' }}>Momen</span>
+                {t('GALERI', 'GALLERY')}{' '}
+                <span style={{ fontFamily: 'var(--font-script)', color: 'var(--amber)', fontSize: '55%' }}>{t('Momen', 'Moments')}</span>
               </h2>
             </div>
           </AnimatedSection>
@@ -331,13 +306,106 @@ const About: React.FC = () => {
           </div>
         </section>
       )}
+      {/* ── Info Tambahan (Education, Tools, Hobby, Organizational Experience, References) — Layout Majalah ── */}
+      <section style={{ padding: '1rem 2rem 5rem', maxWidth: '1200px', margin: '0 auto' }}>
+        <AnimatedSection direction="up">
+          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2.5rem, 6vw, 5rem)' }}>
+              {t('INFO', 'ADDITIONAL')}{' '}
+              <span style={{ fontFamily: 'var(--font-script)', color: 'var(--amber)', fontSize: '55%' }}>{t('Tambahan', 'Info')}</span>
+            </h2>
+          </div>
+        </AnimatedSection>
+        <div
+          className="magazine-grid info-grid"
+          style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gridAutoRows: 'minmax(150px, auto)', gap: '1rem' }}
+        >
+          {/* Education */}
+          <AnimatedSection direction="left" delay={0}>
+            <div className="float-hover magazine-item" style={{ gridColumn: 'span 2', gridRow: 'span 1', height: '100%', background: 'var(--black-3)', border: '1px solid rgba(245,166,35,0.18)', borderTop: '3px solid var(--amber)', borderRadius: 'var(--radius)', padding: '1.6rem', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+              <div style={{ fontSize: '1.6rem', marginBottom: '0.5rem' }}>🎓</div>
+              <h3 style={{ fontFamily: 'var(--font-body)', fontWeight: 700, color: 'var(--amber)', fontSize: '0.82rem', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '0.4rem' }}>{t('Pendidikan', 'Education')}</h3>
+              <p style={{ color: 'var(--white)', fontWeight: 700, fontSize: '1.05rem', marginBottom: '0.15rem' }}>{t(EDUCATION.degree.id, EDUCATION.degree.en)}</p>
+              <p style={{ color: 'var(--white-dim)', fontSize: '0.85rem', lineHeight: 1.6 }}>{EDUCATION.school}<br />{EDUCATION.gpa} · {t(EDUCATION.note.id, EDUCATION.note.en)}</p>
+            </div>
+          </AnimatedSection>
+
+          {/* Tools & Apps */}
+          <AnimatedSection direction="right" delay={0.08}>
+            <div className="float-hover magazine-item" style={{ gridColumn: 'span 2', gridRow: 'span 2', height: '100%', background: 'var(--black-3)', border: '1px solid rgba(245,166,35,0.18)', borderTop: '3px solid var(--amber)', borderRadius: 'var(--radius)', padding: '1.6rem' }}>
+              <div style={{ fontSize: '1.6rem', marginBottom: '0.5rem' }}>🛠️</div>
+              <h3 style={{ fontFamily: 'var(--font-body)', fontWeight: 700, color: 'var(--amber)', fontSize: '0.82rem', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '0.7rem' }}>{t('Tools & Aplikasi', 'Tools and Apps')}</h3>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
+                {TOOLS.map(tool => (
+                  <span key={tool} style={{ background: 'rgba(245,166,35,0.08)', border: '1px solid rgba(245,166,35,0.2)', color: 'rgba(245,166,35,0.9)', borderRadius: '5px', padding: '4px 10px', fontSize: '0.75rem' }}>{tool}</span>
+                ))}
+              </div>
+              <h4 style={{ fontFamily: 'var(--font-body)', fontWeight: 700, color: 'var(--white)', fontSize: '0.78rem', letterSpacing: '1px', textTransform: 'uppercase', margin: '1.1rem 0 0.6rem' }}>{t('Keahlian Inti (CV)', 'Skills & Expertise (CV)')}</h4>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
+                {CV_SKILL_TAGS.map(tag => (
+                  <span key={tag.id} style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.12)', color: 'var(--white-dim)', borderRadius: '5px', padding: '4px 10px', fontSize: '0.75rem' }}>{t(tag.id, tag.en)}</span>
+                ))}
+              </div>
+            </div>
+          </AnimatedSection>
+
+          {/* Hobby */}
+          <AnimatedSection direction="left" delay={0.16}>
+            <div className="float-hover magazine-item" style={{ gridColumn: 'span 2', gridRow: 'span 1', height: '100%', background: 'var(--black-3)', border: '1px solid rgba(245,166,35,0.18)', borderTop: '3px solid var(--amber)', borderRadius: 'var(--radius)', padding: '1.6rem' }}>
+              <div style={{ fontSize: '1.6rem', marginBottom: '0.5rem' }}>🎯</div>
+              <h3 style={{ fontFamily: 'var(--font-body)', fontWeight: 700, color: 'var(--amber)', fontSize: '0.82rem', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '0.6rem' }}>{t('Hobi', 'Hobby')}</h3>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
+                {HOBBIES.map(h => (
+                  <span key={h.id} style={{ background: 'rgba(245,166,35,0.08)', border: '1px solid rgba(245,166,35,0.2)', color: 'rgba(245,166,35,0.9)', borderRadius: '5px', padding: '4px 10px', fontSize: '0.78rem' }}>{t(h.id, h.en)}</span>
+                ))}
+              </div>
+            </div>
+          </AnimatedSection>
+
+          {/* Organizational Experience */}
+          <AnimatedSection direction="up" delay={0.24}>
+            <div className="float-hover magazine-item" style={{ gridColumn: 'span 2', gridRow: 'span 2', height: '100%', background: 'var(--black-3)', border: '1px solid rgba(245,166,35,0.18)', borderTop: '3px solid var(--amber)', borderRadius: 'var(--radius)', padding: '1.6rem' }}>
+              <div style={{ fontSize: '1.6rem', marginBottom: '0.5rem' }}>🏯</div>
+              <h3 style={{ fontFamily: 'var(--font-body)', fontWeight: 700, color: 'var(--amber)', fontSize: '0.82rem', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '0.4rem' }}>{t('Pengalaman Organisasi', 'Organizational Experience')}</h3>
+              <p style={{ color: 'var(--white)', fontWeight: 700, fontSize: '1rem', marginBottom: '0.1rem' }}>{ORG_EXPERIENCE.role}</p>
+              <p style={{ color: 'var(--white-dim)', fontSize: '0.82rem', marginBottom: '0.2rem' }}>{t(ORG_EXPERIENCE.org.id, ORG_EXPERIENCE.org.en)}</p>
+              <p style={{ color: 'var(--amber)', fontSize: '0.82rem', fontWeight: 600, marginBottom: '0.7rem' }}>{t(ORG_EXPERIENCE.position.id, ORG_EXPERIENCE.position.en)}</p>
+              <ul style={{ margin: 0, paddingLeft: '1.1rem', color: 'var(--white-dim)', fontSize: '0.82rem', lineHeight: 1.7 }}>
+                {ORG_EXPERIENCE.points.map(p => <li key={p.id}>{t(p.id, p.en)}</li>)}
+              </ul>
+            </div>
+          </AnimatedSection>
+
+          {/* References */}
+          <AnimatedSection direction="right" delay={0.32}>
+            <div className="float-hover magazine-item" style={{ gridColumn: 'span 2', gridRow: 'span 1', height: '100%', background: 'var(--black-3)', border: '1px solid rgba(245,166,35,0.18)', borderTop: '3px solid var(--amber)', borderRadius: 'var(--radius)', padding: '1.6rem' }}>
+              <div style={{ fontSize: '1.6rem', marginBottom: '0.5rem' }}>📇</div>
+              <h3 style={{ fontFamily: 'var(--font-body)', fontWeight: 700, color: 'var(--amber)', fontSize: '0.82rem', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '0.6rem' }}>{t('Referensi', 'References')}</h3>
+              {REFERENCES.map(r => (
+                <div key={r.id} style={{ marginBottom: '0.4rem' }}>
+                  <p style={{ color: 'var(--white)', fontWeight: 700, fontSize: '0.95rem', marginBottom: '0.1rem' }}>{r.name}</p>
+                  <p style={{ color: 'var(--white-dim)', fontSize: '0.82rem', marginBottom: '0.1rem' }}>{t(r.role.id, r.role.en)} · {r.company}</p>
+                  <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.75rem' }}>{t(r.note.id, r.note.en)}</p>
+                </div>
+              ))}
+            </div>
+          </AnimatedSection>
+        </div>
+        <style>{`
+          @media (max-width: 860px) {
+            .info-grid { grid-template-columns: repeat(2, 1fr) !important; }
+            .info-grid .magazine-item { grid-column: span 2 !important; }
+          }
+        `}</style>
+      </section>
+
       <section style={{ padding: '5rem 2rem', background: 'var(--black-2)' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <AnimatedSection direction="up">
             <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
               <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2.5rem, 6vw, 5rem)' }}>
-                KEAHLIAN{' '}
-                <span style={{ fontFamily: 'var(--font-script)', color: 'var(--amber)', fontSize: '55%' }}>skills</span>
+                {t('KEAHLIAN', 'SKILLS')}{' '}
+                <span style={{ fontFamily: 'var(--font-script)', color: 'var(--amber)', fontSize: '55%' }}>{t('skills', 'keahlian')}</span>
               </h2>
             </div>
           </AnimatedSection>
@@ -394,8 +462,8 @@ const About: React.FC = () => {
         <AnimatedSection direction="up">
           <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
             <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2.5rem, 6vw, 5rem)' }}>
-              SERTIFIKASI{' '}
-              <span style={{ fontFamily: 'var(--font-script)', color: 'var(--amber)', fontSize: '55%' }}>Competensi</span>
+              {t('SERTIFIKASI', 'TRAINING &')}{' '}
+              <span style={{ fontFamily: 'var(--font-script)', color: 'var(--amber)', fontSize: '55%' }}>{t('& Lisensi', 'License')}</span>
             </h2>
           </div>
         </AnimatedSection>
@@ -403,7 +471,7 @@ const About: React.FC = () => {
           <AnimatedSection direction="up">
             <div style={{ textAlign: 'center', padding: '3rem', color: 'rgba(245,166,35,0.4)', border: '1px dashed rgba(245,166,35,0.2)', borderRadius: 'var(--radius)' }}>
               <div style={{ fontSize: '3rem', marginBottom: '0.8rem' }}>📜</div>
-              <p>Belum ada sertifikasi.</p>
+              <p>{t('Belum ada sertifikasi.', 'No certifications yet.')}</p>
             </div>
           </AnimatedSection>
         ) : (
@@ -438,8 +506,8 @@ const About: React.FC = () => {
           <AnimatedSection direction="up">
             <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
               <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2.5rem, 6vw, 5rem)' }}>
-                PENGALAMAN{' '}
-                <span style={{ fontFamily: 'var(--font-script)', color: 'var(--amber)', fontSize: '55%' }}>Kerja</span>
+                {t('PENGALAMAN', 'WORK')}{' '}
+                <span style={{ fontFamily: 'var(--font-script)', color: 'var(--amber)', fontSize: '55%' }}>{t('Kerja', 'Experience')}</span>
               </h2>
             </div>
           </AnimatedSection>

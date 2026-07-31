@@ -1,12 +1,14 @@
 // src/components/Footer.tsx — reads from localStorage (editable via AdminPanel)
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useLang } from '../contexts/LanguageContext';
 
 const LS_CONTACT = 'hk_contact_data';
 interface ContactData { email:string; location:string; website:string; instagram:string; linkedin:string; twitter:string; }
 const D: ContactData = { email:'Mahfudfebrys@gmail.com', location:'Nganjuk, Indonesia', website:'hikimori.web.id', instagram:'', linkedin:'', twitter:'' };
 
 const Footer: React.FC = () => {
+  const { t } = useLang();
   let contact: ContactData = D;
   try { contact = JSON.parse(localStorage.getItem(LS_CONTACT) || 'null') ?? D; } catch {}
 
@@ -50,7 +52,7 @@ const Footer: React.FC = () => {
           </div>
           {/* Contact */}
           <div>
-            <h4 style={{ color:'var(--amber)', marginBottom:'0.8rem', fontFamily:'var(--font-body)', fontWeight:600, fontSize:'0.9rem' }}>Kontak</h4>
+            <h4 style={{ color:'var(--amber)', marginBottom:'0.8rem', fontFamily:'var(--font-body)', fontWeight:600, fontSize:'0.9rem' }}>{t('Kontak', 'Contact')}</h4>
             <div style={{ color:'var(--white-dim)', fontSize:'0.88rem', lineHeight:2 }}>
               {contact.location && <div>📍 {contact.location}</div>}
               {contact.website  && <div>🌐 {contact.website}</div>}

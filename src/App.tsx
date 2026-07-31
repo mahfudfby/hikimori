@@ -5,11 +5,14 @@ import { AnimatePresence } from 'framer-motion';
 import { Toaster } from 'react-hot-toast';
 
 import { AuthProvider } from './contexts/AuthContext';
+import { LanguageProvider } from './contexts/LanguageContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import CursorGlow from './components/CursorGlow';
 import ProtectedRoute from './components/ProtectedRoute';
 import PageTransition from './components/PageTransition';
+import LanguageToggle from './components/LanguageToggle';
+import { useLang } from './contexts/LanguageContext';
 
 import Home from './pages/Home';
 import About from './pages/About';
@@ -27,6 +30,7 @@ const FloatingGear: React.FC = () => {
   const location = useLocation();
   const [hovered, setHovered] = React.useState(false);
   const [spinning, setSpinning] = React.useState(false);
+  const { t } = useLang();
 
   // Sync with storage changes (login/logout in other tab)
   React.useEffect(() => {
@@ -90,7 +94,7 @@ const FloatingGear: React.FC = () => {
       onClick={handleClick}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      title={isAdmin ? 'Buka Admin Panel' : 'Login Admin'}
+      title={isAdmin ? t('Buka Admin Panel', 'Open Admin Panel') : t('Login Admin', 'Admin Login')}
       style={btnStyle}
       aria-label="Admin Panel"
     >
@@ -116,6 +120,7 @@ const AnimatedRoutes: React.FC = () => {
   const location = useLocation();
   const isAdmin = location.pathname.startsWith('/admin');
   const isHome  = location.pathname === '/';
+  const { t } = useLang();
 
   return (
     <>
@@ -137,9 +142,9 @@ const AnimatedRoutes: React.FC = () => {
             <PageTransition>
               <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'var(--black)', gap: '1rem' }}>
                 <div style={{ fontFamily: 'var(--font-display)', fontSize: '8rem', color: 'var(--amber)', lineHeight: 1 }}>404</div>
-                <p style={{ color: 'var(--white-dim)', fontSize: '1.1rem' }}>Halaman tidak ditemukan.</p>
+                <p style={{ color: 'var(--white-dim)', fontSize: '1.1rem' }}>{t('Halaman tidak ditemukan.', 'Page not found.')}</p>
                 <a href="/" style={{ background: 'var(--amber)', color: 'var(--black)', padding: '10px 28px', borderRadius: '8px', textDecoration: 'none', fontWeight: 700, marginTop: '1rem' }}>
-                  Kembali ke Home
+                  {t('Kembali ke Home', 'Back to Home')}
                 </a>
               </div>
             </PageTransition>
@@ -149,6 +154,7 @@ const AnimatedRoutes: React.FC = () => {
 
       {!isAdmin && !isHome && <Footer />}
       <FloatingGear />
+      {!isAdmin && <LanguageToggle />}
     </>
   );
 };
@@ -157,6 +163,7 @@ const AnimatedRoutes: React.FC = () => {
 const App: React.FC = () => (
   <BrowserRouter>
     <AuthProvider>
+      <LanguageProvider>
       <CursorGlow />
       <Toaster
         position="top-right"
@@ -172,6 +179,7 @@ const App: React.FC = () => (
         }}
       />
       <AnimatedRoutes />
+      </LanguageProvider>
     </AuthProvider>
   </BrowserRouter>
 );
