@@ -18,8 +18,16 @@ import Home from './pages/Home';
 import About from './pages/About';
 import Services from './pages/Services';
 import Portofolio from './pages/Portofolio';
-import AdminLogin from './pages/AdminLogin';
-import AdminPanel from './pages/AdminPanel';
+// Admin hanya dipakai pemilik situs — di-lazy-load supaya tidak membengkakkan
+// bundle JS utama yang didownload oleh setiap pengunjung publik.
+const AdminLogin = React.lazy(() => import('./pages/AdminLogin'));
+const AdminPanel = React.lazy(() => import('./pages/AdminPanel'));
+
+const AdminFallback: React.FC = () => (
+  <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--black)', color: 'var(--amber)', fontFamily: 'var(--font-body)' }}>
+    Loading…
+  </div>
+);
 
 /* ─── Floating Gear Button ─── */
 const FloatingGear: React.FC = () => {
@@ -132,11 +140,17 @@ const AnimatedRoutes: React.FC = () => {
           <Route path="/about"       element={<PageTransition><About /></PageTransition>} />
           <Route path="/services"    element={<PageTransition><Services /></PageTransition>} />
           <Route path="/portofolio"  element={<PageTransition><Portofolio /></PageTransition>} />
-          <Route path="/admin/login" element={<PageTransition><AdminLogin /></PageTransition>} />
+          <Route path="/admin/login" element={
+            <React.Suspense fallback={<AdminFallback />}>
+              <PageTransition><AdminLogin /></PageTransition>
+            </React.Suspense>
+          } />
           <Route path="/admin" element={
-            <ProtectedRoute>
-              <AdminPanel />
-            </ProtectedRoute>
+            <React.Suspense fallback={<AdminFallback />}>
+              <ProtectedRoute>
+                <AdminPanel />
+              </ProtectedRoute>
+            </React.Suspense>
           } />
           <Route path="*" element={
             <PageTransition>

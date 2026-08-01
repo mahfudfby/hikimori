@@ -199,3 +199,24 @@ input, textarea, select, button {
   flex: 1 1 auto;
   min-width: 0;
 }
+
+/* ─── Chip hover (Tools, Skills CV, Hobby, dsb) ─── */
+.info-chip {
+  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+  cursor: default;
+}
+.info-chip:hover {
+  transform: translateY(-2px);
+  border-color: rgba(245,166,35,0.55) !important;
+  background: rgba(245,166,35,0.14) !important;
+}
+
+/* ─── Print — supaya halaman About bisa langsung dicetak jadi CV ─── */
+@media print {
+  body { background: #fff !important; color: #111 !important; }
+  nav, footer, .no-print, button, a[href^="#"] { display: none !important; }
+  * { box-shadow: none !important; text-shadow: none !important; animation: none !important; }
+  section { padding: 0.5rem 0 !important; page-break-inside: avoid; }
+  a[href^="/CV"] { display: none !important; }
+  img { filter: none !important; }
+}

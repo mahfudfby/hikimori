@@ -140,7 +140,7 @@ const ExpCardAbout: React.FC<{ exp: ExpItem; index: number }> = ({ exp, index: i
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '0.6rem', marginBottom: '0.4rem' }}>
           {logo && !logoFailed ? (
             <div style={{ width: 44, height: 44, borderRadius: 10, background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, overflow: 'hidden' }}>
-              <img src={logo} alt={exp.company} onError={() => setLogoFailed(true)} style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 5 }} />
+              <img src={logo} alt={exp.company} loading="lazy" decoding="async" onError={() => setLogoFailed(true)} style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 5 }} />
             </div>
           ) : (
             <span style={{ fontSize: '1.8rem', flexShrink: 0 }} aria-hidden="true">{exp.icon}</span>
@@ -262,12 +262,25 @@ const About: React.FC = () => {
                 </div>
               ))}
             </div>
+
+            <a
+              href="/CV-Mahfud-Febry-Styanto.pdf"
+              download="CV-Mahfud-Febry-Styanto.pdf"
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: '0.6rem', marginTop: '2rem',
+                background: 'var(--amber)', color: 'var(--black)', fontWeight: 700, fontSize: '0.9rem',
+                padding: '0.8rem 1.6rem', borderRadius: '999px', textDecoration: 'none',
+                boxShadow: '0 8px 24px rgba(245,166,35,0.25)',
+              }}
+            >
+              ⬇ {t('Unduh CV (PDF)', 'Download CV (PDF)')}
+            </a>
           </AnimatedSection>
         </div>
 
         <AnimatedSection direction="right">
           <div className="float-hover" style={{ position: 'relative', borderRadius: 'var(--radius)', overflow: 'hidden', aspectRatio: '3/4', maxHeight: '500px' }}>
-            <img src={photo} alt={about.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            <img src={photo} alt={about.name} decoding="async" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(10,10,10,0.7) 0%, transparent 50%)' }} />
             <div style={{ position: 'absolute', bottom: '1.5rem', left: '1.5rem', right: '1.5rem' }}>
               <div style={{ background: 'rgba(245,166,35,0.9)', borderRadius: '12px', padding: '0.8rem 1.2rem', color: 'var(--black)', fontWeight: 700, fontSize: '0.9rem' }}>
@@ -300,7 +313,7 @@ const About: React.FC = () => {
                 >
                   <AnimatedSection direction="up" delay={i * 0.06}>
                     <div className="float-hover" style={{ position: 'relative', borderRadius: 'var(--radius)', overflow: 'hidden', height: '100%' }}>
-                      <img src={g.url} alt={g.caption || about.name} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                      <img src={g.url} alt={g.caption || about.name} loading="lazy" decoding="async" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
                       {g.caption && (
                         <>
                           <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(10,10,10,0.75) 0%, transparent 55%)' }} />
@@ -348,13 +361,13 @@ const About: React.FC = () => {
               <h3 style={{ fontFamily: 'var(--font-body)', fontWeight: 700, color: 'var(--amber)', fontSize: '0.82rem', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '0.7rem' }}>{t('Tools & Aplikasi', 'Tools and Apps')}</h3>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
                 {TOOLS.map(tool => (
-                  <span key={tool} style={{ background: 'rgba(245,166,35,0.08)', border: '1px solid rgba(245,166,35,0.2)', color: 'rgba(245,166,35,0.9)', borderRadius: '5px', padding: '4px 10px', fontSize: '0.75rem' }}>{tool}</span>
+                  <span key={tool} className="info-chip" style={{ background: 'rgba(245,166,35,0.08)', border: '1px solid rgba(245,166,35,0.2)', color: 'rgba(245,166,35,0.9)', borderRadius: '5px', padding: '4px 10px', fontSize: '0.75rem' }}>{tool}</span>
                 ))}
               </div>
               <h4 style={{ fontFamily: 'var(--font-body)', fontWeight: 700, color: 'var(--white)', fontSize: '0.78rem', letterSpacing: '1px', textTransform: 'uppercase', margin: '1.1rem 0 0.6rem' }}>{t('Keahlian Inti (CV)', 'Skills & Expertise (CV)')}</h4>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
                 {CV_SKILL_TAGS.map(tag => (
-                  <span key={tag.id} style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.12)', color: 'var(--white-dim)', borderRadius: '5px', padding: '4px 10px', fontSize: '0.75rem' }}>{t(tag.id, tag.en)}</span>
+                  <span key={tag.id} className="info-chip" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.12)', color: 'var(--white-dim)', borderRadius: '5px', padding: '4px 10px', fontSize: '0.75rem' }}>{t(tag.id, tag.en)}</span>
                 ))}
               </div>
             </div>
@@ -367,7 +380,7 @@ const About: React.FC = () => {
               <h3 style={{ fontFamily: 'var(--font-body)', fontWeight: 700, color: 'var(--amber)', fontSize: '0.82rem', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '0.6rem' }}>{t('Hobi', 'Hobby')}</h3>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
                 {HOBBIES.map(h => (
-                  <span key={h.id} style={{ background: 'rgba(245,166,35,0.08)', border: '1px solid rgba(245,166,35,0.2)', color: 'rgba(245,166,35,0.9)', borderRadius: '5px', padding: '4px 10px', fontSize: '0.78rem' }}>{t(h.id, h.en)}</span>
+                  <span key={h.id} className="info-chip" style={{ background: 'rgba(245,166,35,0.08)', border: '1px solid rgba(245,166,35,0.2)', color: 'rgba(245,166,35,0.9)', borderRadius: '5px', padding: '4px 10px', fontSize: '0.78rem' }}>{t(h.id, h.en)}</span>
                 ))}
               </div>
             </div>
@@ -494,7 +507,7 @@ const About: React.FC = () => {
                   borderTop: '3px solid var(--amber)', borderRadius: 'var(--radius)', padding: '2.5rem',
                 }}>
                   {cert.imageUrl && (
-                    <img src={cert.imageUrl} alt={cert.name} style={{ width: '100%', height: '140px', objectFit: 'cover', borderRadius: '8px', marginBottom: '1rem' }} />
+                    <img src={cert.imageUrl} alt={cert.name} loading="lazy" decoding="async" style={{ width: '100%', height: '140px', objectFit: 'cover', borderRadius: '8px', marginBottom: '1rem' }} />
                   )}
                   <h3 style={{ fontFamily: 'var(--font-body)', fontWeight: 700, color: 'var(--amber)', fontSize: '0.9rem', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '0.3rem' }}>
                     {cert.name}

@@ -657,7 +657,7 @@ const CertCard:React.FC<{cert:CertItem;index:number}>=({cert,index})=>{
                         <motion.div animate={{rotate:360}} transition={{duration:1,repeat:Infinity,ease:'linear'}} style={{width:36,height:36,borderRadius:'50%',border:`2.5px solid ${J.gold}`,borderTopColor:'transparent'}}/>
                         <span style={{color:'rgba(201,160,48,0.5)',fontSize:'0.78rem',fontFamily:'var(--font-body)'}}>{t('Memuat...','Loading...')}</span>
                       </div>}
-                      <img src={cert.imageUrl} alt={cert.name} onLoad={()=>setImgLoaded(true)} style={{width:'100%',display:'block',objectFit:'contain',maxHeight:400,opacity:imgLoaded?1:0,transition:'opacity 0.4s'}}/></>
+                      <img src={cert.imageUrl} alt={cert.name} loading="lazy" decoding="async" onLoad={()=>setImgLoaded(true)} style={{width:'100%',display:'block',objectFit:'contain',maxHeight:400,opacity:imgLoaded?1:0,transition:'opacity 0.4s'}}/></>
                     ):(
                       <div style={{textAlign:'center',padding:'3rem 2rem',color:'rgba(201,160,48,0.4)'}}>
                         <motion.div animate={{y:[0,-8,0]}} transition={{duration:2.5,repeat:Infinity}} style={{fontSize:'3rem',marginBottom:'0.8rem'}}>📜</motion.div>
@@ -755,7 +755,7 @@ const ExpCard:React.FC<{exp:ExpItem;index:number}>=({exp,index:i})=>{
               <div style={{position:'relative',zIndex:1,marginBottom:'0.9rem'}}>
                 <div style={{width:48,height:48,borderRadius:'50%',background:logo&&!logoFailed?'#fff':`radial-gradient(circle,rgba(139,26,26,0.2),rgba(139,26,26,0.05))`,border:`2px solid ${J.red}`,display:'flex',alignItems:'center',justifyContent:'center',fontSize:'1.3rem',overflow:'hidden',marginBottom:'0.7rem'}}>
                   {logo&&!logoFailed?(
-                    <img src={logo} alt={exp.company} onError={()=>setLogoFailed(true)} style={{width:'100%',height:'100%',objectFit:'contain',padding:6}}/>
+                    <img src={logo} alt={exp.company} loading="lazy" decoding="async" onError={()=>setLogoFailed(true)} style={{width:'100%',height:'100%',objectFit:'contain',padding:6}}/>
                   ):(<span aria-hidden="true">{exp.icon}</span>)}
                 </div>
                 <h3 style={{fontFamily:'var(--font-display)',fontSize:'clamp(1rem,3vw,1.4rem)',color:J.white,lineHeight:1.3,marginBottom:'0.3rem'}}>{exp.position}</h3>
@@ -946,7 +946,7 @@ const Home:React.FC=()=>{
               <TiltCard style={{borderRadius:16,width:'100%'}} intensity={10}>
                 <InkRipple>
                   <div style={{borderRadius:16,overflow:'hidden',position:'relative',aspectRatio:'4/5',border:`2px solid rgba(139,26,26,0.5)`,boxShadow:`0 0 0 6px rgba(139,26,26,0.06),0 30px 80px rgba(0,0,0,0.7),0 0 60px rgba(139,26,26,0.12)`}}>
-                    <img src={photo} alt={about.name} style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}}/>
+                    <img src={photo} alt={about.name} decoding="async" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}}/>
                     <div style={{position:'absolute',inset:0,background:`linear-gradient(to top,rgba(8,4,0,0.9) 0%,rgba(8,4,0,0.1) 50%,transparent 100%)`}}/>
                     {/* Red corner accents */}
                     <div style={{position:'absolute',top:8,left:8,width:20,height:20,borderTop:`2px solid ${J.gold}`,borderLeft:`2px solid ${J.gold}`}}/>
