@@ -266,6 +266,7 @@ const About: React.FC = () => {
             <a
               href="/CV-Mahfud-Febry-Styanto.pdf"
               download="CV-Mahfud-Febry-Styanto.pdf"
+              className="text-shadow-onlight"
               style={{
                 display: 'inline-flex', alignItems: 'center', gap: '0.6rem', marginTop: '2rem',
                 background: 'var(--amber)', color: 'var(--black)', fontWeight: 700, fontSize: '0.9rem',
@@ -283,7 +284,7 @@ const About: React.FC = () => {
             <img src={photo} alt={about.name} decoding="async" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(10,10,10,0.7) 0%, transparent 50%)' }} />
             <div style={{ position: 'absolute', bottom: '1.5rem', left: '1.5rem', right: '1.5rem' }}>
-              <div style={{ background: 'rgba(245,166,35,0.9)', borderRadius: '12px', padding: '0.8rem 1.2rem', color: 'var(--black)', fontWeight: 700, fontSize: '0.9rem' }}>
+              <div className="text-shadow-onlight" style={{ background: 'rgba(245,166,35,0.9)', borderRadius: '12px', padding: '0.8rem 1.2rem', color: 'var(--black)', fontWeight: 700, fontSize: '0.9rem' }}>
                 📍 {about.location}
               </div>
             </div>

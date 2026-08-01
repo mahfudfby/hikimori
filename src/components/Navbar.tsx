@@ -80,6 +80,7 @@ const Navbar: React.FC = () => {
           <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
             <Link to="/admin" style={{ textDecoration: 'none' }}>
               <motion.button whileHover={{ scale: 1.05, backgroundColor: '#D4891F' }} whileTap={{ scale: 0.97 }}
+                className="text-shadow-onlight"
                 style={{ background: 'var(--amber)', color: 'var(--black)', border: 'none', borderRadius: '8px', padding: '8px 18px', fontFamily: 'var(--font-body)', fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer', letterSpacing: '0.5px' }}>
                 ⚙ Admin
               </motion.button>
@@ -152,6 +153,7 @@ const Navbar: React.FC = () => {
                     <motion.button
                       whileHover={{ scale: 1.08, backgroundColor: '#D4891F' }}
                       whileTap={{ scale: 0.95 }}
+                      className="text-shadow-onlight"
                       style={{
                         background: 'var(--amber)', color: 'var(--black)',
                         border: 'none', borderRadius: '8px',

@@ -50,7 +50,7 @@ const PortfolioCard: React.FC<{ item: ReturnType<typeof usePortfolio>['items'][0
           transition: 'background 0.3s',
         }} />
         {item.featured && (
-          <div style={{
+          <div className="text-shadow-onlight" style={{
             position: 'absolute',
             top: '12px',
             right: '12px',

@@ -200,6 +200,18 @@ input, textarea, select, button {
   min-width: 0;
 }
 
+/* ─── Text Shadow tipis (global) ───
+   Default: teks putih/terang → shadow abu-abu tipis, supaya semua teks
+   lebih tegas terbaca di atas background gelap. */
+body {
+  text-shadow: 0 1px 1.5px rgba(120,120,120,0.35);
+}
+/* Untuk teks HITAM (mis. tombol di atas background terang/amber) →
+   shadow-nya harus PUTIH, bukan ikut default abu-abu. */
+.text-shadow-onlight {
+  text-shadow: 0 1px 1.5px rgba(255,255,255,0.55) !important;
+}
+
 /* ─── Chip hover (Tools, Skills CV, Hobby, dsb) ─── */
 .info-chip {
   transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
