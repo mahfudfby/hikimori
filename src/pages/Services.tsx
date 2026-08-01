@@ -319,6 +319,7 @@ const Services: React.FC = () => {
           </p>
           <motion.a
             href="mailto:mahfudfebry@hikimori.web.id"
+            className="text-shadow-onlight"
             whileHover={{ scale: 1.05, boxShadow: '0 10px 40px rgba(245,166,35,0.4)' }}
             whileTap={{ scale: 0.97 }}
             style={{

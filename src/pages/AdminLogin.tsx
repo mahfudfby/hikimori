@@ -190,6 +190,7 @@ const AdminLogin: React.FC = () => {
           <motion.button
             type="submit"
             disabled={loading}
+            className="text-shadow-onlight"
             whileHover={{ scale: 1.02, boxShadow: '0 8px 30px rgba(245,166,35,0.4)' }}
             whileTap={{ scale: 0.98 }}
             style={{

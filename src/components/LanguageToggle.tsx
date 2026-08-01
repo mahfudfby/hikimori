@@ -41,6 +41,7 @@ const LanguageToggle: React.FC = () => {
     letterSpacing: '0.5px',
     color: active ? 'var(--black)' : 'rgba(255,255,255,0.55)',
     background: active ? 'var(--amber)' : 'transparent',
+    textShadow: active ? '0 1px 1.5px rgba(255,255,255,0.55)' : '0 1px 1.5px rgba(120,120,120,0.35)',
     transition: 'all 0.2s ease',
   });
 
