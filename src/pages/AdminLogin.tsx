@@ -76,15 +76,11 @@ const AdminLogin: React.FC = () => {
 
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-          <div style={{
-            fontFamily: 'var(--font-display)',
-            fontSize: '2rem',
-            color: 'var(--amber)',
-            letterSpacing: '3px',
-            marginBottom: '0.5rem',
-          }}>
-            MFD-FBY's
-          </div>
+          <img
+            src="https://res.cloudinary.com/dl4pyan8v/image/upload/v1785800037/Hikimori_logo_02_hkexej.jpg"
+            alt="Hikimori"
+            style={{ height: '44px', width: 'auto', borderRadius: '8px', display: 'inline-block', marginBottom: '0.8rem' }}
+          />
           <h1 style={{
             fontFamily: 'var(--font-display)',
             fontSize: '1.8rem',

@@ -435,7 +435,10 @@ const AdminPanel: React.FC = () => {
     <div style={{ minHeight:'100vh', background:'var(--black)', fontFamily:'var(--font-body)' }}>
       {/* Mobile top bar */}
       <div id="admin-topbar" style={{ display:'none', background:'var(--black-2)', borderBottom:'1px solid rgba(245,166,35,0.15)', padding:'12px 16px', position:'sticky', top:0, zIndex:100, alignItems:'center', justifyContent:'space-between' }}>
-        <span style={{ fontFamily:'var(--font-display)', color:'var(--amber)', fontSize:'1.2rem', letterSpacing:'2px' }}>MFD-FBY's Admin</span>
+        <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+          <img src="https://res.cloudinary.com/dl4pyan8v/image/upload/v1785799964/Hikimori_logo_ku11u1.jpg" alt="Hikimori" style={{ width:26, height:26, borderRadius:6, objectFit:'cover' }} />
+          <span style={{ fontFamily:'var(--font-display)', color:'var(--amber)', fontSize:'1.1rem', letterSpacing:'1px' }}>Admin</span>
+        </div>
         <div style={{ display:'flex', alignItems:'center', gap:8 }}>
           {/* Firestore status indicator */}
           <span style={{ fontSize:'0.65rem', color:'#4ade80', background:'rgba(74,222,128,0.1)', border:'1px solid rgba(74,222,128,0.3)', borderRadius:6, padding:'3px 8px', fontWeight:700 }}>
@@ -460,9 +463,12 @@ const AdminPanel: React.FC = () => {
       <div style={{ display:'flex', minHeight:'100vh' }}>
         {/* ── Desktop Sidebar ── */}
         <aside id="admin-sidebar" style={{ width:220, background:'var(--black-2)', borderRight:'1px solid rgba(245,166,35,0.1)', padding:'1.5rem 0.8rem', position:'sticky', top:0, height:'100vh', overflowY:'auto', flexShrink:0 }}>
-          <div style={{ marginBottom:'1.5rem', paddingLeft:'0.4rem' }}>
-            <div style={{ fontFamily:'var(--font-display)', color:'var(--amber)', fontSize:'1.2rem', letterSpacing:'2px' }}>MFD-FBY's</div>
-            <p style={{ color:'var(--white-dim)', fontSize:'0.72rem' }}>Admin Panel</p>
+          <div style={{ marginBottom:'1.5rem', paddingLeft:'0.4rem', display:'flex', alignItems:'center', gap:8 }}>
+            <img src="https://res.cloudinary.com/dl4pyan8v/image/upload/v1785799964/Hikimori_logo_ku11u1.jpg" alt="Hikimori" style={{ width:32, height:32, borderRadius:7, objectFit:'cover' }} />
+            <div>
+              <div style={{ fontFamily:'var(--font-display)', color:'var(--amber)', fontSize:'1rem', letterSpacing:'1px' }}>Hikimori</div>
+              <p style={{ color:'var(--white-dim)', fontSize:'0.72rem', margin:0 }}>Admin Panel</p>
+            </div>
           </div>
           {/* Firestore badge */}
           <div style={{ background:'rgba(74,222,128,0.08)', border:'1px solid rgba(74,222,128,0.2)', borderRadius:8, padding:'6px 10px', marginBottom:'1rem', display:'flex', alignItems:'center', gap:6 }}>
