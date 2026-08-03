@@ -54,9 +54,11 @@ const Navbar: React.FC = () => {
       {/* ── Logo ── */}
       <Link to="/" style={{ textDecoration: 'none' }}>
         <motion.div whileHover={{ scale: 1.05 }} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <span style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', color: 'var(--amber)', letterSpacing: '2px' }}>
-            MFD-FBY's
-          </span>
+          <img
+            src="https://res.cloudinary.com/dl4pyan8v/image/upload/v1785800037/Hikimori_logo_02_hkexej.jpg"
+            alt="Hikimori — Mahfud Febry Styanto"
+            style={{ height: '34px', width: 'auto', borderRadius: '6px', display: 'block' }}
+          />
         </motion.div>
       </Link>
 

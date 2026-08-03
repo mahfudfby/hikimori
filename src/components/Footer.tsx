@@ -29,7 +29,12 @@ const Footer: React.FC = () => {
         <div id="footer-grid" style={{ display:'grid', gridTemplateColumns:'1fr', gap:'2rem', marginBottom:'2rem' }}>
           {/* Brand */}
           <div>
-            <div style={{ fontFamily:'var(--font-display)', fontSize:'1.6rem', color:'var(--amber)', marginBottom:'0.6rem', letterSpacing:'3px' }}>MFD-FBY's</div>
+            <img
+              src="https://res.cloudinary.com/dl4pyan8v/image/upload/v1785800037/Hikimori_logo_02_hkexej.jpg"
+              alt="Hikimori — Mahfud Febry Styanto"
+              loading="lazy" decoding="async"
+              style={{ height: '32px', width: 'auto', borderRadius: '6px', display: 'block', marginBottom: '0.6rem' }}
+            />
             <p style={{ color:'var(--white-dim)', fontSize:'0.88rem', lineHeight:1.6 }}>Hikimori Project — Creative Portfolio<br />{contact.location}</p>
             {socials.length > 0 && (
               <div style={{ display:'flex', gap:'0.6rem', marginTop:'1rem', flexWrap:'wrap' }}>
