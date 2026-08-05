@@ -4,6 +4,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import AnimatedSection from '../components/AnimatedSection';
+import LazyMount from '../components/LazyMount';
 import { useLang } from '../contexts/LanguageContext';
 import {
   EDUCATION, TOOLS, CV_SKILL_TAGS, TRAINING_LICENSE,
@@ -48,7 +49,7 @@ const resolveLogo = (exp: { company: string; logoUrl?: string }): string | null 
   return domain ? `https://logo.clearbit.com/${domain}` : null;
 };
 
-const FALLBACK_PHOTO = 'https://res.cloudinary.com/dl4pyan8v/image/upload/v1783866519/Mahfudfebry_casual_oj8r1d.png';
+const FALLBACK_PHOTO = 'https://res.cloudinary.com/dl4pyan8v/image/upload/f_auto,q_auto/v1783866519/Mahfudfebry_casual_oj8r1d.png';
 const D_GALLERY: GalleryItem[] = [];
 /* Mapping ukuran → span kolom/baris CSS Grid untuk layout majalah */
 const GALLERY_SPAN: Record<string, { col: number; row: number }> = {
@@ -294,6 +295,7 @@ const About: React.FC = () => {
 
       {/* ── Galeri Foto — Layout Majalah ── */}
       {gallery.length > 0 && (
+      <LazyMount minHeight={500}>
         <section style={{ padding: '1rem 2rem 5rem', maxWidth: '1200px', margin: '0 auto' }}>
           <AnimatedSection direction="up">
             <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
@@ -330,8 +332,10 @@ const About: React.FC = () => {
             })}
           </div>
         </section>
+      </LazyMount>
       )}
       {/* ── Info Tambahan (Education, Tools, Hobby, Organizational Experience, References) — Layout Majalah ── */}
+      <LazyMount minHeight={700}>
       <section style={{ padding: '1rem 2rem 5rem', maxWidth: '1200px', margin: '0 auto' }}>
         <AnimatedSection direction="up">
           <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
@@ -423,7 +427,9 @@ const About: React.FC = () => {
           }
         `}</style>
       </section>
+      </LazyMount>
 
+      <LazyMount minHeight={600}>
       <section style={{ padding: '5rem 2rem', background: 'var(--black-2)' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <AnimatedSection direction="up">
@@ -481,8 +487,10 @@ const About: React.FC = () => {
           `}</style>
         </div>
       </section>
+      </LazyMount>
 
       {/* ── Sertifikasi ── */}
+      <LazyMount minHeight={500}>
       <section style={{ padding: '5rem 2rem', maxWidth: '1200px', margin: '0 auto' }}>
         <AnimatedSection direction="up">
           <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
@@ -524,8 +532,10 @@ const About: React.FC = () => {
           </div>
         )}
       </section>
+      </LazyMount>
 
       {/* ── Pengalaman Kerja ── */}
+      <LazyMount minHeight={500}>
       <section style={{ padding: '5rem 2rem', background: 'var(--black-2)' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <AnimatedSection direction="up">
@@ -543,6 +553,7 @@ const About: React.FC = () => {
           </div>
         </div>
       </section>
+      </LazyMount>
 
       <style>{`
         @media (max-width: 768px) {

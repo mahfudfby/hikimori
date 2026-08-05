@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, useTransform, useMotionValue, useSpring, AnimatePresence, useScroll } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import Footer from '../components/Footer';
+import LazyMount from '../components/LazyMount';
 import { useLang } from '../contexts/LanguageContext';
 import { PROFILE } from '../data/cvData';
 
@@ -117,8 +118,24 @@ const D_CERT_EN:CertItem[]=[
   {id:'5',name:'HR Policy Implementation Administration',year:'2025',issuer:'MSDM Training — Cipta Innovasi Unggul',subtitle:'M.70SDM01.059.2',imageUrl:''},
   {id:'6',name:'Certified Excel for Administration',year:'2024',issuer:'Jobstreet',subtitle:'Excel for Administration',imageUrl:''},
 ];
-const FALLBACK_PHOTO='https://res.cloudinary.com/dl4pyan8v/image/upload/v1783866519/Mahfudfebry_casual_oj8r1d.png';
-const HERO_VIDEO='https://res.cloudinary.com/dl4pyan8v/video/upload/v1782631692/HomeHikimori_v2_mxmgio.mp4';
+const FALLBACK_PHOTO='https://res.cloudinary.com/dl4pyan8v/image/upload/f_auto,q_auto/v1783866519/Mahfudfebry_casual_oj8r1d.png';
+const HERO_VIDEO='https://res.cloudinary.com/dl4pyan8v/video/upload/f_auto,q_auto/v1782631692/HomeHikimori_v2_mxmgio.mp4';
+
+/* Deteksi jaringan lemot / mode hemat data (Network Information API).
+   Kalau terdeteksi, video hero di-skip (ganti gradient statis) supaya
+   hemat kuota & RAM — fitur lain tetap 100% jalan seperti biasa. */
+const useLiteMode = (): boolean => {
+  const [lite, setLite] = React.useState(false);
+  React.useEffect(() => {
+    const conn = (navigator as any).connection || (navigator as any).mozConnection || (navigator as any).webkitConnection;
+    if (!conn) return;
+    const check = () => setLite(!!conn.saveData || ['slow-2g', '2g', '3g'].includes(conn.effectiveType));
+    check();
+    conn.addEventListener?.('change', check);
+    return () => conn.removeEventListener?.('change', check);
+  }, []);
+  return lite;
+};
 const CONTACT_VIDEO='https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260602_150901_c45b90ec-18d7-42ff-90e2-b95d7109e330.mp4';
 const SERVICES_LIST=['Website','Mobile App','Web App','E-Commerce','Visual Identity','3D & Motion','Digital Marketing','Growth & Consulting','Other'];
 const ls=<T,>(key:string,fb:T):T=>{try{return JSON.parse(localStorage.getItem(key)||'null')??fb;}catch{return fb;}};
@@ -820,6 +837,7 @@ const ExpCard:React.FC<{exp:ExpItem;index:number}>=({exp,index:i})=>{
 ══════════════════════════════════════════ */
 const Home:React.FC=()=>{
   const {lang,t}=useLang();
+  const liteMode=useLiteMode();
   const [heroCustom,setHero]=useState<HomeData|null>(()=>lsRaw<HomeData>(LS_HOME));
   const [aboutCustom,setAbout]=useState<AboutData|null>(()=>lsRaw<AboutData>(LS_ABOUT));
   const [skillsCustom,setSkills]=useState<SkillItem[]|null>(()=>lsRaw<SkillItem[]>(LS_SKILLS));
@@ -851,7 +869,11 @@ const Home:React.FC=()=>{
 
       {/* ══ HERO ══ */}
       <section id="hk-hero" style={{position:'relative',width:'100%',height:'100vh',minHeight:500,overflow:'hidden',display:'flex',flexDirection:'column',background:'#000',color:'#fff'}}>
-        <video autoPlay loop muted playsInline style={{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover',zIndex:0}}><source src={HERO_VIDEO} type="video/mp4"/></video>
+        {liteMode ? (
+          <div style={{position:'absolute',inset:0,width:'100%',height:'100%',zIndex:0,background:'radial-gradient(ellipse at 50% 30%, rgba(139,26,26,0.25), transparent 60%), linear-gradient(180deg, #0a0503 0%, #000 100%)'}}/>
+        ) : (
+          <video autoPlay loop muted playsInline preload="metadata" style={{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover',zIndex:0}}><source src={HERO_VIDEO} type="video/mp4"/></video>
+        )}
         <Stars/>
         {/* Main content: semua elemen rapat di bagian bawah, tidak overlap navbar */}
         <div style={{position:'relative',zIndex:1,display:'flex',flexDirection:'column',flex:1}}>
@@ -1021,6 +1043,7 @@ const Home:React.FC=()=>{
       </JapanBgSection>
 
       {/* ══ SERTIFIKASI — 証明書 (Shomeisho) ══ */}
+      <LazyMount minHeight={700}>
       <JapanBgSection overlayColor={J.ov85}>
         <InkBrushCanvas/>
         <SmokeCloud style={{left:'-4%',bottom:'0%',opacity:0.9}} delay={0}/>
@@ -1061,8 +1084,10 @@ const Home:React.FC=()=>{
           )}
         </div>
       </JapanBgSection>
+      </LazyMount>
 
       {/* ══ EXPERIENCE — 経歴 (Keireki / Career Path) ══ */}
+      <LazyMount minHeight={800}>
       <JapanBgSection overlayColor={J.ov82}>
         <InkBrushCanvas/>
         {/* Stars */}
@@ -1110,8 +1135,10 @@ const Home:React.FC=()=>{
           </div>
         </div>
       </JapanBgSection>
+      </LazyMount>
 
       {/* ══ SKILLS — 技術 (Gijutsu / Technique) ══ */}
+      <LazyMount minHeight={900}>
       <JapanBgSection overlayColor={J.ov82}>
         <InkBrushCanvas/>
         <SmokeCloud style={{left:'-5%',bottom:'0%',opacity:0.9}} delay={0}/>
@@ -1228,8 +1255,10 @@ const Home:React.FC=()=>{
           `}</style>
         </div>
       </JapanBgSection>
+      </LazyMount>
 
       {/* ══ CTA — 覇道 (Hado / Path of Dominance) ══ */}
+      <LazyMount minHeight={700}>
       <JapanBgSection overlayColor={J.ov88} style={{textAlign:'center'}}>
         <InkBrushCanvas/>
         {/* Dense smoke */}
@@ -1296,6 +1325,7 @@ const Home:React.FC=()=>{
           </Reveal>
         </div>
       </JapanBgSection>
+      </LazyMount>
 
       <ContactSection/>
       <Footer/>

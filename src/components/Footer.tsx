@@ -30,7 +30,7 @@ const Footer: React.FC = () => {
           {/* Brand */}
           <div>
             <img
-              src="https://res.cloudinary.com/dl4pyan8v/image/upload/v1785800037/Hikimori_logo_02_hkexej.jpg"
+              src="https://res.cloudinary.com/dl4pyan8v/image/upload/f_auto,q_auto/v1785800037/Hikimori_logo_02_hkexej.jpg"
               alt="Hikimori — Mahfud Febry Styanto"
               loading="lazy" decoding="async"
               style={{ height: '32px', width: 'auto', borderRadius: '6px', display: 'block', marginBottom: '0.6rem' }}

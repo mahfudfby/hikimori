@@ -5,8 +5,17 @@ import { motion } from 'framer-motion';
 const CursorGlow: React.FC = () => {
   const [pos, setPos] = useState({ x: -100, y: -100 });
   const [hovering, setHovering] = useState(false);
+  const [enabled, setEnabled] = useState(false);
 
   useEffect(() => {
+    // Perangkat sentuh (HP/tablet) tidak punya cursor sungguhan — skip total
+    // supaya tidak pasang event listener & re-render yang sia-sia (hemat RAM/CPU).
+    const isTouch = window.matchMedia('(pointer: coarse)').matches;
+    setEnabled(!isTouch);
+  }, []);
+
+  useEffect(() => {
+    if (!enabled) return;
     const move = (e: MouseEvent) => setPos({ x: e.clientX, y: e.clientY });
     const over = (e: MouseEvent) => {
       const el = e.target as HTMLElement;
@@ -24,7 +33,9 @@ const CursorGlow: React.FC = () => {
       window.removeEventListener('mousemove', move);
       window.removeEventListener('mouseover', over);
     };
-  }, []);
+  }, [enabled]);
+
+  if (!enabled) return null;
 
   return (
     <>

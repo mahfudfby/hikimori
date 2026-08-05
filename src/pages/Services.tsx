@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import AnimatedSection from '../components/AnimatedSection';
+import LazyMount from '../components/LazyMount';
 import { useLang } from '../contexts/LanguageContext';
 
 const services = [
@@ -136,6 +137,7 @@ const Services: React.FC = () => {
       </section>
 
       {/* Service Cards */}
+      <LazyMount minHeight={600}>
       <section style={{ padding: '3rem 2rem 6rem', maxWidth: '1200px', margin: '0 auto' }}>
         <div style={{
           display: 'grid',
@@ -223,8 +225,10 @@ const Services: React.FC = () => {
           ))}
         </div>
       </section>
+      </LazyMount>
 
       {/* Process section */}
+      <LazyMount minHeight={500}>
       <section style={{ padding: '5rem 2rem', background: 'var(--black-2)' }}>
         <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
           <AnimatedSection direction="up">
@@ -303,8 +307,10 @@ const Services: React.FC = () => {
           </div>
         </div>
       </section>
+      </LazyMount>
 
       {/* CTA */}
+      <LazyMount minHeight={400}>
       <section style={{ padding: '6rem 2rem', textAlign: 'center' }}>
         <AnimatedSection direction="scale">
           <h2 style={{
@@ -339,6 +345,7 @@ const Services: React.FC = () => {
           </motion.a>
         </AnimatedSection>
       </section>
+      </LazyMount>
     </div>
   );
 };
