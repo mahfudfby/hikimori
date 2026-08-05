@@ -55,7 +55,7 @@ const Navbar: React.FC = () => {
       <Link to="/" style={{ textDecoration: 'none' }}>
         <motion.div whileHover={{ scale: 1.05 }} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
           <img
-            src="https://res.cloudinary.com/dl4pyan8v/image/upload/v1785800037/Hikimori_logo_02_hkexej.jpg"
+            src="https://res.cloudinary.com/dl4pyan8v/image/upload/f_auto,q_auto/v1785800037/Hikimori_logo_02_hkexej.jpg"
             alt="Hikimori — Mahfud Febry Styanto"
             style={{ height: '34px', width: 'auto', borderRadius: '6px', display: 'block' }}
           />

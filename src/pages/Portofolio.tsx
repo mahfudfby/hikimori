@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import AnimatedSection from '../components/AnimatedSection';
+import LazyMount from '../components/LazyMount';
 import { usePortfolio } from '../hooks/usePortfolio';
 
 const CATEGORIES = ['Semua', 'HR', 'Administrasi', 'IT Support', 'Desain', 'Branding'];
@@ -189,6 +190,7 @@ const Portofolio: React.FC = () => {
       </section>
 
       {/* Filter & Search */}
+      <LazyMount minHeight={500}>
       <section style={{ padding: '0 2rem 2rem', maxWidth: '1200px', margin: '0 auto' }}>
         <AnimatedSection direction="up" delay={0.2}>
           {/* Search */}
@@ -243,8 +245,10 @@ const Portofolio: React.FC = () => {
           </div>
         </AnimatedSection>
       </section>
+      </LazyMount>
 
       {/* Portfolio Grid */}
+      <LazyMount minHeight={500}>
       <section style={{ padding: '1rem 2rem 6rem', maxWidth: '1200px', margin: '0 auto' }}>
         {loading && (
           <div style={{ textAlign: 'center', padding: '4rem', color: 'var(--white-dim)' }}>
@@ -313,6 +317,7 @@ const Portofolio: React.FC = () => {
           </AnimatePresence>
         </motion.div>
       </section>
+      </LazyMount>
     </div>
   );
 };

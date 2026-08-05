@@ -15,9 +15,11 @@ import LanguageToggle from './components/LanguageToggle';
 import { useLang } from './contexts/LanguageContext';
 
 import Home from './pages/Home';
-import About from './pages/About';
-import Services from './pages/Services';
-import Portofolio from './pages/Portofolio';
+// Halaman selain Home di-lazy-load juga: pengunjung yang cuma buka landing
+// page tidak perlu download kode About/Services/Portofolio sama sekali.
+const About      = React.lazy(() => import('./pages/About'));
+const Services   = React.lazy(() => import('./pages/Services'));
+const Portofolio = React.lazy(() => import('./pages/Portofolio'));
 // Admin hanya dipakai pemilik situs — di-lazy-load supaya tidak membengkakkan
 // bundle JS utama yang didownload oleh setiap pengunjung publik.
 const AdminLogin = React.lazy(() => import('./pages/AdminLogin'));
@@ -137,9 +139,21 @@ const AnimatedRoutes: React.FC = () => {
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
           <Route path="/"            element={<PageTransition><Home /></PageTransition>} />
-          <Route path="/about"       element={<PageTransition><About /></PageTransition>} />
-          <Route path="/services"    element={<PageTransition><Services /></PageTransition>} />
-          <Route path="/portofolio"  element={<PageTransition><Portofolio /></PageTransition>} />
+          <Route path="/about"       element={
+            <React.Suspense fallback={<AdminFallback />}>
+              <PageTransition><About /></PageTransition>
+            </React.Suspense>
+          } />
+          <Route path="/services"    element={
+            <React.Suspense fallback={<AdminFallback />}>
+              <PageTransition><Services /></PageTransition>
+            </React.Suspense>
+          } />
+          <Route path="/portofolio"  element={
+            <React.Suspense fallback={<AdminFallback />}>
+              <PageTransition><Portofolio /></PageTransition>
+            </React.Suspense>
+          } />
           <Route path="/admin/login" element={
             <React.Suspense fallback={<AdminFallback />}>
               <PageTransition><AdminLogin /></PageTransition>
