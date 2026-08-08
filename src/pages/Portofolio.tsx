@@ -121,7 +121,7 @@ const PortfolioCard: React.FC<{ item: ReturnType<typeof usePortfolio>['items'][0
               </span>
             ))}
           </div>
-          <span style={{ color: 'var(--white-faint)', fontSize: '0.8rem' }}>{item.year}</span>
+          <span style={{ color: 'rgba(255,255,255,0.55)', fontSize: '0.8rem' }}>{item.year}</span>
         </div>
 
         {item.client && (

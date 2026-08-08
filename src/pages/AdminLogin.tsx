@@ -209,7 +209,7 @@ const AdminLogin: React.FC = () => {
 
         <p style={{
           textAlign: 'center',
-          color: 'rgba(255,255,255,0.2)',
+          color: 'rgba(255,255,255,0.4)',
           fontSize: '0.78rem',
           marginTop: '2rem',
         }}>

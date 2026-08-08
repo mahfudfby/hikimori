@@ -54,6 +54,41 @@ body {
   border-radius: 3px;
 }
 
+/* ─── Mobile-Friendly: Form & Touch Target ───
+   font-size 16px pada input/textarea/select mencegah Safari iOS otomatis
+   zoom-in saat elemen di-tap/fokus (masalah umum kalau font < 16px).
+   min-height 44px mengikuti rekomendasi Apple HIG / Material Design
+   untuk target sentuh yang nyaman di jari, bukan cuma kursor mouse. */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="search"],
+input[type="tel"],
+input[type="number"],
+textarea,
+select {
+  font-size: 16px !important;
+  min-height: 44px;
+}
+textarea { min-height: 88px; }
+
+/* Hilangkan efek "flash" biru bawaan browser saat tap di mobile —
+   feedback tap sudah ditangani lewat animasi whileTap/hover masing-masing. */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+button, a, input, select, textarea, [role="button"] {
+  touch-action: manipulation;
+}
+
+/* Form 2-kolom (mis. di Admin Panel) → collapse jadi 1 kolom di HP,
+   supaya input field tidak kepepet sempit di layar kecil. */
+@media (max-width: 640px) {
+  .responsive-2col {
+    grid-template-columns: 1fr !important;
+  }
+}
+
 /* Utility classes */
 .amber { color: var(--amber); }
 .display { font-family: var(--font-display); }

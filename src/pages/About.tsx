@@ -140,8 +140,8 @@ const ExpCardAbout: React.FC<{ exp: ExpItem; index: number }> = ({ exp, index: i
       }}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '0.6rem', marginBottom: '0.4rem' }}>
           {logo && !logoFailed ? (
-            <div style={{ width: 44, height: 44, borderRadius: 10, background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, overflow: 'hidden' }}>
-              <img src={logo} alt={exp.company} loading="lazy" decoding="async" onError={() => setLogoFailed(true)} style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 5 }} />
+            <div style={{ width: 44, height: 44, borderRadius: 12, background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, overflow: 'hidden' }}>
+              <img src={logo} alt={exp.company} loading="lazy" decoding="async" onError={() => setLogoFailed(true)} style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 5, borderRadius: 8 }} />
             </div>
           ) : (
             <span style={{ fontSize: '1.8rem', flexShrink: 0 }} aria-hidden="true">{exp.icon}</span>
@@ -414,7 +414,7 @@ const About: React.FC = () => {
                 <div key={r.id} style={{ marginBottom: '0.4rem' }}>
                   <p style={{ color: 'var(--white)', fontWeight: 700, fontSize: '0.95rem', marginBottom: '0.1rem' }}>{r.name}</p>
                   <p style={{ color: 'var(--white-dim)', fontSize: '0.82rem', marginBottom: '0.1rem' }}>{t(r.role.id, r.role.en)} · {r.company}</p>
-                  <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.75rem' }}>{t(r.note.id, r.note.en)}</p>
+                  <p style={{ color: 'rgba(255,255,255,0.58)', fontSize: '0.75rem' }}>{t(r.note.id, r.note.en)}</p>
                 </div>
               ))}
             </div>
@@ -561,6 +561,10 @@ const About: React.FC = () => {
           .magazine-grid { grid-template-columns: repeat(2, 1fr) !important; grid-auto-rows: 160px !important; }
           .magazine-item { grid-column: span 1 !important; grid-row: span 1 !important; }
           .magazine-item.mag-wide, .magazine-item.mag-large { grid-column: span 2 !important; }
+        }
+        @media (max-width: 480px) {
+          .magazine-grid:not(.info-grid) { grid-template-columns: 1fr !important; grid-auto-rows: 200px !important; }
+          .magazine-item { grid-column: span 1 !important; }
         }
       `}</style>
     </div>
