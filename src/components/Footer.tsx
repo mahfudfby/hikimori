@@ -67,7 +67,7 @@ const Footer: React.FC = () => {
         </div>
         {/* Bottom bar */}
         <div style={{ paddingTop:'1.2rem', borderTop:'1px solid rgba(255,255,255,0.06)', display:'flex', justifyContent:'space-between', alignItems:'center', flexWrap:'wrap', gap:'0.8rem' }}>
-          <p style={{ color:'var(--white-faint)', fontSize:'0.78rem' }}>© {new Date().getFullYear()} Mahfudfebry — Hikimori Project. All rights reserved.</p>
+          <p style={{ color:'rgba(255,255,255,0.5)', fontSize:'0.78rem' }}>© {new Date().getFullYear()} Mahfudfebry — Hikimori Project. All rights reserved.</p>
           <Link to="/admin/login" style={{ color:'rgba(245,166,35,0.3)', fontSize:'0.72rem', textDecoration:'none' }}>Admin</Link>
         </div>
       </div>

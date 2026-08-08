@@ -506,7 +506,7 @@ const AdminPanel: React.FC = () => {
                 <span style={{ fontSize:'1.2rem' }}>🔥</span>
                 <div>
                   <div style={{ color:'#4ade80', fontSize:'0.82rem', fontWeight:700 }}>Firestore Real-time Aktif</div>
-                  <div style={{ color:'rgba(255,255,255,0.45)', fontSize:'0.75rem' }}>Semua perubahan tersimpan di cloud & sinkron ke semua device secara real-time.</div>
+                  <div style={{ color:'rgba(255,255,255,0.6)', fontSize:'0.75rem' }}>Semua perubahan tersimpan di cloud & sinkron ke semua device secara real-time.</div>
                 </div>
               </div>
               <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(140px,1fr))', gap:'0.8rem', marginBottom:'2rem' }}>
@@ -563,11 +563,11 @@ const AdminPanel: React.FC = () => {
               <div style={card}>
                 <h3 style={{ fontFamily:'var(--font-display)', fontSize:'1.1rem', marginBottom:'1rem', color:'var(--amber)' }}>🔘 TOMBOL CTA</h3>
                 <div style={{ display:'flex', flexDirection:'column', gap:'1rem' }}>
-                  <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'0.8rem' }}>
+                  <div className="responsive-2col" style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'0.8rem' }}>
                     <div><label style={lbl}>Tombol Kiri — Teks</label><input style={inp} value={home.heroCtaSecondary} onChange={e => setHome({ ...home, heroCtaSecondary:e.target.value })} /></div>
                     <div><label style={lbl}>Tombol Kiri — Link</label><input style={inp} value={home.heroCtaSecondaryLink} onChange={e => setHome({ ...home, heroCtaSecondaryLink:e.target.value })} /></div>
                   </div>
-                  <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'0.8rem' }}>
+                  <div className="responsive-2col" style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'0.8rem' }}>
                     <div><label style={lbl}>Tombol Kanan — Teks</label><input style={inp} value={home.heroCta} onChange={e => setHome({ ...home, heroCta:e.target.value })} /></div>
                     <div><label style={lbl}>Tombol Kanan — Link</label><input style={inp} value={home.heroCtaLink} onChange={e => setHome({ ...home, heroCtaLink:e.target.value })} /></div>
                   </div>
@@ -612,7 +612,7 @@ const AdminPanel: React.FC = () => {
                 <input type="file" accept="image/*" multiple onChange={handleGalleryUpload} style={{ ...inp, padding:'8px' }} />
                 {galleryUploading && <p style={{ color:'var(--amber)', fontSize:'0.8rem', marginTop:6 }}>⌛ Mengupload foto...</p>}
                 {gallery.length === 0 ? (
-                  <p style={{color:'rgba(255,255,255,0.3)',fontSize:'0.82rem',marginTop:'1rem'}}>Belum ada foto galeri. Upload foto di atas untuk menambahkan.</p>
+                  <p style={{color:'rgba(255,255,255,0.55)',fontSize:'0.82rem',marginTop:'1rem'}}>Belum ada foto galeri. Upload foto di atas untuk menambahkan.</p>
                 ) : (
                   <div style={{display:'flex',flexDirection:'column',gap:'0.8rem',marginTop:'1.2rem'}}>
                     {gallery.map((g, i) => (
@@ -854,7 +854,7 @@ const AdminPanel: React.FC = () => {
                 <button onClick={() => setSkillForm(null)} style={{ background:'none', border:'none', color:'var(--white-dim)', fontSize:'1.2rem', cursor:'pointer' }}>✕</button>
               </div>
               <div style={{ display:'flex', flexDirection:'column', gap:'1rem' }}>
-                <div style={{ display:'grid', gridTemplateColumns:'1fr 2fr', gap:'0.8rem' }}>
+                <div className="responsive-2col" style={{ display:'grid', gridTemplateColumns:'1fr 2fr', gap:'0.8rem' }}>
                   <div><label style={lbl}>Nomor</label><input style={inp} value={skillForm.number} onChange={e => setSkillForm({ ...skillForm, number:e.target.value })} placeholder="01" /></div>
                   <div><label style={lbl}>Judul</label><input style={inp} value={skillForm.title} onChange={e => setSkillForm({ ...skillForm, title:e.target.value })} placeholder="Nama skill" /></div>
                 </div>
@@ -887,7 +887,7 @@ const AdminPanel: React.FC = () => {
               <div style={{ display:'flex', flexDirection:'column', gap:'1rem' }}>
                 <div><label style={lbl}>Posisi / Jabatan</label><input style={inp} value={expForm.position} onChange={e => setExpForm({ ...expForm, position:e.target.value })} /></div>
                 <ImageUploader label="Logo Perusahaan (kosongkan agar dicari otomatis untuk brand besar seperti Grab / Mie Gacoan)" value={expForm.logoUrl||''} onChange={url => setExpForm({ ...expForm, logoUrl:url })} />
-                <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'0.8rem' }}>
+                <div className="responsive-2col" style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'0.8rem' }}>
                   <div><label style={lbl}>Perusahaan</label><input style={inp} value={expForm.company} onChange={e => setExpForm({ ...expForm, company:e.target.value })} /></div>
                   <div><label style={lbl}>Periode</label><input style={inp} value={expForm.period} onChange={e => setExpForm({ ...expForm, period:e.target.value })} placeholder="2020–2023" /></div>
                 </div>
@@ -915,7 +915,7 @@ const AdminPanel: React.FC = () => {
               </div>
               <form onSubmit={handlePortSubmit} style={{ display:'flex', flexDirection:'column', gap:'1rem' }}>
                 <div><label style={lbl}>Judul Project *</label><input style={inp} value={portForm.title} onChange={e => setPortForm({ ...portForm, title:e.target.value })} required /></div>
-                <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'0.8rem' }}>
+                <div className="responsive-2col" style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'0.8rem' }}>
                   <div><label style={lbl}>Kategori</label>
                     <select style={{ ...inp }} value={portForm.category} onChange={e => setPortForm({ ...portForm, category:e.target.value })}>
                       {['HR','Administrasi','IT Support','Desain','Branding'].map(c => <option key={c} value={c}>{c}</option>)}
@@ -969,7 +969,7 @@ const AdminPanel: React.FC = () => {
               </div>
               <div style={{ display:'flex', flexDirection:'column', gap:'1rem' }}>
                 <div><label style={lbl}>Nama Sertifikasi *</label><input style={inp} value={certForm.name} onChange={e => setCertForm({ ...certForm, name:e.target.value })} placeholder="Google Digital Marketing" /></div>
-                <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'0.8rem' }}>
+                <div className="responsive-2col" style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'0.8rem' }}>
                   <div><label style={lbl}>Tahun</label><input style={inp} value={certForm.year} onChange={e => setCertForm({ ...certForm, year:e.target.value })} placeholder="2023" /></div>
                   <div><label style={lbl}>Lembaga Penerbit</label><input style={inp} value={certForm.issuer} onChange={e => setCertForm({ ...certForm, issuer:e.target.value })} placeholder="Google" /></div>
                 </div>
