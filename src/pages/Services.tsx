@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import AnimatedSection from '../components/AnimatedSection';
 import LazyMount from '../components/LazyMount';
+import AuroraBackground from '../components/AuroraBackground';
 import { useLang } from '../contexts/LanguageContext';
 
 const services = [
@@ -19,7 +20,7 @@ const services = [
       'Employee Relations',
       'Performance Evaluation',
     ],
-    color: '#F5A623',
+    color: '#0E6FA8',
   },
   {
     icon: '📋',
@@ -34,7 +35,7 @@ const services = [
       'Laporan Operasional',
       'Arsip & Filing',
     ],
-    color: '#FFB84D',
+    color: '#2E92C7',
   },
   {
     icon: '💻',
@@ -49,7 +50,7 @@ const services = [
       'User Training',
       'IT Documentation',
     ],
-    color: '#D4891F',
+    color: '#094A70',
   },
   {
     icon: '🎨',
@@ -64,7 +65,7 @@ const services = [
       'Presentation Design',
       'Concept Development',
     ],
-    color: '#F5A623',
+    color: '#0E6FA8',
   },
 ];
 
@@ -89,10 +90,12 @@ const Services: React.FC = () => {
         position: 'relative',
         overflow: 'hidden',
       }}>
+        <AuroraBackground variant="soft" />
         <motion.div
           initial={{ opacity: 0, y: 60 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
+          style={{ position: 'relative', zIndex: 1 }}
         >
           <span style={{
             fontFamily: 'var(--font-body)',
@@ -152,7 +155,7 @@ const Services: React.FC = () => {
                 onHoverEnd={() => setActiveCard(null)}
                 style={{
                   background: activeCard === i ? 'var(--black-3)' : 'var(--black-2)',
-                  border: `1px solid ${activeCard === i ? 'rgba(245,166,35,0.4)' : 'rgba(245,166,35,0.1)'}`,
+                  border: `1px solid ${activeCard === i ? 'rgba(14,111,168,0.4)' : 'rgba(14,111,168,0.1)'}`,
                   borderRadius: 'var(--radius)',
                   padding: '2.5rem',
                   cursor: 'default',
@@ -257,13 +260,13 @@ const Services: React.FC = () => {
                   padding: '2.5rem 1.5rem',
                   background: 'var(--black-3)',
                   borderRadius: 'var(--radius)',
-                  border: '1px solid rgba(245,166,35,0.1)',
+                  border: '1px solid rgba(14,111,168,0.1)',
                   position: 'relative',
                 }}>
                   <div style={{
                     fontFamily: 'var(--font-display)',
                     fontSize: '4rem',
-                    color: 'rgba(245,166,35,0.15)',
+                    color: 'rgba(14,111,168,0.15)',
                     lineHeight: 1,
                     position: 'absolute',
                     top: '10px',
@@ -326,7 +329,7 @@ const Services: React.FC = () => {
           <motion.a
             href="mailto:mahfudfebry@hikimori.web.id"
             className="text-shadow-onlight"
-            whileHover={{ scale: 1.05, boxShadow: '0 10px 40px rgba(245,166,35,0.4)' }}
+            whileHover={{ scale: 1.05, boxShadow: '0 10px 40px rgba(14,111,168,0.4)' }}
             whileTap={{ scale: 0.97 }}
             style={{
               display: 'inline-block',

@@ -47,7 +47,7 @@ const Navbar: React.FC = () => {
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         background: scrolled ? 'rgba(10,10,10,0.95)' : 'transparent',
         backdropFilter: scrolled ? 'blur(20px)' : 'none',
-        borderBottom: scrolled ? '1px solid rgba(245,166,35,0.15)' : 'none',
+        borderBottom: scrolled ? '1px solid rgba(14,111,168,0.15)' : 'none',
         transition: 'all 0.4s ease',
       }}
     >
@@ -66,7 +66,7 @@ const Navbar: React.FC = () => {
       <div style={{ display: 'flex', gap: '2.5rem', alignItems: 'center' }} className="desktop-nav">
         {links.map(link => (
           <Link key={link.to} to={link.to} style={{ textDecoration: 'none', position: 'relative' }}>
-            <motion.span whileHover={{ color: '#F5A623' }}
+            <motion.span whileHover={{ color: '#0E6FA8' }}
               style={{ color: isActive(link.to) ? 'var(--amber)' : 'var(--white)', fontFamily: 'var(--font-body)', fontWeight: 500, fontSize: '0.95rem', letterSpacing: '0.5px', transition: 'color 0.3s ease' }}>
               {link.label}
             </motion.span>
@@ -81,7 +81,7 @@ const Navbar: React.FC = () => {
         {isAdmin ? (
           <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
             <Link to="/admin" style={{ textDecoration: 'none' }}>
-              <motion.button whileHover={{ scale: 1.05, backgroundColor: '#D4891F' }} whileTap={{ scale: 0.97 }}
+              <motion.button whileHover={{ scale: 1.05, backgroundColor: '#094A70' }} whileTap={{ scale: 0.97 }}
                 className="text-shadow-onlight"
                 style={{ background: 'var(--amber)', color: 'var(--black)', border: 'none', borderRadius: '8px', padding: '8px 18px', fontFamily: 'var(--font-body)', fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer', letterSpacing: '0.5px' }}>
                 ⚙ Admin
@@ -94,8 +94,8 @@ const Navbar: React.FC = () => {
           </div>
         ) : (
           <Link to="/admin/login" style={{ textDecoration: 'none' }}>
-            <motion.button whileHover={{ scale: 1.05, backgroundColor: 'rgba(245,166,35,0.12)' }} whileTap={{ scale: 0.97 }}
-              style={{ background: 'transparent', color: 'var(--amber)', border: '1px solid rgba(245,166,35,0.4)', borderRadius: '8px', padding: '8px 18px', fontFamily: 'var(--font-body)', fontWeight: 600, fontSize: '0.85rem', cursor: 'pointer', letterSpacing: '0.5px', transition: 'all 0.25s' }}>
+            <motion.button whileHover={{ scale: 1.05, backgroundColor: 'rgba(14,111,168,0.12)' }} whileTap={{ scale: 0.97 }}
+              style={{ background: 'transparent', color: 'var(--amber)', border: '1px solid rgba(14,111,168,0.4)', borderRadius: '8px', padding: '8px 18px', fontFamily: 'var(--font-body)', fontWeight: 600, fontSize: '0.85rem', cursor: 'pointer', letterSpacing: '0.5px', transition: 'all 0.25s' }}>
               🔐 Login
             </motion.button>
           </Link>
@@ -123,7 +123,7 @@ const Navbar: React.FC = () => {
             style={{
               position: 'absolute', top: '70px', left: 0, right: 0,
               background: 'rgba(10,10,10,0.98)', backdropFilter: 'blur(20px)',
-              borderBottom: '1px solid rgba(245,166,35,0.2)',
+              borderBottom: '1px solid rgba(14,111,168,0.2)',
               padding: '1.5rem 2rem',
               display: 'flex', flexDirection: 'column', gap: '1.2rem',
             }}
@@ -153,7 +153,7 @@ const Navbar: React.FC = () => {
                 <>
                   <Link to="/admin" style={{ textDecoration: 'none' }}>
                     <motion.button
-                      whileHover={{ scale: 1.08, backgroundColor: '#D4891F' }}
+                      whileHover={{ scale: 1.08, backgroundColor: '#094A70' }}
                       whileTap={{ scale: 0.95 }}
                       className="text-shadow-onlight"
                       style={{
@@ -186,11 +186,11 @@ const Navbar: React.FC = () => {
               ) : (
                 <Link to="/admin/login" style={{ textDecoration: 'none' }}>
                   <motion.button
-                    whileHover={{ scale: 1.05, backgroundColor: 'rgba(245,166,35,0.12)' }}
+                    whileHover={{ scale: 1.05, backgroundColor: 'rgba(14,111,168,0.12)' }}
                     whileTap={{ scale: 0.95 }}
                     style={{
                       background: 'transparent', color: 'var(--amber)',
-                      border: '1px solid rgba(245,166,35,0.4)',
+                      border: '1px solid rgba(14,111,168,0.4)',
                       borderRadius: '8px', padding: '7px 14px',
                       fontFamily: 'var(--font-body)', fontWeight: 600,
                       fontSize: '0.82rem', cursor: 'pointer',

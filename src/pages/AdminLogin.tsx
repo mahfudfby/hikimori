@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
 const AdminLogin: React.FC = () => {
@@ -44,7 +44,7 @@ const AdminLogin: React.FC = () => {
       <div style={{
         position: 'fixed',
         inset: 0,
-        background: 'radial-gradient(ellipse at center, rgba(245,166,35,0.05) 0%, transparent 70%)',
+        background: 'radial-gradient(ellipse at center, rgba(14,111,168,0.05) 0%, transparent 70%)',
         pointerEvents: 'none',
       }} />
 
@@ -54,7 +54,7 @@ const AdminLogin: React.FC = () => {
         transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
         style={{
           background: 'var(--black-2)',
-          border: '1px solid rgba(245,166,35,0.2)',
+          border: '1px solid rgba(14,111,168,0.2)',
           borderRadius: '20px',
           padding: 'clamp(2rem, 5vw, 3.5rem)',
           width: '100%',
@@ -76,11 +76,13 @@ const AdminLogin: React.FC = () => {
 
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-          <img
-            src="https://res.cloudinary.com/dl4pyan8v/image/upload/f_auto,q_auto/v1785800037/Hikimori_logo_02_hkexej.jpg"
-            alt="Hikimori"
-            style={{ height: '44px', width: 'auto', borderRadius: '8px', display: 'inline-block', marginBottom: '0.8rem' }}
-          />
+          <Link to="/" style={{ display: 'inline-block' }}>
+            <img
+              src="https://res.cloudinary.com/dl4pyan8v/image/upload/f_auto,q_auto/v1785800037/Hikimori_logo_02_hkexej.jpg"
+              alt="Hikimori"
+              style={{ height: '44px', width: 'auto', borderRadius: '8px', display: 'inline-block', marginBottom: '0.8rem' }}
+            />
+          </Link>
           <h1 style={{
             fontFamily: 'var(--font-display)',
             fontSize: '1.8rem',
@@ -124,7 +126,7 @@ const AdminLogin: React.FC = () => {
                 outline: 'none',
                 transition: 'border-color 0.3s',
               }}
-              onFocus={(e) => (e.target.style.borderColor = 'rgba(245,166,35,0.6)')}
+              onFocus={(e) => (e.target.style.borderColor = 'rgba(14,111,168,0.6)')}
               onBlur={(e) => (e.target.style.borderColor = 'rgba(255,255,255,0.1)')}
             />
           </div>
@@ -159,7 +161,7 @@ const AdminLogin: React.FC = () => {
                   outline: 'none',
                   transition: 'border-color 0.3s',
                 }}
-                onFocus={(e) => (e.target.style.borderColor = 'rgba(245,166,35,0.6)')}
+                onFocus={(e) => (e.target.style.borderColor = 'rgba(14,111,168,0.6)')}
                 onBlur={(e) => (e.target.style.borderColor = 'rgba(255,255,255,0.1)')}
               />
               <button
@@ -187,10 +189,10 @@ const AdminLogin: React.FC = () => {
             type="submit"
             disabled={loading}
             className="text-shadow-onlight"
-            whileHover={{ scale: 1.02, boxShadow: '0 8px 30px rgba(245,166,35,0.4)' }}
+            whileHover={{ scale: 1.02, boxShadow: '0 8px 30px rgba(14,111,168,0.4)' }}
             whileTap={{ scale: 0.98 }}
             style={{
-              background: loading ? 'rgba(245,166,35,0.5)' : 'var(--amber)',
+              background: loading ? 'rgba(14,111,168,0.5)' : 'var(--amber)',
               color: 'var(--black)',
               border: 'none',
               borderRadius: '10px',

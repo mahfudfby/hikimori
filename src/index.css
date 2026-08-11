@@ -3,21 +3,63 @@
 @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap');
 
 :root {
-  --black: #0a0a0a;
-  --black-2: #111111;
-  --black-3: #1a1a1a;
-  --amber: #F5A623;
-  --amber-light: #FFB84D;
-  --amber-dark: #D4891F;
-  --white: #FFFFFF;
-  --white-dim: rgba(255,255,255,0.7);
-  --white-faint: rgba(255,255,255,0.12);
+  /* ─── Tema TERANG (default) — dominan putih, aksen navy & cyan ─── */
+  --bg: #FFFFFF;
+  --bg-2: #F3F7FB;
+  --bg-3: #E7EEF6;
+  --text: #0B1E33;
+  --text-dim: rgba(11,30,51,0.72);
+  --text-faint: rgba(11,30,51,0.4);
+  --accent: #0E6FA8;        /* navy-blue utama */
+  --accent-light: #2E92C7;
+  --accent-dark: #094A70;
+  --accent2: #0EA5C0;       /* cyan sekunder */
+  --accent2-light: #3FC3DB;
+  --accent2-dark: #0A7688;
+  --accent-glow: rgba(14,111,168,0.28);
+  --accent-bg: rgba(14,111,168,0.07);
+  --card-border: rgba(11,30,51,0.1);
+  --text-shadow-color: rgba(255,255,255,0.65);
+  --text-shadow-inverse: rgba(110,130,150,0.4);
+
+  /* ─── Alias kompatibilitas: kode lama pakai nama var ini di mana-mana ─── */
+  --black: var(--bg);
+  --black-2: var(--bg-2);
+  --black-3: var(--bg-3);
+  --white: var(--text);
+  --white-dim: var(--text-dim);
+  --white-faint: var(--text-faint);
+  --amber: var(--accent);
+  --amber-light: var(--accent-light);
+  --amber-dark: var(--accent-dark);
+
   --font-display: 'Bebas Neue', sans-serif;
   --font-script: 'Caveat', cursive;
   --font-body: 'Space Grotesk', sans-serif;
   --radius: 16px;
   --radius-sm: 8px;
   --transition: 0.35s cubic-bezier(0.4,0,0.2,1);
+}
+
+:root[data-theme="dark"] {
+  /* ─── Tema GELAP — navy lembut, bukan hitam pekat/merah darah lagi ─── */
+  --bg: #0A1522;
+  --bg-2: #0F1E2E;
+  --bg-3: #16293C;
+  --text: #EAF2F8;
+  --text-dim: rgba(234,242,248,0.72);
+  --text-faint: rgba(234,242,248,0.35);
+  --accent: #2E92C7;
+  --accent-light: #4FAEDE;
+  --accent-dark: #1C6A99;
+  --accent2: #2FC4E0;
+  --accent2-light: #5FD6EA;
+  --accent2-dark: #14899E;
+  --accent-glow: rgba(46,146,199,0.35);
+  --accent-bg: rgba(46,146,199,0.1);
+  --card-border: rgba(234,242,248,0.12);
+  --text-shadow-color: rgba(110,130,150,0.4);
+  --text-shadow-inverse: rgba(255,255,255,0.65);
 }
 
 *, *::before, *::after {
@@ -29,6 +71,7 @@
 html {
   scroll-behavior: smooth;
   overflow-x: hidden;
+  transition: background-color 0.4s ease;
 }
 
 html, body {
@@ -39,6 +82,7 @@ body {
   font-family: var(--font-body);
   background: var(--black);
   color: var(--white);
+  transition: background-color 0.4s ease, color 0.4s ease;
 
   -webkit-font-smoothing: antialiased;
 }
@@ -87,6 +131,93 @@ button, a, input, select, textarea, [role="button"] {
   .responsive-2col {
     grid-template-columns: 1fr !important;
   }
+}
+
+/* Deskripsi singkat kartu skill (Hard/Soft Skill) — dibatasi persis
+   2 baris (dual-line) supaya semua kartu seragam tingginya, sisa teks
+   dipotong dengan "…" otomatis. */
+.skill-desc-clamp {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 2.6em;
+}
+
+/* ─── Hero visual (pengganti video) — glow yang "bernapas" pelan ─── */
+@keyframes heroGlowPulse {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50%      { opacity: 1;    transform: scale(1.08); }
+}
+.hero-glow-a { animation: heroGlowPulse 9s ease-in-out infinite; }
+.hero-glow-b { animation: heroGlowPulse 11s ease-in-out infinite reverse; }
+@media (prefers-reduced-motion: reduce) {
+  .hero-glow-a, .hero-glow-b { animation: none; }
+}
+
+/* ─── Aurora drift — sangat pelan, dua blob saling silang ─── */
+@keyframes auroraDriftA {
+  0%, 100% { transform: translate(0,0) scale(1); }
+  50%      { transform: translate(4%,3%) scale(1.06); }
+}
+@keyframes auroraDriftB {
+  0%, 100% { transform: translate(0,0) scale(1); }
+  50%      { transform: translate(-4%,-3%) scale(1.08); }
+}
+.aurora-blob-a { animation: auroraDriftA 14s ease-in-out infinite; }
+.aurora-blob-b { animation: auroraDriftB 16s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .aurora-blob-a, .aurora-blob-b { animation: none; }
+}
+
+/* ─── Claymorphism — kartu "empuk", soft dual-shadow, theme-aware ─── */
+:root {
+  --clay-shadow-dark: rgba(11,30,51,0.14);
+  --clay-shadow-light: rgba(255,255,255,0.75);
+  --clay-inset: rgba(255,255,255,0.5);
+}
+:root[data-theme="dark"] {
+  --clay-shadow-dark: rgba(0,0,0,0.45);
+  --clay-shadow-light: rgba(255,255,255,0.03);
+  --clay-inset: rgba(255,255,255,0.05);
+}
+.clay-card {
+  background: var(--black-2);
+  border-radius: 20px;
+  border: 1px solid var(--card-border);
+  box-shadow:
+    8px 8px 18px var(--clay-shadow-dark),
+    -6px -6px 16px var(--clay-shadow-light),
+    inset 1px 1px 1px var(--clay-inset);
+  transition: transform 0.35s cubic-bezier(0.4,0,0.2,1), box-shadow 0.35s ease;
+}
+.clay-card:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    12px 12px 24px var(--clay-shadow-dark),
+    -8px -8px 20px var(--clay-shadow-light),
+    inset 1px 1px 1px var(--clay-inset);
+}
+
+/* ─── Spotlight card — highlight cyan mengikuti kursor ─── */
+.spotlight-card {
+  position: relative;
+  overflow: hidden;
+}
+.spotlight-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  background: radial-gradient(280px circle at var(--mx,50%) var(--my,50%), rgba(63,195,219,0.16), transparent 70%);
+  pointer-events: none;
+}
+.spotlight-card:hover::before {
+  opacity: 1;
+}
+@media (pointer: coarse) {
+  .spotlight-card::before { display: none; } /* HP: tidak ada kursor, skip total */
 }
 
 /* Utility classes */
@@ -239,12 +370,12 @@ input, textarea, select, button {
    Default: teks putih/terang → shadow abu-abu tipis, supaya semua teks
    lebih tegas terbaca di atas background gelap. */
 body {
-  text-shadow: 0 1px 1.5px rgba(120,120,120,0.35);
+  text-shadow: 0 1px 1.5px var(--text-shadow-color);
 }
 /* Untuk teks HITAM (mis. tombol di atas background terang/amber) →
    shadow-nya harus PUTIH, bukan ikut default abu-abu. */
 .text-shadow-onlight {
-  text-shadow: 0 1px 1.5px rgba(255,255,255,0.55) !important;
+  text-shadow: 0 1px 1.5px var(--text-shadow-inverse) !important;
 }
 
 /* ─── Chip hover (Tools, Skills CV, Hobby, dsb) ─── */
