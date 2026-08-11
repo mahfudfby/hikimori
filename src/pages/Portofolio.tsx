@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import AnimatedSection from '../components/AnimatedSection';
 import LazyMount from '../components/LazyMount';
+import AuroraBackground from '../components/AuroraBackground';
 import { usePortfolio } from '../hooks/usePortfolio';
 
 const CATEGORIES = ['Semua', 'HR', 'Administrasi', 'IT Support', 'Desain', 'Branding'];
@@ -26,10 +27,10 @@ const PortfolioCard: React.FC<{ item: ReturnType<typeof usePortfolio>['items'][0
         background: 'var(--black-2)',
         borderRadius: 'var(--radius)',
         overflow: 'hidden',
-        border: `1px solid ${hovered ? 'rgba(245,166,35,0.4)' : 'rgba(245,166,35,0.1)'}`,
+        border: `1px solid ${hovered ? 'rgba(14,111,168,0.4)' : 'rgba(14,111,168,0.1)'}`,
         transition: 'border-color 0.3s, transform 0.35s cubic-bezier(0.4,0,0.2,1), box-shadow 0.35s',
         transform: hovered ? 'translateY(-10px)' : 'translateY(0)',
-        boxShadow: hovered ? '0 24px 60px rgba(245,166,35,0.2)' : '0 4px 20px rgba(0,0,0,0.3)',
+        boxShadow: hovered ? '0 24px 60px rgba(14,111,168,0.2)' : '0 4px 20px rgba(0,0,0,0.3)',
         cursor: 'default',
       }}
     >
@@ -46,7 +47,7 @@ const PortfolioCard: React.FC<{ item: ReturnType<typeof usePortfolio>['items'][0
           position: 'absolute',
           inset: 0,
           background: hovered
-            ? 'linear-gradient(to bottom, rgba(245,166,35,0.15), rgba(10,10,10,0.6))'
+            ? 'linear-gradient(to bottom, rgba(14,111,168,0.15), rgba(10,10,10,0.6))'
             : 'linear-gradient(to bottom, transparent, rgba(10,10,10,0.5))',
           transition: 'background 0.3s',
         }} />
@@ -77,7 +78,7 @@ const PortfolioCard: React.FC<{ item: ReturnType<typeof usePortfolio>['items'][0
           padding: '3px 10px',
           fontSize: '0.75rem',
           fontWeight: 600,
-          border: '1px solid rgba(245,166,35,0.3)',
+          border: '1px solid rgba(14,111,168,0.3)',
         }}>
           {item.category}
         </div>
@@ -110,7 +111,7 @@ const PortfolioCard: React.FC<{ item: ReturnType<typeof usePortfolio>['items'][0
           <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
             {item.tags?.slice(0, 3).map((tag) => (
               <span key={tag} style={{
-                background: 'rgba(245,166,35,0.1)',
+                background: 'rgba(14,111,168,0.1)',
                 color: 'var(--amber)',
                 borderRadius: '4px',
                 padding: '2px 8px',
@@ -157,11 +158,13 @@ const Portofolio: React.FC = () => {
     <div style={{ background: 'var(--black)', minHeight: '100vh', paddingTop: '70px' }}>
 
       {/* Hero */}
-      <section style={{ padding: '5rem 2rem 3rem', textAlign: 'center', maxWidth: '900px', margin: '0 auto' }}>
+      <section style={{ padding: '5rem 2rem 3rem', textAlign: 'center', maxWidth: '900px', margin: '0 auto', position: 'relative', overflow: 'hidden' }}>
+        <AuroraBackground variant="soft" />
         <motion.div
           initial={{ opacity: 0, y: 60 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
+          style={{ position: 'relative', zIndex: 1 }}
         >
           <span style={{
             fontFamily: 'var(--font-body)',
@@ -204,7 +207,7 @@ const Portofolio: React.FC = () => {
                 width: '100%',
                 maxWidth: '400px',
                 background: 'var(--black-2)',
-                border: '1px solid rgba(245,166,35,0.2)',
+                border: '1px solid rgba(14,111,168,0.2)',
                 borderRadius: '10px',
                 padding: '12px 18px',
                 color: 'var(--white)',
@@ -213,8 +216,8 @@ const Portofolio: React.FC = () => {
                 outline: 'none',
                 display: 'block',
               }}
-              onFocus={(e) => (e.target.style.borderColor = 'rgba(245,166,35,0.6)')}
-              onBlur={(e) => (e.target.style.borderColor = 'rgba(245,166,35,0.2)')}
+              onFocus={(e) => (e.target.style.borderColor = 'rgba(14,111,168,0.6)')}
+              onBlur={(e) => (e.target.style.borderColor = 'rgba(14,111,168,0.2)')}
             />
           </div>
 
@@ -258,7 +261,7 @@ const Portofolio: React.FC = () => {
               style={{
                 width: '40px',
                 height: '40px',
-                border: '3px solid rgba(245,166,35,0.2)',
+                border: '3px solid rgba(14,111,168,0.2)',
                 borderTop: '3px solid var(--amber)',
                 borderRadius: '50%',
                 margin: '0 auto 1rem',

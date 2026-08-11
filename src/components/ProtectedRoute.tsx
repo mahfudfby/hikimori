@@ -18,7 +18,7 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
         <div style={{
           width: '40px',
           height: '40px',
-          border: '3px solid rgba(245,166,35,0.2)',
+          border: '3px solid rgba(14,111,168,0.2)',
           borderTop: '3px solid var(--amber)',
           borderRadius: '50%',
           animation: 'spin 1s linear infinite',

@@ -12,7 +12,9 @@ import CursorGlow from './components/CursorGlow';
 import ProtectedRoute from './components/ProtectedRoute';
 import PageTransition from './components/PageTransition';
 import LanguageToggle from './components/LanguageToggle';
+import ThemeToggle from './components/ThemeToggle';
 import { useLang } from './contexts/LanguageContext';
+import { ThemeProvider } from './contexts/ThemeContext';
 
 import Home from './pages/Home';
 // Halaman selain Home di-lazy-load juga: pengunjung yang cuma buka landing
@@ -183,6 +185,7 @@ const AnimatedRoutes: React.FC = () => {
       {!isAdmin && !isHome && <Footer />}
       <FloatingGear />
       {!isAdmin && <LanguageToggle />}
+      {!isAdmin && <ThemeToggle />}
     </>
   );
 };
@@ -191,6 +194,7 @@ const AnimatedRoutes: React.FC = () => {
 const App: React.FC = () => (
   <BrowserRouter>
     <AuthProvider>
+      <ThemeProvider>
       <LanguageProvider>
       <CursorGlow />
       <Toaster
@@ -199,15 +203,16 @@ const App: React.FC = () => (
           style: {
             background: 'var(--black-2)',
             color: 'var(--white)',
-            border: '1px solid rgba(245,166,35,0.3)',
+            border: '1px solid var(--card-border)',
             fontFamily: 'var(--font-body)',
             fontSize: '0.9rem',
           },
-          success: { iconTheme: { primary: '#F5A623', secondary: '#0a0a0a' } },
+          success: { iconTheme: { primary: '#0E6FA8', secondary: '#FFFFFF' } },
         }}
       />
       <AnimatedRoutes />
       </LanguageProvider>
+      </ThemeProvider>
     </AuthProvider>
   </BrowserRouter>
 );

@@ -20,13 +20,13 @@ const LanguageToggle: React.FC = () => {
     height: 44,
     padding: '0 14px',
     borderRadius: '999px',
-    border: '1px solid rgba(245,166,35,0.35)',
+    border: '1px solid var(--card-border)',
     cursor: 'pointer',
-    background: hovered ? 'rgba(245,166,35,0.16)' : 'rgba(10,10,10,0.85)',
+    background: hovered ? 'var(--accent-bg)' : 'var(--black-2)',
     backdropFilter: 'blur(10px)',
     WebkitBackdropFilter: 'blur(10px)',
     boxShadow: hovered
-      ? '0 8px 28px rgba(245,166,35,0.35), 0 0 0 3px rgba(245,166,35,0.12)'
+      ? '0 8px 28px var(--accent-glow), 0 0 0 3px var(--accent-bg)'
       : '0 4px 16px rgba(0,0,0,0.35)',
     transition: 'all 0.25s ease',
     transform: hovered ? 'scale(1.05)' : 'scale(1)',
@@ -39,9 +39,9 @@ const LanguageToggle: React.FC = () => {
     fontSize: '0.72rem',
     fontWeight: 800,
     letterSpacing: '0.5px',
-    color: active ? 'var(--black)' : 'rgba(255,255,255,0.55)',
+    color: active ? 'var(--black)' : 'var(--text-dim)',
     background: active ? 'var(--amber)' : 'transparent',
-    textShadow: active ? '0 1px 1.5px rgba(255,255,255,0.55)' : '0 1px 1.5px rgba(120,120,120,0.35)',
+    textShadow: active ? '0 1px 1.5px var(--text-shadow-inverse)' : '0 1px 1.5px var(--text-shadow-color)',
     transition: 'all 0.2s ease',
   });
 

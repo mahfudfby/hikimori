@@ -24,22 +24,24 @@ const Footer: React.FC = () => {
   ];
 
   return (
-    <footer style={{ background:'var(--black-2)', borderTop:'1px solid rgba(245,166,35,0.15)', padding:'clamp(2rem,5vw,3rem) clamp(1rem,5vw,2rem) 1.5rem' }}>
+    <footer style={{ background:'var(--black-2)', borderTop:'1px solid rgba(14,111,168,0.15)', padding:'clamp(2rem,5vw,3rem) clamp(1rem,5vw,2rem) 1.5rem' }}>
       <div style={{ maxWidth:1100, margin:'0 auto' }}>
         <div id="footer-grid" style={{ display:'grid', gridTemplateColumns:'1fr', gap:'2rem', marginBottom:'2rem' }}>
           {/* Brand */}
           <div>
-            <img
-              src="https://res.cloudinary.com/dl4pyan8v/image/upload/f_auto,q_auto/v1785800037/Hikimori_logo_02_hkexej.jpg"
-              alt="Hikimori — Mahfud Febry Styanto"
-              loading="lazy" decoding="async"
-              style={{ height: '32px', width: 'auto', borderRadius: '6px', display: 'block', marginBottom: '0.6rem' }}
-            />
+            <Link to="/" style={{ display: 'inline-block' }}>
+              <img
+                src="https://res.cloudinary.com/dl4pyan8v/image/upload/f_auto,q_auto/v1785800037/Hikimori_logo_02_hkexej.jpg"
+                alt="Hikimori — Mahfud Febry Styanto"
+                loading="lazy" decoding="async"
+                style={{ height: '32px', width: 'auto', borderRadius: '6px', display: 'block', marginBottom: '0.6rem' }}
+              />
+            </Link>
             <p style={{ color:'var(--white-dim)', fontSize:'0.88rem', lineHeight:1.6 }}>Hikimori Project — Creative Portfolio<br />{contact.location}</p>
             {socials.length > 0 && (
               <div style={{ display:'flex', gap:'0.6rem', marginTop:'1rem', flexWrap:'wrap' }}>
                 {socials.map(s => (
-                  <a key={s.label} href={s.href} target="_blank" rel="noreferrer" style={{ background:'rgba(245,166,35,0.1)', border:'1px solid rgba(245,166,35,0.2)', color:'var(--amber)', borderRadius:8, padding:'6px 12px', textDecoration:'none', fontSize:'0.78rem', fontWeight:600 }}>{s.icon} {s.label}</a>
+                  <a key={s.label} href={s.href} target="_blank" rel="noreferrer" style={{ background:'rgba(14,111,168,0.1)', border:'1px solid rgba(14,111,168,0.2)', color:'var(--amber)', borderRadius:8, padding:'6px 12px', textDecoration:'none', fontSize:'0.78rem', fontWeight:600 }}>{s.icon} {s.label}</a>
                 ))}
               </div>
             )}
@@ -68,7 +70,7 @@ const Footer: React.FC = () => {
         {/* Bottom bar */}
         <div style={{ paddingTop:'1.2rem', borderTop:'1px solid rgba(255,255,255,0.06)', display:'flex', justifyContent:'space-between', alignItems:'center', flexWrap:'wrap', gap:'0.8rem' }}>
           <p style={{ color:'rgba(255,255,255,0.5)', fontSize:'0.78rem' }}>© {new Date().getFullYear()} Mahfudfebry — Hikimori Project. All rights reserved.</p>
-          <Link to="/admin/login" style={{ color:'rgba(245,166,35,0.3)', fontSize:'0.72rem', textDecoration:'none' }}>Admin</Link>
+          <Link to="/admin/login" style={{ color:'rgba(14,111,168,0.3)', fontSize:'0.72rem', textDecoration:'none' }}>Admin</Link>
         </div>
       </div>
       <style>{`
