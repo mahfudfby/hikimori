@@ -161,9 +161,13 @@ const useLiteMode = (): boolean => {
 /* ─── HeroVisual: pengganti video hero ───
    Full CSS/SVG, tanpa file media sama sekali — load instan, hampir
    tidak makan RAM/CPU. Gaya profesional-minimalis: gradient navy
-   lembut, satu-dua glow cyan yang "bernapas" pelan, grid garis tipis
-   ala blueprint, dan satu lingkaran ensō tipis sebagai sentuhan Jepang
-   yang halus (bukan dekorasi ramai). `reduced` mematikan animasi untuk
+   lembut, "tirai" aurora cyan/navy yang mengalir pelan (3 lapis pita
+   elongated) dan bereaksi terhadap posisi kursor (parallax + spotlight),
+   grid garis tipis ala blueprint, dan satu lingkaran ensō tipis sebagai
+   sentuhan Jepang yang halus. Posisi kursor dibaca lewat CSS variable
+   (--hero-px/py/dx/dy, di-set oleh <section id="hk-hero"> lewat
+   onMouseMove) — jadi TIDAK memicu re-render React sama sekali saat
+   mouse bergerak, tetap ringan. `reduced` mematikan animasi untuk
    jaringan lemot / hemat baterai / prefers-reduced-motion. */
 const HeroVisual: React.FC<{ reduced?: boolean }> = ({ reduced }) => (
   <div style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 0, overflow: 'hidden', background: 'linear-gradient(155deg, #0A1522 0%, #0E1B2C 55%, #132437 100%)' }}>
@@ -175,9 +179,22 @@ const HeroVisual: React.FC<{ reduced?: boolean }> = ({ reduced }) => (
       maskImage: 'radial-gradient(ellipse 80% 70% at 50% 40%, #000 30%, transparent 90%)',
       WebkitMaskImage: 'radial-gradient(ellipse 80% 70% at 50% 40%, #000 30%, transparent 90%)',
     }} />
-    {/* glow ambient — bernapas pelan */}
-    <div className={reduced ? '' : 'hero-glow-a'} style={{ position: 'absolute', top: '-15%', right: '-8%', width: '55%', height: '65%', borderRadius: '50%', background: 'radial-gradient(circle, rgba(14,165,192,0.22) 0%, transparent 70%)', filter: 'blur(50px)' }} />
-    <div className={reduced ? '' : 'hero-glow-b'} style={{ position: 'absolute', bottom: '-18%', left: '-10%', width: '48%', height: '58%', borderRadius: '50%', background: 'radial-gradient(circle, rgba(14,111,168,0.18) 0%, transparent 70%)', filter: 'blur(55px)' }} />
+    {/* ── Tirai Aurora — 3 pita cahaya elongated, saling silang, mengalir pelan
+         + parallax halus mengikuti kursor (translate berlawanan arah dikit) ── */}
+    <div
+      className="hero-aurora-parallax"
+      style={{ position: 'absolute', inset: '-10%', filter: 'blur(60px)', mixBlendMode: 'screen' }}
+    >
+      <div className={reduced ? '' : 'aurora-ribbon-1'} style={{ position: 'absolute', top: '5%', left: '-15%', width: '75%', height: '38%', borderRadius: '50%', background: 'linear-gradient(100deg, rgba(14,165,192,0.28), rgba(63,195,219,0.14) 45%, transparent 80%)', transform: 'rotate(-8deg)' }} />
+      <div className={reduced ? '' : 'aurora-ribbon-2'} style={{ position: 'absolute', top: '30%', right: '-20%', width: '70%', height: '42%', borderRadius: '50%', background: 'linear-gradient(-100deg, rgba(14,111,168,0.26), rgba(46,146,199,0.12) 45%, transparent 80%)', transform: 'rotate(6deg)' }} />
+      <div className={reduced ? '' : 'aurora-ribbon-3'} style={{ position: 'absolute', bottom: '-5%', left: '10%', width: '65%', height: '35%', borderRadius: '50%', background: 'linear-gradient(95deg, rgba(95,214,234,0.18), rgba(14,165,192,0.08) 50%, transparent 85%)', transform: 'rotate(-4deg)' }} />
+    </div>
+    {/* Spotlight cyan mengikuti kursor — menyatu dgn aurora lewat mix-blend-mode */}
+    <div className="hero-cursor-spotlight" style={{
+      position: 'absolute', inset: 0,
+      background: 'radial-gradient(420px circle at var(--hero-px,50%) var(--hero-py,50%), rgba(63,195,219,0.28), transparent 70%)',
+      mixBlendMode: 'screen', opacity: 0, transition: 'opacity 0.4s ease',
+    }} />
     {/* ensō — lingkaran tinta tipis, sentuhan Jepang minimal */}
     <svg viewBox="0 0 400 400" style={{ position: 'absolute', top: '50%', left: '50%', width: 'min(60vw,560px)', height: 'min(60vw,560px)', transform: 'translate(-50%,-50%)', opacity: 0.07 }}>
       <circle cx="200" cy="200" r="160" fill="none" stroke="#5FD6EA" strokeWidth="2.5" strokeLinecap="round" strokeDasharray="880" strokeDashoffset="70" />
@@ -918,7 +935,19 @@ const Home:React.FC=()=>{
     <div ref={containerRef} style={{background:J.ink,minHeight:'100vh',overflowX:'hidden'}}>
 
       {/* ══ HERO ══ */}
-      <section id="hk-hero" style={{position:'relative',width:'100%',height:'100vh',minHeight:500,overflow:'hidden',display:'flex',flexDirection:'column',background:'#0A1522',color:'#fff'}}>
+      <section
+        id="hk-hero"
+        onMouseMove={(e) => {
+          const el = e.currentTarget;
+          const rect = el.getBoundingClientRect();
+          const px = e.clientX - rect.left;
+          const py = e.clientY - rect.top;
+          el.style.setProperty('--hero-px', `${px}px`);
+          el.style.setProperty('--hero-py', `${py}px`);
+          el.style.setProperty('--hero-dx', `${(px / rect.width - 0.5) * 2}`);
+          el.style.setProperty('--hero-dy', `${(py / rect.height - 0.5) * 2}`);
+        }}
+        style={{position:'relative',width:'100%',height:'100vh',minHeight:500,overflow:'hidden',display:'flex',flexDirection:'column',background:'#0A1522',color:'#fff'}}>
         <HeroVisual reduced={liteMode} />
         <Stars/>
         {/* Main content: semua elemen rapat di bagian bawah, tidak overlap navbar */}
