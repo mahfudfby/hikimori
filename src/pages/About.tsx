@@ -3,6 +3,7 @@
 // Layout halaman ini berbeda dari Home, namun semua konten berasal dari data yang sama.
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import AnimatedSection from '../components/AnimatedSection';
 import LazyMount from '../components/LazyMount';
 import AuroraBackground from '../components/AuroraBackground';
@@ -10,7 +11,7 @@ import SpotlightCard from '../components/SpotlightCard';
 import { StaggerGroup, StaggerItem } from '../components/StaggerGroup';
 import { useLang } from '../contexts/LanguageContext';
 import {
-  EDUCATION, TOOLS, CV_SKILL_TAGS, TRAINING_LICENSE,
+  PROFILE, EDUCATION, TOOLS, CV_SKILL_TAGS, TRAINING_LICENSE,
   HOBBIES, ORG_EXPERIENCE, REFERENCES,
 } from '../data/cvData';
 import {
@@ -242,15 +243,20 @@ const About: React.FC = () => {
         <AuroraBackground variant="full" />
         <div style={{ position: 'relative', zIndex: 1 }}>
           <AnimatedSection direction="left">
-            <motion.span style={{ fontFamily: 'var(--font-body)', color: 'var(--amber)', fontSize: '0.85rem', letterSpacing: '3px', textTransform: 'uppercase', fontWeight: 600, display: 'block', marginBottom: '0.5rem' }}>
-              {t('Tentang Saya', 'About Me')}
-            </motion.span>
-            <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(3rem, 6vw, 5.5rem)', lineHeight: 0.9, marginBottom: '0.3rem' }}>
-              ABOUT ME !
-            </h1>
-            <span style={{ fontFamily: 'var(--font-script)', color: 'var(--amber)', fontSize: '2.5rem', fontWeight: 700, display: 'block', marginBottom: '2rem' }}>
-              {about.name}
+            <span style={{
+              display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
+              background: 'var(--accent-bg)', border: '1px solid rgba(14,111,168,0.25)',
+              color: 'var(--amber)', fontFamily: 'var(--font-body)', fontSize: '0.8rem', fontWeight: 600,
+              padding: '0.5rem 1.1rem', borderRadius: '999px', marginBottom: '1.5rem',
+            }}>
+              🎓 {t('HR & Administration Professional', 'HR & Administration Professional')}
             </span>
+            <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2.6rem, 5.5vw, 4.6rem)', lineHeight: 0.98, marginBottom: '1.5rem' }}>
+              {t('Kenalan Dengan', 'Get to Know')}{' '}
+              <span style={{ background: 'linear-gradient(90deg, var(--amber), var(--accent2))', WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' }}>
+                {PROFILE.name.split(',')[0]}
+              </span>
+            </h1>
             <p lang={lang} className="text-justify-auto para-indent" style={{ color: 'var(--white-dim)', lineHeight: 1.8, fontSize: '1rem' }}>
               {about.bio1}
             </p>
@@ -268,33 +274,85 @@ const About: React.FC = () => {
               ))}
             </div>
 
-            <a
-              href="/CV-Mahfud-Febry-Styanto.pdf"
-              download="CV-Mahfud-Febry-Styanto.pdf"
-              className="text-shadow-onlight"
-              style={{
-                display: 'inline-flex', alignItems: 'center', gap: '0.6rem', marginTop: '2rem',
-                background: 'var(--amber)', color: 'var(--black)', fontWeight: 700, fontSize: '0.9rem',
-                padding: '0.8rem 1.6rem', borderRadius: '999px', textDecoration: 'none',
-                boxShadow: '0 8px 24px rgba(14,111,168,0.25)',
-              }}
-            >
-              ⬇ {t('Unduh CV (PDF)', 'Download CV (PDF)')}
-            </a>
+            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginTop: '2rem' }}>
+              <a
+                href="/CV-Mahfud-Febry-Styanto.pdf"
+                download="CV-Mahfud-Febry-Styanto.pdf"
+                className="text-shadow-onlight"
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: '0.6rem',
+                  background: 'var(--amber)', color: 'var(--black)', fontWeight: 700, fontSize: '0.9rem',
+                  padding: '0.8rem 1.6rem', borderRadius: '999px', textDecoration: 'none',
+                  boxShadow: '0 8px 24px rgba(14,111,168,0.25)',
+                }}
+              >
+                ⬇ {t('Unduh CV (PDF)', 'Download CV (PDF)')}
+              </a>
+              <Link
+                to="/portofolio"
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: '0.6rem',
+                  background: 'transparent', color: 'var(--amber)', fontWeight: 700, fontSize: '0.9rem',
+                  padding: '0.8rem 1.6rem', borderRadius: '999px', textDecoration: 'none',
+                  border: '1.5px solid var(--amber)',
+                }}
+              >
+                {t('Lihat Portofolio', 'View Portfolio')}
+              </Link>
+            </div>
           </AnimatedSection>
         </div>
 
         <AnimatedSection direction="right">
-          <div className="float-hover" style={{ position: 'relative', borderRadius: 'var(--radius)', overflow: 'hidden', aspectRatio: '3/4', maxHeight: '500px' }}>
-            <img src={photo} alt={about.name} decoding="async" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(10,10,10,0.7) 0%, transparent 50%)' }} />
-            <div style={{ position: 'absolute', bottom: '1.5rem', left: '1.5rem', right: '1.5rem' }}>
-              <div className="text-shadow-onlight" style={{ background: 'rgba(14,111,168,0.9)', borderRadius: '12px', padding: '0.8rem 1.2rem', color: 'var(--black)', fontWeight: 700, fontSize: '0.9rem' }}>
-                📍 {about.location}
+          <div style={{ position: 'relative' }}>
+            <div className="float-hover" style={{ position: 'relative', borderRadius: 'var(--radius)', overflow: 'hidden', aspectRatio: '3/4', maxHeight: '500px' }}>
+              <img src={photo} alt={about.name} decoding="async" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(10,10,10,0.35) 0%, transparent 45%)' }} />
+            </div>
+            {/* Badge kartu mengambang — pojok kiri-atas & kanan-bawah, ala referensi */}
+            <div className="clay-card" style={{ position: 'absolute', top: '-1rem', left: '-1rem', display: 'flex', alignItems: 'center', gap: '0.7rem', padding: '0.8rem 1.1rem', background: 'var(--black-2)' }}>
+              <div style={{ width: 40, height: 40, borderRadius: 10, background: 'var(--accent-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem', flexShrink: 0 }}>🎓</div>
+              <div>
+                <div style={{ fontWeight: 700, fontSize: '0.85rem', color: 'var(--white)' }}>CHRG Certified</div>
+                <div style={{ fontSize: '0.72rem', color: 'var(--white-dim)' }}>BNSP 2026–2029</div>
+              </div>
+            </div>
+            <div className="clay-card" style={{ position: 'absolute', bottom: '-1rem', right: '-1rem', display: 'flex', alignItems: 'center', gap: '0.7rem', padding: '0.8rem 1.1rem', background: 'var(--black-2)' }}>
+              <div style={{ width: 40, height: 40, borderRadius: 10, background: 'var(--accent-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem', flexShrink: 0 }}>📍</div>
+              <div>
+                <div style={{ fontWeight: 700, fontSize: '0.85rem', color: 'var(--white)' }}>{about.location}</div>
+                <div style={{ fontSize: '0.72rem', color: 'var(--white-dim)' }}>{t('Berbasis di sini', 'Based here')}</div>
               </div>
             </div>
           </div>
         </AnimatedSection>
+      </section>
+
+      {/* ── Strip Statistik ── */}
+      <section style={{ padding: '0 2rem 3rem', maxWidth: '1000px', margin: '0 auto' }}>
+        <AnimatedSection direction="up">
+          <div className="clay-card stat-strip" style={{
+            display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem',
+            padding: '2rem 1.5rem', textAlign: 'center',
+          }}>
+            {[
+              { value: '3+', label: t('Tahun Pengalaman', 'Years Experience'), color: 'var(--amber)' },
+              { value: String(TRAINING_LICENSE.length), label: t('Sertifikasi', 'Certifications'), color: 'var(--accent2)' },
+              { value: '21', label: t('Keahlian', 'Skills'), color: 'var(--amber)' },
+              { value: '4', label: t('Posisi Kerja', 'Job Positions'), color: 'var(--accent2)' },
+            ].map(stat => (
+              <div key={stat.label}>
+                <div style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.8rem,4vw,2.4rem)', color: stat.color, lineHeight: 1 }}>{stat.value}</div>
+                <div style={{ color: 'var(--white-dim)', fontSize: '0.78rem', marginTop: '6px' }}>{stat.label}</div>
+              </div>
+            ))}
+          </div>
+        </AnimatedSection>
+        <style>{`
+          @media (max-width: 560px) {
+            .stat-strip { grid-template-columns: repeat(2,1fr) !important; row-gap: 1.5rem !important; }
+          }
+        `}</style>
       </section>
 
       {/* ── Galeri Foto — Layout Majalah ── */}
