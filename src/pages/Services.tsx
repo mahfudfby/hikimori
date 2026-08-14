@@ -180,22 +180,18 @@ const Services: React.FC = () => {
                   />
                 )}
 
-                <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>{svc.icon}</div>
                 <div style={{
-                  fontFamily: 'var(--font-body)',
-                  color: 'var(--amber)',
-                  fontSize: '0.75rem',
-                  letterSpacing: '2px',
-                  textTransform: 'uppercase',
-                  fontWeight: 600,
-                  marginBottom: '0.5rem',
+                  width: 56, height: 56, borderRadius: 14,
+                  background: 'var(--accent-bg)', border: '1px solid rgba(14,111,168,0.18)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: '1.6rem', marginBottom: '1.2rem',
                 }}>
-                  {svc.subtitle}
+                  {svc.icon}
                 </div>
                 <h3 style={{
                   fontFamily: 'var(--font-display)',
                   fontSize: '1.6rem',
-                  marginBottom: '1rem',
+                  marginBottom: '0.6rem',
                   lineHeight: 1.1,
                 }}>
                   {svc.title}
@@ -209,7 +205,7 @@ const Services: React.FC = () => {
                   {svc.desc}
                 </p>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1.5rem' }}>
                   {svc.features.map((feat) => (
                     <div key={feat} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
                       <div style={{
@@ -223,6 +219,19 @@ const Services: React.FC = () => {
                     </div>
                   ))}
                 </div>
+
+                <a
+                  href="https://wa.me/6282234651413"
+                  target="_blank" rel="noopener noreferrer"
+                  style={{
+                    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                    paddingTop: '1.2rem', borderTop: '1px solid var(--card-border)',
+                    color: 'var(--amber)', fontWeight: 700, fontSize: '0.85rem', textDecoration: 'none',
+                  }}
+                >
+                  <span>{t('Konsultasi Gratis', 'Free Consultation')}</span>
+                  <span>→</span>
+                </a>
               </motion.div>
             </AnimatedSection>
           ))}
