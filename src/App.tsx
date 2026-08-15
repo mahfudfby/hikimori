@@ -9,6 +9,8 @@ import { LanguageProvider } from './contexts/LanguageContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import CursorGlow from './components/CursorGlow';
+import ScrollProgressBar from './components/ScrollProgressBar';
+import GlobalScrollBackground from './components/GlobalScrollBackground';
 import ProtectedRoute from './components/ProtectedRoute';
 import PageTransition from './components/PageTransition';
 import LanguageToggle from './components/LanguageToggle';
@@ -197,6 +199,8 @@ const App: React.FC = () => (
       <ThemeProvider>
       <LanguageProvider>
       <CursorGlow />
+      <GlobalScrollBackground />
+      <ScrollProgressBar />
       <Toaster
         position="top-right"
         toastOptions={{

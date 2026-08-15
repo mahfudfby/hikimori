@@ -5,6 +5,8 @@ import { motion, useTransform, useMotionValue, useSpring, AnimatePresence, useSc
 import { Link } from 'react-router-dom';
 import Footer from '../components/Footer';
 import LazyMount from '../components/LazyMount';
+import SpotlightCard from '../components/SpotlightCard';
+import MagneticButton from '../components/MagneticButton';
 import { useLang } from '../contexts/LanguageContext';
 import { PROFILE } from '../data/cvData';
 
@@ -19,7 +21,7 @@ const DATA_VERSION='v8'; // Naikkan versi ini setiap kali ada perubahan default 
 interface HomeData    {heroTitle:string;heroSubtitle:string;heroTagline:string;heroCtaSecondary:string;heroCtaSecondaryLink:string;heroCta:string;heroCtaLink:string;heroPhotoUrl:string;heroTagRight:string;}
 interface AboutData   {name:string;location:string;bio1:string;bio2:string;photoUrl:string;instagram?:string;linkedin?:string;whatsapp?:string;threads?:string;tiktok?:string;email?:string;jobstreet?:string;ibenews?:string;}
 interface SkillItem   {id:string;number:string;title:string;desc:string;category?:'hard'|'soft';}
-interface ExpItem     {id:string;position:string;company:string;period:string;icon:string;tags:string;desc?:string;logoUrl?:string;}
+interface ExpItem     {id:string;position:string;company:string;period:string;icon:string;tags:string;desc?:string;logoUrl?:string;location?:string;}
 interface ContactData {email:string;location:string;website:string;instagram:string;linkedin:string;twitter:string;}
 interface CertItem    {id:string;name:string;year:string;issuer:string;subtitle:string;imageUrl:string;}
 
@@ -74,32 +76,32 @@ const D_SKILLS_EN:SkillItem[]=[
   {id:'21',number:'11',title:'Team Building',desc:'Fostering solidarity and teamwork spirit within the team.',category:'soft'}
 ];
 const D_EXP:ExpItem[]=[
-  {id:'1',position:'Staff HRD / General Affairs',company:'UD Duta Pangan (Food Manufacturing & Distribution)',period:'Juni 2025 – Juni 2026 · 1 Tahun 1 Bulan · Full-time',icon:'👥',tags:'Payroll & Penggajian,BPJS & BPJS-Tk,Perizinan OSS,Legal & Notaris,Jobdesk & KPI 6 Divisi,Pengelolaan Fasilitas & Aset',logoUrl:'https://images.unsplash.com/photo-1786148203853-09d9383c7511?auto=format&fit=crop&w=200&q=80',desc:'• Memproses payroll bulanan untuk 121 karyawan, meliputi perhitungan gaji, potongan, dan bonus\n• Menghitung dan mengelola iuran BPJS Kesehatan & BPJS Ketenagakerjaan untuk 121 karyawan, memastikan kepatuhan penuh dan penyetoran tepat waktu\n• Mengelola perizinan usaha dan kepatuhan hukum melalui platform OSS pemerintah, termasuk registrasi dan perpanjangan NIB, Akta, SK Kemenkumham, NPWP, dan SIUP untuk entitas CV dan PT\n• Mengoordinasikan proses administrasi internal & eksternal, termasuk dokumentasi notaris dan perpanjangan berkala dokumen legal & pajak perusahaan\n• Menyusun uraian jabatan (jobdesk) dan melakukan evaluasi KPI di 6 divisi (Eksekutif, Finance, Logistik, Warehouse, Marketing, dan HR/General Affairs) untuk menentukan perpanjangan kontrak dan keputusan staffing\n• Mengelola fasilitas perusahaan dan aset operasional, termasuk kendaraan pengiriman (blind van, truk, motor), peralatan kantor & produksi, serta utilitas gedung di berbagai kota'},
-  {id:'2',position:'Human Resources Generalist',company:'UD Duta Pangan (Food Manufacturing)',period:'Juni 2025 – Juni 2026 · 1 Tahun 1 Bulan · Full-time',icon:'🧑\u200d💼',tags:'BPJS,Analisa Beban Kerja',logoUrl:'https://images.unsplash.com/photo-1786148203853-09d9383c7511?auto=format&fit=crop&w=200&q=80',desc:''},
-  {id:'3',position:'IT Support Specialist',company:'UD Duta Pangan (Food Manufacturing & Distribution)',period:'Januari 2025 – Juni 2025 · 6 Bulan · Full-time',icon:'💻',tags:'Technical Support,Preventive Maintenance,Mikrotik & Wireshark,ERP/SaaS Self-Developed',logoUrl:'https://images.unsplash.com/photo-1786148203853-09d9383c7511?auto=format&fit=crop&w=200&q=80',desc:'• Menjaga 90% uptime perangkat di 30 komputer & perangkat kantor melalui preventive maintenance rutin\n• Menangani 1-3 tiket support harian, menyelesaikan isu minor dalam 30 menit dan isu major (termasuk pengadaan part) dalam 1-2 jam\n• Mengurangi insiden IT berulang sebesar 50% dan menghilangkan ketergantungan pada teknisi eksternal dengan membangun fungsi IT support internal\n• Mengimplementasikan Class Based Queuing (CBQ) menggunakan Mikrotik & Winbox untuk mengalokasikan bandwidth khusus divisi prioritas sekaligus membatasi akses jaringan umum, dipantau via Wireshark pada sistem berbasis Linux\n• Merancang dan mengimplementasikan sistem ERP/SaaS berbasis web real-time untuk menggantikan pelaporan Excel manual offline, memangkas waktu pelaporan dari 4 jam menjadi kurang dari 1 jam dan menghilangkan keterlambatan pelaporan antar-divisi'},
-  {id:'4',position:'Warehouse & Production Administrative Staff',company:'UD Duta Pangan (Food Manufacturing & Distribution)',period:'Juni 2024 – Desember 2024 · 7 Bulan · Contract',icon:'📦',tags:'FIFO/FEFO,Stock Opname,5S,Vendor Coordination',logoUrl:'https://images.unsplash.com/photo-1786148203853-09d9383c7511?auto=format&fit=crop&w=200&q=80',desc:'• Mengelola administrasi produksi harian untuk 25 SKU, melacak ±100kg penggunaan bahan baku berbasis tepung per SKU\n• Menerapkan metode inventory FIFO/FEFO untuk meminimalkan pemborosan bahan baku dan menjaga kesegaran produk\n• Menjaga safety stock buffer untuk bahan baku mudah rusak guna mencegah stockout dan meminimalkan risiko kerusakan\n• Menetapkan level stok min-max serta batch/lot tracking untuk mencegah stockout, mengurangi overstock, dan menjaga traceability\n• Mengatur layout gudang dengan sistem put-away & picking serta prinsip 5S untuk penyimpanan & pengambilan yang efisien\n• Berkoordinasi dengan vendor & supplier terkait jadwal pengiriman bahan baku demi kelancaran produksi\n• Memantau inventori bahan baku & produk di 200+ SKU, menjaga akurasi stok 85% melalui stock opname rutin\n• Melakukan closing bulanan untuk merekonsiliasi data inventori, produksi, dan distribusi di akhir bulan'},
-  {id:'5',position:'Sales Marketing Positions',company:'UD Duta Pangan (Food Manufacturing)',period:'Januari 2024 – Juli 2024 · 7 Bulan · Contract',icon:'📈',tags:'Marketing,Sales Operations',logoUrl:'https://images.unsplash.com/photo-1786148203853-09d9383c7511?auto=format&fit=crop&w=200&q=80',desc:'• Sales Lapangan\n• Menjual Produk Premix Tepung Bakso'},
-  {id:'6',position:'Driver Bike',company:'Grab',period:'Februari 2022 – Desember 2025 · 3 Tahun 11 Bulan · Part-time',icon:'🏍️',tags:'',desc:'• Mengantar penumpang dengan aman dan tepat waktu\n• Mengantar pesanan makanan (GrabFood)\n• Mengantar paket/barang (GrabExpress)\n• Melayani titip belanja (GrabMart)\n• Menjaga rating dan kepuasan pelanggan\n• Mematuhi standar keselamatan berkendara'},
-  {id:'7',position:'Crew',company:'PT. Richeese Kuliner Indonesia',period:'Oktober 2023 – Januari 2024 · 4 Bulan · Contract',icon:'🍗',tags:'Cooking,Platting',desc:'• Memasak ayam goreng crispy sesuai SOP dan standar resep\n• Meracik sauce/saus sesuai standar rasa perusahaan\n• Melakukan food preparation harian (marinasi, potong, susun stok)\n• Menjaga kualitas dan kebersihan bahan baku (food safety)\n• Merekap inventory harian (stok masuk, terpakai, sisa stok)\n• Melaporkan kebutuhan restock ke supervisor/leader shift\n• Berkoordinasi dengan tim dapur dan kasir untuk kelancaran operasional\n• Menjaga kecepatan penyajian sesuai target service time'},
-  {id:'8',position:'Kitchen Staff',company:'Mikane Gepuktular',period:'Januari 2023 – November 2023 · 11 Bulan · Part-time',icon:'👨\u200d🍳',tags:'',desc:'• Sebagai Juru Masak Dan Persiapan Bahan Mentah'},
-  {id:'9',position:'Crew',company:'Mie Gacoan',period:'Oktober 2022 – Desember 2022 · 3 Bulan · Contract',icon:'🍜',tags:'Hospitality Industry,Food and Beverage Operations',desc:'• Hospitality Customer'},
-  {id:'10',position:'Welding Operator',company:'Lancar Jaya Kota Malang',period:'Agustus 2018 – Januari 2021 · 2 Tahun 6 Bulan · Freelance',icon:'🔩',tags:'Welding,Project Planning',desc:'• Operator welder pembuatan pagar, tralis, kanopi, rolling door, dll hingga finishing serta pemasangan di lapangan'},
-  {id:'11',position:'Human Resources Assistant',company:'Dinas Sosial PPPA Kab Nganjuk',period:'Mei 2017 – Juni 2018 · 1 Tahun 2 Bulan · Full-time',icon:'🏛️',tags:'Sumber Daya Manusia (SDM),Project Management',desc:'• Staff SDM bertugas dalam menyiapkan materi untuk anggota Forum Perlindungan Anak Nganjuk untuk mewujudkan nganjuk kabupaten layak anak'},
-  {id:'12',position:'Human Resources Assistant',company:'Dinas Kesehatan Nganjuk',period:'Maret 2016 – Mei 2017 · 1 Tahun 3 Bulan · Full-time',icon:'🏛️',tags:'Sumber Daya Manusia (SDM),Project Management',desc:'• Sebagai staff yang menangani perencanaan kegiatan dan agenda program kerja dalam mensosialisasikan kesehatan remaja di kabupaten nganjuk'}
+  {id:'1',position:'Staff HRD / General Affairs',company:'UD Duta Pangan (Food Manufacturing & Distribution)',period:'Juni 2025 – Juni 2026 · 1 Tahun 1 Bulan · Full-time',icon:'👥',tags:'Payroll & Penggajian,BPJS & BPJS-Tk,Perizinan OSS,Legal & Notaris,Jobdesk & KPI 6 Divisi,Pengelolaan Fasilitas & Aset',logoUrl:'https://images.unsplash.com/photo-1786148203853-09d9383c7511?auto=format&fit=crop&w=200&q=80',desc:'• Memproses payroll bulanan untuk 121 karyawan, meliputi perhitungan gaji, potongan, dan bonus\n• Menghitung dan mengelola iuran BPJS Kesehatan & BPJS Ketenagakerjaan untuk 121 karyawan, memastikan kepatuhan penuh dan penyetoran tepat waktu\n• Mengelola perizinan usaha dan kepatuhan hukum melalui platform OSS pemerintah, termasuk registrasi dan perpanjangan NIB, Akta, SK Kemenkumham, NPWP, dan SIUP untuk entitas CV dan PT\n• Mengoordinasikan proses administrasi internal & eksternal, termasuk dokumentasi notaris dan perpanjangan berkala dokumen legal & pajak perusahaan\n• Menyusun uraian jabatan (jobdesk) dan melakukan evaluasi KPI di 6 divisi (Eksekutif, Finance, Logistik, Warehouse, Marketing, dan HR/General Affairs) untuk menentukan perpanjangan kontrak dan keputusan staffing\n• Mengelola fasilitas perusahaan dan aset operasional, termasuk kendaraan pengiriman (blind van, truk, motor), peralatan kantor & produksi, serta utilitas gedung di berbagai kota',location:'Sidoarjo, Jawa Timur'},
+  {id:'2',position:'Human Resources Generalist',company:'UD Duta Pangan (Food Manufacturing)',period:'Juni 2025 – Juni 2026 · 1 Tahun 1 Bulan · Full-time',icon:'🧑\u200d💼',tags:'BPJS,Analisa Beban Kerja',logoUrl:'https://images.unsplash.com/photo-1786148203853-09d9383c7511?auto=format&fit=crop&w=200&q=80',desc:'',location:'Sidoarjo, Jawa Timur'},
+  {id:'3',position:'IT Support Specialist',company:'UD Duta Pangan (Food Manufacturing & Distribution)',period:'Januari 2025 – Juni 2025 · 6 Bulan · Full-time',icon:'💻',tags:'Technical Support,Preventive Maintenance,Mikrotik & Wireshark,ERP/SaaS Self-Developed',logoUrl:'https://images.unsplash.com/photo-1786148203853-09d9383c7511?auto=format&fit=crop&w=200&q=80',desc:'• Menjaga 90% uptime perangkat di 30 komputer & perangkat kantor melalui preventive maintenance rutin\n• Menangani 1-3 tiket support harian, menyelesaikan isu minor dalam 30 menit dan isu major (termasuk pengadaan part) dalam 1-2 jam\n• Mengurangi insiden IT berulang sebesar 50% dan menghilangkan ketergantungan pada teknisi eksternal dengan membangun fungsi IT support internal\n• Mengimplementasikan Class Based Queuing (CBQ) menggunakan Mikrotik & Winbox untuk mengalokasikan bandwidth khusus divisi prioritas sekaligus membatasi akses jaringan umum, dipantau via Wireshark pada sistem berbasis Linux\n• Merancang dan mengimplementasikan sistem ERP/SaaS berbasis web real-time untuk menggantikan pelaporan Excel manual offline, memangkas waktu pelaporan dari 4 jam menjadi kurang dari 1 jam dan menghilangkan keterlambatan pelaporan antar-divisi',location:'Sidoarjo, Jawa Timur'},
+  {id:'4',position:'Warehouse & Production Administrative Staff',company:'UD Duta Pangan (Food Manufacturing & Distribution)',period:'Juni 2024 – Desember 2024 · 7 Bulan · Contract',icon:'📦',tags:'FIFO/FEFO,Stock Opname,5S,Vendor Coordination',logoUrl:'https://images.unsplash.com/photo-1786148203853-09d9383c7511?auto=format&fit=crop&w=200&q=80',desc:'• Mengelola administrasi produksi harian untuk 25 SKU, melacak ±100kg penggunaan bahan baku berbasis tepung per SKU\n• Menerapkan metode inventory FIFO/FEFO untuk meminimalkan pemborosan bahan baku dan menjaga kesegaran produk\n• Menjaga safety stock buffer untuk bahan baku mudah rusak guna mencegah stockout dan meminimalkan risiko kerusakan\n• Menetapkan level stok min-max serta batch/lot tracking untuk mencegah stockout, mengurangi overstock, dan menjaga traceability\n• Mengatur layout gudang dengan sistem put-away & picking serta prinsip 5S untuk penyimpanan & pengambilan yang efisien\n• Berkoordinasi dengan vendor & supplier terkait jadwal pengiriman bahan baku demi kelancaran produksi\n• Memantau inventori bahan baku & produk di 200+ SKU, menjaga akurasi stok 85% melalui stock opname rutin\n• Melakukan closing bulanan untuk merekonsiliasi data inventori, produksi, dan distribusi di akhir bulan',location:'Sidoarjo, Jawa Timur'},
+  {id:'5',position:'Sales Marketing Positions',company:'UD Duta Pangan (Food Manufacturing)',period:'Januari 2024 – Juli 2024 · 7 Bulan · Contract',icon:'📈',tags:'Marketing,Sales Operations',logoUrl:'https://images.unsplash.com/photo-1786148203853-09d9383c7511?auto=format&fit=crop&w=200&q=80',desc:'• Sales Lapangan\n• Menjual Produk Premix Tepung Bakso',location:'Sidoarjo, Jawa Timur'},
+  {id:'6',position:'Driver Bike',company:'Grab',period:'Februari 2022 – Desember 2025 · 3 Tahun 11 Bulan · Part-time',icon:'🏍️',tags:'',desc:'• Mengantar penumpang dengan aman dan tepat waktu\n• Mengantar pesanan makanan (GrabFood)\n• Mengantar paket/barang (GrabExpress)\n• Melayani titip belanja (GrabMart)\n• Menjaga rating dan kepuasan pelanggan\n• Mematuhi standar keselamatan berkendara',location:'Jakarta, Indonesia'},
+  {id:'7',position:'Crew',company:'PT. Richeese Kuliner Indonesia',period:'Oktober 2023 – Januari 2024 · 4 Bulan · Contract',icon:'🍗',tags:'Cooking,Platting',desc:'• Memasak ayam goreng crispy sesuai SOP dan standar resep\n• Meracik sauce/saus sesuai standar rasa perusahaan\n• Melakukan food preparation harian (marinasi, potong, susun stok)\n• Menjaga kualitas dan kebersihan bahan baku (food safety)\n• Merekap inventory harian (stok masuk, terpakai, sisa stok)\n• Melaporkan kebutuhan restock ke supervisor/leader shift\n• Berkoordinasi dengan tim dapur dan kasir untuk kelancaran operasional\n• Menjaga kecepatan penyajian sesuai target service time',location:'Indonesia'},
+  {id:'8',position:'Kitchen Staff',company:'Mikane Gepuktular',period:'Januari 2023 – November 2023 · 11 Bulan · Part-time',icon:'👨\u200d🍳',tags:'',desc:'• Sebagai Juru Masak Dan Persiapan Bahan Mentah',location:'Malang, Jawa Timur'},
+  {id:'9',position:'Crew',company:'Mie Gacoan',period:'Oktober 2022 – Desember 2022 · 3 Bulan · Contract',icon:'🍜',tags:'Hospitality Industry,Food and Beverage Operations',desc:'• Hospitality Customer',location:'Indonesia'},
+  {id:'10',position:'Welding Operator',company:'Lancar Jaya Kota Malang',period:'Agustus 2018 – Januari 2021 · 2 Tahun 6 Bulan · Freelance',icon:'🔩',tags:'Welding,Project Planning',desc:'• Operator welder pembuatan pagar, tralis, kanopi, rolling door, dll hingga finishing serta pemasangan di lapangan',location:'Kota Malang, Jawa Timur'},
+  {id:'11',position:'Human Resources Assistant',company:'Dinas Sosial PPPA Kab Nganjuk',period:'Mei 2017 – Juni 2018 · 1 Tahun 2 Bulan · Full-time',icon:'🏛️',tags:'Sumber Daya Manusia (SDM),Project Management',desc:'• Staff SDM bertugas dalam menyiapkan materi untuk anggota Forum Perlindungan Anak Nganjuk untuk mewujudkan nganjuk kabupaten layak anak',location:'Nganjuk, Jawa Timur'},
+  {id:'12',position:'Human Resources Assistant',company:'Dinas Kesehatan Nganjuk',period:'Maret 2016 – Mei 2017 · 1 Tahun 3 Bulan · Full-time',icon:'🏛️',tags:'Sumber Daya Manusia (SDM),Project Management',desc:'• Sebagai staff yang menangani perencanaan kegiatan dan agenda program kerja dalam mensosialisasikan kesehatan remaja di kabupaten nganjuk',location:'Nganjuk, Jawa Timur'}
 ];
 const D_EXP_EN:ExpItem[]=[
-  {id:'1',position:'Staff HRD / General Affairs',company:'UD Duta Pangan (Food Manufacturing & Distribution)',period:'Jun 2025 – Jun 2026 · 1 Year 1 Month · Full-time',icon:'👥',tags:'Payroll,BPJS,OSS Licensing,Legal & Notary,Jobdesc & KPI 6 Divisions,Facilities & Assets',logoUrl:'https://images.unsplash.com/photo-1786148203853-09d9383c7511?auto=format&fit=crop&w=200&q=80',desc:'• Processed monthly payroll for 121 employees, including salary, deductions, and bonus calculations\n• Calculated and administered BPJS Kesehatan and BPJS Ketenagakerjaan contributions for 121 employees, ensuring full compliance and on-time submission\n• Managed business licensing and legal compliance through the government\u2019s OSS platform, including registration and renewal of NIB, business deeds (Akta), SK Kemenkumham, NPWP, and SIUP for CV and PT entities\n• Coordinated internal and external administrative processes, including notary-related documentation and periodic renewal of legal and tax-related company documents\n• Drafted job descriptions and conducted KPI evaluations across 6 divisions (Executive, Finance, Logistics, Warehouse, Marketing, and HR/General Affairs) to determine contract renewals and staffing decisions\n• Managed company facilities and operational assets, including delivery vehicles (blind vans, trucks, motorcycles), office and production equipment, and building utilities across multiple cities'},
-  {id:'2',position:'Human Resources Generalist',company:'UD Duta Pangan (Food Manufacturing)',period:'Jun 2025 – Jun 2026 · 1 Year 1 Month · Full-time',icon:'🧑\u200d💼',tags:'BPJS,Workload Analysis',logoUrl:'https://images.unsplash.com/photo-1786148203853-09d9383c7511?auto=format&fit=crop&w=200&q=80',desc:''},
-  {id:'3',position:'IT Support Specialist',company:'UD Duta Pangan (Food Manufacturing & Distribution)',period:'Jan 2025 – Jun 2025 · 6 Months · Full-time',icon:'💻',tags:'Technical Support,Preventive Maintenance,Mikrotik & Wireshark,Self-Developed ERP/SaaS',logoUrl:'https://images.unsplash.com/photo-1786148203853-09d9383c7511?auto=format&fit=crop&w=200&q=80',desc:'• Maintained 90% device uptime across 30 computer and office devices through regular preventive maintenance\n• Handled 1-3 support tickets daily, resolving minor issues within 30 minutes and major issues (including part procurement) within 1-2 hours\n• Reduced recurring IT incidents by 50% and eliminated dependency on external technicians by establishing an in-house IT support function\n• Implemented Class Based Queuing (CBQ) using Mikrotik and Winbox to allocate exclusive bandwidth for priority divisions while limiting general network access, monitored via Wireshark on a Linux-based system\n• Designed and implemented a real-time, web-based ERP/SaaS system to replace manual, paper-based, offline Excel reporting, reducing report turnaround time from 4 hours to under 1 hour and eliminating inter-division reporting delays'},
-  {id:'4',position:'Warehouse & Production Administrative Staff',company:'UD Duta Pangan (Food Manufacturing & Distribution)',period:'Jun 2024 – Dec 2024 · 7 Months · Contract',icon:'📦',tags:'FIFO/FEFO,Stock Opname,5S,Vendor Coordination',logoUrl:'https://images.unsplash.com/photo-1786148203853-09d9383c7511?auto=format&fit=crop&w=200&q=80',desc:'• Managed daily production administration for 25 SKUs, tracking approximately 100kg of flour-based raw material usage per SKU\n• Applied FIFO / FEFO inventory methods to minimize raw material waste and ensure product freshness\n• Maintained safety stock buffers for perishable raw materials to prevent stockouts and minimize spoilage risk\n• Set min-max stock levels and batch/lot tracking to prevent stockouts, reduce overstock, and maintain traceability\n• Organized warehouse layout using put-away and picking systems and 5S principles for efficient storage and retrieval\n• Coordinated with vendors and suppliers on raw material delivery schedules to ensure production continuity\n• Monitored raw material and product inventory across 200+ SKUs, maintaining 85% stock accuracy through regular stock opname\n• Performed monthly closing to reconcile inventory, production, and distribution records at month-end'},
-  {id:'5',position:'Sales Marketing Positions',company:'UD Duta Pangan (Food Manufacturing)',period:'Jan 2024 – Jul 2024 · 7 Months · Contract',icon:'📈',tags:'Marketing,Sales Operations',logoUrl:'https://images.unsplash.com/photo-1786148203853-09d9383c7511?auto=format&fit=crop&w=200&q=80',desc:'• Field sales\n• Sold Premix Meatball Flour products'},
-  {id:'6',position:'Driver Bike',company:'Grab',period:'Feb 2022 – Dec 2025 · 3 Years 11 Months · Part-time',icon:'🏍️',tags:'',desc:'• Delivered passengers safely and on time\n• Delivered food orders (GrabFood)\n• Delivered packages/goods (GrabExpress)\n• Handled shopping requests (GrabMart)\n• Maintained customer rating and satisfaction\n• Complied with driving safety standards'},
-  {id:'7',position:'Crew',company:'PT. Richeese Kuliner Indonesia',period:'Oct 2023 – Jan 2024 · 4 Months · Contract',icon:'🍗',tags:'Cooking,Plating',desc:'• Cooked crispy fried chicken per SOP and recipe standards\n• Prepared sauces to the company\u2019s taste standards\n• Performed daily food preparation (marinating, cutting, stock arrangement)\n• Maintained raw-material quality and cleanliness (food safety)\n• Recorded daily inventory (stock in, used, remaining)\n• Reported restock needs to the supervisor/shift leader\n• Coordinated with the kitchen and cashier team for smooth operations\n• Maintained serving speed to meet service-time targets'},
-  {id:'8',position:'Kitchen Staff',company:'Mikane Gepuktular',period:'Jan 2023 – Nov 2023 · 11 Months · Part-time',icon:'👨\u200d🍳',tags:'',desc:'• Cook and raw-material preparation'},
-  {id:'9',position:'Crew',company:'Mie Gacoan',period:'Oct 2022 – Dec 2022 · 3 Months · Contract',icon:'🍜',tags:'Hospitality Industry,Food and Beverage Operations',desc:'• Hospitality customer service'},
-  {id:'10',position:'Welding Operator',company:'Lancar Jaya Kota Malang',period:'Aug 2018 – Jan 2021 · 2 Years 6 Months · Freelance',icon:'🔩',tags:'Welding,Project Planning',desc:'• Welding operator producing fences, railings, canopies, rolling doors, etc. through finishing and on-site installation'},
-  {id:'11',position:'Human Resources Assistant',company:'Dinas Sosial PPPA Kab Nganjuk',period:'May 2017 – Jun 2018 · 1 Year 2 Months · Full-time',icon:'🏛️',tags:'Human Resources,Project Management',desc:'• HR staff preparing materials for the Nganjuk Child Protection Forum to support a child-friendly Nganjuk regency'},
-  {id:'12',position:'Human Resources Assistant',company:'Dinas Kesehatan Nganjuk',period:'Mar 2016 – May 2017 · 1 Year 3 Months · Full-time',icon:'🏛️',tags:'Human Resources,Project Management',desc:'• Staff handling planning of activities and program agendas for youth-health outreach in Nganjuk regency'}
+  {id:'1',position:'Staff HRD / General Affairs',company:'UD Duta Pangan (Food Manufacturing & Distribution)',period:'Jun 2025 – Jun 2026 · 1 Year 1 Month · Full-time',icon:'👥',tags:'Payroll,BPJS,OSS Licensing,Legal & Notary,Jobdesc & KPI 6 Divisions,Facilities & Assets',logoUrl:'https://images.unsplash.com/photo-1786148203853-09d9383c7511?auto=format&fit=crop&w=200&q=80',desc:'• Processed monthly payroll for 121 employees, including salary, deductions, and bonus calculations\n• Calculated and administered BPJS Kesehatan and BPJS Ketenagakerjaan contributions for 121 employees, ensuring full compliance and on-time submission\n• Managed business licensing and legal compliance through the government\u2019s OSS platform, including registration and renewal of NIB, business deeds (Akta), SK Kemenkumham, NPWP, and SIUP for CV and PT entities\n• Coordinated internal and external administrative processes, including notary-related documentation and periodic renewal of legal and tax-related company documents\n• Drafted job descriptions and conducted KPI evaluations across 6 divisions (Executive, Finance, Logistics, Warehouse, Marketing, and HR/General Affairs) to determine contract renewals and staffing decisions\n• Managed company facilities and operational assets, including delivery vehicles (blind vans, trucks, motorcycles), office and production equipment, and building utilities across multiple cities',location:'Sidoarjo, Jawa Timur'},
+  {id:'2',position:'Human Resources Generalist',company:'UD Duta Pangan (Food Manufacturing)',period:'Jun 2025 – Jun 2026 · 1 Year 1 Month · Full-time',icon:'🧑\u200d💼',tags:'BPJS,Workload Analysis',logoUrl:'https://images.unsplash.com/photo-1786148203853-09d9383c7511?auto=format&fit=crop&w=200&q=80',desc:'',location:'Sidoarjo, Jawa Timur'},
+  {id:'3',position:'IT Support Specialist',company:'UD Duta Pangan (Food Manufacturing & Distribution)',period:'Jan 2025 – Jun 2025 · 6 Months · Full-time',icon:'💻',tags:'Technical Support,Preventive Maintenance,Mikrotik & Wireshark,Self-Developed ERP/SaaS',logoUrl:'https://images.unsplash.com/photo-1786148203853-09d9383c7511?auto=format&fit=crop&w=200&q=80',desc:'• Maintained 90% device uptime across 30 computer and office devices through regular preventive maintenance\n• Handled 1-3 support tickets daily, resolving minor issues within 30 minutes and major issues (including part procurement) within 1-2 hours\n• Reduced recurring IT incidents by 50% and eliminated dependency on external technicians by establishing an in-house IT support function\n• Implemented Class Based Queuing (CBQ) using Mikrotik and Winbox to allocate exclusive bandwidth for priority divisions while limiting general network access, monitored via Wireshark on a Linux-based system\n• Designed and implemented a real-time, web-based ERP/SaaS system to replace manual, paper-based, offline Excel reporting, reducing report turnaround time from 4 hours to under 1 hour and eliminating inter-division reporting delays',location:'Sidoarjo, Jawa Timur'},
+  {id:'4',position:'Warehouse & Production Administrative Staff',company:'UD Duta Pangan (Food Manufacturing & Distribution)',period:'Jun 2024 – Dec 2024 · 7 Months · Contract',icon:'📦',tags:'FIFO/FEFO,Stock Opname,5S,Vendor Coordination',logoUrl:'https://images.unsplash.com/photo-1786148203853-09d9383c7511?auto=format&fit=crop&w=200&q=80',desc:'• Managed daily production administration for 25 SKUs, tracking approximately 100kg of flour-based raw material usage per SKU\n• Applied FIFO / FEFO inventory methods to minimize raw material waste and ensure product freshness\n• Maintained safety stock buffers for perishable raw materials to prevent stockouts and minimize spoilage risk\n• Set min-max stock levels and batch/lot tracking to prevent stockouts, reduce overstock, and maintain traceability\n• Organized warehouse layout using put-away and picking systems and 5S principles for efficient storage and retrieval\n• Coordinated with vendors and suppliers on raw material delivery schedules to ensure production continuity\n• Monitored raw material and product inventory across 200+ SKUs, maintaining 85% stock accuracy through regular stock opname\n• Performed monthly closing to reconcile inventory, production, and distribution records at month-end',location:'Sidoarjo, Jawa Timur'},
+  {id:'5',position:'Sales Marketing Positions',company:'UD Duta Pangan (Food Manufacturing)',period:'Jan 2024 – Jul 2024 · 7 Months · Contract',icon:'📈',tags:'Marketing,Sales Operations',logoUrl:'https://images.unsplash.com/photo-1786148203853-09d9383c7511?auto=format&fit=crop&w=200&q=80',desc:'• Field sales\n• Sold Premix Meatball Flour products',location:'Sidoarjo, Jawa Timur'},
+  {id:'6',position:'Driver Bike',company:'Grab',period:'Feb 2022 – Dec 2025 · 3 Years 11 Months · Part-time',icon:'🏍️',tags:'',desc:'• Delivered passengers safely and on time\n• Delivered food orders (GrabFood)\n• Delivered packages/goods (GrabExpress)\n• Handled shopping requests (GrabMart)\n• Maintained customer rating and satisfaction\n• Complied with driving safety standards',location:'Jakarta, Indonesia'},
+  {id:'7',position:'Crew',company:'PT. Richeese Kuliner Indonesia',period:'Oct 2023 – Jan 2024 · 4 Months · Contract',icon:'🍗',tags:'Cooking,Plating',desc:'• Cooked crispy fried chicken per SOP and recipe standards\n• Prepared sauces to the company\u2019s taste standards\n• Performed daily food preparation (marinating, cutting, stock arrangement)\n• Maintained raw-material quality and cleanliness (food safety)\n• Recorded daily inventory (stock in, used, remaining)\n• Reported restock needs to the supervisor/shift leader\n• Coordinated with the kitchen and cashier team for smooth operations\n• Maintained serving speed to meet service-time targets',location:'Indonesia'},
+  {id:'8',position:'Kitchen Staff',company:'Mikane Gepuktular',period:'Jan 2023 – Nov 2023 · 11 Months · Part-time',icon:'👨\u200d🍳',tags:'',desc:'• Cook and raw-material preparation',location:'Malang, Jawa Timur'},
+  {id:'9',position:'Crew',company:'Mie Gacoan',period:'Oct 2022 – Dec 2022 · 3 Months · Contract',icon:'🍜',tags:'Hospitality Industry,Food and Beverage Operations',desc:'• Hospitality customer service',location:'Indonesia'},
+  {id:'10',position:'Welding Operator',company:'Lancar Jaya Kota Malang',period:'Aug 2018 – Jan 2021 · 2 Years 6 Months · Freelance',icon:'🔩',tags:'Welding,Project Planning',desc:'• Welding operator producing fences, railings, canopies, rolling doors, etc. through finishing and on-site installation',location:'Kota Malang, Jawa Timur'},
+  {id:'11',position:'Human Resources Assistant',company:'Dinas Sosial PPPA Kab Nganjuk',period:'May 2017 – Jun 2018 · 1 Year 2 Months · Full-time',icon:'🏛️',tags:'Human Resources,Project Management',desc:'• HR staff preparing materials for the Nganjuk Child Protection Forum to support a child-friendly Nganjuk regency',location:'Nganjuk, Jawa Timur'},
+  {id:'12',position:'Human Resources Assistant',company:'Dinas Kesehatan Nganjuk',period:'Mar 2016 – May 2017 · 1 Year 3 Months · Full-time',icon:'🏛️',tags:'Human Resources,Project Management',desc:'• Staff handling planning of activities and program agendas for youth-health outreach in Nganjuk regency',location:'Nganjuk, Jawa Timur'}
 ];
 
 /* ─── Logo Perusahaan: upload manual (logoUrl) atau otomatis cari via Clearbit
@@ -121,6 +123,80 @@ const resolveLogo=(exp:{company:string;logoUrl?:string}):string|null=>{
   const domain=guessLogoDomain(exp.company);
   return domain?`https://logo.clearbit.com/${domain}`:null;
 };
+
+/* ─── Grouping pengalaman kerja per perusahaan (layout infografis) ───
+   Kalau ada beberapa posisi di perusahaan yang sama, dikelompokkan jadi
+   1 blok: shape besar utama (nama perusahaan + total masa kerja gabungan)
+   dengan tiap posisi sebagai "turunan" di bawahnya, dihubungkan garis
+   pohon. Perusahaan dengan 1 posisi tetap tampil sebagai kartu biasa. */
+const MONTH_MAP:Record<string,number>={
+  januari:0,jan:0,february:1,februari:1,feb:1,maret:2,mar:2,april:3,apr:3,
+  mei:4,may:4,juni:5,jun:5,juli:6,jul:6,agustus:7,aug:7,agu:7,
+  september:8,sep:8,sept:8,oktober:9,oct:9,okt:9,november:10,nov:10,
+  desember:11,dec:11,des:11,
+};
+const parseMonthYear=(str:string):{y:number;m:number}|null=>{
+  const mm=str.trim().match(/([A-Za-zÀ-ÿ]+)\s+(\d{4})/);
+  if(!mm) return null;
+  const mon=MONTH_MAP[mm[1].toLowerCase()];
+  if(mon===undefined) return null;
+  return {y:parseInt(mm[2],10),m:mon};
+};
+const parsePeriodRange=(period:string):{start:{y:number;m:number};end:{y:number;m:number}}|null=>{
+  const beforeDot=period.split('·')[0];
+  const parts=beforeDot.split(/[–-]/);
+  if(parts.length<2) return null;
+  const start=parseMonthYear(parts[0]);
+  const end=parseMonthYear(parts[1]);
+  if(!start||!end) return null;
+  return {start,end};
+};
+const formatDuration=(totalMonths:number,lang:'id'|'en'):string=>{
+  const years=Math.floor(totalMonths/12);
+  const months=totalMonths%12;
+  const parts:string[]=[];
+  if(lang==='en'){
+    if(years) parts.push(`${years} Year${years>1?'s':''}`);
+    if(months) parts.push(`${months} Month${months>1?'s':''}`);
+    return parts.join(' ')||'—';
+  }
+  if(years) parts.push(`${years} Tahun`);
+  if(months) parts.push(`${months} Bulan`);
+  return parts.join(' ')||'—';
+};
+const computeTotalDuration=(items:ExpItem[],lang:'id'|'en'):string=>{
+  let minStart:{y:number;m:number}|null=null, maxEnd:{y:number;m:number}|null=null;
+  items.forEach(it=>{
+    const r=parsePeriodRange(it.period);
+    if(!r) return;
+    if(!minStart||r.start.y<minStart.y||(r.start.y===minStart.y&&r.start.m<minStart.m)) minStart=r.start;
+    if(!maxEnd||r.end.y>maxEnd.y||(r.end.y===maxEnd.y&&r.end.m>maxEnd.m)) maxEnd=r.end;
+  });
+  if(!minStart||!maxEnd) return '';
+  const s:{y:number;m:number}=minStart, e:{y:number;m:number}=maxEnd;
+  const totalMonths=(e.y-s.y)*12+(e.m-s.m)+1;
+  return formatDuration(totalMonths,lang);
+};
+interface ExpGroup{ companyKey:string; companyDisplay:string; items:ExpItem[]; totalDuration:string; }
+type ExpRow = { type:'group'; group:ExpGroup } | { type:'single'; item:ExpItem };
+const groupExpByCompany=(exps:ExpItem[],lang:'id'|'en'):ExpRow[]=>{
+  const order:string[]=[];
+  const buckets:Record<string,ExpItem[]>=Object.create(null);
+  exps.forEach(it=>{
+    const key=it.company.split(' (')[0].trim();
+    if(!buckets[key]){ buckets[key]=[]; order.push(key); }
+    buckets[key].push(it);
+  });
+  return order.map((key):ExpRow=>{
+    const items=buckets[key];
+    if(items.length===1) return { type:'single', item:items[0] };
+    return {
+      type:'group',
+      group:{ companyKey:key, companyDisplay:key, items, totalDuration:computeTotalDuration(items,lang) },
+    };
+  });
+};
+
 const D_CONTACT:ContactData={email:'Mahfudfebrys@gmail.com',location:'Nganjuk, Indonesia',website:'hikimori.web.id',instagram:'',linkedin:'',twitter:''};
 const D_CERT:CertItem[]=[
   {id:'1',name:'Certified Human Resources Generalist (CHRG)',year:'2026 – 2029',issuer:'Badan Nasional Sertifikasi Profesi (BNSP)',subtitle:'Sertifikasi Kompetensi SDM',imageUrl:''},
@@ -814,90 +890,157 @@ const ContactSection:React.FC=()=>{
 /* ══════════════════════════════════════════
    EXP CARD — extracted so useState is valid
 ══════════════════════════════════════════ */
-const ExpCard:React.FC<{exp:ExpItem;index:number}>=({exp,index:i})=>{
-  const [open,setOpen]=useState(false);
+/* ─── ExpDrilldown: kartu pengalaman kerja dengan navigasi drill-down 3 tahap ───
+   Tahap 1 "company"  : nama perusahaan, detail industri, alamat, (kalau multi-posisi) total masa kerja.
+   Tahap 2 "positions": muncul kalau perusahaan itu punya >1 posisi — daftar jabatan yang pernah ditempati.
+   Tahap 3 "detail"   : deskripsi pekerjaan dari jabatan yang diklik.
+   Transisi pakai `layout` (framer-motion menghitung sendiri geser+mengecilnya
+   header perusahaan — bukan dihardcode manual) + AnimatePresence untuk
+   masuk/keluarnya daftar & detail. Kalau cuma 1 posisi, tahap "positions"
+   dilewati (langsung company → detail). */
+const ExpDrilldown:React.FC<{company:string;items:ExpItem[];totalDuration:string;index:number}>=({company,items,totalDuration,index:i})=>{
+  const isMulti=items.length>1;
+  const [step,setStep]=useState<'company'|'positions'|'detail'>('company');
+  const [selectedIdx,setSelectedIdx]=useState<number|null>(null);
   const [logoFailed,setLogoFailed]=useState(false);
-  const logo=resolveLogo(exp);
   const {t,lang}=useLang();
+  const logo=resolveLogo({company,logoUrl:items.find(it=>it.logoUrl)?.logoUrl});
+  const detailMatch=items[0].company.match(/\(([^)]+)\)/);
+  const industryDetail=detailMatch?detailMatch[1]:'';
+  const location=items[0].location;
+  const selected=selectedIdx!==null?items[selectedIdx]:null;
+  const compact=step!=='company';
+
+  const goToPositions=()=>{ if(isMulti){ setStep('positions'); } else { setSelectedIdx(0); setStep('detail'); } };
+  const goBackToCompany=()=>{ setStep('company'); setSelectedIdx(null); };
+  const goBackToPositions=()=>{ setStep('positions'); setSelectedIdx(null); };
+  const pickPosition=(idx:number)=>{ setSelectedIdx(idx); setStep('detail'); };
+
   return (
     <Reveal direction="right" delay={i*0.14}>
       <div style={{display:'flex',gap:'clamp(1rem,4vw,2rem)',position:'relative'}}>
         <div style={{flexShrink:0,width:'clamp(32px,10vw,64px)',display:'flex',flexDirection:'column',alignItems:'center',paddingTop:'1.4rem'}}>
           <motion.div
-            animate={{boxShadow:[`0 0 8px ${J.red}44`,`0 0 20px ${J.red}88`,`0 0 8px ${J.red}44`]}}
+            animate={{boxShadow:[`0 0 8px ${J.gold}44`,`0 0 22px ${J.gold}99`,`0 0 8px ${J.gold}44`]}}
             transition={{duration:2,repeat:Infinity,delay:i*0.5}} whileHover={{scale:1.25}}
-            style={{width:16,height:16,borderRadius:'50%',background:J.red,border:`2px solid ${J.gold}`,position:'relative',zIndex:2}}>
-            <motion.div animate={{scale:[1,1.4,1],opacity:[0.5,0,0.5]}} transition={{duration:2,repeat:Infinity,delay:i*0.5}} style={{position:'absolute',inset:-4,borderRadius:'50%',border:`1px solid ${J.red}`,pointerEvents:'none'}}/>
+            style={{width:isMulti?20:16,height:isMulti?20:16,borderRadius:'50%',background:isMulti?J.gold:J.red,border:`2px solid ${isMulti?J.red:J.gold}`,position:'relative',zIndex:2}}>
+            <motion.div animate={{scale:[1,1.45,1],opacity:[0.5,0,0.5]}} transition={{duration:2,repeat:Infinity,delay:i*0.5}} style={{position:'absolute',inset:-5,borderRadius:'50%',border:`1px solid ${J.gold}`,pointerEvents:'none'}}/>
           </motion.div>
         </div>
-        <div style={{flex:1,borderRadius:12}}>
+
+        <div style={{flex:1}}>
           <InkRipple>
-            <motion.div whileHover={{borderColor:`rgba(14,111,168,0.55)`,background:'rgba(13,24,37,0.92)'}}
-              style={{background:'rgba(9,18,29,0.88)',border:`1px solid rgba(14,111,168,0.18)`,borderRadius:12,padding:'1.3rem clamp(1rem,3vw,1.8rem)',backdropFilter:'blur(12px)',transition:'all 0.3s',position:'relative',overflow:'hidden'}}>
-              <motion.div animate={{opacity:[0.04,0.1,0.04]}} transition={{duration:4+i,repeat:Infinity}} style={{position:'absolute',top:-20,right:-20,width:120,height:120,borderRadius:'50%',background:`radial-gradient(circle,${J.red}33,transparent 70%)`}}/>
-              <div style={{position:'absolute',right:'1rem',top:'0.5rem',fontFamily:'serif',fontSize:'2.5rem',color:`rgba(14,111,168,0.07)`,userSelect:'none',lineHeight:1}}>{['業','功','術'][i%3]}</div>
-              <div style={{position:'relative',zIndex:1,marginBottom:'0.9rem'}}>
-                <div style={{width:48,height:48,borderRadius:12,background:logo&&!logoFailed?'#fff':`radial-gradient(circle,rgba(14,111,168,0.2),rgba(14,111,168,0.05))`,border:`2px solid ${J.red}`,display:'flex',alignItems:'center',justifyContent:'center',fontSize:'1.3rem',overflow:'hidden',marginBottom:'0.7rem'}}>
+            <SpotlightCard className="clay-card" style={{padding:'1.4rem clamp(1.1rem,3vw,1.9rem)',position:'relative',overflow:'hidden',border:`1.5px solid rgba(14,165,192,${isMulti?0.32:0.16})`}}>
+              <motion.div animate={{opacity:[0.04,0.1,0.04]}} transition={{duration:4+i,repeat:Infinity}} style={{position:'absolute',top:-24,right:-24,width:130,height:130,borderRadius:'50%',background:`radial-gradient(circle,${J.gold}2e,transparent 70%)`,pointerEvents:'none'}}/>
+
+              {/* ── Header perusahaan — layout prop bikin transisi ukuran/posisi otomatis mulus ── */}
+              <motion.div
+                layout="position"
+                transition={{duration:0.5,ease:[0.4,0,0.2,1]}}
+                onClick={()=>step==='company'&&goToPositions()}
+                style={{
+                  position:'relative',zIndex:1,display:'flex',alignItems:'center',gap:compact?'0.7rem':'1.1rem',
+                  cursor:step==='company'?'pointer':'default',
+                  marginBottom:compact?'1rem':0,
+                  paddingBottom:compact?'0.9rem':0,
+                  borderBottom:compact?'1px solid rgba(14,111,168,0.16)':'none',
+                }}>
+                <motion.div layout style={{width:compact?38:64,height:compact?38:64,borderRadius:compact?9:14,background:logo&&!logoFailed?'#fff':`radial-gradient(circle,rgba(14,165,192,0.25),rgba(14,165,192,0.06))`,border:`2px solid ${J.gold}`,display:'flex',alignItems:'center',justifyContent:'center',fontSize:compact?'0.9rem':'1.6rem',overflow:'hidden',flexShrink:0,transition:'font-size 0.3s'}}>
                   {logo&&!logoFailed?(
-                    <img src={logo} alt={exp.company} loading="lazy" decoding="async" onError={()=>setLogoFailed(true)} style={{width:'100%',height:'100%',objectFit:'contain',padding:6,borderRadius:8}}/>
-                  ):(<span aria-hidden="true">{exp.icon}</span>)}
-                </div>
-                <h3 style={{fontFamily:'var(--font-display)',fontSize:'clamp(1rem,3vw,1.4rem)',color:J.white,lineHeight:1.3,marginBottom:'0.3rem'}}>{exp.position}</h3>
-                {exp.company&&<div style={{fontFamily:'var(--font-body)',fontWeight:600,color:J.gold,fontSize:'0.92rem',lineHeight:1.4,marginBottom:'0.45rem'}}>{exp.company}</div>}
-                {exp.period&&(()=>{
-                  const [dateRange,duration,type]=exp.period.split('·').map(p=>p.trim());
-                  return (
-                    <div style={{display:'inline-flex',flexDirection:'column',gap:'0.2rem',alignItems:'flex-start',background:J.redBg,color:J.goldL,borderRadius:5,padding:'5px 12px',fontSize:'0.72rem',fontWeight:700,border:`1px solid rgba(14,111,168,0.3)`}}>
-                      <span><span aria-hidden="true">🕐</span> {dateRange}</span>
-                      <span>[ {duration} ]{type?` · ${type}`:''}</span>
-                    </div>
-                  );
-                })()}
-              </div>
-              {exp.tags&&<div style={{display:'flex',flexWrap:'wrap',gap:'0.35rem',position:'relative',zIndex:1,marginBottom:'0.8rem'}}>{exp.tags.split(',').map(tg=>tg.trim()).filter(Boolean).map((tag,ti)=>(<motion.span key={tag} initial={{opacity:0,scale:0.8}} whileInView={{opacity:1,scale:1}} transition={{delay:ti*0.04+i*0.08}} style={{background:'rgba(14,165,192,0.07)',border:`1px solid rgba(14,165,192,0.18)`,color:'rgba(14,165,192,0.8)',borderRadius:4,padding:'3px 10px',fontSize:'0.72rem',fontWeight:500}}>{tag}</motion.span>))}</div>}
-              {exp.desc&&(
-                <div style={{position:'relative',zIndex:1}}>
+                    <img src={logo} alt={company} loading="lazy" decoding="async" onError={()=>setLogoFailed(true)} style={{width:'100%',height:'100%',objectFit:'contain',padding:compact?4:7,borderRadius:compact?6:10}}/>
+                  ):(<span aria-hidden="true">🏢</span>)}
+                </motion.div>
+                <motion.div layout style={{flex:1,minWidth:0}}>
+                  <motion.h3 layout style={{fontFamily:'var(--font-display)',color:J.white,lineHeight:1.15,fontSize:compact?'clamp(0.95rem,2.6vw,1.15rem)':'clamp(1.2rem,3.6vw,1.7rem)',marginBottom:compact?0:'0.35rem',transition:'font-size 0.3s'}}>{company}</motion.h3>
+                  <AnimatePresence>
+                    {!compact&&(
+                      <motion.div initial={{opacity:0,height:0}} animate={{opacity:1,height:'auto'}} exit={{opacity:0,height:0}} transition={{duration:0.3}} style={{overflow:'hidden'}}>
+                        {industryDetail&&<div style={{color:'rgba(234,242,248,0.55)',fontSize:'0.82rem',marginBottom:'0.3rem'}}>{industryDetail}</div>}
+                        {location&&<div style={{color:'rgba(234,242,248,0.55)',fontSize:'0.82rem',marginBottom:isMulti?'0.5rem':0,display:'flex',alignItems:'center',gap:'0.35rem'}}><span aria-hidden="true">📍</span>{location}</div>}
+                        {isMulti&&(
+                          <div style={{display:'inline-flex',alignItems:'center',gap:'0.4rem',color:J.goldL,fontWeight:700,fontSize:'0.8rem'}}>
+                            <span aria-hidden="true">⏳</span>{t('Total Masa Kerja','Total Duration')}: {totalDuration}
+                            <span style={{color:'rgba(234,242,248,0.4)',fontWeight:500}}>· {items.length} {t('Posisi','Positions')}</span>
+                          </div>
+                        )}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+                {compact&&(
                   <motion.button
-                    onClick={()=>setOpen(o=>!o)}
-                    whileHover={{scale:1.03,boxShadow:`0 4px 18px rgba(14,111,168,0.35)`}}
-                    whileTap={{scale:0.97}}
-                    style={{display:'inline-flex',alignItems:'center',gap:'0.4rem',background:`linear-gradient(135deg,rgba(14,111,168,0.25),rgba(6,50,76,0.3))`,border:`1px solid rgba(14,111,168,0.45)`,color:J.goldL,borderRadius:7,padding:'6px 16px',fontSize:'0.75rem',fontWeight:700,cursor:'pointer',fontFamily:'var(--font-body)',letterSpacing:'0.03em',transition:'all 0.2s'}}>
-                    <span style={{fontSize:'0.85rem'}}>{open?'▲':'▼'}</span>
-                    {open?t('Tutup Rincian','Close Details'):t('⛩ Buka Rincian Pekerjaan','⛩ View Job Details')}
+                    layout
+                    onClick={(e)=>{e.stopPropagation(); step==='detail'&&isMulti?goBackToPositions():goBackToCompany();}}
+                    whileHover={{scale:1.05}} whileTap={{scale:0.95}}
+                    style={{flexShrink:0,display:'inline-flex',alignItems:'center',gap:'0.3rem',background:'rgba(14,111,168,0.12)',border:`1px solid rgba(14,111,168,0.3)`,color:J.goldL,borderRadius:6,padding:'5px 11px',fontSize:'0.7rem',fontWeight:700,cursor:'pointer',fontFamily:'var(--font-body)'}}>
+                    ← {t('Kembali','Back')}
                   </motion.button>
-                  <motion.div
-                    initial={false}
-                    animate={{height:open?'auto':0,opacity:open?1:0}}
-                    transition={{duration:0.35,ease:'easeInOut'}}
-                    style={{overflow:'hidden'}}>
-                    <div style={{marginTop:'0.8rem',padding:'1rem 1.2rem',background:'rgba(14,111,168,0.06)',border:`1px solid rgba(14,111,168,0.2)`,borderRadius:8,borderLeft:`3px solid ${J.red}`}} lang={lang}>
-                      <div className="bullet-list">
-                        {exp.desc.split('\n').map((line,li)=>{
-                          const isBullet=line.trim().startsWith('•');
-                          const text=isBullet?line.trim().slice(1).trim():line;
-                          return isBullet?(
-                            <div key={li} className="bullet-line">
-                              <span className="bullet-dot" style={{color:J.gold}}>•</span>
-                              <span className="bullet-text text-justify-auto" style={{color:'rgba(234,242,248,0.82)',fontSize:'0.82rem',lineHeight:1.75,fontFamily:'var(--font-body)'}}>{text}</span>
-                            </div>
-                          ):(
-                            <div key={li} className="text-justify-auto para-indent" style={{color:'rgba(234,242,248,0.82)',fontSize:'0.82rem',lineHeight:1.75,fontFamily:'var(--font-body)',padding:'0.1rem 0'}}>
-                              {line}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
+                )}
+              </motion.div>
+
+              {/* ── Tahap 2: daftar jabatan ── */}
+              <AnimatePresence mode="wait">
+                {step==='positions'&&(
+                  <motion.div key="positions" initial={{opacity:0,x:28}} animate={{opacity:1,x:0}} exit={{opacity:0,x:-28}} transition={{duration:0.4,ease:[0.4,0,0.2,1]}} style={{position:'relative',zIndex:1,display:'flex',flexDirection:'column',gap:'0.5rem'}}>
+                    {items.map((item,idx)=>{
+                      const dateRange=item.period.split('·')[0]?.trim();
+                      return (
+                        <motion.button key={item.id} onClick={()=>pickPosition(idx)} whileHover={{x:5,borderColor:'rgba(14,111,168,0.5)'}} whileTap={{scale:0.98}}
+                          style={{display:'flex',alignItems:'center',justifyContent:'space-between',gap:'0.8rem',textAlign:'left',background:'rgba(9,18,29,0.6)',border:'1px solid rgba(14,111,168,0.18)',borderRadius:9,padding:'0.8rem 1rem',cursor:'pointer',fontFamily:'var(--font-body)'}}>
+                          <div style={{minWidth:0}}>
+                            <div style={{color:J.white,fontWeight:700,fontSize:'0.88rem',marginBottom:'0.15rem'}}>{item.position}</div>
+                            <div style={{color:'rgba(234,242,248,0.5)',fontSize:'0.72rem'}}>{dateRange}</div>
+                          </div>
+                          <span style={{color:J.gold,fontSize:'1rem',flexShrink:0}}>→</span>
+                        </motion.button>
+                      );
+                    })}
                   </motion.div>
-                </div>
-              )}
-            </motion.div>
+                )}
+
+                {/* ── Tahap 3: deskripsi jabatan terpilih ── */}
+                {step==='detail'&&selected&&(
+                  <motion.div key="detail" initial={{opacity:0,x:28}} animate={{opacity:1,x:0}} exit={{opacity:0,x:-28}} transition={{duration:0.4,ease:[0.4,0,0.2,1]}} style={{position:'relative',zIndex:1}}>
+                    <h4 style={{fontFamily:'var(--font-display)',fontSize:'clamp(1rem,2.8vw,1.25rem)',color:J.white,marginBottom:'0.4rem'}}>{selected.position}</h4>
+                    {selected.period&&(()=>{
+                      const [dateRange,duration,type]=selected.period.split('·').map(p=>p.trim());
+                      return (
+                        <div style={{display:'inline-flex',flexDirection:'column',gap:'0.2rem',alignItems:'flex-start',background:J.redBg,color:J.goldL,borderRadius:5,padding:'5px 12px',fontSize:'0.72rem',fontWeight:700,border:`1px solid rgba(14,111,168,0.3)`,marginBottom:'0.7rem'}}>
+                          <span><span aria-hidden="true">🕐</span> {dateRange}</span>
+                          <span>[ {duration} ]{type?` · ${type}`:''}</span>
+                        </div>
+                      );
+                    })()}
+                    {selected.tags&&<div style={{display:'flex',flexWrap:'wrap',gap:'0.35rem',marginBottom:'0.8rem'}}>{selected.tags.split(',').map(tg=>tg.trim()).filter(Boolean).map(tag=>(<span key={tag} style={{background:'rgba(14,165,192,0.07)',border:`1px solid rgba(14,165,192,0.18)`,color:'rgba(14,165,192,0.8)',borderRadius:4,padding:'3px 10px',fontSize:'0.72rem',fontWeight:500}}>{tag}</span>))}</div>}
+                    {selected.desc&&(
+                      <div style={{padding:'1rem 1.2rem',background:'rgba(14,111,168,0.06)',border:`1px solid rgba(14,111,168,0.2)`,borderRadius:8,borderLeft:`3px solid ${J.red}`}} lang={lang}>
+                        <div className="bullet-list">
+                          {selected.desc.split('\n').map((line,li)=>{
+                            const isBullet=line.trim().startsWith('•');
+                            const text=isBullet?line.trim().slice(1).trim():line;
+                            return isBullet?(
+                              <div key={li} className="bullet-line">
+                                <span className="bullet-dot" style={{color:J.gold}}>•</span>
+                                <span className="bullet-text text-justify-auto" style={{color:'rgba(234,242,248,0.82)',fontSize:'0.82rem',lineHeight:1.75,fontFamily:'var(--font-body)'}}>{text}</span>
+                              </div>
+                            ):(
+                              <div key={li} className="text-justify-auto para-indent" style={{color:'rgba(234,242,248,0.82)',fontSize:'0.82rem',lineHeight:1.75,fontFamily:'var(--font-body)'}}>{line}</div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </SpotlightCard>
           </InkRipple>
         </div>
       </div>
     </Reveal>
   );
 };
+
 
 /* ══════════════════════════════════════════
    HOME PAGE
@@ -982,12 +1125,16 @@ const Home:React.FC=()=>{
             {/* Buttons */}
             <FadeIn delay={1000}>
               <div className="hk-hero-cta-row" style={{display:'flex',flexWrap:'wrap',gap:'0.5rem',justifyContent:'center'}}>
-                <a href={hero.heroCtaSecondaryLink||'https://wa.me/6282234651413'} target="_blank" rel="noopener noreferrer" style={{textDecoration:'none'}}>
-                  <button style={{background:'rgba(255,255,255,0.92)',color:'#000',border:'none',borderRadius:6,padding:'7px 18px',fontWeight:600,fontSize:'0.78rem',cursor:'pointer',fontFamily:'var(--font-body)',whiteSpace:'nowrap'}}>{hero.heroCtaSecondary||'Start a Chat'}</button>
-                </a>
-                <Link to={hero.heroCtaLink||'/portofolio'} style={{textDecoration:'none'}}>
-                  <button style={{...LG,border:'1px solid rgba(255,255,255,0.25)',color:'#fff',borderRadius:6,padding:'7px 18px',fontWeight:600,fontSize:'0.78rem',cursor:'pointer',fontFamily:'var(--font-body)',whiteSpace:'nowrap'}}>{hero.heroCta}</button>
-                </Link>
+                <MagneticButton strength={0.3}>
+                  <a href={hero.heroCtaSecondaryLink||'https://wa.me/6282234651413'} target="_blank" rel="noopener noreferrer" style={{textDecoration:'none'}}>
+                    <button style={{background:'rgba(255,255,255,0.92)',color:'#000',border:'none',borderRadius:6,padding:'7px 18px',fontWeight:600,fontSize:'0.78rem',cursor:'pointer',fontFamily:'var(--font-body)',whiteSpace:'nowrap'}}>{hero.heroCtaSecondary||'Start a Chat'}</button>
+                  </a>
+                </MagneticButton>
+                <MagneticButton strength={0.3}>
+                  <Link to={hero.heroCtaLink||'/portofolio'} style={{textDecoration:'none'}}>
+                    <button style={{...LG,border:'1px solid rgba(255,255,255,0.25)',color:'#fff',borderRadius:6,padding:'7px 18px',fontWeight:600,fontSize:'0.78rem',cursor:'pointer',fontFamily:'var(--font-body)',whiteSpace:'nowrap'}}>{hero.heroCta}</button>
+                  </Link>
+                </MagneticButton>
               </div>
             </FadeIn>
 
@@ -1203,8 +1350,10 @@ const Home:React.FC=()=>{
             <motion.div initial={{scaleY:0}} whileInView={{scaleY:1}} viewport={{once:true}} transition={{duration:1.8,ease:'easeOut'}}
               style={{position:'absolute',left:'clamp(16px,5vw,32px)',top:0,bottom:0,width:2,background:`linear-gradient(to bottom,transparent,${J.red},${J.gold},transparent)`,transformOrigin:'top',zIndex:1}}/>
             <div style={{display:'flex',flexDirection:'column',gap:'1.2rem'}}>
-              {exps.map((exp,i)=>(
-                <ExpCard key={exp.id} exp={exp} index={i}/>
+              {groupExpByCompany(exps,lang).map((row,i)=>(
+                row.type==='group'
+                  ? <ExpDrilldown key={row.group.companyKey} company={row.group.companyDisplay} items={row.group.items} totalDuration={row.group.totalDuration} index={i}/>
+                  : <ExpDrilldown key={row.item.id} company={row.item.company.split(' (')[0].trim()} items={[row.item]} totalDuration="" index={i}/>
               ))}
             </div>
           </div>
