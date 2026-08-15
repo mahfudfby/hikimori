@@ -9,6 +9,9 @@ import LazyMount from '../components/LazyMount';
 import AuroraBackground from '../components/AuroraBackground';
 import SpotlightCard from '../components/SpotlightCard';
 import { StaggerGroup, StaggerItem } from '../components/StaggerGroup';
+import CountUp from '../components/CountUp';
+import MagneticButton from '../components/MagneticButton';
+import TextReveal from '../components/TextReveal';
 import { useLang } from '../contexts/LanguageContext';
 import {
   PROFILE, EDUCATION, TOOLS, CV_SKILL_TAGS, TRAINING_LICENSE,
@@ -252,7 +255,7 @@ const About: React.FC = () => {
               🎓 {t('HR & Administration Professional', 'HR & Administration Professional')}
             </span>
             <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2.6rem, 5.5vw, 4.6rem)', lineHeight: 0.98, marginBottom: '1.5rem' }}>
-              {t('Kenalan Dengan', 'Get to Know')}{' '}
+              <TextReveal text={t('Kenalan Dengan', 'Get to Know')} />{' '}
               <span style={{ background: 'linear-gradient(90deg, var(--amber), var(--accent2))', WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' }}>
                 {PROFILE.name.split(',')[0]}
               </span>
@@ -268,47 +271,58 @@ const About: React.FC = () => {
                 { label: t('Kepuasan Klien', 'Client Satisfaction'), value: '100%' },
               ].map(stat => (
                 <div key={stat.label}>
-                  <div style={{ fontFamily: 'var(--font-display)', fontSize: '2.5rem', color: 'var(--amber)', lineHeight: 1 }}>{stat.value}</div>
+                  <div style={{ fontFamily: 'var(--font-display)', fontSize: '2.5rem', color: 'var(--amber)', lineHeight: 1 }}><CountUp value={stat.value} /></div>
                   <div style={{ color: 'var(--white-dim)', fontSize: '0.8rem', marginTop: '4px' }}>{stat.label}</div>
                 </div>
               ))}
             </div>
 
             <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginTop: '2rem' }}>
-              <a
-                href="/CV-Mahfud-Febry-Styanto.pdf"
-                download="CV-Mahfud-Febry-Styanto.pdf"
-                className="text-shadow-onlight"
-                style={{
-                  display: 'inline-flex', alignItems: 'center', gap: '0.6rem',
-                  background: 'var(--amber)', color: 'var(--black)', fontWeight: 700, fontSize: '0.9rem',
-                  padding: '0.8rem 1.6rem', borderRadius: '999px', textDecoration: 'none',
-                  boxShadow: '0 8px 24px rgba(14,111,168,0.25)',
-                }}
-              >
-                ⬇ {t('Unduh CV (PDF)', 'Download CV (PDF)')}
-              </a>
-              <Link
-                to="/portofolio"
-                style={{
-                  display: 'inline-flex', alignItems: 'center', gap: '0.6rem',
-                  background: 'transparent', color: 'var(--amber)', fontWeight: 700, fontSize: '0.9rem',
-                  padding: '0.8rem 1.6rem', borderRadius: '999px', textDecoration: 'none',
-                  border: '1.5px solid var(--amber)',
-                }}
-              >
-                {t('Lihat Portofolio', 'View Portfolio')}
-              </Link>
+              <MagneticButton strength={0.35}>
+                <a
+                  href="/CV-Mahfud-Febry-Styanto.pdf"
+                  download="CV-Mahfud-Febry-Styanto.pdf"
+                  className="text-shadow-onlight"
+                  style={{
+                    display: 'inline-flex', alignItems: 'center', gap: '0.6rem',
+                    background: 'var(--amber)', color: 'var(--black)', fontWeight: 700, fontSize: '0.9rem',
+                    padding: '0.8rem 1.6rem', borderRadius: '999px', textDecoration: 'none',
+                    boxShadow: '0 8px 24px rgba(14,111,168,0.25)',
+                  }}
+                >
+                  ⬇ {t('Unduh CV (PDF)', 'Download CV (PDF)')}
+                </a>
+              </MagneticButton>
+              <MagneticButton strength={0.35}>
+                <Link
+                  to="/portofolio"
+                  style={{
+                    display: 'inline-flex', alignItems: 'center', gap: '0.6rem',
+                    background: 'transparent', color: 'var(--amber)', fontWeight: 700, fontSize: '0.9rem',
+                    padding: '0.8rem 1.6rem', borderRadius: '999px', textDecoration: 'none',
+                    border: '1.5px solid var(--amber)',
+                  }}
+                >
+                  {t('Lihat Portofolio', 'View Portfolio')}
+                </Link>
+              </MagneticButton>
             </div>
           </AnimatedSection>
         </div>
 
         <AnimatedSection direction="right">
           <div style={{ position: 'relative' }}>
-            <div className="float-hover" style={{ position: 'relative', borderRadius: 'var(--radius)', overflow: 'hidden', aspectRatio: '3/4', maxHeight: '500px' }}>
+            <motion.div
+              className="float-hover"
+              initial={{ clipPath: 'inset(0 0 100% 0)' }}
+              whileInView={{ clipPath: 'inset(0 0 0% 0)' }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.9, ease: [0.65, 0, 0.35, 1] }}
+              style={{ position: 'relative', borderRadius: 'var(--radius)', overflow: 'hidden', aspectRatio: '3/4', maxHeight: '500px' }}
+            >
               <img src={photo} alt={about.name} decoding="async" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(10,10,10,0.35) 0%, transparent 45%)' }} />
-            </div>
+            </motion.div>
             {/* Badge kartu mengambang — pojok kiri-atas & kanan-bawah, ala referensi */}
             <div className="clay-card" style={{ position: 'absolute', top: '-1rem', left: '-1rem', display: 'flex', alignItems: 'center', gap: '0.7rem', padding: '0.8rem 1.1rem', background: 'var(--black-2)' }}>
               <div style={{ width: 40, height: 40, borderRadius: 10, background: 'var(--accent-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem', flexShrink: 0 }}>🎓</div>
@@ -342,7 +356,7 @@ const About: React.FC = () => {
               { value: '4', label: t('Posisi Kerja', 'Job Positions'), color: 'var(--accent2)' },
             ].map(stat => (
               <div key={stat.label}>
-                <div style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.8rem,4vw,2.4rem)', color: stat.color, lineHeight: 1 }}>{stat.value}</div>
+                <div style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.8rem,4vw,2.4rem)', color: stat.color, lineHeight: 1 }}><CountUp value={stat.value} /></div>
                 <div style={{ color: 'var(--white-dim)', fontSize: '0.78rem', marginTop: '6px' }}>{stat.label}</div>
               </div>
             ))}
@@ -505,41 +519,57 @@ const About: React.FC = () => {
           <div className="skills-columns-about" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2.5rem', alignItems: 'start' }}>
             {/* ── Hard Skill ── */}
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1.3rem' }}>
-                <div style={{ flex: 1, height: 1, background: 'linear-gradient(to right, transparent, rgba(14,111,168,0.4))' }} />
-                <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.2rem, 3.5vw, 1.8rem)', color: 'var(--amber)', letterSpacing: '1px', whiteSpace: 'nowrap' }}>HARD <span style={{ color: 'var(--white)' }}>SKILL</span></h3>
-                <div style={{ flex: 1, height: 1, background: 'linear-gradient(to left, transparent, rgba(14,111,168,0.4))' }} />
+              <AnimatedSection direction="up">
+                <div className="clay-card" style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1.3rem 1.6rem', marginBottom: 0, border: '1.5px solid rgba(14,111,168,0.35)' }}>
+                  <div style={{ width: 50, height: 50, borderRadius: 13, background: 'var(--accent-bg)', border: '2px solid var(--amber)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.4rem', flexShrink: 0 }}>🛠️</div>
+                  <div>
+                    <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.1rem, 3vw, 1.5rem)', color: 'var(--amber)', letterSpacing: '0.5px', lineHeight: 1.1 }}>HARD <span style={{ color: 'var(--white)' }}>SKILL</span></h3>
+                    <div style={{ color: 'var(--white-dim)', fontSize: '0.78rem', marginTop: '0.2rem' }}><CountUp value={String(skills.filter(sk => sk.category !== 'soft').length)} /> {t('keahlian teknis', 'technical skills')}</div>
+                  </div>
+                </div>
+              </AnimatedSection>
+              <div style={{ position: 'relative', marginLeft: '1.6rem', paddingLeft: '1.6rem', marginTop: '0.5rem' }}>
+                <motion.div initial={{ scaleY: 0 }} whileInView={{ scaleY: 1 }} viewport={{ once: true }} transition={{ duration: 1, ease: 'easeOut' }}
+                  style={{ position: 'absolute', left: 0, top: 0, bottom: '1.2rem', width: 2, background: 'linear-gradient(to bottom, var(--amber), rgba(14,111,168,0.1))', transformOrigin: 'top' }} />
+                <StaggerGroup className="stagger-skills" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  {skills.filter(sk => sk.category !== 'soft').map((skill) => (
+                    <StaggerItem key={skill.id} style={{ position: 'relative' }}>
+                      <div style={{ position: 'absolute', left: '-1.6rem', top: '1.4rem', width: '1.6rem', height: 2, background: 'rgba(14,111,168,0.3)' }} />
+                      <SpotlightCard className="clay-card" style={{ padding: '1.3rem 1.5rem' }}>
+                        <h4 style={{ fontFamily: 'var(--font-body)', fontWeight: 700, color: 'var(--amber)', fontSize: '0.88rem', marginBottom: '0.4rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{skill.title}</h4>
+                        <p lang={lang} className="text-justify-auto skill-desc-clamp" style={{ color: 'var(--white-dim)', fontSize: '0.83rem', lineHeight: 1.3 }}>{skill.desc}</p>
+                      </SpotlightCard>
+                    </StaggerItem>
+                  ))}
+                </StaggerGroup>
               </div>
-              <StaggerGroup className="stagger-skills" style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
-                {skills.filter(sk => sk.category !== 'soft').map((skill) => (
-                  <StaggerItem key={skill.id}>
-                    <SpotlightCard className="clay-card" style={{ padding: '1.6rem' }}>
-                      <div style={{ fontFamily: 'var(--font-display)', fontSize: '2rem', color: 'rgba(14,111,168,0.2)', lineHeight: 1, marginBottom: '0.4rem' }}>{skill.number}</div>
-                      <h4 style={{ fontFamily: 'var(--font-body)', fontWeight: 700, color: 'var(--amber)', fontSize: '0.9rem', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{skill.title}</h4>
-                      <p lang={lang} className="text-justify-auto skill-desc-clamp" style={{ color: 'var(--white-dim)', fontSize: '0.85rem', lineHeight: 1.3 }}>{skill.desc}</p>
-                    </SpotlightCard>
-                  </StaggerItem>
-                ))}
-              </StaggerGroup>
             </div>
             {/* ── Soft Skill ── */}
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1.3rem' }}>
-                <div style={{ flex: 1, height: 1, background: 'linear-gradient(to right, transparent, rgba(255,255,255,0.2))' }} />
-                <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.2rem, 3.5vw, 1.8rem)', color: 'var(--white)', letterSpacing: '1px', whiteSpace: 'nowrap' }}>SOFT <span style={{ color: 'var(--amber)' }}>SKILL</span></h3>
-                <div style={{ flex: 1, height: 1, background: 'linear-gradient(to left, transparent, rgba(255,255,255,0.2))' }} />
+              <AnimatedSection direction="up" delay={0.1}>
+                <div className="clay-card" style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1.3rem 1.6rem', marginBottom: 0, border: '1.5px solid var(--card-border)' }}>
+                  <div style={{ width: 50, height: 50, borderRadius: 13, background: 'rgba(255,255,255,0.05)', border: '2px solid var(--white)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.4rem', flexShrink: 0 }}>🤝</div>
+                  <div>
+                    <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.1rem, 3vw, 1.5rem)', color: 'var(--white)', letterSpacing: '0.5px', lineHeight: 1.1 }}>SOFT <span style={{ color: 'var(--amber)' }}>SKILL</span></h3>
+                    <div style={{ color: 'var(--white-dim)', fontSize: '0.78rem', marginTop: '0.2rem' }}><CountUp value={String(skills.filter(sk => sk.category === 'soft').length)} /> {t('keahlian interpersonal', 'interpersonal skills')}</div>
+                  </div>
+                </div>
+              </AnimatedSection>
+              <div style={{ position: 'relative', marginLeft: '1.6rem', paddingLeft: '1.6rem', marginTop: '0.5rem' }}>
+                <motion.div initial={{ scaleY: 0 }} whileInView={{ scaleY: 1 }} viewport={{ once: true }} transition={{ duration: 1, ease: 'easeOut', delay: 0.15 }}
+                  style={{ position: 'absolute', left: 0, top: 0, bottom: '1.2rem', width: 2, background: 'linear-gradient(to bottom, var(--white), rgba(255,255,255,0.08))', transformOrigin: 'top' }} />
+                <StaggerGroup className="stagger-skills" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  {skills.filter(sk => sk.category === 'soft').map((skill) => (
+                    <StaggerItem key={skill.id} style={{ position: 'relative' }}>
+                      <div style={{ position: 'absolute', left: '-1.6rem', top: '1.4rem', width: '1.6rem', height: 2, background: 'rgba(255,255,255,0.2)' }} />
+                      <SpotlightCard className="clay-card" style={{ padding: '1.3rem 1.5rem' }}>
+                        <h4 style={{ fontFamily: 'var(--font-body)', fontWeight: 700, color: 'var(--white)', fontSize: '0.88rem', marginBottom: '0.4rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{skill.title}</h4>
+                        <p lang={lang} className="text-justify-auto skill-desc-clamp" style={{ color: 'var(--white-dim)', fontSize: '0.83rem', lineHeight: 1.3 }}>{skill.desc}</p>
+                      </SpotlightCard>
+                    </StaggerItem>
+                  ))}
+                </StaggerGroup>
               </div>
-              <StaggerGroup className="stagger-skills" style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
-                {skills.filter(sk => sk.category === 'soft').map((skill) => (
-                  <StaggerItem key={skill.id}>
-                    <SpotlightCard className="clay-card" style={{ padding: '1.6rem' }}>
-                      <div style={{ fontFamily: 'var(--font-display)', fontSize: '2rem', color: 'rgba(255,255,255,0.15)', lineHeight: 1, marginBottom: '0.4rem' }}>{skill.number}</div>
-                      <h4 style={{ fontFamily: 'var(--font-body)', fontWeight: 700, color: 'var(--white)', fontSize: '0.9rem', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{skill.title}</h4>
-                      <p lang={lang} className="text-justify-auto skill-desc-clamp" style={{ color: 'var(--white-dim)', fontSize: '0.85rem', lineHeight: 1.3 }}>{skill.desc}</p>
-                    </SpotlightCard>
-                  </StaggerItem>
-                ))}
-              </StaggerGroup>
             </div>
           </div>
           <style>{`
