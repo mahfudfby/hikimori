@@ -930,7 +930,8 @@ const ExpDrilldown:React.FC<{company:string;items:ExpItem[];totalDuration:string
 
         <div style={{flex:1}}>
           <InkRipple>
-            <SpotlightCard className="clay-card" style={{padding:'1.4rem clamp(1.1rem,3vw,1.9rem)',position:'relative',overflow:'hidden',border:`1.5px solid rgba(14,165,192,${isMulti?0.32:0.16})`}}>
+            <SpotlightCard className="clay-card" style={{padding:'1.4rem clamp(1.1rem,3vw,1.9rem)',position:'relative',overflow:'hidden',background:'#0E1B2C',border:`1.5px solid rgba(14,165,192,${isMulti?0.32:0.16})`}}>
+              <div style={{position:'absolute',inset:0,background:'radial-gradient(ellipse at top left, rgba(14,111,168,0.08), transparent 60%)',pointerEvents:'none'}}/>
               <motion.div animate={{opacity:[0.04,0.1,0.04]}} transition={{duration:4+i,repeat:Infinity}} style={{position:'absolute',top:-24,right:-24,width:130,height:130,borderRadius:'50%',background:`radial-gradient(circle,${J.gold}2e,transparent 70%)`,pointerEvents:'none'}}/>
 
               {/* ── Header perusahaan — layout prop bikin transisi ukuran/posisi otomatis mulus ── */}
