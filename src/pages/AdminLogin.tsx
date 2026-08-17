@@ -82,7 +82,7 @@ const AdminLogin: React.FC = () => {
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="Masukkan username"
                 style={inputStyle}
-                onFocus={(e) => (e.target.style.borderColor = 'rgba(14,111,168,0.6)')}
+                onFocus={(e) => (e.target.style.borderColor = 'rgba(0,82,245,0.6)')}
                 onBlur={(e) => (e.target.style.borderColor = 'rgba(255,255,255,0.1)')}
               />
             </div>
@@ -98,13 +98,13 @@ const AdminLogin: React.FC = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Masukkan password"
                   style={{ ...inputStyle, padding: '12px 48px 12px 16px' }}
-                  onFocus={(e) => (e.target.style.borderColor = 'rgba(14,111,168,0.6)')}
+                  onFocus={(e) => (e.target.style.borderColor = 'rgba(0,82,245,0.6)')}
                   onBlur={(e) => (e.target.style.borderColor = 'rgba(255,255,255,0.1)')}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPass(!showPass)}
-                  style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--white-dim)', fontSize: '1.1rem', padding: 0 }}
+                  style={{ position: 'absolute', right: '4px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--white-dim)', fontSize: '1.1rem', width: 40, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                 >
                   {showPass ? '🙈' : '👁️'}
                 </button>
@@ -121,7 +121,7 @@ const AdminLogin: React.FC = () => {
                 style={{
                   flex: '1 1 auto',
                   display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
-                  background: loading ? 'rgba(14,111,168,0.5)' : 'var(--amber)',
+                  background: loading ? 'rgba(0,82,245,0.5)' : 'var(--amber)',
                   color: 'var(--black)', border: 'none', borderRadius: '10px',
                   padding: '13px 20px', fontFamily: 'var(--font-body)', fontWeight: 700, fontSize: '0.95rem',
                   cursor: loading ? 'not-allowed' : 'pointer', letterSpacing: '0.3px',

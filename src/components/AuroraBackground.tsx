@@ -1,7 +1,9 @@
 // src/components/AuroraBackground.tsx
-// Latar aurora lembut (cyan/navy) — CSS-only (transform+opacity, GPU-friendly),
-// tanpa blur berat berulang. Dipakai di section hero halaman-halaman sekunder
+// Latar aurora lembut — CSS-only (transform+opacity, GPU-friendly), tanpa
+// blur berat berulang. Dipakai di section hero halaman-halaman sekunder
 // biar terasa cinematic & senada dengan hero Home, tapi tetap ringan.
+// Palet: sky-blue, vivid-blue, & sedikit periwinkle — semua tipis (opacity
+// rendah + blur besar), bukan warna solid, biar nggak berlebihan.
 import React from 'react';
 
 interface Props {
@@ -27,7 +29,7 @@ const AuroraBackground: React.FC<Props> = ({ variant = 'soft', className }) => {
           position: 'absolute', top: big ? '-25%' : '-15%', left: '10%',
           width: big ? '50%' : '38%', height: big ? '60%' : '46%',
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(14,165,192,0.16) 0%, transparent 72%)',
+          background: 'radial-gradient(circle, rgba(1,169,242,0.15) 0%, transparent 72%)',
           filter: 'blur(46px)',
         }}
       />
@@ -37,8 +39,20 @@ const AuroraBackground: React.FC<Props> = ({ variant = 'soft', className }) => {
           position: 'absolute', bottom: big ? '-20%' : '-12%', right: '8%',
           width: big ? '44%' : '32%', height: big ? '54%' : '40%',
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(14,111,168,0.14) 0%, transparent 72%)',
+          background: 'radial-gradient(circle, rgba(0,82,245,0.13) 0%, transparent 72%)',
           filter: 'blur(50px)',
+        }}
+      />
+      {/* Aksen periwinkle — sengaja sangat tipis (opacity 8%), cuma nambah
+          kedalaman warna, bukan elemen yang harus "kelihatan" sendiri. */}
+      <div
+        className="aurora-blob-c"
+        style={{
+          position: 'absolute', top: '35%', left: '55%',
+          width: big ? '38%' : '28%', height: big ? '46%' : '34%',
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(102,153,255,0.08) 0%, transparent 72%)',
+          filter: 'blur(55px)',
         }}
       />
     </div>

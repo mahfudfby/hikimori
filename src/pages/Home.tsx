@@ -197,7 +197,7 @@ const groupExpByCompany=(exps:ExpItem[],lang:'id'|'en'):ExpRow[]=>{
   });
 };
 
-const D_CONTACT:ContactData={email:'Mahfudfebrys@gmail.com',location:'Nganjuk, Indonesia',website:'hikimori.web.id',instagram:'',linkedin:'',twitter:''};
+const D_CONTACT:ContactData={email:'Mahfudfebrys@gmail.com',location:'Nganjuk, Indonesia',website:'hikimori.web.id',instagram:'mahfudfebry',linkedin:'mahfud-febry-styanto',twitter:''};
 const D_CERT:CertItem[]=[
   {id:'1',name:'Certified Human Resources Generalist (CHRG)',year:'2026 – 2029',issuer:'Badan Nasional Sertifikasi Profesi (BNSP)',subtitle:'Sertifikasi Kompetensi SDM',imageUrl:''},
   {id:'2',name:'Menyusun Uraian Jabatan',year:'2025',issuer:'Training MSDM — Cipta Innovasi Unggul',subtitle:'M.70SDM01.010.2',imageUrl:''},
@@ -250,7 +250,7 @@ const HeroVisual: React.FC<{ reduced?: boolean }> = ({ reduced }) => (
     {/* grid tipis ala blueprint */}
     <div style={{
       position: 'absolute', inset: 0,
-      backgroundImage: 'linear-gradient(rgba(63,195,219,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(63,195,219,0.05) 1px, transparent 1px)',
+      backgroundImage: 'linear-gradient(rgba(1,169,242,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(1,169,242,0.05) 1px, transparent 1px)',
       backgroundSize: '56px 56px',
       maskImage: 'radial-gradient(ellipse 80% 70% at 50% 40%, #000 30%, transparent 90%)',
       WebkitMaskImage: 'radial-gradient(ellipse 80% 70% at 50% 40%, #000 30%, transparent 90%)',
@@ -261,19 +261,19 @@ const HeroVisual: React.FC<{ reduced?: boolean }> = ({ reduced }) => (
       className="hero-aurora-parallax"
       style={{ position: 'absolute', inset: '-10%', filter: 'blur(60px)', mixBlendMode: 'screen' }}
     >
-      <div className={reduced ? '' : 'aurora-ribbon-1'} style={{ position: 'absolute', top: '5%', left: '-15%', width: '75%', height: '38%', borderRadius: '50%', background: 'linear-gradient(100deg, rgba(14,165,192,0.28), rgba(63,195,219,0.14) 45%, transparent 80%)', transform: 'rotate(-8deg)' }} />
-      <div className={reduced ? '' : 'aurora-ribbon-2'} style={{ position: 'absolute', top: '30%', right: '-20%', width: '70%', height: '42%', borderRadius: '50%', background: 'linear-gradient(-100deg, rgba(14,111,168,0.26), rgba(46,146,199,0.12) 45%, transparent 80%)', transform: 'rotate(6deg)' }} />
-      <div className={reduced ? '' : 'aurora-ribbon-3'} style={{ position: 'absolute', bottom: '-5%', left: '10%', width: '65%', height: '35%', borderRadius: '50%', background: 'linear-gradient(95deg, rgba(95,214,234,0.18), rgba(14,165,192,0.08) 50%, transparent 85%)', transform: 'rotate(-4deg)' }} />
+      <div className={reduced ? '' : 'aurora-ribbon-1'} style={{ position: 'absolute', top: '5%', left: '-15%', width: '75%', height: '38%', borderRadius: '50%', background: 'linear-gradient(100deg, rgba(1,169,242,0.28), rgba(0,226,224,0.14) 45%, transparent 80%)', transform: 'rotate(-8deg)' }} />
+      <div className={reduced ? '' : 'aurora-ribbon-2'} style={{ position: 'absolute', top: '30%', right: '-20%', width: '70%', height: '42%', borderRadius: '50%', background: 'linear-gradient(-100deg, rgba(0,82,245,0.26), rgba(51,118,250,0.12) 45%, transparent 80%)', transform: 'rotate(6deg)' }} />
+      <div className={reduced ? '' : 'aurora-ribbon-3'} style={{ position: 'absolute', bottom: '-5%', left: '10%', width: '65%', height: '35%', borderRadius: '50%', background: 'linear-gradient(95deg, rgba(102,153,255,0.16), rgba(153,255,255,0.07) 50%, transparent 85%)', transform: 'rotate(-4deg)' }} />
     </div>
     {/* Spotlight cyan mengikuti kursor — menyatu dgn aurora lewat mix-blend-mode */}
     <div className="hero-cursor-spotlight" style={{
       position: 'absolute', inset: 0,
-      background: 'radial-gradient(420px circle at var(--hero-px,50%) var(--hero-py,50%), rgba(63,195,219,0.28), transparent 70%)',
+      background: 'radial-gradient(420px circle at var(--hero-px,50%) var(--hero-py,50%), rgba(1,169,242,0.28), transparent 70%)',
       mixBlendMode: 'screen', opacity: 0, transition: 'opacity 0.4s ease',
     }} />
     {/* ensō — lingkaran tinta tipis, sentuhan Jepang minimal */}
     <svg viewBox="0 0 400 400" style={{ position: 'absolute', top: '50%', left: '50%', width: 'min(60vw,560px)', height: 'min(60vw,560px)', transform: 'translate(-50%,-50%)', opacity: 0.07 }}>
-      <circle cx="200" cy="200" r="160" fill="none" stroke="#5FD6EA" strokeWidth="2.5" strokeLinecap="round" strokeDasharray="880" strokeDashoffset="70" />
+      <circle cx="200" cy="200" r="160" fill="none" stroke="#99FFFF" strokeWidth="2.5" strokeLinecap="round" strokeDasharray="880" strokeDashoffset="70" />
     </svg>
     {/* vignette bawah supaya teks hero tetap kontras */}
     <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, transparent 45%, rgba(6,13,22,0.55) 100%)' }} />
@@ -291,7 +291,7 @@ const SOSMED_CFG:{key:keyof AboutData;label:string;color:string;href:(v:string)=
   {key:'whatsapp',label:'WhatsApp',color:'#25D366',href:v=>`https://wa.me/${v}`,svg:<svg viewBox="0 0 24 24" fill="currentColor" style={{width:'1.1em',height:'1.1em'}}><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>},
   {key:'threads',label:'Threads',color:'#fff',href:v=>`https://threads.net/@${v}`,svg:<svg viewBox="0 0 24 24" fill="currentColor" style={{width:'1.1em',height:'1.1em'}}><path d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.017c.03-3.579.879-6.43 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.826 2.098 1.677 1.29 2.858 3.13 3.513 5.465l-2.167.578c-1.084-4.015-3.897-6.084-8.18-6.115-2.909.024-5.11.936-6.54 2.717C4.307 6.35 3.616 8.73 3.589 12c.027 3.27.718 5.65 2.057 7.259 1.429 1.78 3.631 2.692 6.54 2.717 1.866-.016 3.421-.425 4.597-1.215 1.355-.908 2.095-2.346 2.206-4.28a6.44 6.44 0 00-.123-1.517c-.22-1.036-.71-1.833-1.394-2.301-.43-.295-.933-.481-1.489-.552-.24 2.058-1.017 3.488-2.315 4.252-1.146.679-2.566.775-3.972.269-1.237-.45-2.204-1.354-2.72-2.542-.47-1.094-.513-2.32-.121-3.45.6-1.726 1.997-2.742 3.787-2.781.577-.013 1.133.068 1.647.238-.036-.264-.054-.538-.054-.819 0-.666.12-1.316.358-1.933.239-.617.588-1.177 1.039-1.669l1.619 1.48c-.574.63-.868 1.413-.868 2.122 0 .276.025.548.075.812.356.108.696.257 1.014.448 1.16.697 1.904 1.873 2.19 3.4.147.786.19 1.59.128 2.389-.178 2.507-1.224 4.434-3.028 5.573-1.464.924-3.311 1.398-5.493 1.411zm-.56-9.72c-.851.018-1.538.478-1.826 1.213-.196.502-.18 1.066.047 1.594.25.585.76 1.038 1.417 1.27.732.264 1.53.208 2.186-.152.723-.393 1.236-1.177 1.42-2.188a6.39 6.39 0 00-1.516-.604 6.57 6.57 0 00-1.728-.133z"/></svg>},
   {key:'tiktok',label:'TikTok',color:'#ff0050',href:v=>`https://tiktok.com/@${v}`,svg:<svg viewBox="0 0 24 24" fill="currentColor" style={{width:'1.1em',height:'1.1em'}}><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>},
-  {key:'email',label:'Email',color:'#0EA5C0',href:v=>`mailto:${v}`,svg:<svg viewBox="0 0 24 24" fill="currentColor" style={{width:'1.1em',height:'1.1em'}}><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>},
+  {key:'email',label:'Email',color:'#0092C7',href:v=>`mailto:${v}`,svg:<svg viewBox="0 0 24 24" fill="currentColor" style={{width:'1.1em',height:'1.1em'}}><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>},
 ];
 const SosmedButtons:React.FC<{about:AboutData}>=({about})=>(
   <div style={{display:'flex',gap:'0.5rem',flexWrap:'wrap',marginBottom:'1.2rem'}}>
@@ -330,11 +330,11 @@ const J={
   // Blacks
   ink:'#0A1522',   inkD:'#060D16',   inkM:'#0E1B2C',   inkL:'#132437',   charcoal:'#16283D',
   // Crimsons
-  red:'#0E6FA8',   redL:'#2E92C7',   redD:'#094A70', redV:'#1178AD',
-  redGlow:'rgba(14,111,168,0.35)',  redBg:'rgba(14,111,168,0.08)',
+  red:'#0052F5',   redL:'#3376FA',   redD:'#0041C4', redV:'#6699FF',
+  redGlow:'rgba(0,82,245,0.35)',  redBg:'rgba(0,82,245,0.08)',
   // Golds
-  gold:'#0EA5C0',  goldL:'#3FC3DB',  goldB:'#66D9F0', goldD:'#0A7688',
-  goldGlow:'rgba(14,165,192,0.3)',  goldBg:'rgba(14,165,192,0.08)',
+  gold:'#0092C7',  goldL:'#01A9F2',  goldB:'#99FFFF', goldD:'#006B94',
+  goldGlow:'rgba(0,146,199,0.3)',  goldBg:'rgba(0,146,199,0.08)',
   // Whites
   white:'#EAF2F8', whiteD:'#B8C9DA', whiteDim:'rgba(234,242,248,0.65)',
   // Overlays
@@ -371,7 +371,7 @@ const ShineHeading:React.FC<{text:string;style?:React.CSSProperties}>=({text,sty
     `}</style>
     <motion.h1
       className="shine-wrap"
-      whileHover={{scale:1.14,textShadow:'4px 4px 0px rgba(14,111,168,1),8px 8px 0px rgba(9,74,112,0.85),13px 13px 0px rgba(6,50,76,0.65),18px 18px 28px rgba(0,0,0,0.95),0 0 80px rgba(14,165,192,0.65),0 0 140px rgba(14,111,168,0.45),0 0 200px rgba(14,111,168,0.2)'}}
+      whileHover={{scale:1.14,textShadow:'4px 4px 0px rgba(0,82,245,1),8px 8px 0px rgba(9,74,112,0.85),13px 13px 0px rgba(6,50,76,0.65),18px 18px 28px rgba(0,0,0,0.95),0 0 80px rgba(0,146,199,0.65),0 0 140px rgba(0,82,245,0.45),0 0 200px rgba(0,82,245,0.2)'}}
       transition={{type:'spring',stiffness:220,damping:18}}
       style={{
         margin:0,
@@ -380,7 +380,7 @@ const ShineHeading:React.FC<{text:string;style?:React.CSSProperties}>=({text,sty
         fontSize:isMobile?'clamp(1.3rem,6.5vw,2.2rem)':'clamp(2rem,5.5vw,5rem)',
         textAlign:'center',
         display:'inline-block',
-        textShadow:`2px 2px 0px rgba(14,111,168,0.9),4px 4px 0px rgba(9,74,112,0.7),6px 6px 0px rgba(6,50,76,0.5),8px 8px 12px rgba(0,0,0,0.8),0 0 30px rgba(14,165,192,0.3)`,
+        textShadow:`2px 2px 0px rgba(0,82,245,0.9),4px 4px 0px rgba(9,74,112,0.7),6px 6px 0px rgba(6,50,76,0.5),8px 8px 12px rgba(0,0,0,0.8),0 0 30px rgba(0,146,199,0.3)`,
         ...style
       }}>
       {text.split('').map((char,ci)=>{
@@ -401,7 +401,7 @@ const TiltCard:React.FC<{children:React.ReactNode;style?:React.CSSProperties;int
   return <motion.div style={{perspective:900,transformStyle:'preserve-3d',...style}} onMouseMove={move} onMouseLeave={()=>{mx.set(0);my.set(0);}}>
     <motion.div style={{rotateX:rx,rotateY:ry,transformStyle:'preserve-3d',width:'100%',height:'100%',position:'relative'}}>
       {children}
-      <motion.div style={{position:'absolute',inset:0,borderRadius:'inherit',pointerEvents:'none',background:`radial-gradient(circle at ${gx} ${gy},rgba(14,165,192,0.1) 0%,transparent 65%)`,zIndex:10}}/>
+      <motion.div style={{position:'absolute',inset:0,borderRadius:'inherit',pointerEvents:'none',background:`radial-gradient(circle at ${gx} ${gy},rgba(0,146,199,0.1) 0%,transparent 65%)`,zIndex:10}}/>
     </motion.div>
   </motion.div>;
 };
@@ -438,7 +438,7 @@ const Stars:React.FC=()=>{
     const spawn=()=>{const a=(Math.random()*25+15)*Math.PI/180,sp=Math.random()*7+6,len=Math.random()*120+80,life=len/sp;shoots.push({x:Math.random()*c.width*0.8,y:Math.random()*c.height*0.4,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,len,life,maxLife:life});};
     const tick=()=>{ctx.clearRect(0,0,c.width,c.height);stars.forEach(s=>{s.a=Math.max(0.1,Math.min(1,s.a+s.da));if(s.a<=0.1||s.a>=1)s.da*=-1;ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle=`rgba(234,242,248,${s.a})`;ctx.fill();});
       t++;if(t>=next){spawn();next=t+Math.floor(Math.random()*200+100);}
-      for(let i=shoots.length-1;i>=0;i--){const s=shoots[i];const prog=1-s.life/s.maxLife;const alpha=s.life<20?s.life/20:1;const ang=Math.atan2(s.vy,s.vx);const tx=s.x-Math.cos(ang)*s.len*Math.min(prog*2,1);const ty=s.y-Math.sin(ang)*s.len*Math.min(prog*2,1);const g=ctx.createLinearGradient(tx,ty,s.x,s.y);g.addColorStop(0,'rgba(14,165,192,0)');g.addColorStop(1,`rgba(234,242,248,${alpha})`);ctx.beginPath();ctx.moveTo(tx,ty);ctx.lineTo(s.x,s.y);ctx.strokeStyle=g;ctx.lineWidth=1.5;ctx.stroke();s.x+=s.vx;s.y+=s.vy;s.life--;if(s.life<=0)shoots.splice(i,1);}
+      for(let i=shoots.length-1;i>=0;i--){const s=shoots[i];const prog=1-s.life/s.maxLife;const alpha=s.life<20?s.life/20:1;const ang=Math.atan2(s.vy,s.vx);const tx=s.x-Math.cos(ang)*s.len*Math.min(prog*2,1);const ty=s.y-Math.sin(ang)*s.len*Math.min(prog*2,1);const g=ctx.createLinearGradient(tx,ty,s.x,s.y);g.addColorStop(0,'rgba(0,146,199,0)');g.addColorStop(1,`rgba(234,242,248,${alpha})`);ctx.beginPath();ctx.moveTo(tx,ty);ctx.lineTo(s.x,s.y);ctx.strokeStyle=g;ctx.lineWidth=1.5;ctx.stroke();s.x+=s.vx;s.y+=s.vy;s.life--;if(s.life<=0)shoots.splice(i,1);}
       raf=requestAnimationFrame(tick);};
     tick();return()=>{cancelAnimationFrame(raf);window.removeEventListener('resize',resize);};
   },[]);
@@ -459,7 +459,7 @@ const InkBrushCanvas:React.FC=()=>{
     const strokes:Stroke[]=[];let next=0,t=0;
     const spawnStroke=()=>{
       const isRed=Math.random()<0.3;
-      const color=isRed?`rgba(14,111,168,`:`rgba(14,165,192,`;
+      const color=isRed?`rgba(0,82,245,`:`rgba(0,146,199,`;
       const maxLen=Math.floor(Math.random()*80+40);
       strokes.push({
         x:Math.random()*c.width,y:Math.random()*c.height,
@@ -499,7 +499,7 @@ const GoldLines:React.FC=()=>{
     const c=ref.current;if(!c)return;const ctx=c.getContext('2d');if(!ctx)return;let raf:number;
     const resize=()=>{c.width=c.offsetWidth;c.height=c.offsetHeight;};resize();window.addEventListener('resize',resize);
     const lines=Array.from({length:16},()=>({x1:Math.random()*1400,y1:Math.random()*900,x2:Math.random()*1400,y2:Math.random()*900,prog:Math.random(),speed:Math.random()*0.003+0.001,alpha:Math.random()*0.25+0.08,dir:(Math.random()<0.5?1:-1) as 1|-1}));
-    const tick=()=>{ctx.clearRect(0,0,c.width,c.height);lines.forEach(l=>{l.prog+=l.speed*l.dir;if(l.prog>1){l.prog=1;l.dir=-1;l.x2=Math.random()*c.width;l.y2=Math.random()*c.height;}if(l.prog<0){l.prog=0;l.dir=1;l.x1=Math.random()*c.width;l.y1=Math.random()*c.height;}const g=ctx.createLinearGradient(l.x1,l.y1,l.x2,l.y2);g.addColorStop(0,'rgba(14,165,192,0)');g.addColorStop(l.prog,`rgba(63,195,219,${l.alpha})`);g.addColorStop(Math.min(l.prog+0.05,1),`rgba(14,165,192,${l.alpha*0.5})`);g.addColorStop(1,'rgba(14,165,192,0)');ctx.beginPath();ctx.moveTo(l.x1,l.y1);ctx.lineTo(l.x2,l.y2);ctx.strokeStyle=g;ctx.lineWidth=0.8;ctx.stroke();const nx=l.x1+(l.x2-l.x1)*l.prog;const ny=l.y1+(l.y2-l.y1)*l.prog;ctx.beginPath();ctx.arc(nx,ny,1.5,0,Math.PI*2);ctx.fillStyle=`rgba(63,195,219,${l.alpha*1.5})`;ctx.fill();});raf=requestAnimationFrame(tick);};
+    const tick=()=>{ctx.clearRect(0,0,c.width,c.height);lines.forEach(l=>{l.prog+=l.speed*l.dir;if(l.prog>1){l.prog=1;l.dir=-1;l.x2=Math.random()*c.width;l.y2=Math.random()*c.height;}if(l.prog<0){l.prog=0;l.dir=1;l.x1=Math.random()*c.width;l.y1=Math.random()*c.height;}const g=ctx.createLinearGradient(l.x1,l.y1,l.x2,l.y2);g.addColorStop(0,'rgba(0,146,199,0)');g.addColorStop(l.prog,`rgba(63,195,219,${l.alpha})`);g.addColorStop(Math.min(l.prog+0.05,1),`rgba(0,146,199,${l.alpha*0.5})`);g.addColorStop(1,'rgba(0,146,199,0)');ctx.beginPath();ctx.moveTo(l.x1,l.y1);ctx.lineTo(l.x2,l.y2);ctx.strokeStyle=g;ctx.lineWidth=0.8;ctx.stroke();const nx=l.x1+(l.x2-l.x1)*l.prog;const ny=l.y1+(l.y2-l.y1)*l.prog;ctx.beginPath();ctx.arc(nx,ny,1.5,0,Math.PI*2);ctx.fillStyle=`rgba(63,195,219,${l.alpha*1.5})`;ctx.fill();});raf=requestAnimationFrame(tick);};
     tick();return()=>{cancelAnimationFrame(raf);window.removeEventListener('resize',resize);};
   },[]);
   return <canvas ref={ref} style={{position:'absolute',inset:0,width:'100%',height:'100%',pointerEvents:'none',zIndex:2}}/>;
@@ -508,13 +508,13 @@ const GoldLines:React.FC=()=>{
 /* Crack texture SVG */
 const CrackOverlay:React.FC=()=>(
   <svg style={{position:'absolute',inset:0,width:'100%',height:'100%',pointerEvents:'none',zIndex:1,opacity:0.15}} preserveAspectRatio="xMidYMid slice" viewBox="0 0 400 900">
-    <path d="M120 50 L180 120 L140 200 L200 280 L160 380 L220 450 L180 560 L240 640 L200 750 L260 850" stroke="rgba(14,165,192,0.6)" strokeWidth="0.8" fill="none" strokeLinecap="round"/>
-    <path d="M280 30 L240 100 L290 180 L250 260 L300 350 L260 440 L310 520 L270 620 L320 720 L280 820" stroke="rgba(14,165,192,0.5)" strokeWidth="0.6" fill="none" strokeLinecap="round"/>
-    <path d="M60 150 L120 180 L80 230 L150 260 L100 320" stroke="rgba(14,111,168,0.4)" strokeWidth="0.5" fill="none" strokeLinecap="round"/>
-    <path d="M320 200 L360 240 L310 290 L370 340 L330 400" stroke="rgba(14,111,168,0.35)" strokeWidth="0.5" fill="none" strokeLinecap="round"/>
+    <path d="M120 50 L180 120 L140 200 L200 280 L160 380 L220 450 L180 560 L240 640 L200 750 L260 850" stroke="rgba(0,146,199,0.6)" strokeWidth="0.8" fill="none" strokeLinecap="round"/>
+    <path d="M280 30 L240 100 L290 180 L250 260 L300 350 L260 440 L310 520 L270 620 L320 720 L280 820" stroke="rgba(0,146,199,0.5)" strokeWidth="0.6" fill="none" strokeLinecap="round"/>
+    <path d="M60 150 L120 180 L80 230 L150 260 L100 320" stroke="rgba(0,82,245,0.4)" strokeWidth="0.5" fill="none" strokeLinecap="round"/>
+    <path d="M320 200 L360 240 L310 290 L370 340 L330 400" stroke="rgba(0,82,245,0.35)" strokeWidth="0.5" fill="none" strokeLinecap="round"/>
     {[[90,300],[210,400],[330,500],[150,600],[270,700]].map(([x,y],i)=>(
       <g key={i} transform={`translate(${x},${y}) rotate(45)`}>
-        <rect x="-5" y="-5" width="10" height="10" fill="none" stroke="rgba(14,165,192,0.25)" strokeWidth="0.6"/>
+        <rect x="-5" y="-5" width="10" height="10" fill="none" stroke="rgba(0,146,199,0.25)" strokeWidth="0.6"/>
       </g>
     ))}
   </svg>
@@ -545,8 +545,8 @@ const SamuraiMon:React.FC<{style?:React.CSSProperties;delay?:number;size?:number
       <circle cx="50" cy="50" r="40" fill="none" stroke={J.red} strokeWidth="0.8" opacity="0.5"/>
       {variant===0 && <>
         {/* Tomoe (tomoe pattern - 3 comma swirls) */}
-        {[0,120,240].map((_,i)=>{const a=(i*120-90)*Math.PI/180;return <path key={i} d={`M50 50 Q${50+Math.cos(a)*28} ${50+Math.sin(a)*28} ${50+Math.cos(a+Math.PI/3)*20} ${50+Math.sin(a+Math.PI/3)*20} A8 8 0 1 0 ${50+Math.cos(a)*12} ${50+Math.sin(a)*12} Z`} fill={`rgba(14,165,192,0.35)`} stroke={J.gold} strokeWidth="0.8"/>;})}
-        <circle cx="50" cy="50" r="6" fill={`rgba(14,111,168,0.5)`} stroke={J.red} strokeWidth="1"/>
+        {[0,120,240].map((_,i)=>{const a=(i*120-90)*Math.PI/180;return <path key={i} d={`M50 50 Q${50+Math.cos(a)*28} ${50+Math.sin(a)*28} ${50+Math.cos(a+Math.PI/3)*20} ${50+Math.sin(a+Math.PI/3)*20} A8 8 0 1 0 ${50+Math.cos(a)*12} ${50+Math.sin(a)*12} Z`} fill={`rgba(0,146,199,0.35)`} stroke={J.gold} strokeWidth="0.8"/>;})}
+        <circle cx="50" cy="50" r="6" fill={`rgba(0,82,245,0.5)`} stroke={J.red} strokeWidth="1"/>
       </>}
       {variant===1 && <>
         {/* Diamond cross */}
@@ -556,12 +556,12 @@ const SamuraiMon:React.FC<{style?:React.CSSProperties;delay?:number;size?:number
       </>}
       {variant===2 && <>
         {/* Six-pointed pattern */}
-        {[...Array(6)].map((_,i)=>{const a=i*60*Math.PI/180;return <polygon key={i} points={`${50+Math.cos(a)*35},${50+Math.sin(a)*35} ${50+Math.cos(a+Math.PI/6)*18},${50+Math.sin(a+Math.PI/6)*18} ${50+Math.cos(a-Math.PI/6)*18},${50+Math.sin(a-Math.PI/6)*18}`} fill={`rgba(14,165,192,0.2)`} stroke={J.gold} strokeWidth="0.8" opacity="0.7"/>;})  }
-        <circle cx="50" cy="50" r="8" fill={`rgba(14,111,168,0.4)`} stroke={J.red} strokeWidth="1.2"/>
+        {[...Array(6)].map((_,i)=>{const a=i*60*Math.PI/180;return <polygon key={i} points={`${50+Math.cos(a)*35},${50+Math.sin(a)*35} ${50+Math.cos(a+Math.PI/6)*18},${50+Math.sin(a+Math.PI/6)*18} ${50+Math.cos(a-Math.PI/6)*18},${50+Math.sin(a-Math.PI/6)*18}`} fill={`rgba(0,146,199,0.2)`} stroke={J.gold} strokeWidth="0.8" opacity="0.7"/>;})  }
+        <circle cx="50" cy="50" r="8" fill={`rgba(0,82,245,0.4)`} stroke={J.red} strokeWidth="1.2"/>
       </>}
     </svg>
     <motion.div animate={{opacity:[0.1,0.3,0.1],scale:[1,1.2,1]}} transition={{duration:3+delay,repeat:Infinity}}
-      style={{position:'absolute',inset:-15,borderRadius:'50%',background:`radial-gradient(circle,rgba(14,111,168,0.2) 0%,transparent 70%)`,filter:'blur(6px)'}}/>
+      style={{position:'absolute',inset:-15,borderRadius:'50%',background:`radial-gradient(circle,rgba(0,82,245,0.2) 0%,transparent 70%)`,filter:'blur(6px)'}}/>
   </motion.div>
 );
 
@@ -577,12 +577,12 @@ const Katana:React.FC<{style?:React.CSSProperties;delay?:number;vertical?:boolea
       {/* Gold edge line */}
       <path d="M10 9 L240 9" stroke={J.gold} strokeWidth="0.8" opacity="0.5"/>
       {/* Tsuba (guard) */}
-      <ellipse cx="28" cy="10" rx="6" ry="9" fill={`rgba(14,165,192,0.3)`} stroke={J.gold} strokeWidth="1"/>
+      <ellipse cx="28" cy="10" rx="6" ry="9" fill={`rgba(0,146,199,0.3)`} stroke={J.gold} strokeWidth="1"/>
       {/* Handle */}
-      <rect x="0" y="7" width="28" height="6" rx="2" fill={`rgba(14,111,168,0.4)`} stroke={J.red} strokeWidth="0.8"/>
-      {[5,10,15,20,25].map(x=><line key={x} x1={x} y1="7" x2={x+2} y2="13" stroke={`rgba(14,165,192,0.4)`} strokeWidth="0.8"/>)}
+      <rect x="0" y="7" width="28" height="6" rx="2" fill={`rgba(0,82,245,0.4)`} stroke={J.red} strokeWidth="0.8"/>
+      {[5,10,15,20,25].map(x=><line key={x} x1={x} y1="7" x2={x+2} y2="13" stroke={`rgba(0,146,199,0.4)`} strokeWidth="0.8"/>)}
       {/* Blood groove */}
-      <line x1="35" y1="9.5" x2="200" y2="9.5" stroke={`rgba(14,111,168,0.3)`} strokeWidth="0.6"/>
+      <line x1="35" y1="9.5" x2="200" y2="9.5" stroke={`rgba(0,82,245,0.3)`} strokeWidth="0.6"/>
       {/* Tip glow */}
       <motion.circle cx="278" cy="7" r="2" fill={J.gold} animate={{opacity:[0.3,0.8,0.3]}} transition={{duration:2,repeat:Infinity,delay}}/>
     </svg>
@@ -598,7 +598,7 @@ const KanjiStamp:React.FC<{kanji:string;style?:React.CSSProperties;delay?:number
       <svg viewBox="0 0 100 100" width={size} height={size}>
         <rect x="2" y="2" width="96" height="96" rx="4" fill="none" stroke={J.red} strokeWidth="3" opacity="0.8"/>
         <rect x="6" y="6" width="88" height="88" rx="2" fill="none" stroke={J.red} strokeWidth="1" opacity="0.5"/>
-        <text x="50" y="68" textAnchor="middle" fontSize="54" fontFamily="serif" fill={`rgba(14,111,168,0.85)`} fontWeight="bold">{kanji}</text>
+        <text x="50" y="68" textAnchor="middle" fontSize="54" fontFamily="serif" fill={`rgba(0,82,245,0.85)`} fontWeight="bold">{kanji}</text>
       </svg>
     </motion.div>
   </motion.div>
@@ -617,7 +617,7 @@ const InkCircle:React.FC<{style?:React.CSSProperties;delay?:number;size?:number;
         <motion.circle cx="60" cy="60" r="44" fill="none" stroke={c} strokeWidth="0.8" opacity="0.5"
           initial={{pathLength:0}} animate={{pathLength:0.8}} transition={{duration:2.5,delay:delay+1}}/>
         {[...Array(8)].map((_,i)=>{const a=i*45*Math.PI/180;return <motion.line key={i} x1={60+Math.cos(a)*46} y1={60+Math.sin(a)*46} x2={60+Math.cos(a)*56} y2={60+Math.sin(a)*56} stroke={c} strokeWidth="1.5" opacity="0.6" initial={{opacity:0}} animate={{opacity:0.6}} transition={{delay:delay+0.1*i}}/>;})  }
-        <circle cx="60" cy="60" r="6" fill={`rgba(14,111,168,0.3)`} stroke={c} strokeWidth="1"/>
+        <circle cx="60" cy="60" r="6" fill={`rgba(0,82,245,0.3)`} stroke={c} strokeWidth="1"/>
       </svg>
       <motion.div animate={{opacity:[0.15,0.4,0.15]}} transition={{duration:3+delay,repeat:Infinity}}
         style={{position:'absolute',inset:-20,borderRadius:'50%',background:`radial-gradient(circle,${c}22 0%,transparent 70%)`,filter:'blur(8px)'}}/>
@@ -634,14 +634,14 @@ const Nobori:React.FC<{style?:React.CSSProperties;delay?:number;kanji?:string}>=
       {/* Pole */}
       <line x1="20" y1="0" x2="20" y2="140" stroke="rgba(139,90,40,0.6)" strokeWidth="3" strokeLinecap="round"/>
       {/* Flag body */}
-      <rect x="4" y="8" width="32" height="100" rx="2" fill={`rgba(14,111,168,0.5)`} stroke={J.red} strokeWidth="1"/>
+      <rect x="4" y="8" width="32" height="100" rx="2" fill={`rgba(0,82,245,0.5)`} stroke={J.red} strokeWidth="1"/>
       {/* Gold trim */}
-      <rect x="4" y="8" width="32" height="6" rx="1" fill={`rgba(14,165,192,0.4)`}/>
-      <rect x="4" y="102" width="32" height="6" rx="1" fill={`rgba(14,165,192,0.4)`}/>
+      <rect x="4" y="8" width="32" height="6" rx="1" fill={`rgba(0,146,199,0.4)`}/>
+      <rect x="4" y="102" width="32" height="6" rx="1" fill={`rgba(0,146,199,0.4)`}/>
       {/* Kanji */}
       <text x="20" y="65" textAnchor="middle" fontSize="22" fontFamily="serif" fill="rgba(245,240,220,0.8)" fontWeight="bold">{kanji}</text>
       {/* Decorative line */}
-      <line x1="10" y1="80" x2="30" y2="80" stroke={`rgba(14,165,192,0.4)`} strokeWidth="0.8"/>
+      <line x1="10" y1="80" x2="30" y2="80" stroke={`rgba(0,146,199,0.4)`} strokeWidth="0.8"/>
     </svg>
   </motion.div>
 );
@@ -682,9 +682,9 @@ const RisingSun:React.FC<{style?:React.CSSProperties;opacity?:number}>=({style={
     animate={{scale:[1,1.05,1],opacity:[opacity,opacity*1.5,opacity]}} transition={{duration:6,repeat:Infinity}}>
     <svg viewBox="0 0 160 160" width="160" height="160">
       {[...Array(16)].map((_,i)=>{const a=i*22.5*Math.PI/180;return <line key={i} x1={80+Math.cos(a)*62} y1={80+Math.sin(a)*62} x2={80+Math.cos(a)*76} y2={80+Math.sin(a)*76} stroke={J.red} strokeWidth={i%2===0?"2":"1"} opacity="0.6" strokeLinecap="round"/>;})  }
-      <circle cx="80" cy="80" r="55" fill={`rgba(14,111,168,0.12)`} stroke={J.red} strokeWidth="2.5"/>
-      <circle cx="80" cy="80" r="38" fill={`rgba(14,111,168,0.18)`} stroke={J.redL} strokeWidth="1.5"/>
-      <circle cx="80" cy="80" r="22" fill={`rgba(14,111,168,0.28)`}/>
+      <circle cx="80" cy="80" r="55" fill={`rgba(0,82,245,0.12)`} stroke={J.red} strokeWidth="2.5"/>
+      <circle cx="80" cy="80" r="38" fill={`rgba(0,82,245,0.18)`} stroke={J.redL} strokeWidth="1.5"/>
+      <circle cx="80" cy="80" r="22" fill={`rgba(0,82,245,0.28)`}/>
       <circle cx="80" cy="80" r="55" fill="none" stroke={J.gold} strokeWidth="0.8" opacity="0.35"/>
     </svg>
   </motion.div>
@@ -696,25 +696,25 @@ const StrucBuilding:React.FC<{style?:React.CSSProperties;flip?:boolean;delay?:nu
     animate={{opacity:[0.3,0.5,0.3]}} transition={{duration:5+delay,repeat:Infinity,delay}}>
     <svg viewBox="0 0 110 150" width="110" height="150">
       {/* Castle-style silhouette */}
-      <rect x="5" y="60" width="100" height="90" fill="rgba(8,4,0,0.9)" stroke="rgba(14,165,192,0.25)" strokeWidth="1"/>
+      <rect x="5" y="60" width="100" height="90" fill="rgba(8,4,0,0.9)" stroke="rgba(0,146,199,0.25)" strokeWidth="1"/>
       {/* Battlements */}
-      {[10,28,46,64,82].map(x=><rect key={x} x={x} y="48" width="14" height="14" fill="rgba(8,4,0,0.9)" stroke="rgba(14,165,192,0.2)" strokeWidth="0.8"/>)}
+      {[10,28,46,64,82].map(x=><rect key={x} x={x} y="48" width="14" height="14" fill="rgba(8,4,0,0.9)" stroke="rgba(0,146,199,0.2)" strokeWidth="0.8"/>)}
       {/* Roof */}
-      <path d="M0 62 L55 20 L110 62" fill="rgba(12,6,0,0.92)" stroke="rgba(14,165,192,0.3)" strokeWidth="1"/>
+      <path d="M0 62 L55 20 L110 62" fill="rgba(12,6,0,0.92)" stroke="rgba(0,146,199,0.3)" strokeWidth="1"/>
       {/* Roof curve tips */}
-      <path d="M2 60 Q-2 54 2 48" stroke="rgba(14,165,192,0.4)" strokeWidth="1.5" fill="none"/>
-      <path d="M108 60 Q112 54 108 48" stroke="rgba(14,165,192,0.4)" strokeWidth="1.5" fill="none"/>
+      <path d="M2 60 Q-2 54 2 48" stroke="rgba(0,146,199,0.4)" strokeWidth="1.5" fill="none"/>
+      <path d="M108 60 Q112 54 108 48" stroke="rgba(0,146,199,0.4)" strokeWidth="1.5" fill="none"/>
       {/* Windows — glowing */}
       {[[25,90],[50,90],[75,90],[35,115],[65,115]].map(([x,y],i)=>(
         <g key={i}>
-          <rect x={x-7} y={y-10} width="14" height="18" rx="1" fill="rgba(14,165,192,0.08)" stroke="rgba(14,165,192,0.3)" strokeWidth="0.8"/>
-          <motion.rect x={x-7} y={y-10} width="14" height="18" rx="1" fill="rgba(14,165,192,0.06)" animate={{opacity:[0.06,0.18,0.06]}} transition={{duration:2+i*0.3,repeat:Infinity,delay:i*0.4}}/>
+          <rect x={x-7} y={y-10} width="14" height="18" rx="1" fill="rgba(0,146,199,0.08)" stroke="rgba(0,146,199,0.3)" strokeWidth="0.8"/>
+          <motion.rect x={x-7} y={y-10} width="14" height="18" rx="1" fill="rgba(0,146,199,0.06)" animate={{opacity:[0.06,0.18,0.06]}} transition={{duration:2+i*0.3,repeat:Infinity,delay:i*0.4}}/>
         </g>
       ))}
       {/* Gate */}
-      <path d="M42 150 L42 125 Q55 115 68 125 L68 150" fill="rgba(5,2,0,0.95)" stroke="rgba(14,165,192,0.25)" strokeWidth="1"/>
+      <path d="M42 150 L42 125 Q55 115 68 125 L68 150" fill="rgba(5,2,0,0.95)" stroke="rgba(0,146,199,0.25)" strokeWidth="1"/>
       {/* Red banner */}
-      <rect x="48" y="48" width="14" height="30" fill="rgba(14,111,168,0.5)" stroke={J.red} strokeWidth="0.8"/>
+      <rect x="48" y="48" width="14" height="30" fill="rgba(0,82,245,0.5)" stroke={J.red} strokeWidth="0.8"/>
       <text x="55" y="68" textAnchor="middle" fontSize="10" fill="rgba(245,240,220,0.7)" fontFamily="serif">武</text>
     </svg>
   </motion.div>
@@ -724,7 +724,7 @@ const StrucBuilding:React.FC<{style?:React.CSSProperties;flip?:boolean;delay?:nu
 const JapanBgSection:React.FC<{children:React.ReactNode;overlayColor?:string;style?:React.CSSProperties}>=({children,overlayColor=J.ov78,style={}})=>(
   <section style={{position:'relative',padding:'clamp(4rem,10vw,8rem) clamp(1rem,5vw,2rem)',overflow:'hidden',backgroundImage:"url('/japan-bg.jpg')",backgroundSize:'cover',backgroundPosition:'center top',backgroundAttachment:'fixed',...style}}>
     <div style={{position:'absolute',inset:0,background:overlayColor,zIndex:0}}/>
-    <div style={{position:'absolute',inset:0,background:'radial-gradient(ellipse at 50% 50%,rgba(14,111,168,0.08) 0%,rgba(6,14,24,0.5) 100%)',zIndex:0}}/>
+    <div style={{position:'absolute',inset:0,background:'radial-gradient(ellipse at 50% 50%,rgba(0,82,245,0.08) 0%,rgba(6,14,24,0.5) 100%)',zIndex:0}}/>
     <div style={{position:'absolute',top:0,left:0,right:0,height:100,background:`linear-gradient(to bottom,${J.ink},transparent)`,zIndex:3,pointerEvents:'none'}}/>
     <div style={{position:'absolute',bottom:0,left:0,right:0,height:100,background:`linear-gradient(to top,${J.ink},transparent)`,zIndex:3,pointerEvents:'none'}}/>
     <CrackOverlay/>
@@ -749,13 +749,13 @@ const Marquee:React.FC<{contact:ContactData}>=({contact})=>{
   ].filter(Boolean) as {icon:string;label:string;value:string;href:string|null}[];
   const doubled=[...items,...items,...items];
   return (
-    <div style={{width:'100%',overflow:'hidden',background:`linear-gradient(90deg,${J.redD},${J.red},${J.redD})`,padding:'10px 0',position:'relative',zIndex:10,borderTop:`1px solid rgba(14,165,192,0.3)`,borderBottom:`1px solid rgba(14,165,192,0.3)`}}>
+    <div style={{width:'100%',overflow:'hidden',background:`linear-gradient(90deg,${J.redD},${J.red},${J.redD})`,padding:'10px 0',position:'relative',zIndex:10,borderTop:`1px solid rgba(0,146,199,0.3)`,borderBottom:`1px solid rgba(0,146,199,0.3)`}}>
       <motion.div style={{display:'flex',width:'max-content'}} animate={{x:['0%','-33.33%']}} transition={{duration:26,repeat:Infinity,ease:'linear'}}>
         {doubled.map((item,i)=>(
           <div key={i} style={{display:'flex',alignItems:'center',gap:8,padding:'0 24px',flexShrink:0,whiteSpace:'nowrap'}}>
             <span style={{color:J.gold,fontSize:'0.65rem'}}>◆</span>
             <span style={{fontFamily:'var(--font-body)',fontSize:'0.72rem',fontWeight:700,color:'rgba(245,240,220,0.55)',textTransform:'uppercase',letterSpacing:'2px'}}>{item.label}</span>
-            <span style={{color:'rgba(14,165,192,0.4)',fontSize:'0.8rem'}}>·</span>
+            <span style={{color:'rgba(0,146,199,0.4)',fontSize:'0.8rem'}}>·</span>
             {item.href
               ?<a href={item.href} target={item.href.startsWith('http')?'_blank':undefined} rel="noreferrer" style={{fontFamily:'var(--font-body)',fontSize:'0.78rem',fontWeight:600,color:'rgba(245,240,220,0.9)',textDecoration:'none'}}>{item.value}</a>
               :<span style={{fontFamily:'var(--font-body)',fontSize:'0.78rem',fontWeight:600,color:'rgba(245,240,220,0.9)'}}>{item.value}</span>}
@@ -777,11 +777,11 @@ const CertCard:React.FC<{cert:CertItem;index:number}>=({cert,index})=>{
     <Reveal direction="up" delay={index*0.09}>
       <InkRipple>
         <motion.div
-          whileHover={!open?{y:-4,boxShadow:`0 20px 60px rgba(14,111,168,0.2),0 0 0 1px rgba(14,111,168,0.35)`}:{}}
-          style={{borderRadius:12,overflow:'hidden',border:`1px solid rgba(14,111,168,${open?0.6:0.2})`,background:'rgba(8,4,0,0.9)',backdropFilter:'blur(16px)',transition:'all 0.3s'}}>
+          whileHover={!open?{y:-4,boxShadow:`0 20px 60px rgba(0,82,245,0.2),0 0 0 1px rgba(0,82,245,0.35)`}:{}}
+          style={{borderRadius:12,overflow:'hidden',border:`1px solid rgba(0,82,245,${open?0.6:0.2})`,background:'rgba(8,4,0,0.9)',backdropFilter:'blur(16px)',transition:'all 0.3s'}}>
           <button onClick={()=>setOpen(o=>!o)} style={{width:'100%',background:'none',border:'none',cursor:'pointer',padding:'1.2rem 1.5rem',display:'flex',alignItems:'center',gap:'1.1rem',textAlign:'left'}}>
             {/* Red wax seal */}
-            <div style={{flexShrink:0,width:50,height:50,borderRadius:'50%',background:`radial-gradient(circle,${J.red} 0%,${J.redD} 100%)`,display:'flex',alignItems:'center',justifyContent:'center',boxShadow:`0 4px 16px rgba(14,111,168,0.5)`,position:'relative',border:`1px solid rgba(14,165,192,0.3)`}}>
+            <div style={{flexShrink:0,width:50,height:50,borderRadius:'50%',background:`radial-gradient(circle,${J.red} 0%,${J.redD} 100%)`,display:'flex',alignItems:'center',justifyContent:'center',boxShadow:`0 4px 16px rgba(0,82,245,0.5)`,position:'relative',border:`1px solid rgba(0,146,199,0.3)`}}>
               <span style={{fontFamily:'serif',fontSize:'1.2rem',color:'rgba(245,240,220,0.9)'}}>証</span>
             </div>
             <div style={{flex:1,minWidth:0,display:'flex',flexDirection:'column',gap:'0.2rem'}}>
@@ -789,10 +789,10 @@ const CertCard:React.FC<{cert:CertItem;index:number}>=({cert,index})=>{
               <div style={{fontFamily:'var(--font-body)',fontSize:'0.82rem',color:J.goldL,fontWeight:600,display:'flex',alignItems:'center',gap:'0.4rem',flexWrap:'wrap'}}>
                 <span style={{display:'inline-block',width:5,height:5,borderRadius:'50%',background:J.gold,flexShrink:0}}/>
                 {cert.issuer||'—'}
-                {cert.subtitle&&<span style={{color:'rgba(14,165,192,0.5)',fontWeight:400}}>· {cert.subtitle}</span>}
+                {cert.subtitle&&<span style={{color:'rgba(0,146,199,0.5)',fontWeight:400}}>· {cert.subtitle}</span>}
               </div>
               <div style={{display:'flex',alignItems:'center',gap:'0.5rem',marginTop:'0.1rem'}}>
-                <span style={{fontFamily:'var(--font-body)',fontSize:'0.73rem',fontWeight:700,color:J.gold,background:'rgba(14,165,192,0.1)',border:`1px solid rgba(14,165,192,0.35)`,borderRadius:4,padding:'2px 10px',letterSpacing:'0.5px'}}>{cert.year||'—'}</span>
+                <span style={{fontFamily:'var(--font-body)',fontSize:'0.73rem',fontWeight:700,color:J.gold,background:'rgba(0,146,199,0.1)',border:`1px solid rgba(0,146,199,0.35)`,borderRadius:4,padding:'2px 10px',letterSpacing:'0.5px'}}>{cert.year||'—'}</span>
               </div>
             </div>
             <motion.div animate={{rotate:open?180:0}} transition={{duration:0.3}} style={{flexShrink:0,color:J.gold}}>
@@ -807,19 +807,19 @@ const CertCard:React.FC<{cert:CertItem;index:number}>=({cert,index})=>{
               <motion.div key="img" initial={{height:0,opacity:0}} animate={{height:'auto',opacity:1}} exit={{height:0,opacity:0}} transition={{duration:0.45,ease:[0.4,0,0.2,1]}} style={{overflow:'hidden'}}>
                 <div style={{padding:'1rem 1.5rem 1.5rem'}}>
                   <div style={{display:'flex',flexWrap:'wrap',gap:'0.4rem',marginBottom:'1rem'}}>
-                    {[{t:`📋 ${cert.name}`,c:J.white,bg:'rgba(255,255,255,0.05)'},{t:cert.issuer,c:J.goldL,bg:J.goldBg},{t:cert.subtitle,c:'rgba(14,165,192,0.6)',bg:'rgba(255,255,255,0.04)'},{t:`📅 ${cert.year}`,c:J.gold,bg:J.goldBg}].filter(x=>x.t).map((x,i)=>(
+                    {[{t:`📋 ${cert.name}`,c:J.white,bg:'rgba(255,255,255,0.05)'},{t:cert.issuer,c:J.goldL,bg:J.goldBg},{t:cert.subtitle,c:'rgba(0,146,199,0.6)',bg:'rgba(255,255,255,0.04)'},{t:`📅 ${cert.year}`,c:J.gold,bg:J.goldBg}].filter(x=>x.t).map((x,i)=>(
                       <span key={i} style={{fontFamily:'var(--font-body)',fontSize:'0.73rem',fontWeight:600,color:x.c,background:x.bg,border:`1px solid ${x.c}22`,borderRadius:5,padding:'3px 10px'}}>{x.t}</span>
                     ))}
                   </div>
-                  <div style={{borderRadius:10,overflow:'hidden',border:`1px solid rgba(14,111,168,0.3)`,background:'rgba(0,0,0,0.5)',minHeight:200,display:'flex',alignItems:'center',justifyContent:'center',position:'relative'}}>
+                  <div style={{borderRadius:10,overflow:'hidden',border:`1px solid rgba(0,82,245,0.3)`,background:'rgba(0,0,0,0.5)',minHeight:200,display:'flex',alignItems:'center',justifyContent:'center',position:'relative'}}>
                     {cert.imageUrl?(
                       <>{!imgLoaded&&<div style={{position:'absolute',inset:0,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:'0.8rem'}}>
                         <motion.div animate={{rotate:360}} transition={{duration:1,repeat:Infinity,ease:'linear'}} style={{width:36,height:36,borderRadius:'50%',border:`2.5px solid ${J.gold}`,borderTopColor:'transparent'}}/>
-                        <span style={{color:'rgba(14,165,192,0.5)',fontSize:'0.78rem',fontFamily:'var(--font-body)'}}>{t('Memuat...','Loading...')}</span>
+                        <span style={{color:'rgba(0,146,199,0.5)',fontSize:'0.78rem',fontFamily:'var(--font-body)'}}>{t('Memuat...','Loading...')}</span>
                       </div>}
                       <img src={cert.imageUrl} alt={cert.name} loading="lazy" decoding="async" onLoad={()=>setImgLoaded(true)} style={{width:'100%',display:'block',objectFit:'contain',maxHeight:400,opacity:imgLoaded?1:0,transition:'opacity 0.4s'}}/></>
                     ):(
-                      <div style={{textAlign:'center',padding:'3rem 2rem',color:'rgba(14,165,192,0.4)'}}>
+                      <div style={{textAlign:'center',padding:'3rem 2rem',color:'rgba(0,146,199,0.4)'}}>
                         <motion.div animate={{y:[0,-8,0]}} transition={{duration:2.5,repeat:Infinity}} style={{fontSize:'3rem',marginBottom:'0.8rem'}}>📜</motion.div>
                         <p style={{fontFamily:'var(--font-body)',fontSize:'0.85rem',lineHeight:1.6}}>{t('Gambar belum diupload','Image not uploaded yet')}<br/><span style={{fontSize:'0.75rem',opacity:0.6}}>Upload via Admin Panel</span></p>
                       </div>
@@ -844,10 +844,9 @@ const ContactSection:React.FC=()=>{
   const toggle=(s:string)=>setSel(p=>p.includes(s)?p.filter(x=>x!==s):[...p,s]);
   const submit=async(e:React.FormEvent)=>{e.preventDefault();setSending(true);await new Promise(r=>setTimeout(r,1000));setSending(false);setSent(true);};
   const inp:React.CSSProperties={flex:1,minWidth:0,fontSize:'0.875rem',padding:'10px 12px',borderRadius:10,border:'1px solid #e5e7eb',background:'transparent',outline:'none',fontFamily:'var(--font-body)',color:'#111',boxSizing:'border-box'};
-  const IcoTW=()=><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>;
   const IcoIG=()=><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>;
   const IcoLI=()=><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>;
-  const SBtn:React.FC<{icon:React.ReactNode;bg:string;color:string}>=({icon,bg,color})=><button type="button" style={{width:32,height:32,borderRadius:10,border:'none',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',background:bg,color,flexShrink:0}}>{icon}</button>;
+  const SBtn:React.FC<{icon:React.ReactNode;bg:string;color:string;href:string}>=({icon,bg,color,href})=><a href={href} target="_blank" rel="noopener noreferrer" style={{width:40,height:40,minWidth:40,borderRadius:10,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',background:bg,color,flexShrink:0,textDecoration:'none'}}>{icon}</a>;
   return (
     <section style={{width:'100%',padding:'12px',background:'#fff',boxSizing:'border-box'}}>
       <div style={{position:'relative',borderRadius:24,overflow:'hidden',minHeight:'calc(100vh - 24px)',display:'flex',flexDirection:'column'}}>
@@ -855,8 +854,8 @@ const ContactSection:React.FC=()=>{
         <div style={{position:'relative',zIndex:1,flex:1,display:'flex',flexDirection:'column',padding:'clamp(16px,4vw,24px)',gap:20,minHeight:'calc(100vh - 24px)',boxSizing:'border-box'}}>
           <div style={{background:'rgba(255,255,255,0.6)',backdropFilter:'blur(12px)',WebkitBackdropFilter:'blur(12px)',borderRadius:16,boxShadow:'0 1px 3px rgba(0,0,0,0.08)',padding:'8px 12px',display:'flex',alignItems:'center',gap:12}}>
             <svg viewBox="0 0 256 256" width={28} height={28} style={{flexShrink:0}}><path fill="#000" d="M 256 256 L 128 256 L 0 128 L 128 128 Z"/><path fill="#000" d="M 256 128 L 128 128 L 0 0 L 128 0 Z"/></svg>
-            <div id="cnav" style={{display:'none',gap:20,flex:1}}>{['Our story','Expertise','Our work','Journal'].map(l=><a key={l} href="#" style={{color:'#1f2937',fontSize:'0.82rem',fontWeight:500,textDecoration:'none',whiteSpace:'nowrap'}}>{l}</a>)}</div>
-            <button style={{background:'#000',color:'#fff',fontSize:'0.82rem',fontWeight:500,padding:'7px 16px',borderRadius:10,border:'none',cursor:'pointer',marginLeft:'auto',flexShrink:0,whiteSpace:'nowrap'}}>Start a project</button>
+            <div id="cnav" style={{display:'none',gap:20,flex:1}}>{['Our story','Expertise','Our work','Journal'].map(l=><span key={l} style={{color:'#1f2937',fontSize:'0.82rem',fontWeight:500,cursor:'default',whiteSpace:'nowrap'}}>{l}</span>)}</div>
+            <button onClick={()=>document.getElementById('cform')?.scrollIntoView({behavior:'smooth',block:'center'})} style={{background:'#000',color:'#fff',fontSize:'0.82rem',fontWeight:500,padding:'9px 18px',minHeight:40,borderRadius:10,border:'none',cursor:'pointer',marginLeft:'auto',flexShrink:0,whiteSpace:'nowrap'}}>Start a project</button>
           </div>
           <div style={{flex:1,minHeight:24}}/>
           <div id="cbot" style={{display:'flex',flexDirection:'column',gap:20}}>
@@ -867,14 +866,14 @@ const ContactSection:React.FC=()=>{
                 :(<><h2 style={{fontSize:'1.25rem',fontWeight:600,color:'#000',margin:0}}>Say hello! 👋</h2>
                   <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',gap:10,background:'#f9fafb',borderRadius:14,padding:'10px 14px',flexWrap:'wrap',rowGap:8}}>
                     <div style={{minWidth:0}}><p style={{fontSize:'0.72rem',color:'#9ca3af',margin:'0 0 2px 0'}}>Drop us a line</p><a href={`mailto:${contact.email}`} style={{color:'#2563eb',fontWeight:600,fontSize:'0.82rem',textDecoration:'none',display:'block',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{contact.email}</a></div>
-                    <div style={{display:'flex',gap:5,flexShrink:0}}><SBtn icon={<IcoTW/>} bg="#f3f4f6" color="#1f2937"/><SBtn icon={<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>} bg="#fce7f3" color="#ec4899"/><SBtn icon={<IcoIG/>} bg="#ffedd5" color="#fb923c"/><SBtn icon={<IcoLI/>} bg="#dbeafe" color="#2563eb"/></div>
+                    <div style={{display:'flex',gap:8,flexShrink:0}}><SBtn icon={<IcoIG/>} bg="#ffedd5" color="#fb923c" href="https://instagram.com/mahfudfebry"/><SBtn icon={<IcoLI/>} bg="#dbeafe" color="#2563eb" href="https://linkedin.com/in/mahfud-febry-styanto"/></div>
                   </div>
                   <div style={{display:'flex',alignItems:'center',gap:8}}><div style={{flex:1,height:1,background:'#e5e7eb'}}/><span style={{fontSize:'0.82rem',color:'#9ca3af',fontWeight:500}}>OR</span><div style={{flex:1,height:1,background:'#e5e7eb'}}/></div>
                   <form onSubmit={submit} style={{display:'flex',flexDirection:'column',gap:12}}>
                     <label style={{fontSize:'0.82rem',fontWeight:500,color:'#000'}}>Tell us about your vision</label>
                     <div style={{display:'flex',flexDirection:'column',gap:8}} id="cinputs"><input type="text" placeholder="Full name" value={name} onChange={e=>setName(e.target.value)} style={{...inp,width:'100%'}}/><input type="email" placeholder="Email" value={email} onChange={e=>setEmail(e.target.value)} style={{...inp,width:'100%'}}/></div>
                     <textarea rows={3} placeholder="What are you looking to build or improve..." value={msg} onChange={e=>setMsg(e.target.value)} style={{...inp,resize:'none',width:'100%'}}/>
-                    <div><p style={{fontSize:'0.82rem',fontWeight:500,color:'#000',marginBottom:6}}>I need help with...</p><div style={{display:'flex',flexWrap:'wrap',gap:5}}>{SERVICES_LIST.map(s=><button key={s} type="button" onClick={()=>toggle(s)} style={{fontSize:'0.72rem',fontWeight:500,padding:'6px 10px',borderRadius:7,border:sel.includes(s)?'1px solid #000':'1px solid #e5e7eb',background:sel.includes(s)?'#f3f4f6':'#fff',color:sel.includes(s)?'#000':'#374151',cursor:'pointer'}}>{s}</button>)}</div></div>
+                    <div><p style={{fontSize:'0.82rem',fontWeight:500,color:'#000',marginBottom:8}}>I need help with...</p><div style={{display:'flex',flexWrap:'wrap',gap:8}}>{SERVICES_LIST.map(s=><button key={s} type="button" onClick={()=>toggle(s)} style={{fontSize:'0.75rem',fontWeight:500,padding:'9px 14px',minHeight:38,borderRadius:9,border:sel.includes(s)?'1px solid #000':'1px solid #e5e7eb',background:sel.includes(s)?'#f3f4f6':'#fff',color:sel.includes(s)?'#000':'#374151',cursor:'pointer'}}>{s}</button>)}</div></div>
                     <button type="submit" disabled={sending} style={{width:'100%',background:'#000',color:'#fff',fontSize:'0.875rem',fontWeight:600,padding:'11px 0',borderRadius:14,border:'none',cursor:sending?'not-allowed':'pointer',opacity:sending?0.6:1}}>{sending?'Sending...':'Send my message'}</button>
                   </form></>)}
               </div>
@@ -903,6 +902,7 @@ const ExpDrilldown:React.FC<{company:string;items:ExpItem[];totalDuration:string
   const [step,setStep]=useState<'company'|'positions'|'detail'>('company');
   const [selectedIdx,setSelectedIdx]=useState<number|null>(null);
   const [logoFailed,setLogoFailed]=useState(false);
+  const [headerHover,setHeaderHover]=useState(false);
   const {t,lang}=useLang();
   const logo=resolveLogo({company,logoUrl:items.find(it=>it.logoUrl)?.logoUrl});
   const detailMatch=items[0].company.match(/\(([^)]+)\)/);
@@ -930,8 +930,8 @@ const ExpDrilldown:React.FC<{company:string;items:ExpItem[];totalDuration:string
 
         <div style={{flex:1}}>
           <InkRipple>
-            <SpotlightCard className="clay-card" style={{padding:'1.4rem clamp(1.1rem,3vw,1.9rem)',position:'relative',overflow:'hidden',background:'#0E1B2C',border:`1.5px solid rgba(14,165,192,${isMulti?0.32:0.16})`}}>
-              <div style={{position:'absolute',inset:0,background:'radial-gradient(ellipse at top left, rgba(14,111,168,0.08), transparent 60%)',pointerEvents:'none'}}/>
+            <SpotlightCard className="clay-card" style={{padding:'1.4rem clamp(1.1rem,3vw,1.9rem)',position:'relative',overflow:'hidden',background:'#0E1B2C',border:`1.5px solid rgba(0,146,199,${isMulti?0.32:0.16})`}}>
+              <div style={{position:'absolute',inset:0,background:'radial-gradient(ellipse at top left, rgba(0,82,245,0.08), transparent 60%)',pointerEvents:'none'}}/>
               <motion.div animate={{opacity:[0.04,0.1,0.04]}} transition={{duration:4+i,repeat:Infinity}} style={{position:'absolute',top:-24,right:-24,width:130,height:130,borderRadius:'50%',background:`radial-gradient(circle,${J.gold}2e,transparent 70%)`,pointerEvents:'none'}}/>
 
               {/* ── Header perusahaan — layout prop bikin transisi ukuran/posisi otomatis mulus ── */}
@@ -939,19 +939,35 @@ const ExpDrilldown:React.FC<{company:string;items:ExpItem[];totalDuration:string
                 layout="position"
                 transition={{duration:0.5,ease:[0.4,0,0.2,1]}}
                 onClick={()=>step==='company'&&goToPositions()}
+                onMouseEnter={()=>step==='company'&&setHeaderHover(true)}
+                onMouseLeave={()=>setHeaderHover(false)}
+                whileTap={step==='company'?{scale:0.985}:undefined}
                 style={{
                   position:'relative',zIndex:1,display:'flex',alignItems:'center',gap:compact?'0.7rem':'1.1rem',
                   cursor:step==='company'?'pointer':'default',
                   marginBottom:compact?'1rem':0,
                   paddingBottom:compact?'0.9rem':0,
-                  borderBottom:compact?'1px solid rgba(14,111,168,0.16)':'none',
+                  borderBottom:compact?'1px solid rgba(0,82,245,0.16)':'none',
+                  borderRadius:12,
+                  margin:step==='company'?'-0.6rem -0.7rem 0':undefined,
+                  padding:step==='company'?'0.6rem 0.7rem':undefined,
+                  background:step==='company'&&headerHover?'rgba(0,146,199,0.06)':'transparent',
+                  transition:'background 0.25s ease',
                 }}>
-                <motion.div layout style={{width:compact?38:64,height:compact?38:64,borderRadius:compact?9:14,background:logo&&!logoFailed?'#fff':`radial-gradient(circle,rgba(14,165,192,0.25),rgba(14,165,192,0.06))`,border:`2px solid ${J.gold}`,display:'flex',alignItems:'center',justifyContent:'center',fontSize:compact?'0.9rem':'1.6rem',overflow:'hidden',flexShrink:0,transition:'font-size 0.3s'}}>
+                <motion.div layout style={{width:compact?38:64,height:compact?38:64,borderRadius:compact?9:14,background:logo&&!logoFailed?'#fff':`radial-gradient(circle,rgba(0,146,199,0.25),rgba(0,146,199,0.06))`,border:`2px solid ${J.gold}`,display:'flex',alignItems:'center',justifyContent:'center',fontSize:compact?'0.9rem':'1.6rem',overflow:'hidden',flexShrink:0,transition:'font-size 0.3s'}}>
                   {logo&&!logoFailed?(
                     <img src={logo} alt={company} loading="lazy" decoding="async" onError={()=>setLogoFailed(true)} style={{width:'100%',height:'100%',objectFit:'contain',padding:compact?4:7,borderRadius:compact?6:10}}/>
                   ):(<span aria-hidden="true">🏢</span>)}
                 </motion.div>
                 <motion.div layout style={{flex:1,minWidth:0}}>
+                  {step==='company'&&(
+                    <div style={{display:'flex',alignItems:'center',gap:'0.5rem',marginBottom:'0.15rem'}}>
+                      <span style={{color:'rgba(0,146,199,0.75)',fontSize:'0.68rem',fontWeight:700,letterSpacing:'0.5px',textTransform:'uppercase'}}>
+                        {isMulti?t('Klik untuk lihat riwayat jabatan','Click to view position history'):t('Klik untuk lihat detail','Click to view details')}
+                      </span>
+                      <motion.span aria-hidden="true" animate={{x:headerHover?4:0}} transition={{duration:0.25}} style={{color:J.gold,fontSize:'0.85rem'}}>→</motion.span>
+                    </div>
+                  )}
                   <motion.h3 layout style={{fontFamily:'var(--font-display)',color:J.white,lineHeight:1.15,fontSize:compact?'clamp(0.95rem,2.6vw,1.15rem)':'clamp(1.2rem,3.6vw,1.7rem)',marginBottom:compact?0:'0.35rem',transition:'font-size 0.3s'}}>{company}</motion.h3>
                   <AnimatePresence>
                     {!compact&&(
@@ -973,7 +989,7 @@ const ExpDrilldown:React.FC<{company:string;items:ExpItem[];totalDuration:string
                     layout
                     onClick={(e)=>{e.stopPropagation(); step==='detail'&&isMulti?goBackToPositions():goBackToCompany();}}
                     whileHover={{scale:1.05}} whileTap={{scale:0.95}}
-                    style={{flexShrink:0,display:'inline-flex',alignItems:'center',gap:'0.3rem',background:'rgba(14,111,168,0.12)',border:`1px solid rgba(14,111,168,0.3)`,color:J.goldL,borderRadius:6,padding:'5px 11px',fontSize:'0.7rem',fontWeight:700,cursor:'pointer',fontFamily:'var(--font-body)'}}>
+                    style={{flexShrink:0,display:'inline-flex',alignItems:'center',gap:'0.35rem',background:'rgba(0,82,245,0.12)',border:`1px solid rgba(0,82,245,0.3)`,color:J.goldL,borderRadius:8,padding:'10px 16px',minHeight:40,fontSize:'0.76rem',fontWeight:700,cursor:'pointer',fontFamily:'var(--font-body)'}}>
                     ← {t('Kembali','Back')}
                   </motion.button>
                 )}
@@ -986,8 +1002,8 @@ const ExpDrilldown:React.FC<{company:string;items:ExpItem[];totalDuration:string
                     {items.map((item,idx)=>{
                       const dateRange=item.period.split('·')[0]?.trim();
                       return (
-                        <motion.button key={item.id} onClick={()=>pickPosition(idx)} whileHover={{x:5,borderColor:'rgba(14,111,168,0.5)'}} whileTap={{scale:0.98}}
-                          style={{display:'flex',alignItems:'center',justifyContent:'space-between',gap:'0.8rem',textAlign:'left',background:'rgba(9,18,29,0.6)',border:'1px solid rgba(14,111,168,0.18)',borderRadius:9,padding:'0.8rem 1rem',cursor:'pointer',fontFamily:'var(--font-body)'}}>
+                        <motion.button key={item.id} onClick={()=>pickPosition(idx)} whileHover={{x:5,borderColor:'rgba(0,82,245,0.5)'}} whileTap={{scale:0.98}}
+                          style={{display:'flex',alignItems:'center',justifyContent:'space-between',gap:'0.8rem',textAlign:'left',background:'rgba(9,18,29,0.6)',border:'1px solid rgba(0,82,245,0.18)',borderRadius:9,padding:'0.8rem 1rem',cursor:'pointer',fontFamily:'var(--font-body)'}}>
                           <div style={{minWidth:0}}>
                             <div style={{color:J.white,fontWeight:700,fontSize:'0.88rem',marginBottom:'0.15rem'}}>{item.position}</div>
                             <div style={{color:'rgba(234,242,248,0.5)',fontSize:'0.72rem'}}>{dateRange}</div>
@@ -1006,15 +1022,15 @@ const ExpDrilldown:React.FC<{company:string;items:ExpItem[];totalDuration:string
                     {selected.period&&(()=>{
                       const [dateRange,duration,type]=selected.period.split('·').map(p=>p.trim());
                       return (
-                        <div style={{display:'inline-flex',flexDirection:'column',gap:'0.2rem',alignItems:'flex-start',background:J.redBg,color:J.goldL,borderRadius:5,padding:'5px 12px',fontSize:'0.72rem',fontWeight:700,border:`1px solid rgba(14,111,168,0.3)`,marginBottom:'0.7rem'}}>
+                        <div style={{display:'inline-flex',flexDirection:'column',gap:'0.2rem',alignItems:'flex-start',background:J.redBg,color:J.goldL,borderRadius:5,padding:'5px 12px',fontSize:'0.72rem',fontWeight:700,border:`1px solid rgba(0,82,245,0.3)`,marginBottom:'0.7rem'}}>
                           <span><span aria-hidden="true">🕐</span> {dateRange}</span>
                           <span>[ {duration} ]{type?` · ${type}`:''}</span>
                         </div>
                       );
                     })()}
-                    {selected.tags&&<div style={{display:'flex',flexWrap:'wrap',gap:'0.35rem',marginBottom:'0.8rem'}}>{selected.tags.split(',').map(tg=>tg.trim()).filter(Boolean).map(tag=>(<span key={tag} style={{background:'rgba(14,165,192,0.07)',border:`1px solid rgba(14,165,192,0.18)`,color:'rgba(14,165,192,0.8)',borderRadius:4,padding:'3px 10px',fontSize:'0.72rem',fontWeight:500}}>{tag}</span>))}</div>}
+                    {selected.tags&&<div style={{display:'flex',flexWrap:'wrap',gap:'0.35rem',marginBottom:'0.8rem'}}>{selected.tags.split(',').map(tg=>tg.trim()).filter(Boolean).map(tag=>(<span key={tag} style={{background:'rgba(0,146,199,0.07)',border:`1px solid rgba(0,146,199,0.18)`,color:'rgba(0,146,199,0.8)',borderRadius:4,padding:'3px 10px',fontSize:'0.72rem',fontWeight:500}}>{tag}</span>))}</div>}
                     {selected.desc&&(
-                      <div style={{padding:'1rem 1.2rem',background:'rgba(14,111,168,0.06)',border:`1px solid rgba(14,111,168,0.2)`,borderRadius:8,borderLeft:`3px solid ${J.red}`}} lang={lang}>
+                      <div style={{padding:'1rem 1.2rem',background:'rgba(0,82,245,0.06)',border:`1px solid rgba(0,82,245,0.2)`,borderRadius:8,borderLeft:`3px solid ${J.red}`}} lang={lang}>
                         <div className="bullet-list">
                           {selected.desc.split('\n').map((line,li)=>{
                             const isBullet=line.trim().startsWith('•');
@@ -1106,7 +1122,7 @@ const Home:React.FC=()=>{
                   letterSpacing:'0.06em',lineHeight:1.5,whiteSpace:'nowrap',
                   fontSize:'clamp(0.65rem,1.5vw,1rem)',
                   color:'rgba(255,255,255,0.95)',
-                  textShadow:'0 2px 8px rgba(0,0,0,0.9),0 0 20px rgba(14,111,168,0.5),1px 1px 0 rgba(0,0,0,0.8)'
+                  textShadow:'0 2px 8px rgba(0,0,0,0.9),0 0 20px rgba(0,82,245,0.5),1px 1px 0 rgba(0,0,0,0.8)'
                 }}>
                   {line}
                 </div>
@@ -1128,12 +1144,12 @@ const Home:React.FC=()=>{
               <div className="hk-hero-cta-row" style={{display:'flex',flexWrap:'wrap',gap:'0.5rem',justifyContent:'center'}}>
                 <MagneticButton strength={0.3}>
                   <a href={hero.heroCtaSecondaryLink||'https://wa.me/6282234651413'} target="_blank" rel="noopener noreferrer" style={{textDecoration:'none'}}>
-                    <button style={{background:'rgba(255,255,255,0.92)',color:'#000',border:'none',borderRadius:6,padding:'7px 18px',fontWeight:600,fontSize:'0.78rem',cursor:'pointer',fontFamily:'var(--font-body)',whiteSpace:'nowrap'}}>{hero.heroCtaSecondary||'Start a Chat'}</button>
+                    <button style={{background:'rgba(255,255,255,0.92)',color:'#000',border:'none',borderRadius:8,padding:'11px 20px',minHeight:42,fontWeight:600,fontSize:'0.8rem',cursor:'pointer',fontFamily:'var(--font-body)',whiteSpace:'nowrap'}}>{hero.heroCtaSecondary||'Start a Chat'}</button>
                   </a>
                 </MagneticButton>
                 <MagneticButton strength={0.3}>
                   <Link to={hero.heroCtaLink||'/portofolio'} style={{textDecoration:'none'}}>
-                    <button style={{...LG,border:'1px solid rgba(255,255,255,0.25)',color:'#fff',borderRadius:6,padding:'7px 18px',fontWeight:600,fontSize:'0.78rem',cursor:'pointer',fontFamily:'var(--font-body)',whiteSpace:'nowrap'}}>{hero.heroCta}</button>
+                    <button style={{...LG,border:'1px solid rgba(255,255,255,0.25)',color:'#fff',borderRadius:8,padding:'11px 20px',minHeight:42,fontWeight:600,fontSize:'0.8rem',cursor:'pointer',fontFamily:'var(--font-body)',whiteSpace:'nowrap'}}>{hero.heroCta}</button>
                   </Link>
                 </MagneticButton>
               </div>
@@ -1190,7 +1206,7 @@ const Home:React.FC=()=>{
             <Reveal direction="left" style={{width:'100%',maxWidth:340,flexShrink:0}}>
               <TiltCard style={{borderRadius:16,width:'100%'}} intensity={10}>
                 <InkRipple>
-                  <div style={{borderRadius:16,overflow:'hidden',position:'relative',aspectRatio:'4/5',border:`2px solid rgba(14,111,168,0.5)`,boxShadow:`0 0 0 6px rgba(14,111,168,0.06),0 30px 80px rgba(0,0,0,0.7),0 0 60px rgba(14,111,168,0.12)`}}>
+                  <div style={{borderRadius:16,overflow:'hidden',position:'relative',aspectRatio:'4/5',border:`2px solid rgba(0,82,245,0.5)`,boxShadow:`0 0 0 6px rgba(0,82,245,0.06),0 30px 80px rgba(0,0,0,0.7),0 0 60px rgba(0,82,245,0.12)`}}>
                     <img src={photo} alt={about.name} decoding="async" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}}/>
                     <div style={{position:'absolute',inset:0,background:`linear-gradient(to top,rgba(8,4,0,0.9) 0%,rgba(8,4,0,0.1) 50%,transparent 100%)`}}/>
                     {/* Red corner accents */}
@@ -1199,7 +1215,7 @@ const Home:React.FC=()=>{
                     <div style={{position:'absolute',bottom:8,left:8,width:20,height:20,borderBottom:`2px solid ${J.gold}`,borderLeft:`2px solid ${J.gold}`}}/>
                     <div style={{position:'absolute',bottom:8,right:8,width:20,height:20,borderBottom:`2px solid ${J.gold}`,borderRight:`2px solid ${J.gold}`}}/>
                     <div style={{position:'absolute',bottom:'1rem',left:'1rem',right:'1rem'}}>
-                      <motion.div whileHover={{scale:1.04}} style={{background:'rgba(14,111,168,0.85)',backdropFilter:'blur(8px)',borderRadius:8,padding:'0.5rem 1rem',color:J.white,fontWeight:700,fontSize:'0.82rem',display:'inline-block',wordBreak:'break-word',border:`1px solid rgba(14,165,192,0.3)`}}>
+                      <motion.div whileHover={{scale:1.04}} style={{background:'rgba(0,82,245,0.85)',backdropFilter:'blur(8px)',borderRadius:8,padding:'0.5rem 1rem',color:J.white,fontWeight:700,fontSize:'0.82rem',display:'inline-block',wordBreak:'break-word',border:`1px solid rgba(0,146,199,0.3)`}}>
                         ⛩️ {about.location}
                       </motion.div>
                     </div>
@@ -1214,7 +1230,7 @@ const Home:React.FC=()=>{
                 </div>
                 <h2 style={{fontFamily:'var(--font-display)',fontSize:'clamp(2.5rem,8vw,5rem)',lineHeight:0.9,marginBottom:'0.2rem',color:J.white}}>ABOUT ME !</h2>
                 <BrushStroke style={{position:'relative',marginBottom:'0.8rem'}} width={100} color={J.red} delay={0.3}/>
-                <div style={{fontFamily:'var(--font-script)',color:J.gold,fontSize:'clamp(1.5rem,5vw,2.2rem)',fontWeight:700,marginBottom:'1.8rem',textShadow:`0 0 20px rgba(14,165,192,0.35)`}}>{about.name}</div>
+                <div style={{fontFamily:'var(--font-script)',color:J.gold,fontSize:'clamp(1.5rem,5vw,2.2rem)',fontWeight:700,marginBottom:'1.8rem',textShadow:`0 0 20px rgba(0,146,199,0.35)`}}>{about.name}</div>
 
                 <p lang={lang} className="text-justify-auto para-indent" style={{color:J.whiteDim,lineHeight:1.9,marginBottom:'1.2rem',fontSize:'clamp(0.88rem,2vw,1rem)'}}>{about.bio1}</p>
 
@@ -1223,16 +1239,16 @@ const Home:React.FC=()=>{
                 <SosmedButtons about={about}/>
 
                 <div style={{display:'flex',alignItems:'center',gap:'0.8rem',margin:'1.4rem 0 1.2rem'}}>
-                  <div style={{flex:1,height:1,background:'linear-gradient(to right, rgba(14,165,192,0.5), rgba(14,165,192,0.05))'}}/>
+                  <div style={{flex:1,height:1,background:'linear-gradient(to right, rgba(0,146,199,0.5), rgba(0,146,199,0.05))'}}/>
                   <span style={{fontFamily:'var(--font-body)',fontSize:'0.68rem',fontWeight:700,letterSpacing:'0.12em',textTransform:'uppercase',color:J.gold,whiteSpace:'nowrap'}}>
                     portfolio · Link Portofolio
                   </span>
-                  <div style={{flex:1,height:1,background:'linear-gradient(to left, rgba(14,165,192,0.5), rgba(14,165,192,0.05))'}}/>
+                  <div style={{flex:1,height:1,background:'linear-gradient(to left, rgba(0,146,199,0.5), rgba(0,146,199,0.05))'}}/>
                 </div>
 
                 <div className="hk-btn-grid" style={{display:'grid',gridTemplateColumns:'repeat(auto-fit, minmax(180px, 1fr))',gap:'0.8rem',maxWidth:520}}>
-                  <motion.div whileHover={{scale:1.04,boxShadow:`0 8px 30px rgba(14,111,168,0.35)`}} whileTap={{scale:0.97}}>
-                    <Link to="/about" style={{display:'flex',alignItems:'center',justifyContent:'center',gap:8,background:J.redBg,color:J.goldL,textDecoration:'none',borderRadius:8,padding:'11px 18px',fontFamily:'var(--font-body)',fontWeight:700,fontSize:'0.85rem',border:`1px solid rgba(14,111,168,0.45)`,backdropFilter:'blur(6px)',whiteSpace:'nowrap'}}>
+                  <motion.div whileHover={{scale:1.04,boxShadow:`0 8px 30px rgba(0,82,245,0.35)`}} whileTap={{scale:0.97}}>
+                    <Link to="/about" style={{display:'flex',alignItems:'center',justifyContent:'center',gap:8,background:J.redBg,color:J.goldL,textDecoration:'none',borderRadius:8,padding:'11px 18px',fontFamily:'var(--font-body)',fontWeight:700,fontSize:'0.85rem',border:`1px solid rgba(0,82,245,0.45)`,backdropFilter:'blur(6px)',whiteSpace:'nowrap'}}>
                       詳細を見る → Selengkapnya
                     </Link>
                   </motion.div>
@@ -1292,14 +1308,14 @@ const Home:React.FC=()=>{
                 <motion.div style={{height:1,width:50,background:`linear-gradient(to left,transparent,${J.red})`}} initial={{scaleX:0}} whileInView={{scaleX:1}} transition={{duration:0.8}}/>
               </div>
               <h2 style={{fontFamily:'var(--font-display)',fontSize:'clamp(2.2rem,8vw,5rem)',lineHeight:0.9,color:J.white,wordBreak:'break-word'}}>
-                SERTIFI<span style={{color:J.red,textShadow:`0 0 30px rgba(14,111,168,0.6)`}}>KASI</span>
+                SERTIFI<span style={{color:J.red,textShadow:`0 0 30px rgba(0,82,245,0.6)`}}>KASI</span>
               </h2>
               <BrushStroke style={{position:'relative',margin:'0.8rem auto 0',display:'block',width:'fit-content'}} width={120} color={J.gold} delay={0.3}/>
               <p style={{color:'rgba(234,242,248,0.6)',marginTop:'0.8rem',fontSize:'0.88rem'}}>{t('Klik kartu untuk melihat · 証明書','Tap a card to view · 証明書')}</p>
             </div>
           </Reveal>
           {certs.length===0?(
-            <Reveal direction="up"><div style={{textAlign:'center',padding:'3rem',color:'rgba(14,165,192,0.4)',border:`1px dashed rgba(14,111,168,0.3)`,borderRadius:12}}><div style={{fontSize:'3rem',marginBottom:'0.8rem'}}>📜</div><p>{t('Belum ada sertifikasi.','No certifications yet.')}</p></div></Reveal>
+            <Reveal direction="up"><div style={{textAlign:'center',padding:'3rem',color:'rgba(0,146,199,0.4)',border:`1px dashed rgba(0,82,245,0.3)`,borderRadius:12}}><div style={{fontSize:'3rem',marginBottom:'0.8rem'}}>📜</div><p>{t('Belum ada sertifikasi.','No certifications yet.')}</p></div></Reveal>
           ):(
             <div style={{display:'flex',flexDirection:'column',gap:'0.75rem'}}>
               {certs.map((cert,i)=><CertCard key={cert.id} cert={cert} index={i}/>)}
@@ -1341,7 +1357,7 @@ const Home:React.FC=()=>{
                 <span style={{fontFamily:'var(--font-body)',color:J.gold,fontSize:'0.72rem',letterSpacing:'4px',textTransform:'uppercase',fontWeight:700}}>Keireki · Career Path</span>
               </div>
               <h2 style={{fontFamily:'var(--font-display)',fontSize:'clamp(2rem,8vw,5rem)',lineHeight:0.9,color:J.white,wordBreak:'break-word'}}>
-                PENGALAMAN <span style={{fontFamily:'var(--font-script)',color:J.gold,fontSize:'55%',textShadow:`0 0 20px rgba(14,165,192,0.5)`}}>Kerja</span>
+                PENGALAMAN <span style={{fontFamily:'var(--font-script)',color:J.gold,fontSize:'55%',textShadow:`0 0 20px rgba(0,146,199,0.5)`}}>Kerja</span>
               </h2>
               <p style={{color:'rgba(234,242,248,0.6)',marginTop:'0.8rem',fontSize:'0.88rem'}}>{t('Pengalaman Profesional & Riwayat Kerja','Professional Experience & Work History')}</p>
             </div>
@@ -1393,7 +1409,7 @@ const Home:React.FC=()=>{
                   <span style={{fontFamily:'var(--font-body)',color:J.red,fontSize:'0.72rem',letterSpacing:'4px',textTransform:'uppercase',fontWeight:700}}>Gijutsu · Technique</span>
                 </div>
                 <h2 style={{fontFamily:'var(--font-display)',fontSize:'clamp(2.5rem,8vw,5.5rem)',lineHeight:0.9,color:J.white,wordBreak:'break-word'}}>
-                  SKILLS &amp; <span style={{color:J.red,textShadow:`0 0 30px rgba(14,111,168,0.5)`}}>TOOLS</span>
+                  SKILLS &amp; <span style={{color:J.red,textShadow:`0 0 30px rgba(0,82,245,0.5)`}}>TOOLS</span>
                 </h2>
                 <BrushStroke style={{position:'relative',margin:'0.8rem auto 0',display:'block',width:'fit-content'}} width={100} color={J.gold} delay={0.4}/>
               </motion.div>
@@ -1404,9 +1420,9 @@ const Home:React.FC=()=>{
             <div>
               <Reveal direction="left">
                 <div style={{display:'flex',alignItems:'center',gap:'0.6rem',marginBottom:'1.3rem'}}>
-                  <div style={{flex:1,height:1,background:`linear-gradient(to right,transparent,rgba(14,111,168,0.5))`}}/>
+                  <div style={{flex:1,height:1,background:`linear-gradient(to right,transparent,rgba(0,82,245,0.5))`}}/>
                   <h3 style={{fontFamily:'var(--font-display)',fontSize:'clamp(1.3rem,4vw,1.9rem)',color:J.red,letterSpacing:'1px',whiteSpace:'nowrap'}}>HARD <span style={{color:J.white}}>SKILL</span></h3>
-                  <div style={{flex:1,height:1,background:`linear-gradient(to left,transparent,rgba(14,111,168,0.5))`}}/>
+                  <div style={{flex:1,height:1,background:`linear-gradient(to left,transparent,rgba(0,82,245,0.5))`}}/>
                 </div>
               </Reveal>
               <div style={{display:'flex',flexDirection:'column',gap:'1rem'}}>
@@ -1414,14 +1430,14 @@ const Home:React.FC=()=>{
                   <Reveal key={sk.id} direction="up" delay={i*0.09}>
                     <TiltCard style={{borderRadius:14}} intensity={10}>
                       <InkRipple>
-                        <motion.div whileHover={{boxShadow:`0 24px 70px rgba(14,111,168,0.25),0 0 0 1px rgba(14,111,168,0.4)`}}
-                          style={{background:'rgba(8,16,26,0.9)',border:`1px solid rgba(14,111,168,0.18)`,borderRadius:14,padding:'1.5rem',position:'relative',overflow:'hidden',backdropFilter:'blur(14px)',transition:'all 0.3s'}}>
-                          <div style={{position:'absolute',right:8,top:4,fontFamily:'serif',fontSize:'4rem',color:`rgba(14,111,168,0.07)`,lineHeight:1,userSelect:'none'}}>{['技','能','術','力'][i%4]}</div>
-                          <motion.div animate={{scale:[1,1.4,1],opacity:[0.12,0.28,0.12]}} transition={{duration:3+i*0.4,repeat:Infinity}} style={{position:'absolute',top:-15,left:-15,width:70,height:70,borderRadius:'50%',background:`radial-gradient(circle,rgba(14,111,168,0.2),transparent 70%)`}}/>
+                        <motion.div whileHover={{boxShadow:`0 24px 70px rgba(0,82,245,0.25),0 0 0 1px rgba(0,82,245,0.4)`}}
+                          style={{background:'rgba(8,16,26,0.9)',border:`1px solid rgba(0,82,245,0.18)`,borderRadius:14,padding:'1.5rem',position:'relative',overflow:'hidden',backdropFilter:'blur(14px)',transition:'all 0.3s'}}>
+                          <div style={{position:'absolute',right:8,top:4,fontFamily:'serif',fontSize:'4rem',color:`rgba(0,82,245,0.07)`,lineHeight:1,userSelect:'none'}}>{['技','能','術','力'][i%4]}</div>
+                          <motion.div animate={{scale:[1,1.4,1],opacity:[0.12,0.28,0.12]}} transition={{duration:3+i*0.4,repeat:Infinity}} style={{position:'absolute',top:-15,left:-15,width:70,height:70,borderRadius:'50%',background:`radial-gradient(circle,rgba(0,82,245,0.2),transparent 70%)`}}/>
                           <div style={{display:'flex',alignItems:'center',gap:'0.5rem',marginBottom:'0.6rem',position:'relative',zIndex:1}}>
                             <motion.div animate={{y:[0,-3,0]}} transition={{duration:2.5+i*0.3,repeat:Infinity}}
-                              style={{fontFamily:'var(--font-display)',fontSize:'1.4rem',color:J.red,textShadow:`0 0 15px rgba(14,111,168,0.6)`,lineHeight:1}}>{sk.number}</motion.div>
-                            <div style={{flex:1,height:1,background:`linear-gradient(to right,rgba(14,111,168,0.5),transparent)`}}/>
+                              style={{fontFamily:'var(--font-display)',fontSize:'1.4rem',color:J.red,textShadow:`0 0 15px rgba(0,82,245,0.6)`,lineHeight:1}}>{sk.number}</motion.div>
+                            <div style={{flex:1,height:1,background:`linear-gradient(to right,rgba(0,82,245,0.5),transparent)`}}/>
                           </div>
                           <div style={{position:'absolute',top:8,right:8,width:10,height:10,borderTop:`1px solid ${J.gold}`,borderRight:`1px solid ${J.gold}`,opacity:0.4}}/>
                           <div style={{position:'absolute',bottom:8,left:8,width:10,height:10,borderBottom:`1px solid ${J.gold}`,borderLeft:`1px solid ${J.gold}`,opacity:0.4}}/>
@@ -1440,9 +1456,9 @@ const Home:React.FC=()=>{
             <div>
               <Reveal direction="right">
                 <div style={{display:'flex',alignItems:'center',gap:'0.6rem',marginBottom:'1.3rem'}}>
-                  <div style={{flex:1,height:1,background:`linear-gradient(to right,transparent,rgba(14,165,192,0.5))`}}/>
+                  <div style={{flex:1,height:1,background:`linear-gradient(to right,transparent,rgba(0,146,199,0.5))`}}/>
                   <h3 style={{fontFamily:'var(--font-display)',fontSize:'clamp(1.3rem,4vw,1.9rem)',color:J.gold,letterSpacing:'1px',whiteSpace:'nowrap'}}>SOFT <span style={{color:J.white}}>SKILL</span></h3>
-                  <div style={{flex:1,height:1,background:`linear-gradient(to left,transparent,rgba(14,165,192,0.5))`}}/>
+                  <div style={{flex:1,height:1,background:`linear-gradient(to left,transparent,rgba(0,146,199,0.5))`}}/>
                 </div>
               </Reveal>
               <div style={{display:'flex',flexDirection:'column',gap:'1rem'}}>
@@ -1450,14 +1466,14 @@ const Home:React.FC=()=>{
                   <Reveal key={sk.id} direction="up" delay={i*0.09}>
                     <TiltCard style={{borderRadius:14}} intensity={10}>
                       <InkRipple>
-                        <motion.div whileHover={{boxShadow:`0 24px 70px rgba(14,165,192,0.2),0 0 0 1px rgba(14,165,192,0.35)`}}
-                          style={{background:'rgba(8,16,26,0.9)',border:`1px solid rgba(14,165,192,0.18)`,borderRadius:14,padding:'1.5rem',position:'relative',overflow:'hidden',backdropFilter:'blur(14px)',transition:'all 0.3s'}}>
-                          <div style={{position:'absolute',right:8,top:4,fontFamily:'serif',fontSize:'4rem',color:`rgba(14,165,192,0.07)`,lineHeight:1,userSelect:'none'}}>{['和','心','絆','善'][i%4]}</div>
-                          <motion.div animate={{scale:[1,1.4,1],opacity:[0.12,0.28,0.12]}} transition={{duration:3+i*0.4,repeat:Infinity}} style={{position:'absolute',top:-15,left:-15,width:70,height:70,borderRadius:'50%',background:`radial-gradient(circle,rgba(14,165,192,0.2),transparent 70%)`}}/>
+                        <motion.div whileHover={{boxShadow:`0 24px 70px rgba(0,146,199,0.2),0 0 0 1px rgba(0,146,199,0.35)`}}
+                          style={{background:'rgba(8,16,26,0.9)',border:`1px solid rgba(0,146,199,0.18)`,borderRadius:14,padding:'1.5rem',position:'relative',overflow:'hidden',backdropFilter:'blur(14px)',transition:'all 0.3s'}}>
+                          <div style={{position:'absolute',right:8,top:4,fontFamily:'serif',fontSize:'4rem',color:`rgba(0,146,199,0.07)`,lineHeight:1,userSelect:'none'}}>{['和','心','絆','善'][i%4]}</div>
+                          <motion.div animate={{scale:[1,1.4,1],opacity:[0.12,0.28,0.12]}} transition={{duration:3+i*0.4,repeat:Infinity}} style={{position:'absolute',top:-15,left:-15,width:70,height:70,borderRadius:'50%',background:`radial-gradient(circle,rgba(0,146,199,0.2),transparent 70%)`}}/>
                           <div style={{display:'flex',alignItems:'center',gap:'0.5rem',marginBottom:'0.6rem',position:'relative',zIndex:1}}>
                             <motion.div animate={{y:[0,-3,0]}} transition={{duration:2.5+i*0.3,repeat:Infinity}}
-                              style={{fontFamily:'var(--font-display)',fontSize:'1.4rem',color:J.gold,textShadow:`0 0 15px rgba(14,165,192,0.6)`,lineHeight:1}}>{sk.number}</motion.div>
-                            <div style={{flex:1,height:1,background:`linear-gradient(to right,rgba(14,165,192,0.5),transparent)`}}/>
+                              style={{fontFamily:'var(--font-display)',fontSize:'1.4rem',color:J.gold,textShadow:`0 0 15px rgba(0,146,199,0.6)`,lineHeight:1}}>{sk.number}</motion.div>
+                            <div style={{flex:1,height:1,background:`linear-gradient(to right,rgba(0,146,199,0.5),transparent)`}}/>
                           </div>
                           <div style={{position:'absolute',top:8,right:8,width:10,height:10,borderTop:`1px solid ${J.red}`,borderRight:`1px solid ${J.red}`,opacity:0.4}}/>
                           <div style={{position:'absolute',bottom:8,left:8,width:10,height:10,borderBottom:`1px solid ${J.red}`,borderLeft:`1px solid ${J.red}`,opacity:0.4}}/>
@@ -1522,7 +1538,7 @@ const Home:React.FC=()=>{
           <Reveal direction="scale">
             {/* Large kanji */}
             <motion.div animate={{opacity:[0.5,0.9,0.5]}} transition={{duration:3,repeat:Infinity}}
-              style={{fontFamily:'serif',fontSize:'clamp(3rem,8vw,5rem)',color:J.red,marginBottom:'0.3rem',textShadow:`0 0 40px rgba(14,111,168,0.5),0 0 80px rgba(14,111,168,0.2)`}}>
+              style={{fontFamily:'serif',fontSize:'clamp(3rem,8vw,5rem)',color:J.red,marginBottom:'0.3rem',textShadow:`0 0 40px rgba(0,82,245,0.5),0 0 80px rgba(0,82,245,0.2)`}}>
               覇
             </motion.div>
             <div style={{fontFamily:'var(--font-body)',color:J.gold,fontSize:'0.72rem',letterSpacing:'4px',textTransform:'uppercase',fontWeight:700,marginBottom:'1rem'}}>
@@ -1538,12 +1554,12 @@ const Home:React.FC=()=>{
             {/* CTA Button */}
             <div style={{position:'relative',display:'inline-block'}}>
               {[...Array(3)].map((_,i)=>(
-                <motion.div key={i} style={{position:'absolute',inset:-(i+1)*10,borderRadius:8,border:`1.5px solid rgba(14,111,168,${0.4-i*0.1})`,pointerEvents:'none'}}
+                <motion.div key={i} style={{position:'absolute',inset:-(i+1)*10,borderRadius:8,border:`1.5px solid rgba(0,82,245,${0.4-i*0.1})`,pointerEvents:'none'}}
                   animate={{scale:[1,1.2,1],opacity:[0.5,0,0.5]}} transition={{duration:2.2,repeat:Infinity,delay:i*0.7}}/>
               ))}
               <motion.a href={`mailto:${contact.email}`}
-                whileHover={{scale:1.06,boxShadow:`0 15px 50px rgba(14,111,168,0.55)`}} whileTap={{scale:0.97}}
-                style={{display:'inline-flex',alignItems:'center',gap:'0.6rem',background:`linear-gradient(135deg,${J.red},${J.redD})`,color:J.white,textDecoration:'none',borderRadius:8,padding:'16px 48px',fontFamily:'var(--font-body)',fontWeight:800,fontSize:'1rem',letterSpacing:'0.5px',position:'relative',boxShadow:`0 8px 30px rgba(14,111,168,0.45)`,border:`1px solid rgba(14,165,192,0.25)`}}>
+                whileHover={{scale:1.06,boxShadow:`0 15px 50px rgba(0,82,245,0.55)`}} whileTap={{scale:0.97}}
+                style={{display:'inline-flex',alignItems:'center',gap:'0.6rem',background:`linear-gradient(135deg,${J.red},${J.redD})`,color:J.white,textDecoration:'none',borderRadius:8,padding:'16px 48px',fontFamily:'var(--font-body)',fontWeight:800,fontSize:'1rem',letterSpacing:'0.5px',position:'relative',boxShadow:`0 8px 30px rgba(0,82,245,0.45)`,border:`1px solid rgba(0,146,199,0.25)`}}>
                 ⛩ Mulai Sekarang →
               </motion.a>
             </div>

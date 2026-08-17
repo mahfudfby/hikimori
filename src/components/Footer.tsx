@@ -5,7 +5,7 @@ import { useLang } from '../contexts/LanguageContext';
 
 const LS_CONTACT = 'hk_contact_data';
 interface ContactData { email:string; location:string; website:string; instagram:string; linkedin:string; twitter:string; }
-const D: ContactData = { email:'Mahfudfebrys@gmail.com', location:'Nganjuk, Indonesia', website:'hikimori.web.id', instagram:'', linkedin:'', twitter:'' };
+const D: ContactData = { email:'Mahfudfebrys@gmail.com', location:'Nganjuk, Indonesia', website:'hikimori.web.id', instagram:'mahfudfebry', linkedin:'mahfud-febry-styanto', twitter:'' };
 
 const Footer: React.FC = () => {
   const { t } = useLang();
@@ -24,7 +24,7 @@ const Footer: React.FC = () => {
   ];
 
   return (
-    <footer style={{ background:'var(--black-2)', borderTop:'1px solid rgba(14,111,168,0.15)', padding:'clamp(2rem,5vw,3rem) clamp(1rem,5vw,2rem) 1.5rem' }}>
+    <footer style={{ background:'var(--black-2)', borderTop:'1px solid rgba(0,82,245,0.15)', padding:'clamp(2rem,5vw,3rem) clamp(1rem,5vw,2rem) 1.5rem' }}>
       <div style={{ maxWidth:1100, margin:'0 auto' }}>
         <div id="footer-grid" style={{ display:'grid', gridTemplateColumns:'1fr', gap:'2rem', marginBottom:'2rem' }}>
           {/* Brand */}
@@ -41,7 +41,7 @@ const Footer: React.FC = () => {
             {socials.length > 0 && (
               <div style={{ display:'flex', gap:'0.6rem', marginTop:'1rem', flexWrap:'wrap' }}>
                 {socials.map(s => (
-                  <a key={s.label} href={s.href} target="_blank" rel="noreferrer" style={{ background:'rgba(14,111,168,0.1)', border:'1px solid rgba(14,111,168,0.2)', color:'var(--amber)', borderRadius:8, padding:'6px 12px', textDecoration:'none', fontSize:'0.78rem', fontWeight:600 }}>{s.icon} {s.label}</a>
+                  <a key={s.label} href={s.href} target="_blank" rel="noreferrer" style={{ background:'rgba(0,82,245,0.1)', border:'1px solid rgba(0,82,245,0.2)', color:'var(--amber)', borderRadius:8, padding:'10px 14px', minHeight:40, display:'inline-flex', alignItems:'center', textDecoration:'none', fontSize:'0.78rem', fontWeight:600 }}>{s.icon} {s.label}</a>
                 ))}
               </div>
             )}
@@ -49,9 +49,9 @@ const Footer: React.FC = () => {
           {/* Navigation */}
           <div>
             <h4 style={{ color:'var(--amber)', marginBottom:'0.8rem', fontFamily:'var(--font-body)', fontWeight:600, fontSize:'0.9rem' }}>Navigation</h4>
-            <div style={{ display:'flex', flexWrap:'wrap', gap:'0.4rem 1.5rem' }}>
+            <div style={{ display:'flex', flexWrap:'wrap', gap:'0.2rem 1.5rem' }}>
               {links.map(l => (
-                <Link key={l.to} to={l.to} style={{ color:'var(--white-dim)', textDecoration:'none', fontSize:'0.88rem' }}
+                <Link key={l.to} to={l.to} style={{ color:'var(--white-dim)', textDecoration:'none', fontSize:'0.88rem', padding:'0.5rem 0', display:'inline-block' }}
                   onMouseEnter={e => (e.currentTarget.style.color='var(--amber)')}
                   onMouseLeave={e => (e.currentTarget.style.color='var(--white-dim)')}>{l.label}</Link>
               ))}
@@ -70,7 +70,7 @@ const Footer: React.FC = () => {
         {/* Bottom bar */}
         <div style={{ paddingTop:'1.2rem', borderTop:'1px solid rgba(255,255,255,0.06)', display:'flex', justifyContent:'space-between', alignItems:'center', flexWrap:'wrap', gap:'0.8rem' }}>
           <p style={{ color:'rgba(255,255,255,0.5)', fontSize:'0.78rem' }}>© {new Date().getFullYear()} Mahfudfebry — Hikimori Project. All rights reserved.</p>
-          <Link to="/admin/login" style={{ color:'rgba(14,111,168,0.3)', fontSize:'0.72rem', textDecoration:'none' }}>Admin</Link>
+          <Link to="/admin/login" style={{ color:'rgba(0,82,245,0.3)', fontSize:'0.72rem', textDecoration:'none' }}>Admin</Link>
         </div>
       </div>
       <style>{`

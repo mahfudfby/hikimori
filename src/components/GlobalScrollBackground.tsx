@@ -18,14 +18,14 @@ const GlobalScrollBackground: React.FC = () => {
       <motion.div
         style={{
           position: 'absolute', top: '8%', left: '-12%', width: '46%', height: '46%',
-          borderRadius: '50%', background: 'radial-gradient(circle, rgba(14,165,192,0.07) 0%, transparent 70%)',
+          borderRadius: '50%', background: 'radial-gradient(circle, rgba(1,169,242,0.07) 0%, transparent 70%)',
           filter: 'blur(70px)', y: y1, rotate,
         }}
       />
       <motion.div
         style={{
           position: 'absolute', bottom: '5%', right: '-10%', width: '42%', height: '42%',
-          borderRadius: '50%', background: 'radial-gradient(circle, rgba(14,111,168,0.06) 0%, transparent 70%)',
+          borderRadius: '50%', background: 'radial-gradient(circle, rgba(0,82,245,0.06) 0%, transparent 70%)',
           filter: 'blur(80px)', y: y2,
         }}
       />
