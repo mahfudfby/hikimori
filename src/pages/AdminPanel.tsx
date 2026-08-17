@@ -160,8 +160,8 @@ type Tab = 'dashboard'|'home'|'about'|'skills'|'experience'|'sertifikasi'|'portf
 /* ─── Styles ─── */
 const inp: React.CSSProperties = { width:'100%', background:'#111', border:'1px solid rgba(255,255,255,0.1)', borderRadius:8, padding:'10px 14px', color:'var(--white)', fontFamily:'var(--font-body)', fontSize:'0.9rem', outline:'none', boxSizing:'border-box' };
 const lbl: React.CSSProperties = { display:'block', color:'var(--white-dim)', fontSize:'0.75rem', fontWeight:600, marginBottom:5, textTransform:'uppercase', letterSpacing:'0.5px' };
-const card: React.CSSProperties = { background:'var(--black-2)', border:'1px solid rgba(14,111,168,0.1)', borderRadius:14, padding:'1.5rem', marginBottom:'1rem' };
-const btn = (primary?: boolean): React.CSSProperties => ({ background: primary ? 'var(--amber)' : 'transparent', color: primary ? 'var(--black)' : 'var(--white-dim)', border: primary ? 'none' : '1px solid rgba(255,255,255,0.15)', borderRadius:10, padding:'10px 20px', fontFamily:'var(--font-body)', fontWeight:700, fontSize:'0.88rem', cursor:'pointer' });
+const card: React.CSSProperties = { background:'var(--black-2)', border:'1px solid rgba(0,82,245,0.1)', borderRadius:14, padding:'1.5rem', marginBottom:'1rem' };
+const btn = (primary?: boolean): React.CSSProperties => ({ background: primary ? 'var(--amber)' : 'transparent', color: primary ? 'var(--black)' : 'var(--white-dim)', border: primary ? 'none' : '1px solid rgba(255,255,255,0.15)', borderRadius:10, padding:'11px 20px', minHeight:42, fontFamily:'var(--font-body)', fontWeight:700, fontSize:'0.88rem', cursor:'pointer' });
 
 const EMPTY_PORT = { title:'', category:'HR', description:'', imageUrl:'', tags:'', client:'', year:new Date().getFullYear().toString(), featured:false, order:0 };
 
@@ -427,7 +427,7 @@ const AdminPanel: React.FC = () => {
   if (!fsReady) return (
     <div style={{ minHeight:'100vh', background:'var(--black)', display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column', gap:'1rem' }}>
       <motion.div animate={{ rotate:360 }} transition={{ duration:1, repeat:Infinity, ease:'linear' }}
-        style={{ width:40, height:40, borderRadius:'50%', border:'3px solid rgba(14,111,168,0.3)', borderTopColor:'var(--amber)' }}/>
+        style={{ width:40, height:40, borderRadius:'50%', border:'3px solid rgba(0,82,245,0.3)', borderTopColor:'var(--amber)' }}/>
       <p style={{ color:'var(--white-dim)', fontFamily:'var(--font-body)', fontSize:'0.9rem' }}>Memuat data dari Firestore...</p>
     </div>
   );
@@ -435,7 +435,7 @@ const AdminPanel: React.FC = () => {
   return (
     <div style={{ minHeight:'100vh', background:'var(--black)', fontFamily:'var(--font-body)' }}>
       {/* Mobile top bar */}
-      <div id="admin-topbar" style={{ display:'none', background:'var(--black-2)', borderBottom:'1px solid rgba(14,111,168,0.15)', padding:'12px 16px', position:'sticky', top:0, zIndex:100, alignItems:'center', justifyContent:'space-between' }}>
+      <div id="admin-topbar" style={{ display:'none', background:'var(--black-2)', borderBottom:'1px solid rgba(0,82,245,0.15)', padding:'12px 16px', position:'sticky', top:0, zIndex:100, alignItems:'center', justifyContent:'space-between' }}>
         <div style={{ display:'flex', alignItems:'center', gap:8 }}>
           <Link to="/" style={{ display:'flex', alignItems:'center', gap:8, textDecoration:'none' }}>
             <img src="https://res.cloudinary.com/dl4pyan8v/image/upload/v1785799964/Hikimori_logo_ku11u1.jpg" alt="Hikimori" style={{ width:26, height:26, borderRadius:6, objectFit:'cover' }} />
@@ -447,15 +447,15 @@ const AdminPanel: React.FC = () => {
           <span style={{ fontSize:'0.65rem', color:'#4ade80', background:'rgba(74,222,128,0.1)', border:'1px solid rgba(74,222,128,0.3)', borderRadius:6, padding:'3px 8px', fontWeight:700 }}>
             🔥 Firestore Live
           </span>
-          <button onClick={handleLogout} style={{ background:'rgba(255,60,60,0.15)', border:'none', borderRadius:8, color:'#ff6b6b', padding:'6px 12px', cursor:'pointer', fontWeight:600, fontSize:'0.8rem' }}>Logout</button>
+          <button onClick={handleLogout} style={{ background:'rgba(255,60,60,0.15)', border:'none', borderRadius:8, color:'#ff6b6b', padding:'9px 14px', minHeight:38, cursor:'pointer', fontWeight:600, fontSize:'0.8rem' }}>Logout</button>
         </div>
       </div>
 
       {/* Mobile Tab Bar */}
-      <div id="admin-tabbar" style={{ display:'none', position:'fixed', bottom:0, left:0, right:0, zIndex:200, background:'var(--black-2)', borderTop:'1px solid rgba(14,111,168,0.15)', overflowX:'auto', WebkitOverflowScrolling:'touch' as any }}>
+      <div id="admin-tabbar" style={{ display:'none', position:'fixed', bottom:0, left:0, right:0, zIndex:200, background:'var(--black-2)', borderTop:'1px solid rgba(0,82,245,0.15)', overflowX:'auto', WebkitOverflowScrolling:'touch' as any }}>
         <div style={{ display:'flex', minWidth:'max-content', padding:'4px 8px', gap:2 }}>
           {tabs.map(t => (
-            <button key={t.id} onClick={() => setTab(t.id)} style={{ background: tab===t.id ? 'rgba(14,111,168,0.15)' : 'none', border:'none', borderRadius:8, padding:'8px 10px', cursor:'pointer', display:'flex', flexDirection:'column', alignItems:'center', gap:2, minWidth:56 }}>
+            <button key={t.id} onClick={() => setTab(t.id)} style={{ background: tab===t.id ? 'rgba(0,82,245,0.15)' : 'none', border:'none', borderRadius:8, padding:'8px 10px', cursor:'pointer', display:'flex', flexDirection:'column', alignItems:'center', gap:2, minWidth:56 }}>
               <span style={{ fontSize:'1.1rem' }}>{t.icon}</span>
               <span style={{ fontSize:'0.6rem', color: tab===t.id ? 'var(--amber)' : 'var(--white-dim)', fontWeight:600, whiteSpace:'nowrap' }}>{t.label}</span>
             </button>
@@ -465,7 +465,7 @@ const AdminPanel: React.FC = () => {
 
       <div style={{ display:'flex', minHeight:'100vh' }}>
         {/* ── Desktop Sidebar ── */}
-        <aside id="admin-sidebar" style={{ width:220, background:'var(--black-2)', borderRight:'1px solid rgba(14,111,168,0.1)', padding:'1.5rem 0.8rem', position:'sticky', top:0, height:'100vh', overflowY:'auto', flexShrink:0 }}>
+        <aside id="admin-sidebar" style={{ width:220, background:'var(--black-2)', borderRight:'1px solid rgba(0,82,245,0.1)', padding:'1.5rem 0.8rem', position:'sticky', top:0, height:'100vh', overflowY:'auto', flexShrink:0 }}>
           <Link to="/" style={{ marginBottom:'1.5rem', paddingLeft:'0.4rem', display:'flex', alignItems:'center', gap:8, textDecoration:'none' }}>
             <img src="https://res.cloudinary.com/dl4pyan8v/image/upload/v1785799964/Hikimori_logo_ku11u1.jpg" alt="Hikimori" style={{ width:32, height:32, borderRadius:7, objectFit:'cover' }} />
             <div>
@@ -481,18 +481,18 @@ const AdminPanel: React.FC = () => {
               <div style={{ color:'rgba(74,222,128,0.6)', fontSize:'0.62rem' }}>Sinkron semua device</div>
             </div>
           </div>
-          <div style={{ background:'var(--black-3)', borderRadius:10, padding:'0.8rem', marginBottom:'1.2rem', border:'1px solid rgba(14,111,168,0.1)' }}>
+          <div style={{ background:'var(--black-3)', borderRadius:10, padding:'0.8rem', marginBottom:'1.2rem', border:'1px solid rgba(0,82,245,0.1)' }}>
             <div style={{ fontSize:'1.2rem', marginBottom:'0.2rem' }}>👤</div>
             <div style={{ fontWeight:700, fontSize:'0.82rem' }}>Mahfudfebry</div>
             <div style={{ color:'var(--amber)', fontSize:'0.72rem' }}>Administrator</div>
           </div>
           {tabs.map(t => (
-            <button key={t.id} onClick={() => setTab(t.id)} style={{ width:'100%', background: tab===t.id ? 'rgba(14,111,168,0.15)' : 'none', border: tab===t.id ? '1px solid rgba(14,111,168,0.3)' : '1px solid transparent', borderRadius:9, padding:'9px 12px', color: tab===t.id ? 'var(--amber)' : 'var(--white-dim)', display:'flex', alignItems:'center', gap:8, cursor:'pointer', fontFamily:'var(--font-body)', fontWeight:600, fontSize:'0.83rem', marginBottom:3, textAlign:'left' }}>
+            <button key={t.id} onClick={() => setTab(t.id)} style={{ width:'100%', background: tab===t.id ? 'rgba(0,82,245,0.15)' : 'none', border: tab===t.id ? '1px solid rgba(0,82,245,0.3)' : '1px solid transparent', borderRadius:9, padding:'11px 12px', minHeight:44, color: tab===t.id ? 'var(--amber)' : 'var(--white-dim)', display:'flex', alignItems:'center', gap:8, cursor:'pointer', fontFamily:'var(--font-body)', fontWeight:600, fontSize:'0.83rem', marginBottom:3, textAlign:'left' }}>
               {t.icon} {t.label}
             </button>
           ))}
           <div style={{ marginTop:'1.5rem' }}>
-            <button onClick={handleLogout} style={{ width:'100%', background:'rgba(255,60,60,0.1)', border:'1px solid rgba(255,60,60,0.2)', borderRadius:9, padding:'9px 12px', color:'#ff6b6b', display:'flex', alignItems:'center', gap:8, cursor:'pointer', fontFamily:'var(--font-body)', fontWeight:600, fontSize:'0.83rem' }}>🚪 Logout</button>
+            <button onClick={handleLogout} style={{ width:'100%', background:'rgba(255,60,60,0.1)', border:'1px solid rgba(255,60,60,0.2)', borderRadius:9, padding:'11px 12px', minHeight:44, color:'#ff6b6b', display:'flex', alignItems:'center', gap:8, cursor:'pointer', fontFamily:'var(--font-body)', fontWeight:600, fontSize:'0.83rem' }}>🚪 Logout</button>
           </div>
         </aside>
 
@@ -514,7 +514,7 @@ const AdminPanel: React.FC = () => {
               </div>
               <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(140px,1fr))', gap:'0.8rem', marginBottom:'2rem' }}>
                 {stats.map(s => (
-                  <div key={s.label} style={{ background:'var(--black-2)', border:'1px solid rgba(14,111,168,0.15)', borderRadius:12, padding:'1.2rem', textAlign:'center' }}>
+                  <div key={s.label} style={{ background:'var(--black-2)', border:'1px solid rgba(0,82,245,0.15)', borderRadius:12, padding:'1.2rem', textAlign:'center' }}>
                     <div style={{ fontSize:'1.8rem', marginBottom:'0.3rem' }}>{s.icon}</div>
                     <div style={{ fontFamily:'var(--font-display)', fontSize:'1.8rem', color:'var(--amber)', lineHeight:1 }}>{s.value}</div>
                     <div style={{ color:'var(--white-dim)', fontSize:'0.75rem', marginTop:3 }}>{s.label}</div>
@@ -525,7 +525,7 @@ const AdminPanel: React.FC = () => {
                 <h3 style={{ fontFamily:'var(--font-display)', fontSize:'1.3rem', marginBottom:'1rem' }}>MENU CEPAT</h3>
                 <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(130px,1fr))', gap:'0.6rem' }}>
                   {tabs.filter(t => t.id !== 'dashboard').map(t => (
-                    <button key={t.id} onClick={() => setTab(t.id)} style={{ background:'rgba(14,111,168,0.08)', border:'1px solid rgba(14,111,168,0.15)', borderRadius:10, padding:'12px 8px', color:'var(--amber)', cursor:'pointer', fontFamily:'var(--font-body)', fontWeight:600, fontSize:'0.8rem', display:'flex', flexDirection:'column', alignItems:'center', gap:4 }}>
+                    <button key={t.id} onClick={() => setTab(t.id)} style={{ background:'rgba(0,82,245,0.08)', border:'1px solid rgba(0,82,245,0.15)', borderRadius:10, padding:'12px 8px', color:'var(--amber)', cursor:'pointer', fontFamily:'var(--font-body)', fontWeight:600, fontSize:'0.8rem', display:'flex', flexDirection:'column', alignItems:'center', gap:4 }}>
                       <span style={{ fontSize:'1.4rem' }}>{t.icon}</span>{t.label}
                     </button>
                   ))}
@@ -632,9 +632,9 @@ const AdminPanel: React.FC = () => {
                           </select>
                         </div>
                         <div style={{display:'flex',flexDirection:'column',gap:'0.3rem'}}>
-                          <button onClick={()=>moveGalleryItem(g.id,-1)} disabled={i===0} style={{...btn(false),padding:'4px 10px',fontSize:'0.7rem',opacity:i===0?0.3:1,cursor:i===0?'default':'pointer'}}>↑</button>
-                          <button onClick={()=>moveGalleryItem(g.id,1)} disabled={i===gallery.length-1} style={{...btn(false),padding:'4px 10px',fontSize:'0.7rem',opacity:i===gallery.length-1?0.3:1,cursor:i===gallery.length-1?'default':'pointer'}}>↓</button>
-                          <button onClick={()=>deleteGalleryItem(g.id)} style={{ background:'rgba(255,60,60,0.1)', border:'1px solid rgba(255,60,60,0.2)', color:'#ff6b6b', borderRadius:8, padding:'4px 10px', cursor:'pointer', fontSize:'0.7rem' }}>🗑️</button>
+                          <button onClick={()=>moveGalleryItem(g.id,-1)} disabled={i===0} style={{...btn(false),padding:'8px 12px',minHeight:36,fontSize:'0.72rem',opacity:i===0?0.3:1,cursor:i===0?'default':'pointer'}}>↑</button>
+                          <button onClick={()=>moveGalleryItem(g.id,1)} disabled={i===gallery.length-1} style={{...btn(false),padding:'8px 12px',minHeight:36,fontSize:'0.72rem',opacity:i===gallery.length-1?0.3:1,cursor:i===gallery.length-1?'default':'pointer'}}>↓</button>
+                          <button onClick={()=>deleteGalleryItem(g.id)} style={{ background:'rgba(255,60,60,0.1)', border:'1px solid rgba(255,60,60,0.2)', color:'#ff6b6b', borderRadius:8, padding:'8px 12px', minHeight:36, cursor:'pointer', fontSize:'0.72rem' }}>🗑️</button>
                         </div>
                       </div>
                     ))}
@@ -663,8 +663,8 @@ const AdminPanel: React.FC = () => {
                     <div style={{ color:'var(--white-dim)', fontSize:'0.82rem', lineHeight:1.5 }}>{sk.desc}</div>
                   </div>
                   <div style={{ display:'flex', gap:6, flexShrink:0 }}>
-                    <button onClick={() => setSkillForm({ ...sk })} style={{ ...btn(), fontSize:'0.78rem', padding:'6px 12px' }}>✏️</button>
-                    <button onClick={() => deleteSkill(sk.id)} style={{ background:'rgba(255,60,60,0.1)', border:'1px solid rgba(255,60,60,0.2)', color:'#ff6b6b', borderRadius:8, padding:'6px 12px', cursor:'pointer', fontSize:'0.78rem' }}>🗑️</button>
+                    <button onClick={() => setSkillForm({ ...sk })} style={{ ...btn(), fontSize:'0.78rem', padding:'9px 14px', minHeight:38 }}>✏️</button>
+                    <button onClick={() => deleteSkill(sk.id)} style={{ background:'rgba(255,60,60,0.1)', border:'1px solid rgba(255,60,60,0.2)', color:'#ff6b6b', borderRadius:8, padding:'9px 14px', minHeight:38, cursor:'pointer', fontSize:'0.78rem' }}>🗑️</button>
                   </div>
                 </div>
               ))}
@@ -677,8 +677,8 @@ const AdminPanel: React.FC = () => {
                     <div style={{ color:'var(--white-dim)', fontSize:'0.82rem', lineHeight:1.5 }}>{sk.desc}</div>
                   </div>
                   <div style={{ display:'flex', gap:6, flexShrink:0 }}>
-                    <button onClick={() => setSkillForm({ ...sk })} style={{ ...btn(), fontSize:'0.78rem', padding:'6px 12px' }}>✏️</button>
-                    <button onClick={() => deleteSkill(sk.id)} style={{ background:'rgba(255,60,60,0.1)', border:'1px solid rgba(255,60,60,0.2)', color:'#ff6b6b', borderRadius:8, padding:'6px 12px', cursor:'pointer', fontSize:'0.78rem' }}>🗑️</button>
+                    <button onClick={() => setSkillForm({ ...sk })} style={{ ...btn(), fontSize:'0.78rem', padding:'9px 14px', minHeight:38 }}>✏️</button>
+                    <button onClick={() => deleteSkill(sk.id)} style={{ background:'rgba(255,60,60,0.1)', border:'1px solid rgba(255,60,60,0.2)', color:'#ff6b6b', borderRadius:8, padding:'9px 14px', minHeight:38, cursor:'pointer', fontSize:'0.78rem' }}>🗑️</button>
                   </div>
                 </div>
               ))}
@@ -722,8 +722,8 @@ const AdminPanel: React.FC = () => {
                     {exp.tags && <div style={{ color:'var(--white-dim)', fontSize:'0.75rem', marginTop:'0.3rem' }}>{exp.tags}</div>}
                   </div>
                   <div style={{ display:'flex', gap:6, flexShrink:0 }}>
-                    <button onClick={() => setExpForm({ ...exp })} style={{ ...btn(), fontSize:'0.78rem', padding:'6px 12px' }}>✏️</button>
-                    <button onClick={() => deleteExp(exp.id)} style={{ background:'rgba(255,60,60,0.1)', border:'1px solid rgba(255,60,60,0.2)', color:'#ff6b6b', borderRadius:8, padding:'6px 12px', cursor:'pointer', fontSize:'0.78rem' }}>🗑️</button>
+                    <button onClick={() => setExpForm({ ...exp })} style={{ ...btn(), fontSize:'0.78rem', padding:'9px 14px', minHeight:38 }}>✏️</button>
+                    <button onClick={() => deleteExp(exp.id)} style={{ background:'rgba(255,60,60,0.1)', border:'1px solid rgba(255,60,60,0.2)', color:'#ff6b6b', borderRadius:8, padding:'9px 14px', minHeight:38, cursor:'pointer', fontSize:'0.78rem' }}>🗑️</button>
                   </div>
                 </div>
               );})}
@@ -749,11 +749,11 @@ const AdminPanel: React.FC = () => {
                       {item.imageUrl && <img src={item.imageUrl} alt={item.title} style={{ width:60, height:44, objectFit:'cover', borderRadius:7, flexShrink:0 }} />}
                       <div style={{ flex:1, minWidth:0 }}>
                         <div style={{ fontWeight:700, fontSize:'0.88rem', marginBottom:'0.15rem', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{item.title}</div>
-                        <span style={{ color:'var(--amber)', fontSize:'0.75rem', background:'rgba(14,111,168,0.08)', borderRadius:4, padding:'1px 8px' }}>{item.category}</span>
+                        <span style={{ color:'var(--amber)', fontSize:'0.75rem', background:'rgba(0,82,245,0.08)', borderRadius:4, padding:'1px 8px' }}>{item.category}</span>
                       </div>
                       <div style={{ display:'flex', gap:5, flexShrink:0 }}>
-                        <button onClick={() => openPortEdit(item)} style={{ ...btn(), fontSize:'0.75rem', padding:'5px 10px' }}>✏️</button>
-                        <button onClick={() => setDelConfirm(item.id)} style={{ background:'rgba(255,60,60,0.1)', border:'1px solid rgba(255,60,60,0.2)', color:'#ff6b6b', borderRadius:7, padding:'5px 10px', cursor:'pointer', fontSize:'0.75rem' }}>🗑️</button>
+                        <button onClick={() => openPortEdit(item)} style={{ ...btn(), fontSize:'0.75rem', padding:'9px 12px', minHeight:36 }}>✏️</button>
+                        <button onClick={() => setDelConfirm(item.id)} style={{ background:'rgba(255,60,60,0.1)', border:'1px solid rgba(255,60,60,0.2)', color:'#ff6b6b', borderRadius:7, padding:'9px 12px', minHeight:36, cursor:'pointer', fontSize:'0.75rem' }}>🗑️</button>
                       </div>
                     </div>
                   ))}
@@ -776,7 +776,7 @@ const AdminPanel: React.FC = () => {
               <div style={{ display:'flex', flexDirection:'column', gap:'0.6rem' }}>
                 {certs.map(cert => (
                   <div key={cert.id} style={{ ...card, display:'flex', gap:'1rem', alignItems:'flex-start', marginBottom:0 }}>
-                    <div style={{ width:72, height:52, borderRadius:8, overflow:'hidden', flexShrink:0, background:'rgba(255,255,255,0.05)', border:'1px solid rgba(14,111,168,0.15)', display:'flex', alignItems:'center', justifyContent:'center' }}>
+                    <div style={{ width:72, height:52, borderRadius:8, overflow:'hidden', flexShrink:0, background:'rgba(255,255,255,0.05)', border:'1px solid rgba(0,82,245,0.15)', display:'flex', alignItems:'center', justifyContent:'center' }}>
                       {cert.imageUrl ? <img src={cert.imageUrl} alt={cert.name} style={{ width:'100%', height:'100%', objectFit:'cover' }}/> : <span style={{ fontSize:'1.4rem' }}>🎓</span>}
                     </div>
                     <div style={{ flex:1, minWidth:0 }}>
@@ -785,8 +785,8 @@ const AdminPanel: React.FC = () => {
                       <div style={{ color:'var(--white-dim)', fontSize:'0.75rem', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{cert.subtitle}</div>
                     </div>
                     <div style={{ display:'flex', gap:5, flexShrink:0 }}>
-                      <button onClick={() => setCertForm({ ...cert })} style={{ ...btn(), fontSize:'0.78rem', padding:'6px 12px' }}>✏️</button>
-                      <button onClick={() => deleteCert(cert.id)} style={{ background:'rgba(255,60,60,0.1)', border:'1px solid rgba(255,60,60,0.2)', color:'#ff6b6b', borderRadius:8, padding:'6px 12px', cursor:'pointer', fontSize:'0.78rem' }}>🗑️</button>
+                      <button onClick={() => setCertForm({ ...cert })} style={{ ...btn(), fontSize:'0.78rem', padding:'9px 14px', minHeight:38 }}>✏️</button>
+                      <button onClick={() => deleteCert(cert.id)} style={{ background:'rgba(255,60,60,0.1)', border:'1px solid rgba(255,60,60,0.2)', color:'#ff6b6b', borderRadius:8, padding:'9px 14px', minHeight:38, cursor:'pointer', fontSize:'0.78rem' }}>🗑️</button>
                     </div>
                   </div>
                 ))}
@@ -839,7 +839,7 @@ const AdminPanel: React.FC = () => {
               <div style={card}>
                 <h3 style={{ marginBottom:'0.5rem', fontWeight:700 }}>Reset Data</h3>
                 <p style={{ color:'var(--white-dim)', fontSize:'0.85rem', marginBottom:'1rem' }}>Reset semua konten ke default. Data akan ditulis ulang ke Firestore.</p>
-                <button onClick={handleReset} style={{ background:'rgba(255,60,60,0.1)', border:'1px solid rgba(255,60,60,0.25)', color:'#ff6b6b', borderRadius:8, padding:'10px 20px', cursor:'pointer', fontFamily:'var(--font-body)', fontWeight:600 }}>🔄 Reset Semua Data</button>
+                <button onClick={handleReset} style={{ background:'rgba(255,60,60,0.1)', border:'1px solid rgba(255,60,60,0.25)', color:'#ff6b6b', borderRadius:8, padding:'11px 20px', minHeight:42, cursor:'pointer', fontFamily:'var(--font-body)', fontWeight:600 }}>🔄 Reset Semua Data</button>
               </div>
             </div>
           )}
@@ -851,10 +851,10 @@ const AdminPanel: React.FC = () => {
       <AnimatePresence>
         {skillForm && (
           <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.8)', backdropFilter:'blur(6px)', zIndex:2000, display:'flex', alignItems:'center', justifyContent:'center', padding:'1rem' }} onClick={e => { if (e.target===e.currentTarget) setSkillForm(null); }}>
-            <motion.div initial={{ opacity:0, scale:0.9 }} animate={{ opacity:1, scale:1 }} exit={{ opacity:0, scale:0.9 }} style={{ background:'var(--black-2)', border:'1px solid rgba(14,111,168,0.2)', borderRadius:18, padding:'1.5rem', width:'100%', maxWidth:480, maxHeight:'85vh', overflowY:'auto' }}>
+            <motion.div initial={{ opacity:0, scale:0.9 }} animate={{ opacity:1, scale:1 }} exit={{ opacity:0, scale:0.9 }} style={{ background:'var(--black-2)', border:'1px solid rgba(0,82,245,0.2)', borderRadius:18, padding:'1.5rem', width:'100%', maxWidth:480, maxHeight:'85vh', overflowY:'auto' }}>
               <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'1.2rem' }}>
                 <h2 style={{ fontFamily:'var(--font-display)', fontSize:'1.5rem' }}>{skillForm.id ? 'EDIT SKILL' : 'TAMBAH SKILL'}</h2>
-                <button onClick={() => setSkillForm(null)} style={{ background:'none', border:'none', color:'var(--white-dim)', fontSize:'1.2rem', cursor:'pointer' }}>✕</button>
+                <button onClick={() => setSkillForm(null)} style={{ background:'none', border:'none', color:'var(--white-dim)', fontSize:'1.2rem', cursor:'pointer', width:44, height:44, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>✕</button>
               </div>
               <div style={{ display:'flex', flexDirection:'column', gap:'1rem' }}>
                 <div className="responsive-2col" style={{ display:'grid', gridTemplateColumns:'1fr 2fr', gap:'0.8rem' }}>
@@ -870,7 +870,7 @@ const AdminPanel: React.FC = () => {
                 </div>
                 <div style={{ display:'flex', gap:'0.6rem' }}>
                   <button onClick={saveSkill} style={{ ...btn(true), flex:1 }}>💾 Simpan</button>
-                  <button onClick={() => setSkillForm(null)} style={{ ...btn(), padding:'10px 16px' }}>Batal</button>
+                  <button onClick={() => setSkillForm(null)} style={{ ...btn(), padding:'11px 18px', minHeight:42 }}>Batal</button>
                 </div>
               </div>
             </motion.div>
@@ -882,10 +882,10 @@ const AdminPanel: React.FC = () => {
       <AnimatePresence>
         {expForm && (
           <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.8)', backdropFilter:'blur(6px)', zIndex:2000, display:'flex', alignItems:'center', justifyContent:'center', padding:'1rem' }} onClick={e => { if (e.target===e.currentTarget) setExpForm(null); }}>
-            <motion.div initial={{ opacity:0, scale:0.9 }} animate={{ opacity:1, scale:1 }} exit={{ opacity:0, scale:0.9 }} style={{ background:'var(--black-2)', border:'1px solid rgba(14,111,168,0.2)', borderRadius:18, padding:'1.5rem', width:'100%', maxWidth:500, maxHeight:'85vh', overflowY:'auto' }}>
+            <motion.div initial={{ opacity:0, scale:0.9 }} animate={{ opacity:1, scale:1 }} exit={{ opacity:0, scale:0.9 }} style={{ background:'var(--black-2)', border:'1px solid rgba(0,82,245,0.2)', borderRadius:18, padding:'1.5rem', width:'100%', maxWidth:500, maxHeight:'85vh', overflowY:'auto' }}>
               <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'1.2rem' }}>
                 <h2 style={{ fontFamily:'var(--font-display)', fontSize:'1.5rem' }}>{expForm.id ? 'EDIT PENGALAMAN' : 'TAMBAH PENGALAMAN'}</h2>
-                <button onClick={() => setExpForm(null)} style={{ background:'none', border:'none', color:'var(--white-dim)', fontSize:'1.2rem', cursor:'pointer' }}>✕</button>
+                <button onClick={() => setExpForm(null)} style={{ background:'none', border:'none', color:'var(--white-dim)', fontSize:'1.2rem', cursor:'pointer', width:44, height:44, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>✕</button>
               </div>
               <div style={{ display:'flex', flexDirection:'column', gap:'1rem' }}>
                 <div><label style={lbl}>Posisi / Jabatan</label><input style={inp} value={expForm.position} onChange={e => setExpForm({ ...expForm, position:e.target.value })} /></div>
@@ -899,7 +899,7 @@ const AdminPanel: React.FC = () => {
                 <div><label style={lbl}>Rincian Tugas (satu poin per baris, opsional)</label><textarea style={{ ...inp, minHeight:110, resize:'vertical' }} value={expForm.desc||''} onChange={e => setExpForm({ ...expForm, desc:e.target.value })} placeholder={'• Poin tugas pertama\n• Poin tugas kedua'} /></div>
                 <div style={{ display:'flex', gap:'0.6rem' }}>
                   <button onClick={saveExp} style={{ ...btn(true), flex:1 }}>💾 Simpan</button>
-                  <button onClick={() => setExpForm(null)} style={{ ...btn(), padding:'10px 16px' }}>Batal</button>
+                  <button onClick={() => setExpForm(null)} style={{ ...btn(), padding:'11px 18px', minHeight:42 }}>Batal</button>
                 </div>
               </div>
             </motion.div>
@@ -911,10 +911,10 @@ const AdminPanel: React.FC = () => {
       <AnimatePresence>
         {portModal && (
           <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.8)', backdropFilter:'blur(6px)', zIndex:2000, display:'flex', alignItems:'center', justifyContent:'center', padding:'1rem', overflowY:'auto' }} onClick={e => { if (e.target===e.currentTarget) setPortModal(false); }}>
-            <motion.div initial={{ opacity:0, scale:0.9 }} animate={{ opacity:1, scale:1 }} exit={{ opacity:0, scale:0.9 }} style={{ background:'var(--black-2)', border:'1px solid rgba(14,111,168,0.2)', borderRadius:18, padding:'1.5rem', width:'100%', maxWidth:580, maxHeight:'90vh', overflowY:'auto' }}>
+            <motion.div initial={{ opacity:0, scale:0.9 }} animate={{ opacity:1, scale:1 }} exit={{ opacity:0, scale:0.9 }} style={{ background:'var(--black-2)', border:'1px solid rgba(0,82,245,0.2)', borderRadius:18, padding:'1.5rem', width:'100%', maxWidth:580, maxHeight:'90vh', overflowY:'auto' }}>
               <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'1.2rem' }}>
                 <h2 style={{ fontFamily:'var(--font-display)', fontSize:'1.5rem' }}>{portEditId ? 'EDIT PROJECT' : 'TAMBAH PROJECT'}</h2>
-                <button onClick={() => setPortModal(false)} style={{ background:'none', border:'none', color:'var(--white-dim)', fontSize:'1.2rem', cursor:'pointer' }}>✕</button>
+                <button onClick={() => setPortModal(false)} style={{ background:'none', border:'none', color:'var(--white-dim)', fontSize:'1.2rem', cursor:'pointer', width:44, height:44, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>✕</button>
               </div>
               <form onSubmit={handlePortSubmit} style={{ display:'flex', flexDirection:'column', gap:'1rem' }}>
                 <div><label style={lbl}>Judul Project *</label><input style={inp} value={portForm.title} onChange={e => setPortForm({ ...portForm, title:e.target.value })} required /></div>
@@ -936,7 +936,7 @@ const AdminPanel: React.FC = () => {
                 </div>
                 <div style={{ display:'flex', gap:'0.6rem' }}>
                   <button type="submit" disabled={portSubmitting} style={{ ...btn(true), flex:1 }}>{portSubmitting ? '⌛ Menyimpan...' : portEditId ? '💾 Update' : '➕ Tambah'}</button>
-                  <button type="button" onClick={() => setPortModal(false)} style={{ ...btn(), padding:'10px 16px' }}>Batal</button>
+                  <button type="button" onClick={() => setPortModal(false)} style={{ ...btn(), padding:'11px 18px', minHeight:42 }}>Batal</button>
                 </div>
               </form>
             </motion.div>
@@ -953,8 +953,8 @@ const AdminPanel: React.FC = () => {
               <h3 style={{ fontFamily:'var(--font-display)', fontSize:'1.4rem', marginBottom:'0.5rem' }}>HAPUS?</h3>
               <p style={{ color:'var(--white-dim)', marginBottom:'1.2rem', fontSize:'0.88rem' }}>Tindakan ini tidak dapat dibatalkan.</p>
               <div style={{ display:'flex', gap:'0.6rem', justifyContent:'center' }}>
-                <button onClick={() => handleDelete(delConfirm)} style={{ background:'#ff4444', color:'white', border:'none', borderRadius:8, padding:'10px 22px', cursor:'pointer', fontWeight:700 }}>Ya, Hapus</button>
-                <button onClick={() => setDelConfirm(null)} style={{ ...btn(), padding:'10px 18px' }}>Batal</button>
+                <button onClick={() => handleDelete(delConfirm)} style={{ background:'#ff4444', color:'white', border:'none', borderRadius:8, padding:'11px 22px', minHeight:42, cursor:'pointer', fontWeight:700 }}>Ya, Hapus</button>
+                <button onClick={() => setDelConfirm(null)} style={{ ...btn(), padding:'11px 18px', minHeight:42 }}>Batal</button>
               </div>
             </motion.div>
           </motion.div>
@@ -965,10 +965,10 @@ const AdminPanel: React.FC = () => {
       <AnimatePresence>
         {certForm && (
           <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.8)', backdropFilter:'blur(6px)', zIndex:2000, display:'flex', alignItems:'center', justifyContent:'center', padding:'1rem', overflowY:'auto' }} onClick={e => { if (e.target===e.currentTarget) setCertForm(null); }}>
-            <motion.div initial={{ opacity:0, scale:0.9 }} animate={{ opacity:1, scale:1 }} exit={{ opacity:0, scale:0.9 }} style={{ background:'var(--black-2)', border:'1px solid rgba(14,111,168,0.2)', borderRadius:18, padding:'1.5rem', width:'100%', maxWidth:520, maxHeight:'90vh', overflowY:'auto' }}>
+            <motion.div initial={{ opacity:0, scale:0.9 }} animate={{ opacity:1, scale:1 }} exit={{ opacity:0, scale:0.9 }} style={{ background:'var(--black-2)', border:'1px solid rgba(0,82,245,0.2)', borderRadius:18, padding:'1.5rem', width:'100%', maxWidth:520, maxHeight:'90vh', overflowY:'auto' }}>
               <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'1.2rem' }}>
                 <h2 style={{ fontFamily:'var(--font-display)', fontSize:'1.5rem' }}>{certForm.id ? 'EDIT SERTIFIKASI' : 'TAMBAH SERTIFIKASI'}</h2>
-                <button onClick={() => setCertForm(null)} style={{ background:'none', border:'none', color:'var(--white-dim)', fontSize:'1.2rem', cursor:'pointer' }}>✕</button>
+                <button onClick={() => setCertForm(null)} style={{ background:'none', border:'none', color:'var(--white-dim)', fontSize:'1.2rem', cursor:'pointer', width:44, height:44, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>✕</button>
               </div>
               <div style={{ display:'flex', flexDirection:'column', gap:'1rem' }}>
                 <div><label style={lbl}>Nama Sertifikasi *</label><input style={inp} value={certForm.name} onChange={e => setCertForm({ ...certForm, name:e.target.value })} placeholder="Google Digital Marketing" /></div>
@@ -980,7 +980,7 @@ const AdminPanel: React.FC = () => {
                 <ImageUploader label="Gambar Sertifikat" value={certForm.imageUrl} onChange={url => setCertForm({ ...certForm, imageUrl:url })} />
                 <div style={{ display:'flex', gap:'0.6rem' }}>
                   <button onClick={saveCert} style={{ ...btn(true), flex:1 }}>💾 Simpan</button>
-                  <button onClick={() => setCertForm(null)} style={{ ...btn(), padding:'10px 16px' }}>Batal</button>
+                  <button onClick={() => setCertForm(null)} style={{ ...btn(), padding:'11px 18px', minHeight:42 }}>Batal</button>
                 </div>
               </div>
             </motion.div>

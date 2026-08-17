@@ -140,7 +140,7 @@ const ExpCardAbout: React.FC<{ exp: ExpItem; index: number }> = ({ exp, index: i
     <AnimatedSection direction={i % 2 === 0 ? 'left' : 'right'} delay={i * 0.12}>
       <div className="float-hover" style={{
         background: 'var(--black-3)',
-        border: '1px solid rgba(14,111,168,0.15)',
+        border: '1px solid rgba(0,82,245,0.15)',
         borderLeft: '3px solid var(--amber)',
         borderRadius: 'var(--radius)',
         padding: '1.8rem 2rem',
@@ -167,9 +167,9 @@ const ExpCardAbout: React.FC<{ exp: ExpItem; index: number }> = ({ exp, index: i
           return (
             <div style={{
               display: 'inline-flex', flexDirection: 'column', gap: '0.2rem', alignItems: 'flex-start',
-              background: 'rgba(14,111,168,0.12)', color: 'var(--amber)',
+              background: 'rgba(0,82,245,0.12)', color: 'var(--amber)',
               borderRadius: '6px', padding: '5px 12px', fontSize: '0.75rem', fontWeight: 700,
-              border: '1px solid rgba(14,111,168,0.25)', marginBottom: '0.8rem',
+              border: '1px solid rgba(0,82,245,0.25)', marginBottom: '0.8rem',
             }}>
               <span><span aria-hidden="true">🕐</span> {dateRange}</span>
               <span>[ {duration} ]{type ? ` · ${type}` : ''}</span>
@@ -180,8 +180,8 @@ const ExpCardAbout: React.FC<{ exp: ExpItem; index: number }> = ({ exp, index: i
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem', marginBottom: '0.8rem' }}>
             {exp.tags.split(',').map(tg => tg.trim()).filter(Boolean).map(tag => (
               <span key={tag} style={{
-                background: 'rgba(14,111,168,0.07)', border: '1px solid rgba(14,111,168,0.18)',
-                color: 'rgba(14,111,168,0.85)', borderRadius: '4px', padding: '2px 9px', fontSize: '0.72rem',
+                background: 'rgba(0,82,245,0.07)', border: '1px solid rgba(0,82,245,0.18)',
+                color: 'rgba(0,82,245,0.85)', borderRadius: '4px', padding: '2px 9px', fontSize: '0.72rem',
               }}>
                 {tag}
               </span>
@@ -193,7 +193,7 @@ const ExpCardAbout: React.FC<{ exp: ExpItem; index: number }> = ({ exp, index: i
             <button
               onClick={() => setOpen(o => !o)}
               style={{
-                background: 'rgba(14,111,168,0.1)', border: '1px solid rgba(14,111,168,0.3)',
+                background: 'rgba(0,82,245,0.1)', border: '1px solid rgba(0,82,245,0.3)',
                 color: 'var(--amber)', borderRadius: '6px', padding: '5px 14px', fontSize: '0.75rem',
                 fontWeight: 700, cursor: 'pointer', fontFamily: 'var(--font-body)',
               }}
@@ -206,7 +206,7 @@ const ExpCardAbout: React.FC<{ exp: ExpItem; index: number }> = ({ exp, index: i
               transition={{ duration: 0.32, ease: 'easeInOut' }}
               style={{ overflow: 'hidden' }}
             >
-              <div style={{ marginTop: '0.8rem', padding: '1rem', background: 'rgba(14,111,168,0.04)', borderRadius: '8px', borderLeft: '2px solid rgba(14,111,168,0.3)' }} lang={lang}>
+              <div style={{ marginTop: '0.8rem', padding: '1rem', background: 'rgba(0,82,245,0.04)', borderRadius: '8px', borderLeft: '2px solid rgba(0,82,245,0.3)' }} lang={lang}>
                 <div className="bullet-list">
                   {exp.desc.split('\n').map((line, li) => {
                     const isBullet = line.trim().startsWith('•');
@@ -248,7 +248,7 @@ const About: React.FC = () => {
           <AnimatedSection direction="left">
             <span style={{
               display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
-              background: 'var(--accent-bg)', border: '1px solid rgba(14,111,168,0.25)',
+              background: 'var(--accent-bg)', border: '1px solid rgba(0,82,245,0.25)',
               color: 'var(--amber)', fontFamily: 'var(--font-body)', fontSize: '0.8rem', fontWeight: 600,
               padding: '0.5rem 1.1rem', borderRadius: '999px', marginBottom: '1.5rem',
             }}>
@@ -287,7 +287,7 @@ const About: React.FC = () => {
                     display: 'inline-flex', alignItems: 'center', gap: '0.6rem',
                     background: 'var(--amber)', color: 'var(--black)', fontWeight: 700, fontSize: '0.9rem',
                     padding: '0.8rem 1.6rem', borderRadius: '999px', textDecoration: 'none',
-                    boxShadow: '0 8px 24px rgba(14,111,168,0.25)',
+                    boxShadow: '0 8px 24px rgba(0,82,245,0.25)',
                   }}
                 >
                   ⬇ {t('Unduh CV (PDF)', 'Download CV (PDF)')}
@@ -427,7 +427,7 @@ const About: React.FC = () => {
         >
           {/* Education */}
           <AnimatedSection direction="left" delay={0}>
-            <div className="float-hover magazine-item" style={{ gridColumn: 'span 2', gridRow: 'span 1', height: '100%', background: 'var(--black-3)', border: '1px solid rgba(14,111,168,0.18)', borderTop: '3px solid var(--amber)', borderRadius: 'var(--radius)', padding: '1.6rem', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <div className="float-hover magazine-item" style={{ gridColumn: 'span 2', gridRow: 'span 1', height: '100%', background: 'var(--black-3)', border: '1px solid rgba(0,82,245,0.18)', borderTop: '3px solid var(--amber)', borderRadius: 'var(--radius)', padding: '1.6rem', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
               <div style={{ fontSize: '1.6rem', marginBottom: '0.5rem' }}>🎓</div>
               <h3 style={{ fontFamily: 'var(--font-body)', fontWeight: 700, color: 'var(--amber)', fontSize: '0.82rem', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '0.4rem' }}>{t('Pendidikan', 'Education')}</h3>
               <p style={{ color: 'var(--white)', fontWeight: 700, fontSize: '1.05rem', marginBottom: '0.15rem' }}>{t(EDUCATION.degree.id, EDUCATION.degree.en)}</p>
@@ -437,12 +437,12 @@ const About: React.FC = () => {
 
           {/* Tools & Apps */}
           <AnimatedSection direction="right" delay={0.08}>
-            <div className="float-hover magazine-item" style={{ gridColumn: 'span 2', gridRow: 'span 2', height: '100%', background: 'var(--black-3)', border: '1px solid rgba(14,111,168,0.18)', borderTop: '3px solid var(--amber)', borderRadius: 'var(--radius)', padding: '1.6rem' }}>
+            <div className="float-hover magazine-item" style={{ gridColumn: 'span 2', gridRow: 'span 2', height: '100%', background: 'var(--black-3)', border: '1px solid rgba(0,82,245,0.18)', borderTop: '3px solid var(--amber)', borderRadius: 'var(--radius)', padding: '1.6rem' }}>
               <div style={{ fontSize: '1.6rem', marginBottom: '0.5rem' }}>🛠️</div>
               <h3 style={{ fontFamily: 'var(--font-body)', fontWeight: 700, color: 'var(--amber)', fontSize: '0.82rem', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '0.7rem' }}>{t('Tools & Aplikasi', 'Tools and Apps')}</h3>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
                 {TOOLS.map(tool => (
-                  <span key={tool} className="info-chip" style={{ background: 'rgba(14,111,168,0.08)', border: '1px solid rgba(14,111,168,0.2)', color: 'rgba(14,111,168,0.9)', borderRadius: '5px', padding: '4px 10px', fontSize: '0.75rem' }}>{tool}</span>
+                  <span key={tool} className="info-chip" style={{ background: 'rgba(0,82,245,0.08)', border: '1px solid rgba(0,82,245,0.2)', color: 'rgba(0,82,245,0.9)', borderRadius: '5px', padding: '4px 10px', fontSize: '0.75rem' }}>{tool}</span>
                 ))}
               </div>
               <h4 style={{ fontFamily: 'var(--font-body)', fontWeight: 700, color: 'var(--white)', fontSize: '0.78rem', letterSpacing: '1px', textTransform: 'uppercase', margin: '1.1rem 0 0.6rem' }}>{t('Keahlian Inti (CV)', 'Skills & Expertise (CV)')}</h4>
@@ -456,12 +456,12 @@ const About: React.FC = () => {
 
           {/* Hobby */}
           <AnimatedSection direction="left" delay={0.16}>
-            <div className="float-hover magazine-item" style={{ gridColumn: 'span 2', gridRow: 'span 1', height: '100%', background: 'var(--black-3)', border: '1px solid rgba(14,111,168,0.18)', borderTop: '3px solid var(--amber)', borderRadius: 'var(--radius)', padding: '1.6rem' }}>
+            <div className="float-hover magazine-item" style={{ gridColumn: 'span 2', gridRow: 'span 1', height: '100%', background: 'var(--black-3)', border: '1px solid rgba(0,82,245,0.18)', borderTop: '3px solid var(--amber)', borderRadius: 'var(--radius)', padding: '1.6rem' }}>
               <div style={{ fontSize: '1.6rem', marginBottom: '0.5rem' }}>🎯</div>
               <h3 style={{ fontFamily: 'var(--font-body)', fontWeight: 700, color: 'var(--amber)', fontSize: '0.82rem', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '0.6rem' }}>{t('Hobi', 'Hobby')}</h3>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
                 {HOBBIES.map(h => (
-                  <span key={h.id} className="info-chip" style={{ background: 'rgba(14,111,168,0.08)', border: '1px solid rgba(14,111,168,0.2)', color: 'rgba(14,111,168,0.9)', borderRadius: '5px', padding: '4px 10px', fontSize: '0.78rem' }}>{t(h.id, h.en)}</span>
+                  <span key={h.id} className="info-chip" style={{ background: 'rgba(0,82,245,0.08)', border: '1px solid rgba(0,82,245,0.2)', color: 'rgba(0,82,245,0.9)', borderRadius: '5px', padding: '4px 10px', fontSize: '0.78rem' }}>{t(h.id, h.en)}</span>
                 ))}
               </div>
             </div>
@@ -469,7 +469,7 @@ const About: React.FC = () => {
 
           {/* Organizational Experience */}
           <AnimatedSection direction="up" delay={0.24}>
-            <div className="float-hover magazine-item" style={{ gridColumn: 'span 2', gridRow: 'span 2', height: '100%', background: 'var(--black-3)', border: '1px solid rgba(14,111,168,0.18)', borderTop: '3px solid var(--amber)', borderRadius: 'var(--radius)', padding: '1.6rem' }}>
+            <div className="float-hover magazine-item" style={{ gridColumn: 'span 2', gridRow: 'span 2', height: '100%', background: 'var(--black-3)', border: '1px solid rgba(0,82,245,0.18)', borderTop: '3px solid var(--amber)', borderRadius: 'var(--radius)', padding: '1.6rem' }}>
               <div style={{ fontSize: '1.6rem', marginBottom: '0.5rem' }}>🏯</div>
               <h3 style={{ fontFamily: 'var(--font-body)', fontWeight: 700, color: 'var(--amber)', fontSize: '0.82rem', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '0.4rem' }}>{t('Pengalaman Organisasi', 'Organizational Experience')}</h3>
               <p style={{ color: 'var(--white)', fontWeight: 700, fontSize: '1rem', marginBottom: '0.1rem' }}>{ORG_EXPERIENCE.role}</p>
@@ -483,7 +483,7 @@ const About: React.FC = () => {
 
           {/* References */}
           <AnimatedSection direction="right" delay={0.32}>
-            <div className="float-hover magazine-item" style={{ gridColumn: 'span 2', gridRow: 'span 1', height: '100%', background: 'var(--black-3)', border: '1px solid rgba(14,111,168,0.18)', borderTop: '3px solid var(--amber)', borderRadius: 'var(--radius)', padding: '1.6rem' }}>
+            <div className="float-hover magazine-item" style={{ gridColumn: 'span 2', gridRow: 'span 1', height: '100%', background: 'var(--black-3)', border: '1px solid rgba(0,82,245,0.18)', borderTop: '3px solid var(--amber)', borderRadius: 'var(--radius)', padding: '1.6rem' }}>
               <div style={{ fontSize: '1.6rem', marginBottom: '0.5rem' }}>📇</div>
               <h3 style={{ fontFamily: 'var(--font-body)', fontWeight: 700, color: 'var(--amber)', fontSize: '0.82rem', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '0.6rem' }}>{t('Referensi', 'References')}</h3>
               {REFERENCES.map(r => (
@@ -520,7 +520,7 @@ const About: React.FC = () => {
             {/* ── Hard Skill ── */}
             <div>
               <AnimatedSection direction="up">
-                <div className="clay-card" style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1.3rem 1.6rem', marginBottom: 0, border: '1.5px solid rgba(14,111,168,0.35)' }}>
+                <div className="clay-card" style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1.3rem 1.6rem', marginBottom: 0, border: '1.5px solid rgba(0,82,245,0.35)' }}>
                   <div style={{ width: 50, height: 50, borderRadius: 13, background: 'var(--accent-bg)', border: '2px solid var(--amber)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.4rem', flexShrink: 0 }}>🛠️</div>
                   <div>
                     <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.1rem, 3vw, 1.5rem)', color: 'var(--amber)', letterSpacing: '0.5px', lineHeight: 1.1 }}>HARD <span style={{ color: 'var(--white)' }}>SKILL</span></h3>
@@ -530,11 +530,11 @@ const About: React.FC = () => {
               </AnimatedSection>
               <div style={{ position: 'relative', marginLeft: '1.6rem', paddingLeft: '1.6rem', marginTop: '0.5rem' }}>
                 <motion.div initial={{ scaleY: 0 }} whileInView={{ scaleY: 1 }} viewport={{ once: true }} transition={{ duration: 1, ease: 'easeOut' }}
-                  style={{ position: 'absolute', left: 0, top: 0, bottom: '1.2rem', width: 2, background: 'linear-gradient(to bottom, var(--amber), rgba(14,111,168,0.1))', transformOrigin: 'top' }} />
+                  style={{ position: 'absolute', left: 0, top: 0, bottom: '1.2rem', width: 2, background: 'linear-gradient(to bottom, var(--amber), rgba(0,82,245,0.1))', transformOrigin: 'top' }} />
                 <StaggerGroup className="stagger-skills" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                   {skills.filter(sk => sk.category !== 'soft').map((skill) => (
                     <StaggerItem key={skill.id} style={{ position: 'relative' }}>
-                      <div style={{ position: 'absolute', left: '-1.6rem', top: '1.4rem', width: '1.6rem', height: 2, background: 'rgba(14,111,168,0.3)' }} />
+                      <div style={{ position: 'absolute', left: '-1.6rem', top: '1.4rem', width: '1.6rem', height: 2, background: 'rgba(0,82,245,0.3)' }} />
                       <SpotlightCard className="clay-card" style={{ padding: '1.3rem 1.5rem' }}>
                         <h4 style={{ fontFamily: 'var(--font-body)', fontWeight: 700, color: 'var(--amber)', fontSize: '0.88rem', marginBottom: '0.4rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{skill.title}</h4>
                         <p lang={lang} className="text-justify-auto skill-desc-clamp" style={{ color: 'var(--white-dim)', fontSize: '0.83rem', lineHeight: 1.3 }}>{skill.desc}</p>
@@ -594,7 +594,7 @@ const About: React.FC = () => {
         </AnimatedSection>
         {certs.length === 0 ? (
           <AnimatedSection direction="up">
-            <div style={{ textAlign: 'center', padding: '3rem', color: 'rgba(14,111,168,0.4)', border: '1px dashed rgba(14,111,168,0.2)', borderRadius: 'var(--radius)' }}>
+            <div style={{ textAlign: 'center', padding: '3rem', color: 'rgba(0,82,245,0.4)', border: '1px dashed rgba(0,82,245,0.2)', borderRadius: 'var(--radius)' }}>
               <div style={{ fontSize: '3rem', marginBottom: '0.8rem' }}>📜</div>
               <p>{t('Belum ada sertifikasi.', 'No certifications yet.')}</p>
             </div>
@@ -604,7 +604,7 @@ const About: React.FC = () => {
             {certs.map((cert, i) => (
               <AnimatedSection key={cert.id} direction={i % 2 === 0 ? 'left' : 'right'} delay={i * 0.15}>
                 <div className="float-hover" style={{
-                  background: 'var(--black-2)', border: '1px solid rgba(14,111,168,0.2)',
+                  background: 'var(--black-2)', border: '1px solid rgba(0,82,245,0.2)',
                   borderTop: '3px solid var(--amber)', borderRadius: 'var(--radius)', padding: '2.5rem',
                 }}>
                   {cert.imageUrl && (
@@ -615,7 +615,7 @@ const About: React.FC = () => {
                   </h3>
                   <p style={{ color: 'var(--white)', fontWeight: 600, marginBottom: '0.2rem' }}>{cert.issuer}</p>
                   <p style={{ color: 'var(--white-dim)', fontSize: '0.85rem', marginBottom: '0.6rem' }}>{cert.subtitle}</p>
-                  <span style={{ background: 'rgba(14,111,168,0.12)', color: 'var(--amber)', borderRadius: '6px', padding: '3px 10px', fontSize: '0.78rem', fontWeight: 700 }}>
+                  <span style={{ background: 'rgba(0,82,245,0.12)', color: 'var(--amber)', borderRadius: '6px', padding: '3px 10px', fontSize: '0.78rem', fontWeight: 700 }}>
                     {cert.year}
                   </span>
                 </div>

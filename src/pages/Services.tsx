@@ -20,7 +20,7 @@ const services = [
       'Employee Relations',
       'Performance Evaluation',
     ],
-    color: '#0E6FA8',
+    color: '#0052F5',
   },
   {
     icon: '📋',
@@ -35,7 +35,7 @@ const services = [
       'Laporan Operasional',
       'Arsip & Filing',
     ],
-    color: '#2E92C7',
+    color: '#3376FA',
   },
   {
     icon: '💻',
@@ -50,7 +50,7 @@ const services = [
       'User Training',
       'IT Documentation',
     ],
-    color: '#094A70',
+    color: '#0041C4',
   },
   {
     icon: '🎨',
@@ -65,7 +65,7 @@ const services = [
       'Presentation Design',
       'Concept Development',
     ],
-    color: '#0E6FA8',
+    color: '#0052F5',
   },
 ];
 
@@ -155,7 +155,7 @@ const Services: React.FC = () => {
                 onHoverEnd={() => setActiveCard(null)}
                 style={{
                   background: activeCard === i ? 'var(--black-3)' : 'var(--black-2)',
-                  border: `1px solid ${activeCard === i ? 'rgba(14,111,168,0.4)' : 'rgba(14,111,168,0.1)'}`,
+                  border: `1px solid ${activeCard === i ? 'rgba(0,82,245,0.4)' : 'rgba(0,82,245,0.1)'}`,
                   borderRadius: 'var(--radius)',
                   padding: '2.5rem',
                   cursor: 'default',
@@ -182,7 +182,7 @@ const Services: React.FC = () => {
 
                 <div style={{
                   width: 56, height: 56, borderRadius: 14,
-                  background: 'var(--accent-bg)', border: '1px solid rgba(14,111,168,0.18)',
+                  background: 'var(--accent-bg)', border: '1px solid rgba(0,82,245,0.18)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontSize: '1.6rem', marginBottom: '1.2rem',
                 }}>
@@ -225,7 +225,7 @@ const Services: React.FC = () => {
                   target="_blank" rel="noopener noreferrer"
                   style={{
                     display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                    paddingTop: '1.2rem', borderTop: '1px solid var(--card-border)',
+                    padding: '1.2rem 0.2rem 0.4rem', minHeight: 44, borderTop: '1px solid var(--card-border)',
                     color: 'var(--amber)', fontWeight: 700, fontSize: '0.85rem', textDecoration: 'none',
                   }}
                 >
@@ -269,13 +269,13 @@ const Services: React.FC = () => {
                   padding: '2.5rem 1.5rem',
                   background: 'var(--black-3)',
                   borderRadius: 'var(--radius)',
-                  border: '1px solid rgba(14,111,168,0.1)',
+                  border: '1px solid rgba(0,82,245,0.1)',
                   position: 'relative',
                 }}>
                   <div style={{
                     fontFamily: 'var(--font-display)',
                     fontSize: '4rem',
-                    color: 'rgba(14,111,168,0.15)',
+                    color: 'rgba(0,82,245,0.15)',
                     lineHeight: 1,
                     position: 'absolute',
                     top: '10px',
@@ -336,9 +336,9 @@ const Services: React.FC = () => {
             {t('Hubungi saya dan kita mulai wujudkan ide Anda bersama.', "Let's get in touch and start bringing your ideas to life together.")}
           </p>
           <motion.a
-            href="mailto:mahfudfebry@hikimori.web.id"
+            href="mailto:Mahfudfebrys@gmail.com"
             className="text-shadow-onlight"
-            whileHover={{ scale: 1.05, boxShadow: '0 10px 40px rgba(14,111,168,0.4)' }}
+            whileHover={{ scale: 1.05, boxShadow: '0 10px 40px rgba(0,82,245,0.4)' }}
             whileTap={{ scale: 0.97 }}
             style={{
               display: 'inline-block',

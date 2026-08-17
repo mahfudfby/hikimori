@@ -1,5 +1,5 @@
 // src/pages/Portofolio.tsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import AnimatedSection from '../components/AnimatedSection';
 import LazyMount from '../components/LazyMount';
@@ -8,9 +8,10 @@ import { usePortfolio } from '../hooks/usePortfolio';
 
 const CATEGORIES = ['Semua', 'HR', 'Administrasi', 'IT Support', 'Desain', 'Branding'];
 
-const PortfolioCard: React.FC<{ item: ReturnType<typeof usePortfolio>['items'][0]; index: number }> = ({
+const PortfolioCard: React.FC<{ item: ReturnType<typeof usePortfolio>['items'][0]; index: number; onOpen: () => void }> = ({
   item,
   index,
+  onOpen,
 }) => {
   const [hovered, setHovered] = useState(false);
 
@@ -23,15 +24,20 @@ const PortfolioCard: React.FC<{ item: ReturnType<typeof usePortfolio>['items'][0
       transition={{ duration: 0.5, delay: index * 0.06 }}
       onHoverStart={() => setHovered(true)}
       onHoverEnd={() => setHovered(false)}
+      onClick={onOpen}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onOpen(); }}
+      aria-label={`Lihat detail proyek ${item.title}`}
       style={{
         background: 'var(--black-2)',
         borderRadius: 'var(--radius)',
         overflow: 'hidden',
-        border: `1px solid ${hovered ? 'rgba(14,111,168,0.4)' : 'rgba(14,111,168,0.1)'}`,
+        border: `1px solid ${hovered ? 'rgba(0,82,245,0.4)' : 'rgba(0,82,245,0.1)'}`,
         transition: 'border-color 0.3s, transform 0.35s cubic-bezier(0.4,0,0.2,1), box-shadow 0.35s',
         transform: hovered ? 'translateY(-10px)' : 'translateY(0)',
-        boxShadow: hovered ? '0 24px 60px rgba(14,111,168,0.2)' : '0 4px 20px rgba(0,0,0,0.3)',
-        cursor: 'default',
+        boxShadow: hovered ? '0 24px 60px rgba(0,82,245,0.2)' : '0 4px 20px rgba(0,0,0,0.3)',
+        cursor: 'pointer',
       }}
     >
       {/* Image */}
@@ -47,10 +53,19 @@ const PortfolioCard: React.FC<{ item: ReturnType<typeof usePortfolio>['items'][0
           position: 'absolute',
           inset: 0,
           background: hovered
-            ? 'linear-gradient(to bottom, rgba(14,111,168,0.15), rgba(10,10,10,0.6))'
+            ? 'linear-gradient(to bottom, rgba(0,82,245,0.15), rgba(10,10,10,0.6))'
             : 'linear-gradient(to bottom, transparent, rgba(10,10,10,0.5))',
           transition: 'background 0.3s',
         }} />
+        {/* Affordance "Lihat Detail" — desktop muncul pas hover, ada juga versi kecil permanen buat HP (nggak ada hover di touchscreen) */}
+        <motion.div
+          animate={{ opacity: hovered ? 1 : 0 }}
+          style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none' }}
+        >
+          <div className="text-shadow-onlight" style={{ background: 'var(--amber)', color: 'var(--black)', borderRadius: '999px', padding: '10px 20px', fontSize: '0.82rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+            👁️ Lihat Detail
+          </div>
+        </motion.div>
         {item.featured && (
           <div className="text-shadow-onlight" style={{
             position: 'absolute',
@@ -78,7 +93,7 @@ const PortfolioCard: React.FC<{ item: ReturnType<typeof usePortfolio>['items'][0
           padding: '3px 10px',
           fontSize: '0.75rem',
           fontWeight: 600,
-          border: '1px solid rgba(14,111,168,0.3)',
+          border: '1px solid rgba(0,82,245,0.3)',
         }}>
           {item.category}
         </div>
@@ -91,8 +106,10 @@ const PortfolioCard: React.FC<{ item: ReturnType<typeof usePortfolio>['items'][0
           fontSize: '1.4rem',
           marginBottom: '0.5rem',
           lineHeight: 1.1,
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem',
         }}>
-          {item.title}
+          <span>{item.title}</span>
+          <span aria-hidden="true" style={{ color: 'var(--amber)', fontSize: '1rem', flexShrink: 0, opacity: 0.7 }}>→</span>
         </h3>
         <p style={{
           color: 'var(--white-dim)',
@@ -111,7 +128,7 @@ const PortfolioCard: React.FC<{ item: ReturnType<typeof usePortfolio>['items'][0
           <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
             {item.tags?.slice(0, 3).map((tag) => (
               <span key={tag} style={{
-                background: 'rgba(14,111,168,0.1)',
+                background: 'rgba(0,82,245,0.1)',
                 color: 'var(--amber)',
                 borderRadius: '4px',
                 padding: '2px 8px',
@@ -141,10 +158,79 @@ const PortfolioCard: React.FC<{ item: ReturnType<typeof usePortfolio>['items'][0
   );
 };
 
+/* ─── Modal detail proyek — full deskripsi, gambar, tags, klien, tahun ───
+   Touch-friendly: tombol tutup besar, tap di luar modal juga menutup,
+   Escape key juga jalan buat pengguna keyboard. */
+const PortfolioModal: React.FC<{ item: ReturnType<typeof usePortfolio>['items'][0]; onClose: () => void }> = ({ item, onClose }) => {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => { window.removeEventListener('keydown', onKey); document.body.style.overflow = prevOverflow; };
+  }, [onClose]);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+      onClick={onClose}
+      style={{ position: 'fixed', inset: 0, zIndex: 10001, background: 'rgba(4,9,15,0.82)', backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.5rem' }}
+    >
+      <motion.div
+        initial={{ opacity: 0, scale: 0.94, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.96, y: 10 }}
+        transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+        onClick={(e) => e.stopPropagation()}
+        style={{ background: 'var(--black-2)', borderRadius: 'var(--radius)', maxWidth: '640px', width: '100%', maxHeight: '88vh', overflowY: 'auto', border: '1px solid var(--card-border)', position: 'relative' }}
+      >
+        <button
+          onClick={onClose}
+          aria-label="Tutup"
+          style={{ position: 'absolute', top: '12px', right: '12px', zIndex: 2, width: 44, height: 44, borderRadius: '50%', background: 'rgba(4,9,15,0.75)', backdropFilter: 'blur(6px)', border: '1px solid rgba(255,255,255,0.2)', color: 'var(--white)', fontSize: '1.3rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+        >
+          ✕
+        </button>
+        <div style={{ position: 'relative', aspectRatio: '16/9', overflow: 'hidden', borderRadius: 'var(--radius) var(--radius) 0 0' }}>
+          <img src={item.imageUrl || 'https://images.unsplash.com/photo-1558655146-d09347e92766?w=800&q=80'} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+        </div>
+        <div style={{ padding: 'clamp(1.3rem,4vw,2rem)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.8rem', flexWrap: 'wrap' }}>
+            <span style={{ background: 'var(--accent-bg)', color: 'var(--amber)', borderRadius: '6px', padding: '4px 12px', fontSize: '0.78rem', fontWeight: 700 }}>{item.category}</span>
+            {item.featured && <span className="text-shadow-onlight" style={{ background: 'var(--amber)', color: 'var(--black)', borderRadius: '6px', padding: '4px 12px', fontSize: '0.78rem', fontWeight: 700 }}>⭐ Featured</span>}
+          </div>
+          <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.5rem,4vw,2.1rem)', marginBottom: '0.8rem', lineHeight: 1.1 }}>{item.title}</h2>
+          <p style={{ color: 'var(--white-dim)', fontSize: '0.95rem', lineHeight: 1.8, marginBottom: '1.3rem', whiteSpace: 'pre-line' }}>{item.description}</p>
+          {item.tags?.length > 0 && (
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '1.3rem' }}>
+              {item.tags.map((tag) => (
+                <span key={tag} style={{ background: 'rgba(0,82,245,0.1)', color: 'var(--amber)', borderRadius: '5px', padding: '4px 11px', fontSize: '0.8rem', fontWeight: 600 }}>{tag}</span>
+              ))}
+            </div>
+          )}
+          <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', paddingTop: '1.2rem', borderTop: '1px solid var(--card-border)' }}>
+            {item.client && (
+              <div>
+                <div style={{ color: 'var(--white-faint)', fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '0.2rem' }}>Klien</div>
+                <div style={{ color: 'var(--white)', fontWeight: 600, fontSize: '0.9rem' }}>🏢 {item.client}</div>
+              </div>
+            )}
+            {item.year && (
+              <div>
+                <div style={{ color: 'var(--white-faint)', fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '0.2rem' }}>Tahun</div>
+                <div style={{ color: 'var(--white)', fontWeight: 600, fontSize: '0.9rem' }}>{item.year}</div>
+              </div>
+            )}
+          </div>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+};
+
 const Portofolio: React.FC = () => {
   const { items, loading, error } = usePortfolio();
   const [activeCategory, setActiveCategory] = useState('Semua');
   const [search, setSearch] = useState('');
+  const [selectedItem, setSelectedItem] = useState<ReturnType<typeof usePortfolio>['items'][0] | null>(null);
 
   const filtered = items.filter((item) => {
     const matchCat = activeCategory === 'Semua' || item.category === activeCategory;
@@ -207,7 +293,7 @@ const Portofolio: React.FC = () => {
                 width: '100%',
                 maxWidth: '400px',
                 background: 'var(--black-2)',
-                border: '1px solid rgba(14,111,168,0.2)',
+                border: '1px solid rgba(0,82,245,0.2)',
                 borderRadius: '10px',
                 padding: '12px 18px',
                 color: 'var(--white)',
@@ -216,8 +302,8 @@ const Portofolio: React.FC = () => {
                 outline: 'none',
                 display: 'block',
               }}
-              onFocus={(e) => (e.target.style.borderColor = 'rgba(14,111,168,0.6)')}
-              onBlur={(e) => (e.target.style.borderColor = 'rgba(14,111,168,0.2)')}
+              onFocus={(e) => (e.target.style.borderColor = 'rgba(0,82,245,0.6)')}
+              onBlur={(e) => (e.target.style.borderColor = 'rgba(0,82,245,0.2)')}
             />
           </div>
 
@@ -234,7 +320,8 @@ const Portofolio: React.FC = () => {
                   color: activeCategory === cat ? 'var(--black)' : 'var(--white-dim)',
                   border: `1px solid ${activeCategory === cat ? 'var(--amber)' : 'rgba(255,255,255,0.15)'}`,
                   borderRadius: '8px',
-                  padding: '8px 18px',
+                  padding: '11px 20px',
+                  minHeight: 42,
                   fontFamily: 'var(--font-body)',
                   fontWeight: 600,
                   fontSize: '0.85rem',
@@ -261,7 +348,7 @@ const Portofolio: React.FC = () => {
               style={{
                 width: '40px',
                 height: '40px',
-                border: '3px solid rgba(14,111,168,0.2)',
+                border: '3px solid rgba(0,82,245,0.2)',
                 borderTop: '3px solid var(--amber)',
                 borderRadius: '50%',
                 margin: '0 auto 1rem',
@@ -315,12 +402,16 @@ const Portofolio: React.FC = () => {
         >
           <AnimatePresence>
             {filtered.map((item, i) => (
-              <PortfolioCard key={item.id} item={item} index={i} />
+              <PortfolioCard key={item.id} item={item} index={i} onOpen={() => setSelectedItem(item)} />
             ))}
           </AnimatePresence>
         </motion.div>
       </section>
       </LazyMount>
+
+      <AnimatePresence>
+        {selectedItem && <PortfolioModal item={selectedItem} onClose={() => setSelectedItem(null)} />}
+      </AnimatePresence>
     </div>
   );
 };

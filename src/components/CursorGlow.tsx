@@ -70,7 +70,7 @@ const CursorGlow: React.FC = () => {
           width: '40px',
           height: '40px',
           borderRadius: '50%',
-          border: '1.5px solid rgba(14,111,168,0.4)',
+          border: '1.5px solid rgba(0,82,245,0.4)',
           pointerEvents: 'none',
           zIndex: 9998,
           translateX: '-50%',

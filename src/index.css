@@ -10,17 +10,31 @@
   --text: #0B1E33;
   --text-dim: rgba(11,30,51,0.72);
   --text-faint: rgba(11,30,51,0.4);
-  --accent: #0E6FA8;        /* navy-blue utama */
-  --accent-light: #2E92C7;
-  --accent-dark: #094A70;
-  --accent2: #0EA5C0;       /* cyan sekunder */
-  --accent2-light: #3FC3DB;
-  --accent2-dark: #0A7688;
-  --accent-glow: rgba(14,111,168,0.28);
-  --accent-bg: rgba(14,111,168,0.07);
+  --accent: #0052F5;        /* biru vivid utama — dari palet baru */
+  --accent-light: #3376FA;
+  --accent-dark: #0041C4;
+  --accent2: #0092C7;       /* teal-cyan, dijaga tetap WCAG-safe utk teks besar */
+  --accent2-light: #01A9F2; /* versi vivid — khusus non-teks (border/bg/ambient) */
+  --accent2-dark: #006B94;
+  --accent-glow: rgba(0,82,245,0.28);
+  --accent-bg: rgba(0,82,245,0.07);
   --card-border: rgba(11,30,51,0.1);
   --text-shadow-color: rgba(255,255,255,0.65);
   --text-shadow-inverse: rgba(110,130,150,0.4);
+
+  /* ─── Palet gradient/ambient — khusus dekoratif (aurora, glow, ensō),
+       TIDAK untuk teks. Diambil langsung dari referensi palet. ─── */
+  --grad-white: #FFFFFF;
+  --grad-cyan-pale: #99FFFF;
+  --grad-cyan: #00FFFF;
+  --grad-teal: #00E2E0;
+  --grad-sky: #01A9F2;
+  --grad-blue: #0052F5;
+  --grad-blue2: #3376FA;
+  --grad-periwinkle: #6699FF;
+  --grad-periwinkle-light: #8FB2FF;
+  --grad-indigo: #4754CD;
+  --grad-indigo-dark: #172D9D;
 
   /* ─── Alias kompatibilitas: kode lama pakai nama var ini di mana-mana ─── */
   --black: var(--bg);
@@ -49,14 +63,14 @@
   --text: #EAF2F8;
   --text-dim: rgba(234,242,248,0.72);
   --text-faint: rgba(234,242,248,0.35);
-  --accent: #2E92C7;
-  --accent-light: #4FAEDE;
-  --accent-dark: #1C6A99;
-  --accent2: #2FC4E0;
-  --accent2-light: #5FD6EA;
-  --accent2-dark: #14899E;
-  --accent-glow: rgba(46,146,199,0.35);
-  --accent-bg: rgba(46,146,199,0.1);
+  --accent: #3376FA;
+  --accent-light: #6699FF;
+  --accent-dark: #0052F5;
+  --accent2: #01A9F2;
+  --accent2-light: #99FFFF;
+  --accent2-dark: #0092C7;
+  --accent-glow: rgba(51,118,250,0.35);
+  --accent-bg: rgba(51,118,250,0.1);
   --card-border: rgba(234,242,248,0.12);
   --text-shadow-color: rgba(110,130,150,0.4);
   --text-shadow-inverse: rgba(255,255,255,0.65);
@@ -183,7 +197,7 @@ button, a, input, select, textarea, [role="button"] {
   .hero-aurora-parallax { transition: none; }
 }
 
-/* ─── Aurora drift — sangat pelan, dua blob saling silang ─── */
+/* ─── Aurora drift — sangat pelan, tiga blob saling silang ─── */
 @keyframes auroraDriftA {
   0%, 100% { transform: translate(0,0) scale(1); }
   50%      { transform: translate(4%,3%) scale(1.06); }
@@ -192,10 +206,15 @@ button, a, input, select, textarea, [role="button"] {
   0%, 100% { transform: translate(0,0) scale(1); }
   50%      { transform: translate(-4%,-3%) scale(1.08); }
 }
+@keyframes auroraDriftC {
+  0%, 100% { transform: translate(0,0) scale(1); }
+  50%      { transform: translate(-3%,4%) scale(1.1); }
+}
 .aurora-blob-a { animation: auroraDriftA 14s ease-in-out infinite; }
 .aurora-blob-b { animation: auroraDriftB 16s ease-in-out infinite; }
+.aurora-blob-c { animation: auroraDriftC 19s ease-in-out infinite; }
 @media (prefers-reduced-motion: reduce) {
-  .aurora-blob-a, .aurora-blob-b { animation: none; }
+  .aurora-blob-a, .aurora-blob-b, .aurora-blob-c { animation: none; }
 }
 
 /* ─── Claymorphism — kartu "empuk", soft dual-shadow, theme-aware ─── */
@@ -238,7 +257,7 @@ button, a, input, select, textarea, [role="button"] {
   inset: 0;
   opacity: 0;
   transition: opacity 0.35s ease;
-  background: radial-gradient(280px circle at var(--mx,50%) var(--my,50%), rgba(63,195,219,0.16), transparent 70%);
+  background: radial-gradient(280px circle at var(--mx,50%) var(--my,50%), rgba(1,169,242,0.16), transparent 70%);
   pointer-events: none;
 }
 .spotlight-card:hover::before {
