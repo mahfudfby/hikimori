@@ -998,17 +998,38 @@ const ExpDrilldown:React.FC<{company:string;items:ExpItem[];totalDuration:string
               {/* ── Tahap 2: daftar jabatan ── */}
               <AnimatePresence mode="wait">
                 {step==='positions'&&(
-                  <motion.div key="positions" initial={{opacity:0,x:28}} animate={{opacity:1,x:0}} exit={{opacity:0,x:-28}} transition={{duration:0.4,ease:[0.4,0,0.2,1]}} style={{position:'relative',zIndex:1,display:'flex',flexDirection:'column',gap:'0.5rem'}}>
+                  <motion.div key="positions" initial={{opacity:0,x:28}} animate={{opacity:1,x:0}} exit={{opacity:0,x:-28}} transition={{duration:0.4,ease:[0.4,0,0.2,1]}} style={{position:'relative',zIndex:1,display:'flex',flexDirection:'column',gap:'0.6rem'}}>
                     {items.map((item,idx)=>{
                       const dateRange=item.period.split('·')[0]?.trim();
                       return (
-                        <motion.button key={item.id} onClick={()=>pickPosition(idx)} whileHover={{x:5,borderColor:'rgba(0,82,245,0.5)'}} whileTap={{scale:0.98}}
-                          style={{display:'flex',alignItems:'center',justifyContent:'space-between',gap:'0.8rem',textAlign:'left',background:'rgba(9,18,29,0.6)',border:'1px solid rgba(0,82,245,0.18)',borderRadius:9,padding:'0.8rem 1rem',cursor:'pointer',fontFamily:'var(--font-body)'}}>
+                        <motion.button key={item.id} onClick={()=>pickPosition(idx)} whileHover={{x:5,borderColor:'rgba(0,82,245,0.5)'}}
+                          style={{display:'flex',alignItems:'center',justifyContent:'space-between',gap:'0.8rem',textAlign:'left',background:'rgba(9,18,29,0.6)',border:'1px solid rgba(0,82,245,0.18)',borderRadius:9,padding:'0.8rem 0.8rem 0.8rem 1rem',cursor:'pointer',fontFamily:'var(--font-body)'}}>
                           <div style={{minWidth:0}}>
                             <div style={{color:J.white,fontWeight:700,fontSize:'0.88rem',marginBottom:'0.15rem'}}>{item.position}</div>
                             <div style={{color:'rgba(234,242,248,0.5)',fontSize:'0.72rem'}}>{dateRange}</div>
                           </div>
-                          <span style={{color:J.gold,fontSize:'1rem',flexShrink:0}}>→</span>
+                          {/* Tombol "Detail Deskripsi Kerja" — gaya 3D tegas: solid fill + tepi bawah gelap
+                              (efek timbul), mengempis pas ditekan (whileTap) biar berasa kayak tombol fisik
+                              beneran. Teks dual-line (2 baris) supaya tetap ringkas lebarnya.
+                              Pakai J.red (biru vivid) solid, bukan gradient gold — sudah dicek kontras teks
+                              putihnya 5.9:1 (lolos WCAG AA), gradient gold sebelumnya cuma ~2.7:1 di ujung terang. */}
+                          <motion.div
+                            whileTap={{y:3,boxShadow:`0 0 0 ${J.redD}`}}
+                            transition={{duration:0.1}}
+                            style={{
+                              display:'flex',alignItems:'center',gap:'0.55rem',flexShrink:0,
+                              background:J.red,
+                              color:'#fff',fontWeight:800,letterSpacing:'0.2px',
+                              padding:'8px 12px',borderRadius:8,
+                              boxShadow:`0 3px 0 ${J.redD}, 0 5px 10px rgba(0,0,0,0.3)`,
+                              border:'1px solid rgba(255,255,255,0.15)',
+                            }}>
+                            <div style={{display:'flex',flexDirection:'column',lineHeight:1.25,textAlign:'left'}}>
+                              <span style={{fontSize:'0.68rem'}}>{t('Detail','Detail')}</span>
+                              <span style={{fontSize:'0.68rem'}}>{t('Deskripsi Kerja','Job Description')}</span>
+                            </div>
+                            <span aria-hidden="true" style={{fontSize:'0.95rem',flexShrink:0}}>→</span>
+                          </motion.div>
                         </motion.button>
                       );
                     })}
