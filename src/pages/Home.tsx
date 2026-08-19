@@ -411,6 +411,41 @@ const Reveal:React.FC<{children:React.ReactNode;direction?:'up'|'left'|'right'|'
   return <motion.div variants={v} initial="hidden" whileInView="visible" viewport={{once:true,margin:'-60px'}} style={style}>{children}</motion.div>;
 };
 
+/* ─── SkillDesc: deskripsi skill dengan tombol "Lihat Selengkapnya" ───
+   Deteksi overflow BENERAN (scrollHeight vs clientHeight) lewat ref,
+   bukan nebak dari panjang karakter — jadi tombol cuma muncul kalau
+   teksnya emang kepotong 2 baris, nggak muncul kalau udah muat semua.
+   Dipakai di kartu Hard/Soft Skill Home.tsx & About.tsx (reusable). */
+export const SkillDesc:React.FC<{desc:string;color:string;fontSize?:string}>=({desc,color,fontSize='0.82rem'})=>{
+  const ref=useRef<HTMLParagraphElement>(null);
+  const [expanded,setExpanded]=useState(false);
+  const [overflowing,setOverflowing]=useState(false);
+  const {t}=useLang();
+
+  useEffect(()=>{
+    const check=()=>{
+      const el=ref.current;
+      if(!el) return;
+      setOverflowing(el.scrollHeight>el.clientHeight+1);
+    };
+    check();
+    window.addEventListener('resize',check);
+    return ()=>window.removeEventListener('resize',check);
+  },[desc]);
+
+  return (
+    <div style={{position:'relative',zIndex:1}}>
+      <p ref={ref} className={expanded?'text-justify-auto':'skill-desc-clamp'} style={{color,fontSize,lineHeight:1.3}}>{desc}</p>
+      {(overflowing||expanded)&&(
+        <button onClick={()=>setExpanded(e=>!e)} style={{marginTop:'0.4rem',background:'none',border:'none',padding:0,color:'var(--amber)',fontWeight:700,fontSize:'0.72rem',cursor:'pointer',fontFamily:'var(--font-body)',display:'inline-flex',alignItems:'center',gap:'0.25rem'}}>
+          {expanded?t('Sembunyikan','Show Less'):t('Lihat Selengkapnya','Read More')}
+          <span aria-hidden="true" style={{display:'inline-block',transition:'transform 0.2s',transform:expanded?'rotate(180deg)':'none'}}>▾</span>
+        </button>
+      )}
+    </div>
+  );
+};
+
 const InkRipple:React.FC<{children:React.ReactNode;style?:React.CSSProperties}>=({children,style={}})=>{
   const [rips,setRips]=useState<{id:number;x:number;y:number}[]>([]);
   const click=(e:React.MouseEvent<HTMLDivElement>)=>{
@@ -977,13 +1012,39 @@ const ExpDrilldown:React.FC<{company:string;items:ExpItem[];totalDuration:string
                         {isMulti&&(
                           <div style={{display:'inline-flex',alignItems:'center',gap:'0.4rem',color:J.goldL,fontWeight:700,fontSize:'0.8rem'}}>
                             <span aria-hidden="true">⏳</span>{t('Total Masa Kerja','Total Duration')}: {totalDuration}
-                            <span style={{color:'rgba(234,242,248,0.4)',fontWeight:500}}>· {items.length} {t('Posisi','Positions')}</span>
                           </div>
                         )}
                       </motion.div>
                     )}
                   </AnimatePresence>
                 </motion.div>
+                {step==='company'&&isMulti&&(
+                  <motion.button
+                    layout
+                    onClick={(e)=>{e.stopPropagation(); goToPositions();}}
+                    whileHover={{scale:1.04}}
+                    whileTap={{y:3,boxShadow:'0 0 0 #B85400'}}
+                    transition={{duration:0.15}}
+                    style={{
+                      position:'relative',flexShrink:0,
+                      display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',
+                      background:'linear-gradient(180deg,#FF9A3D,#FF8A1E)',
+                      color:'#fff',fontWeight:800,letterSpacing:'0.2px',lineHeight:1.3,
+                      padding:'10px 15px',borderRadius:10,minWidth:64,minHeight:44,
+                      boxShadow:'0 4px 0 #B85400, 0 6px 14px rgba(0,0,0,0.32)',
+                      border:'1px solid rgba(255,255,255,0.22)',
+                      cursor:'pointer',fontFamily:'var(--font-body)',
+                    }}>
+                    <span aria-hidden="true" style={{
+                      position:'absolute',top:-9,right:-9,background:'#fff',color:'#B85400',
+                      fontWeight:800,fontSize:'0.7rem',minWidth:22,height:22,borderRadius:'50%',
+                      display:'flex',alignItems:'center',justifyContent:'center',
+                      border:'2px solid #FF8A1E',boxShadow:'0 2px 5px rgba(0,0,0,0.35)',
+                    }}>{items.length}</span>
+                    <span style={{fontSize:'0.72rem'}}>{t('Buka','Open')}</span>
+                    <span style={{fontSize:'0.72rem'}}>{t('Jabatan','Positions')}</span>
+                  </motion.button>
+                )}
                 {compact&&(
                   <motion.button
                     layout
@@ -1463,7 +1524,7 @@ const Home:React.FC=()=>{
                           <div style={{position:'absolute',top:8,right:8,width:10,height:10,borderTop:`1px solid ${J.gold}`,borderRight:`1px solid ${J.gold}`,opacity:0.4}}/>
                           <div style={{position:'absolute',bottom:8,left:8,width:10,height:10,borderBottom:`1px solid ${J.gold}`,borderLeft:`1px solid ${J.gold}`,opacity:0.4}}/>
                           <h4 style={{fontFamily:'var(--font-body)',fontWeight:700,fontSize:'0.85rem',color:J.white,textTransform:'uppercase',letterSpacing:'0.5px',marginBottom:'0.5rem',position:'relative',zIndex:1}}>{sk.title}</h4>
-                          <p className="skill-desc-clamp" style={{color:'rgba(234,242,248,0.6)',fontSize:'0.82rem',lineHeight:1.3,position:'relative',zIndex:1}}>{sk.desc}</p>
+                          <SkillDesc desc={sk.desc} color="rgba(234,242,248,0.6)" />
                           <motion.div animate={{scaleX:[0,1,0]}} transition={{duration:3,repeat:Infinity,delay:i*0.35}}
                             style={{position:'absolute',bottom:0,left:0,right:0,height:2,background:`linear-gradient(to right,transparent,${J.red},${J.gold},transparent)`,transformOrigin:'left'}}/>
                         </motion.div>
@@ -1499,7 +1560,7 @@ const Home:React.FC=()=>{
                           <div style={{position:'absolute',top:8,right:8,width:10,height:10,borderTop:`1px solid ${J.red}`,borderRight:`1px solid ${J.red}`,opacity:0.4}}/>
                           <div style={{position:'absolute',bottom:8,left:8,width:10,height:10,borderBottom:`1px solid ${J.red}`,borderLeft:`1px solid ${J.red}`,opacity:0.4}}/>
                           <h4 style={{fontFamily:'var(--font-body)',fontWeight:700,fontSize:'0.85rem',color:J.white,textTransform:'uppercase',letterSpacing:'0.5px',marginBottom:'0.5rem',position:'relative',zIndex:1}}>{sk.title}</h4>
-                          <p className="skill-desc-clamp" style={{color:'rgba(234,242,248,0.6)',fontSize:'0.82rem',lineHeight:1.3,position:'relative',zIndex:1}}>{sk.desc}</p>
+                          <SkillDesc desc={sk.desc} color="rgba(234,242,248,0.6)" />
                           <motion.div animate={{scaleX:[0,1,0]}} transition={{duration:3,repeat:Infinity,delay:i*0.35}}
                             style={{position:'absolute',bottom:0,left:0,right:0,height:2,background:`linear-gradient(to right,transparent,${J.gold},${J.red},transparent)`,transformOrigin:'left'}}/>
                         </motion.div>
