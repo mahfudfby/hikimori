@@ -1018,7 +1018,7 @@ const ExpDrilldown:React.FC<{company:string;items:ExpItem[];totalDuration:string
                     )}
                   </AnimatePresence>
                 </motion.div>
-                {step==='company'&&isMulti&&(
+                {step==='company'&&(
                   <motion.button
                     layout
                     onClick={(e)=>{e.stopPropagation(); goToPositions();}}
@@ -1026,23 +1026,17 @@ const ExpDrilldown:React.FC<{company:string;items:ExpItem[];totalDuration:string
                     whileTap={{y:3,boxShadow:'0 0 0 #B85400'}}
                     transition={{duration:0.15}}
                     style={{
-                      position:'relative',flexShrink:0,
+                      flexShrink:0,
                       display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',
                       background:'linear-gradient(180deg,#FF9A3D,#FF8A1E)',
-                      color:'#fff',fontWeight:800,letterSpacing:'0.2px',lineHeight:1.3,
-                      padding:'10px 15px',borderRadius:10,minWidth:64,minHeight:44,
+                      color:'#fff',fontWeight:800,letterSpacing:'0.2px',
+                      padding:'8px 18px 12px',borderRadius:10,minWidth:72,minHeight:44,
                       boxShadow:'0 4px 0 #B85400, 0 6px 14px rgba(0,0,0,0.32)',
                       border:'1px solid rgba(255,255,255,0.22)',
                       cursor:'pointer',fontFamily:'var(--font-body)',
                     }}>
-                    <span aria-hidden="true" style={{
-                      position:'absolute',top:-9,right:-9,background:'#fff',color:'#B85400',
-                      fontWeight:800,fontSize:'0.7rem',minWidth:22,height:22,borderRadius:'50%',
-                      display:'flex',alignItems:'center',justifyContent:'center',
-                      border:'2px solid #FF8A1E',boxShadow:'0 2px 5px rgba(0,0,0,0.35)',
-                    }}>{items.length}</span>
-                    <span style={{fontSize:'0.72rem'}}>{t('Buka','Open')}</span>
-                    <span style={{fontSize:'0.72rem'}}>{t('Jabatan','Positions')}</span>
+                    <span style={{fontFamily:'var(--font-display)',fontSize:'2.1rem',lineHeight:1}}>{items.length}</span>
+                    <span style={{fontSize:'0.7rem',marginTop:'2px'}}>{t('Jabatan','Positions')}</span>
                   </motion.button>
                 )}
                 {compact&&(
