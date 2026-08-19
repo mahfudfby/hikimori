@@ -18,7 +18,7 @@ import {
   HOBBIES, ORG_EXPERIENCE, REFERENCES,
 } from '../data/cvData';
 import {
-  D_ABOUT, D_ABOUT_EN, D_SKILLS, D_SKILLS_EN, D_EXP, D_EXP_EN,
+  D_ABOUT, D_ABOUT_EN, D_SKILLS, D_SKILLS_EN, D_EXP, D_EXP_EN, SkillDesc,
 } from './Home';
 import type { AboutData, SkillItem, ExpItem } from './Home';
 
@@ -537,7 +537,7 @@ const About: React.FC = () => {
                       <div style={{ position: 'absolute', left: '-1.6rem', top: '1.4rem', width: '1.6rem', height: 2, background: 'rgba(0,82,245,0.3)' }} />
                       <SpotlightCard className="clay-card" style={{ padding: '1.3rem 1.5rem' }}>
                         <h4 style={{ fontFamily: 'var(--font-body)', fontWeight: 700, color: 'var(--amber)', fontSize: '0.88rem', marginBottom: '0.4rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{skill.title}</h4>
-                        <p lang={lang} className="text-justify-auto skill-desc-clamp" style={{ color: 'var(--white-dim)', fontSize: '0.83rem', lineHeight: 1.3 }}>{skill.desc}</p>
+                        <SkillDesc desc={skill.desc} color="var(--white-dim)" fontSize="0.83rem" />
                       </SpotlightCard>
                     </StaggerItem>
                   ))}
@@ -564,7 +564,7 @@ const About: React.FC = () => {
                       <div style={{ position: 'absolute', left: '-1.6rem', top: '1.4rem', width: '1.6rem', height: 2, background: 'rgba(255,255,255,0.2)' }} />
                       <SpotlightCard className="clay-card" style={{ padding: '1.3rem 1.5rem' }}>
                         <h4 style={{ fontFamily: 'var(--font-body)', fontWeight: 700, color: 'var(--white)', fontSize: '0.88rem', marginBottom: '0.4rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{skill.title}</h4>
-                        <p lang={lang} className="text-justify-auto skill-desc-clamp" style={{ color: 'var(--white-dim)', fontSize: '0.83rem', lineHeight: 1.3 }}>{skill.desc}</p>
+                        <SkillDesc desc={skill.desc} color="var(--white-dim)" fontSize="0.83rem" />
                       </SpotlightCard>
                     </StaggerItem>
                   ))}
