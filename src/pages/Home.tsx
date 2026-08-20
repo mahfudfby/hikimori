@@ -972,6 +972,7 @@ const ExpDrilldown:React.FC<{company:string;items:ExpItem[];totalDuration:string
               {/* ── Header perusahaan — layout prop bikin transisi ukuran/posisi otomatis mulus ── */}
               <motion.div
                 layout="position"
+                className="exp-header-row"
                 transition={{duration:0.5,ease:[0.4,0,0.2,1]}}
                 onClick={()=>step==='company'&&goToPositions()}
                 onMouseEnter={()=>step==='company'&&setHeaderHover(true)}
@@ -1021,6 +1022,7 @@ const ExpDrilldown:React.FC<{company:string;items:ExpItem[];totalDuration:string
                 {step==='company'&&(
                   <motion.button
                     layout
+                    className="exp-count-btn"
                     onClick={(e)=>{e.stopPropagation(); goToPositions();}}
                     whileHover={{scale:1.04}}
                     whileTap={{y:3,boxShadow:'0 0 0 #B85400'}}
@@ -1058,6 +1060,7 @@ const ExpDrilldown:React.FC<{company:string;items:ExpItem[];totalDuration:string
                       const dateRange=item.period.split('·')[0]?.trim();
                       return (
                         <motion.button key={item.id} onClick={()=>pickPosition(idx)} whileHover={{x:5,borderColor:'rgba(0,82,245,0.5)'}}
+                          className="exp-position-row"
                           style={{display:'flex',alignItems:'center',justifyContent:'space-between',gap:'0.8rem',textAlign:'left',background:'rgba(9,18,29,0.6)',border:'1px solid rgba(0,82,245,0.18)',borderRadius:9,padding:'0.8rem 0.8rem 0.8rem 1rem',cursor:'pointer',fontFamily:'var(--font-body)'}}>
                           <div style={{minWidth:0}}>
                             <div style={{color:J.white,fontWeight:700,fontSize:'0.88rem',marginBottom:'0.15rem'}}>{item.position}</div>
@@ -1069,6 +1072,7 @@ const ExpDrilldown:React.FC<{company:string;items:ExpItem[];totalDuration:string
                               Pakai J.red (biru vivid) solid, bukan gradient gold — sudah dicek kontras teks
                               putihnya 5.9:1 (lolos WCAG AA), gradient gold sebelumnya cuma ~2.7:1 di ujung terang. */}
                           <motion.div
+                            className="exp-detail-btn"
                             whileTap={{y:3,boxShadow:`0 0 0 ${J.redD}`}}
                             transition={{duration:0.1}}
                             style={{
