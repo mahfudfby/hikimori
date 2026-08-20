@@ -436,6 +436,42 @@ body {
   background: rgba(245,166,35,0.14) !important;
 }
 
+/* ─── Fix layout mobile — kartu Pengalaman Kerja (ExpDrilldown) ───
+   Di layar sempit, logo + teks + tombol 3D dulu berebut satu baris yang
+   sama, bikin blok teks (nama perusahaan/jabatan) kepepet cuma ~70px
+   lebar — nama panjang jadi pecah banyak baris sempit & keliatan kacau.
+   Fix: tombolnya dipindah jadi baris sendiri (flex-basis:100%) di bawah
+   logo+teks, biar blok teks dapat lebar penuh. */
+@media (max-width: 640px) {
+  .exp-header-row,
+  .exp-position-row {
+    flex-wrap: wrap;
+  }
+  .exp-count-btn,
+  .exp-detail-btn {
+    flex-basis: 100% !important;
+    width: 100%;
+    margin-top: 0.7rem;
+    box-sizing: border-box;
+  }
+  /* Tombol jumlah jabatan: dari kotak vertikal (angka besar di atas)
+     jadi bar horizontal (angka + label sejajar) supaya pas jadi baris
+     penuh, bukan kotak kecil nyempil di tengah. */
+  .exp-count-btn {
+    flex-direction: row !important;
+    justify-content: center !important;
+    align-items: baseline !important;
+    gap: 0.6rem !important;
+    padding: 10px 16px !important;
+  }
+  .exp-count-btn > span:first-child {
+    font-size: 1.5rem !important;
+  }
+  .exp-detail-btn {
+    justify-content: center !important;
+  }
+}
+
 /* ─── Print — supaya halaman About bisa langsung dicetak jadi CV ─── */
 @media print {
   body { background: #fff !important; color: #111 !important; }
