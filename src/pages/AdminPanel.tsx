@@ -35,7 +35,7 @@ interface HomeData    { heroTitle:string; heroSubtitle:string; heroTagline:strin
 interface AboutData   { name:string; location:string; bio1:string; bio2:string; photoUrl:string; instagram?:string; linkedin?:string; whatsapp?:string; threads?:string; tiktok?:string; email?:string; }
 interface GalleryItem { id:string; url:string; caption?:string; size?:'small'|'medium'|'large'|'wide'|'tall'; }
 interface SkillItem   { id:string; number:string; title:string; desc:string; category?:'hard'|'soft'; }
-interface ExpItem     { id:string; position:string; company:string; period:string; icon:string; tags:string; desc?:string; logoUrl?:string; }
+interface ExpItem     { id:string; position:string; company:string; period:string; icon:string; tags:string; desc?:string; logoUrl?:string; location?:string; }
 interface ContactData { email:string; location:string; website:string; instagram:string; linkedin:string; twitter:string; }
 interface CertItem    { id:string; name:string; year:string; issuer:string; subtitle:string; imageUrl:string; }
 
@@ -694,7 +694,7 @@ const AdminPanel: React.FC = () => {
                   <h1 style={{ fontFamily:'var(--font-display)', fontSize:'clamp(1.8rem,5vw,2.5rem)', marginBottom:'0.2rem' }}>PENGALAMAN KERJA</h1>
                   <p style={{ color:'var(--white-dim)', fontSize:'0.88rem' }}>{exps.length} pengalaman tersimpan</p>
                 </div>
-                <button onClick={() => setExpForm({ id:'', position:'', company:'', period:'', icon:'💼', tags:'', desc:'', logoUrl:'' })} style={btn(true)}>+ Tambah</button>
+                <button onClick={() => setExpForm({ id:'', position:'', company:'', period:'', icon:'💼', tags:'', desc:'', logoUrl:'', location:'' })} style={btn(true)}>+ Tambah</button>
               </div>
               {exps.map(exp => {
                 const previewLogo = resolveLogo(exp);
@@ -894,6 +894,7 @@ const AdminPanel: React.FC = () => {
                   <div><label style={lbl}>Perusahaan</label><input style={inp} value={expForm.company} onChange={e => setExpForm({ ...expForm, company:e.target.value })} /></div>
                   <div><label style={lbl}>Periode</label><input style={inp} value={expForm.period} onChange={e => setExpForm({ ...expForm, period:e.target.value })} placeholder="2020–2023" /></div>
                 </div>
+                <div><label style={lbl}>Lokasi Perusahaan (kota, provinsi — tampil di kartu)</label><input style={inp} value={expForm.location||''} onChange={e => setExpForm({ ...expForm, location:e.target.value })} placeholder="Sidoarjo, Jawa Timur" /></div>
                 <div><label style={lbl}>Emoji Icon</label><input style={inp} value={expForm.icon} onChange={e => setExpForm({ ...expForm, icon:e.target.value })} placeholder="👥" /></div>
                 <div><label style={lbl}>Tags (pisahkan koma)</label><textarea style={{ ...inp, minHeight:70, resize:'vertical' }} value={expForm.tags} onChange={e => setExpForm({ ...expForm, tags:e.target.value })} placeholder="Vendor Management,HR,Training" /></div>
                 <div><label style={lbl}>Rincian Tugas (satu poin per baris, opsional)</label><textarea style={{ ...inp, minHeight:110, resize:'vertical' }} value={expForm.desc||''} onChange={e => setExpForm({ ...expForm, desc:e.target.value })} placeholder={'• Poin tugas pertama\n• Poin tugas kedua'} /></div>
