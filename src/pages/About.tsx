@@ -2,7 +2,7 @@
 // Data disinkronkan dari Home.tsx via localStorage keys yang sama.
 // Layout halaman ini berbeda dari Home, namun semua konten berasal dari data yang sama.
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import AnimatedSection from '../components/AnimatedSection';
 import LazyMount from '../components/LazyMount';
@@ -19,6 +19,7 @@ import {
 } from '../data/cvData';
 import {
   D_ABOUT, D_ABOUT_EN, D_SKILLS, D_SKILLS_EN, D_EXP, D_EXP_EN, SkillDesc,
+  groupExpByCompany, computeTotalDuration,
 } from './Home';
 import type { AboutData, SkillItem, ExpItem } from './Home';
 
@@ -130,102 +131,161 @@ const useHomeData = () => {
   return { about, gallery, skills, exps, certs };
 };
 
-/* ─── ExpCardAbout: tiap card punya state sendiri (valid hooks) ─── */
-const ExpCardAbout: React.FC<{ exp: ExpItem; index: number }> = ({ exp, index: i }) => {
-  const [open, setOpen] = useState(false);
+/* ─── ExpDrilldownAbout: drill-down 3 tahap (perusahaan → daftar jabatan →
+     detail), sama polanya dengan Home.tsx, tapi styling full theme-aware
+     (var(--xxx)) supaya ikut toggle terang/gelap dgn benar — beda dengan
+     Home.tsx yang sengaja pakai palet gelap tetap. Class exp-header-row/
+     exp-count-btn/exp-detail-btn/exp-position-row reuse CSS global yang
+     sama (index.css) buat reflow mobile. ─── */
+const ExpDrilldownAbout: React.FC<{ company: string; items: ExpItem[]; totalDuration: string; index: number }> = ({ company, items, totalDuration, index: i }) => {
+  const isMulti = items.length > 1;
+  const [step, setStep] = useState<'company' | 'positions' | 'detail'>('company');
+  const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
   const [logoFailed, setLogoFailed] = useState(false);
-  const logo = resolveLogo(exp);
   const { t, lang } = useLang();
+  const logo = resolveLogo({ company, logoUrl: items.find(it => it.logoUrl)?.logoUrl });
+  const detailMatch = items[0].company.match(/\(([^)]+)\)/);
+  const industryDetail = detailMatch ? detailMatch[1] : '';
+  const location = items[0].location;
+  const selected = selectedIdx !== null ? items[selectedIdx] : null;
+  const compact = step !== 'company';
+
+  const goToPositions = () => { if (isMulti) { setStep('positions'); } else { setSelectedIdx(0); setStep('detail'); } };
+  const goBackToCompany = () => { setStep('company'); setSelectedIdx(null); };
+  const goBackToPositions = () => { setStep('positions'); setSelectedIdx(null); };
+  const pickPosition = (idx: number) => { setSelectedIdx(idx); setStep('detail'); };
+
   return (
     <AnimatedSection direction={i % 2 === 0 ? 'left' : 'right'} delay={i * 0.12}>
-      <div className="float-hover" style={{
-        background: 'var(--black-3)',
-        border: '1px solid rgba(0,82,245,0.15)',
-        borderLeft: '3px solid var(--amber)',
-        borderRadius: 'var(--radius)',
-        padding: '1.8rem 2rem',
-      }}>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '0.6rem', marginBottom: '0.4rem' }}>
-          {logo && !logoFailed ? (
-            <div style={{ width: 44, height: 44, borderRadius: 12, background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, overflow: 'hidden' }}>
-              <img src={logo} alt={exp.company} loading="lazy" decoding="async" onError={() => setLogoFailed(true)} style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 5, borderRadius: 8 }} />
-            </div>
-          ) : (
-            <span style={{ fontSize: '1.8rem', flexShrink: 0 }} aria-hidden="true">{exp.icon}</span>
-          )}
-          <h3 style={{ fontFamily: 'var(--font-body)', fontWeight: 700, color: 'var(--white)', fontSize: '1rem', lineHeight: 1.3, minWidth: 0 }}>
-            {exp.position}
-          </h3>
-        </div>
-        {exp.company && (
-          <div style={{ fontFamily: 'var(--font-body)', fontWeight: 600, color: 'var(--amber)', fontSize: '0.92rem', lineHeight: 1.4, marginBottom: '0.45rem' }}>
-            {exp.company}
+      <SpotlightCard className="clay-card" style={{ padding: '1.6rem 1.8rem', position: 'relative', overflow: 'hidden' }}>
+        <div
+          className="exp-header-row"
+          onClick={() => step === 'company' && goToPositions()}
+          style={{
+            display: 'flex', alignItems: 'center', gap: compact ? '0.8rem' : '1.1rem',
+            cursor: step === 'company' ? 'pointer' : 'default',
+            marginBottom: compact ? '1rem' : 0,
+            paddingBottom: compact ? '0.9rem' : 0,
+            borderBottom: compact ? '1px solid var(--card-border)' : 'none',
+          }}>
+          <div style={{ width: compact ? 38 : 52, height: compact ? 38 : 52, borderRadius: compact ? 9 : 13, background: logo && !logoFailed ? '#fff' : 'var(--accent-bg)', border: '2px solid var(--amber)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', flexShrink: 0 }}>
+            {logo && !logoFailed ? (
+              <img src={logo} alt={company} loading="lazy" decoding="async" onError={() => setLogoFailed(true)} style={{ width: '100%', height: '100%', objectFit: 'contain', padding: compact ? 4 : 6 }} />
+            ) : (<span aria-hidden="true">🏢</span>)}
           </div>
-        )}
-        {exp.period && (() => {
-          const [dateRange, duration, type] = exp.period.split('·').map(p => p.trim());
-          return (
-            <div style={{
-              display: 'inline-flex', flexDirection: 'column', gap: '0.2rem', alignItems: 'flex-start',
-              background: 'rgba(0,82,245,0.12)', color: 'var(--amber)',
-              borderRadius: '6px', padding: '5px 12px', fontSize: '0.75rem', fontWeight: 700,
-              border: '1px solid rgba(0,82,245,0.25)', marginBottom: '0.8rem',
-            }}>
-              <span><span aria-hidden="true">🕐</span> {dateRange}</span>
-              <span>[ {duration} ]{type ? ` · ${type}` : ''}</span>
-            </div>
-          );
-        })()}
-        {exp.tags && (
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem', marginBottom: '0.8rem' }}>
-            {exp.tags.split(',').map(tg => tg.trim()).filter(Boolean).map(tag => (
-              <span key={tag} style={{
-                background: 'rgba(0,82,245,0.07)', border: '1px solid rgba(0,82,245,0.18)',
-                color: 'rgba(0,82,245,0.85)', borderRadius: '4px', padding: '2px 9px', fontSize: '0.72rem',
-              }}>
-                {tag}
-              </span>
-            ))}
-          </div>
-        )}
-        {exp.desc && (
-          <>
-            <button
-              onClick={() => setOpen(o => !o)}
-              style={{
-                background: 'rgba(0,82,245,0.1)', border: '1px solid rgba(0,82,245,0.3)',
-                color: 'var(--amber)', borderRadius: '6px', padding: '5px 14px', fontSize: '0.75rem',
-                fontWeight: 700, cursor: 'pointer', fontFamily: 'var(--font-body)',
-              }}
-            >
-              {open ? t('▲ Tutup Rincian', '▲ Close Details') : t('▼ Lihat Rincian', '▼ View Details')}
-            </button>
-            <motion.div
-              initial={false}
-              animate={{ height: open ? 'auto' : 0, opacity: open ? 1 : 0 }}
-              transition={{ duration: 0.32, ease: 'easeInOut' }}
-              style={{ overflow: 'hidden' }}
-            >
-              <div style={{ marginTop: '0.8rem', padding: '1rem', background: 'rgba(0,82,245,0.04)', borderRadius: '8px', borderLeft: '2px solid rgba(0,82,245,0.3)' }} lang={lang}>
-                <div className="bullet-list">
-                  {exp.desc.split('\n').map((line, li) => {
-                    const isBullet = line.trim().startsWith('•');
-                    const text = isBullet ? line.trim().slice(1).trim() : line;
-                    return isBullet ? (
-                      <div key={li} className="bullet-line">
-                        <span className="bullet-dot" style={{ color: 'var(--amber)' }}>•</span>
-                        <span className="bullet-text text-justify-auto" style={{ color: 'var(--white-dim)', fontSize: '0.85rem', lineHeight: 1.8 }}>{text}</span>
-                      </div>
-                    ) : (
-                      <div key={li} className="text-justify-auto para-indent" style={{ color: 'var(--white-dim)', fontSize: '0.85rem', lineHeight: 1.8 }}>{line}</div>
-                    );
-                  })}
-                </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            {step === 'company' && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.15rem', flexWrap: 'wrap' }}>
+                <span style={{ color: 'var(--amber)', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase' }}>
+                  {isMulti ? t('Klik untuk lihat riwayat jabatan', 'Click to view position history') : t('Klik untuk lihat detail', 'Click to view details')}
+                </span>
+                <span aria-hidden="true" style={{ color: 'var(--amber)' }}>→</span>
               </div>
+            )}
+            <h3 style={{ fontFamily: 'var(--font-display)', color: 'var(--white)', lineHeight: 1.15, fontSize: compact ? '1rem' : 'clamp(1.1rem,3.2vw,1.4rem)' }}>{company}</h3>
+            {!compact && (
+              <div>
+                {industryDetail && <div style={{ color: 'var(--white-dim)', fontSize: '0.82rem', marginTop: '0.3rem' }}>{industryDetail}</div>}
+                {location && <div style={{ color: 'var(--white-dim)', fontSize: '0.82rem', marginTop: '0.2rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}><span aria-hidden="true">📍</span>{location}</div>}
+                {totalDuration && <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', color: 'var(--amber)', fontWeight: 700, fontSize: '0.8rem', marginTop: '0.4rem' }}><span aria-hidden="true">⏳</span>{t('Total Masa Kerja', 'Total Duration')}: {totalDuration}</div>}
+              </div>
+            )}
+          </div>
+          {step === 'company' && (
+            <button className="exp-count-btn text-shadow-onlight" onClick={(e) => { e.stopPropagation(); goToPositions(); }} style={{
+              flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+              background: 'linear-gradient(180deg,#FF9A3D,#FF8A1E)', color: '#fff', fontWeight: 800,
+              padding: '8px 18px 12px', borderRadius: 10, minWidth: 72, minHeight: 44,
+              boxShadow: '0 4px 0 #B85400, 0 6px 14px rgba(0,0,0,0.25)',
+              border: '1px solid rgba(255,255,255,0.22)', cursor: 'pointer', fontFamily: 'var(--font-body)',
+            }}>
+              <span style={{ fontFamily: 'var(--font-display)', fontSize: '2rem', lineHeight: 1 }}>{items.length}</span>
+              <span style={{ fontSize: '0.68rem', marginTop: '2px' }}>{t('Jabatan', 'Positions')}</span>
+            </button>
+          )}
+          {compact && (
+            <button onClick={(e) => { e.stopPropagation(); step === 'detail' && isMulti ? goBackToPositions() : goBackToCompany(); }} style={{
+              flexShrink: 0, display: 'inline-flex', alignItems: 'center', gap: '0.3rem',
+              background: 'var(--accent-bg)', border: '1px solid rgba(0,82,245,0.3)', color: 'var(--amber)',
+              borderRadius: 8, padding: '9px 14px', minHeight: 38, fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer', fontFamily: 'var(--font-body)',
+            }}>
+              ← {t('Kembali', 'Back')}
+            </button>
+          )}
+        </div>
+
+        <AnimatePresence mode="wait">
+          {step === 'positions' && (
+            <motion.div key="positions" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.35 }} style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+              {items.map((item, idx) => {
+                const dateRange = item.period.split('·')[0]?.trim();
+                return (
+                  <button key={item.id} onClick={() => pickPosition(idx)} className="exp-position-row" style={{
+                    display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.8rem', textAlign: 'left',
+                    background: 'var(--black-2)', border: '1px solid var(--card-border)', borderRadius: 9,
+                    padding: '0.8rem 0.8rem 0.8rem 1rem', cursor: 'pointer', fontFamily: 'var(--font-body)',
+                  }}>
+                    <div style={{ minWidth: 0 }}>
+                      <div style={{ color: 'var(--white)', fontWeight: 700, fontSize: '0.88rem', marginBottom: '0.15rem' }}>{item.position}</div>
+                      <div style={{ color: 'var(--white-dim)', fontSize: '0.72rem' }}>{dateRange}</div>
+                    </div>
+                    <div className="exp-detail-btn text-shadow-onlight" style={{
+                      display: 'flex', alignItems: 'center', gap: '0.55rem', flexShrink: 0,
+                      background: 'var(--amber)', color: '#fff', fontWeight: 800, padding: '8px 12px', borderRadius: 8,
+                      boxShadow: '0 3px 0 var(--accent-dark), 0 5px 10px rgba(0,0,0,0.25)', border: '1px solid rgba(255,255,255,0.15)',
+                    }}>
+                      <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.25, textAlign: 'left' }}>
+                        <span style={{ fontSize: '0.66rem' }}>{t('Detail', 'Detail')}</span>
+                        <span style={{ fontSize: '0.66rem' }}>{t('Deskripsi Kerja', 'Job Description')}</span>
+                      </div>
+                      <span aria-hidden="true" style={{ fontSize: '0.9rem' }}>→</span>
+                    </div>
+                  </button>
+                );
+              })}
             </motion.div>
-          </>
-        )}
-      </div>
+          )}
+          {step === 'detail' && selected && (
+            <motion.div key="detail" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.35 }}>
+              <h4 style={{ fontFamily: 'var(--font-display)', fontSize: '1.1rem', color: 'var(--white)', marginBottom: '0.4rem' }}>{selected.position}</h4>
+              {selected.period && (() => {
+                const [dateRange, duration, type] = selected.period.split('·').map(p => p.trim());
+                return (
+                  <div style={{ display: 'inline-flex', flexDirection: 'column', gap: '0.2rem', alignItems: 'flex-start', background: 'var(--accent-bg)', color: 'var(--amber)', borderRadius: 6, padding: '5px 12px', fontSize: '0.75rem', fontWeight: 700, border: '1px solid rgba(0,82,245,0.25)', marginBottom: '0.7rem' }}>
+                    <span><span aria-hidden="true">🕐</span> {dateRange}</span>
+                    <span>[ {duration} ]{type ? ` · ${type}` : ''}</span>
+                  </div>
+                );
+              })()}
+              {selected.tags && (
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem', marginBottom: '0.8rem' }}>
+                  {selected.tags.split(',').map(tg => tg.trim()).filter(Boolean).map(tag => (
+                    <span key={tag} style={{ background: 'var(--accent-bg)', border: '1px solid rgba(0,82,245,0.18)', color: 'var(--amber)', borderRadius: 4, padding: '3px 10px', fontSize: '0.72rem' }}>{tag}</span>
+                  ))}
+                </div>
+              )}
+              {selected.desc && (
+                <div style={{ padding: '1rem', background: 'var(--accent-bg)', borderRadius: 8, borderLeft: '2px solid var(--amber)' }} lang={lang}>
+                  <div className="bullet-list">
+                    {selected.desc.split('\n').map((line, li) => {
+                      const isBullet = line.trim().startsWith('•');
+                      const text = isBullet ? line.trim().slice(1).trim() : line;
+                      return isBullet ? (
+                        <div key={li} className="bullet-line">
+                          <span className="bullet-dot" style={{ color: 'var(--amber)' }}>•</span>
+                          <span className="bullet-text text-justify-auto" style={{ color: 'var(--white-dim)', fontSize: '0.85rem', lineHeight: 1.8 }}>{text}</span>
+                        </div>
+                      ) : (
+                        <div key={li} className="text-justify-auto para-indent" style={{ color: 'var(--white-dim)', fontSize: '0.85rem', lineHeight: 1.8 }}>{line}</div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </SpotlightCard>
     </AnimatedSection>
   );
 };
@@ -639,8 +699,10 @@ const About: React.FC = () => {
             </div>
           </AnimatedSection>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            {exps.map((exp, i) => (
-              <ExpCardAbout key={exp.id} exp={exp} index={i} />
+            {groupExpByCompany(exps, lang).map((row, i) => (
+              row.type === 'group'
+                ? <ExpDrilldownAbout key={row.group.companyKey} company={row.group.companyDisplay} items={row.group.items} totalDuration={row.group.totalDuration} index={i} />
+                : <ExpDrilldownAbout key={row.item.id} company={row.item.company.split(' (')[0].trim()} items={[row.item]} totalDuration={computeTotalDuration([row.item], lang)} index={i} />
             ))}
           </div>
         </div>

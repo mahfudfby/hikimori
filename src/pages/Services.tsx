@@ -221,7 +221,7 @@ const Services: React.FC = () => {
                 </div>
 
                 <a
-                  href="https://wa.me/6282234651413"
+                  href={`https://wa.me/6282234651413?text=${encodeURIComponent(`Halo Mahfud, saya tertarik dengan layanan "${svc.title}" yang Anda tawarkan. Boleh minta info lebih lanjut?`)}`}
                   target="_blank" rel="noopener noreferrer"
                   style={{
                     display: 'flex', alignItems: 'center', justifyContent: 'space-between',

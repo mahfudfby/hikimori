@@ -15,6 +15,8 @@ import ProtectedRoute from './components/ProtectedRoute';
 import PageTransition from './components/PageTransition';
 import LanguageToggle from './components/LanguageToggle';
 import ThemeToggle from './components/ThemeToggle';
+import AuroraBackground from './components/AuroraBackground';
+import MagneticButton from './components/MagneticButton';
 import { useLang } from './contexts/LanguageContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 
@@ -172,12 +174,34 @@ const AnimatedRoutes: React.FC = () => {
           } />
           <Route path="*" element={
             <PageTransition>
-              <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'var(--black)', gap: '1rem' }}>
-                <div style={{ fontFamily: 'var(--font-display)', fontSize: '8rem', color: 'var(--amber)', lineHeight: 1 }}>404</div>
-                <p style={{ color: 'var(--white-dim)', fontSize: '1.1rem' }}>{t('Halaman tidak ditemukan.', 'Page not found.')}</p>
-                <a href="/" style={{ background: 'var(--amber)', color: 'var(--black)', padding: '10px 28px', borderRadius: '8px', textDecoration: 'none', fontWeight: 700, marginTop: '1rem' }}>
-                  {t('Kembali ke Home', 'Back to Home')}
-                </a>
+              <div style={{ minHeight: '100vh', position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'var(--black)', gap: '1rem', padding: '2rem', textAlign: 'center' }}>
+                <AuroraBackground variant="full" />
+                {/* ensō — lingkaran tinta tipis, sentuhan Jepang minimal, senada sama hero Home */}
+                <svg viewBox="0 0 400 400" aria-hidden="true" style={{ position: 'absolute', top: '50%', left: '50%', width: 'min(70vw,480px)', height: 'min(70vw,480px)', transform: 'translate(-50%,-50%)', opacity: 0.08, zIndex: 0 }}>
+                  <circle cx="200" cy="200" r="160" fill="none" stroke="var(--amber)" strokeWidth="2.5" strokeLinecap="round" strokeDasharray="880" strokeDashoffset="70" />
+                </svg>
+                <div style={{ position: 'relative', zIndex: 1 }}>
+                  <div style={{
+                    fontFamily: 'var(--font-display)', fontSize: 'clamp(5rem,18vw,9rem)', lineHeight: 1,
+                    background: 'linear-gradient(90deg, var(--amber), var(--accent2))',
+                    WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent',
+                  }}>404</div>
+                  <p style={{ color: 'var(--white-dim)', fontSize: '1.1rem', marginTop: '0.5rem' }}>
+                    {t('Halaman yang kamu cari tidak ditemukan.', "The page you're looking for doesn't exist.")}
+                  </p>
+                  <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap', marginTop: '2rem' }}>
+                    <MagneticButton strength={0.35}>
+                      <a href="/" className="text-shadow-onlight" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'var(--amber)', color: 'var(--black)', padding: '12px 28px', borderRadius: '999px', textDecoration: 'none', fontWeight: 700, minHeight: 44 }}>
+                        {t('Kembali ke Beranda', 'Back to Home')}
+                      </a>
+                    </MagneticButton>
+                    <MagneticButton strength={0.35}>
+                      <a href="/portofolio" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'transparent', color: 'var(--amber)', padding: '12px 28px', borderRadius: '999px', textDecoration: 'none', fontWeight: 700, border: '1.5px solid var(--amber)', minHeight: 44 }}>
+                        {t('Lihat Portofolio', 'View Portfolio')}
+                      </a>
+                    </MagneticButton>
+                  </div>
+                </div>
               </div>
             </PageTransition>
           } />
