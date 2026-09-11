@@ -19,7 +19,7 @@ import {
 } from '../data/cvData';
 import {
   D_ABOUT, D_ABOUT_EN, D_SKILLS, D_SKILLS_EN, D_EXP, D_EXP_EN, SkillDesc,
-  groupExpByCompany, computeTotalDuration,
+  groupExpByCompany, computeTotalDuration, InkRipple,
 } from './Home';
 import type { AboutData, SkillItem, ExpItem } from './Home';
 
@@ -157,6 +157,7 @@ const ExpDrilldownAbout: React.FC<{ company: string; items: ExpItem[]; totalDura
 
   return (
     <AnimatedSection direction={i % 2 === 0 ? 'left' : 'right'} delay={i * 0.12}>
+      <InkRipple>
       <SpotlightCard className="clay-card" style={{ padding: '1.6rem 1.8rem', position: 'relative', overflow: 'hidden' }}>
         <div
           className="exp-header-row"
@@ -286,6 +287,7 @@ const ExpDrilldownAbout: React.FC<{ company: string; items: ExpItem[]; totalDura
           )}
         </AnimatePresence>
       </SpotlightCard>
+      </InkRipple>
     </AnimatedSection>
   );
 };

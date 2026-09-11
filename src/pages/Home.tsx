@@ -446,17 +446,24 @@ export const SkillDesc:React.FC<{desc:string;color:string;fontSize?:string}>=({d
   );
 };
 
-const InkRipple:React.FC<{children:React.ReactNode;style?:React.CSSProperties}>=({children,style={}})=>{
+/* ─── InkRipple: efek sentuh reusable — dipakai di semua halaman ───
+   Upgrade dari sekadar onClick: pakai onPointerDown supaya ripple-nya
+   muncul LANGSUNG pas jari nyentuh layar (bukan nunggu dilepas dulu),
+   jauh lebih tactile/responsif di HP. Sekalian getar halus (Vibration
+   API) — otomatis diam kalau device/browser-nya nggak dukung (iOS
+   Safari, desktop mouse), jadi aman dipakai di mana saja. */
+export const InkRipple:React.FC<{children:React.ReactNode;style?:React.CSSProperties;rippleColor?:string}>=({children,style={},rippleColor='var(--amber)'})=>{
   const [rips,setRips]=useState<{id:number;x:number;y:number}[]>([]);
-  const click=(e:React.MouseEvent<HTMLDivElement>)=>{
-    const r=e.currentTarget.getBoundingClientRect();const id=Date.now();
+  const down=(e:React.PointerEvent<HTMLDivElement>)=>{
+    const r=e.currentTarget.getBoundingClientRect();const id=Date.now()+Math.random();
     setRips(p=>[...p,{id,x:e.clientX-r.left,y:e.clientY-r.top}]);
-    setTimeout(()=>setRips(p=>p.filter(r=>r.id!==id)),900);
+    setTimeout(()=>setRips(p=>p.filter(rp=>rp.id!==id)),700);
+    if(typeof navigator!=='undefined'&&navigator.vibrate) navigator.vibrate(8);
   };
-  return <div style={{position:'relative',overflow:'hidden',...style}} onClick={click}>
+  return <div style={{position:'relative',overflow:'hidden',...style}} onPointerDown={down}>
     {children}
-    {rips.map(r=><motion.div key={r.id} style={{position:'absolute',left:r.x,top:r.y,width:0,height:0,borderRadius:'50%',border:`2px solid ${J.red}`,transform:'translate(-50%,-50%)',pointerEvents:'none'}}
-      animate={{width:240,height:240,opacity:[0.7,0]}} transition={{duration:0.9,ease:'easeOut'}}/>)}
+    {rips.map(r=><motion.div key={r.id} style={{position:'absolute',left:r.x,top:r.y,width:0,height:0,borderRadius:'50%',border:`2px solid ${rippleColor}`,transform:'translate(-50%,-50%)',pointerEvents:'none'}}
+      animate={{width:240,height:240,opacity:[0.7,0]}} transition={{duration:0.7,ease:'easeOut'}}/>)}
   </div>;
 };
 

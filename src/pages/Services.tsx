@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import AnimatedSection from '../components/AnimatedSection';
 import LazyMount from '../components/LazyMount';
 import AuroraBackground from '../components/AuroraBackground';
+import { InkRipple } from './Home';
 import { useLang } from '../contexts/LanguageContext';
 
 const services = [
@@ -220,18 +221,20 @@ const Services: React.FC = () => {
                   ))}
                 </div>
 
-                <a
-                  href={`https://wa.me/6282234651413?text=${encodeURIComponent(`Halo Mahfud, saya tertarik dengan layanan "${svc.title}" yang Anda tawarkan. Boleh minta info lebih lanjut?`)}`}
-                  target="_blank" rel="noopener noreferrer"
-                  style={{
-                    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                    padding: '1.2rem 0.2rem 0.4rem', minHeight: 44, borderTop: '1px solid var(--card-border)',
-                    color: 'var(--amber)', fontWeight: 700, fontSize: '0.85rem', textDecoration: 'none',
-                  }}
-                >
-                  <span>{t('Konsultasi Gratis', 'Free Consultation')}</span>
-                  <span>→</span>
-                </a>
+                <InkRipple style={{ borderTop: '1px solid var(--card-border)' }}>
+                  <a
+                    href={`https://wa.me/6282234651413?text=${encodeURIComponent(`Halo Mahfud, saya tertarik dengan layanan "${svc.title}" yang Anda tawarkan. Boleh minta info lebih lanjut?`)}`}
+                    target="_blank" rel="noopener noreferrer"
+                    style={{
+                      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                      padding: '1.2rem 0.2rem 0.4rem', minHeight: 44,
+                      color: 'var(--amber)', fontWeight: 700, fontSize: '0.85rem', textDecoration: 'none',
+                    }}
+                  >
+                    <span>{t('Konsultasi Gratis', 'Free Consultation')}</span>
+                    <span>→</span>
+                  </a>
+                </InkRipple>
               </motion.div>
             </AnimatedSection>
           ))}
