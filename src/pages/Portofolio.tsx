@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import AnimatedSection from '../components/AnimatedSection';
 import LazyMount from '../components/LazyMount';
 import AuroraBackground from '../components/AuroraBackground';
+import { InkRipple } from './Home';
 import { usePortfolio } from '../hooks/usePortfolio';
 
 const CATEGORIES = ['Semua', 'HR', 'Administrasi', 'IT Support', 'Desain', 'Branding'];
@@ -40,6 +41,7 @@ const PortfolioCard: React.FC<{ item: ReturnType<typeof usePortfolio>['items'][0
         cursor: 'pointer',
       }}
     >
+      <InkRipple style={{ height: '100%' }}>
       {/* Image */}
       <div style={{ position: 'relative', aspectRatio: '16/9', overflow: 'hidden' }}>
         <motion.img
@@ -154,6 +156,7 @@ const PortfolioCard: React.FC<{ item: ReturnType<typeof usePortfolio>['items'][0
           </div>
         )}
       </div>
+      </InkRipple>
     </motion.div>
   );
 };
