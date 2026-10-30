@@ -4,22 +4,21 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
-root.render(
+ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <App />
   </React.StrictMode>
 );
 
-// Service worker: cache aset statis + halaman supaya kunjungan berikutnya
-// (atau saat jaringan lemot/putus) tetap bisa load dari cache. Hanya
-// diaktifkan di production build — di dev server malah bikin bingung (stale cache).
+// Tutup intro (public/index.html) setelah frame pertama aplikasi siap.
+// rAF = saat frame pertama tergambar; timer = cadangan bila rAF ditahan browser (tab latar / pane tersembunyi).
+const introDone = () => (window as any).__hkIntroDone?.();
+requestAnimationFrame(() => requestAnimationFrame(introDone));
+setTimeout(introDone, 300);
+
+// Service worker (cache aset statis) — hanya di production build.
 if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').catch(() => {
-      // Diam-diam gagal — situs tetap jalan normal tanpa cache offline.
-    });
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
   });
 }
