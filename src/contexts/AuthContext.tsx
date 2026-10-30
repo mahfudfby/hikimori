@@ -1,89 +1,79 @@
 // src/contexts/AuthContext.tsx
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { auth } from '../config/firebase';
-import {
-  signInWithEmailAndPassword,
-  signOut,
-  onAuthStateChanged,
-  createUserWithEmailAndPassword,
-  User
-} from 'firebase/auth';
+// Login admin murni lewat Firebase Authentication (email + password).
+// Tidak ada password yang ditanam di kode/bundle, dan tidak ada "sesi lokal"
+// palsu — akses CMS = user Firebase yang valid. SDK auth di-load lazy.
+import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import type { User } from 'firebase/auth';
+import { getAuthInstance } from '../config/firebase';
+
+/** Username pendek → email akun Firebase admin. */
+const USERNAME_ALIAS: Record<string, string> = {
+  mahfudfebry: 'mahfudfebry@hikimori.web.id',
+};
+const HINT_KEY = 'hk_admin_hint';
 
 interface AuthContextType {
-  currentUser: User | null;
+  user: User | null;
   isAdmin: boolean;
-  login: (username: string, password: string) => Promise<void>;
-  logout: () => Promise<void>;
   loading: boolean;
+  login: (usernameOrEmail: string, password: string) => Promise<void>;
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-const ADMIN_EMAIL    = "mahfudfebry@hikimori.web.id";
-const ADMIN_PASSWORD = "***DIHAPUS***";
-const ADMIN_USERNAME = "Mahfudfebry";
+const friendlyError = (code: string) => {
+  if (['auth/invalid-credential', 'auth/wrong-password', 'auth/user-not-found', 'auth/invalid-email'].includes(code))
+    return 'Username/email atau password salah.';
+  if (code === 'auth/too-many-requests') return 'Terlalu banyak percobaan. Coba lagi beberapa menit lagi.';
+  if (code === 'auth/network-request-failed') return 'Koneksi bermasalah. Periksa internet kamu.';
+  return 'Login gagal (' + code + ').';
+};
+
+// Pengunjung biasa (belum pernah login) tidak perlu memuat SDK auth sama sekali.
+const needsAuth = () => {
+  try { return localStorage.getItem(HINT_KEY) === '1' || window.location.pathname.startsWith('/admin'); } catch { return false; }
+};
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [isAdmin, setIsAdmin]         = useState(false);
-  const [loading, setLoading]         = useState(true);
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(needsAuth);
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (user) => {
-      setCurrentUser(user);
-      setIsAdmin(!!user);
-      setLoading(false);
-    });
-    return unsub;
+    if (!needsAuth()) return;
+    let unsub: (() => void) | undefined;
+    Promise.all([getAuthInstance(), import('firebase/auth')]).then(([auth, a]) => {
+      unsub = a.onAuthStateChanged(auth, u => {
+        setUser(u);
+        setLoading(false);
+        try { u ? localStorage.setItem(HINT_KEY, '1') : localStorage.removeItem(HINT_KEY); } catch {}
+      });
+    }).catch(() => setLoading(false));
+    return () => unsub?.();
   }, []);
 
-  // Restore sesi lokal saat reload
-  useEffect(() => {
-    if (!loading && !currentUser) {
-      if (localStorage.getItem('hk_admin_session') === 'true') {
-        setIsAdmin(true);
-      }
-    }
-  }, [loading, currentUser]);
-
-  const login = async (username: string, password: string) => {
-    if (username.trim() !== ADMIN_USERNAME || password !== ADMIN_PASSWORD) {
-      throw new Error("Username atau password salah!");
-    }
+  const login = useCallback(async (id: string, password: string) => {
+    const key = id.trim().toLowerCase();
+    const email = USERNAME_ALIAS[key] || key;
+    const [auth, a] = await Promise.all([getAuthInstance(), import('firebase/auth')]);
     try {
-      await signInWithEmailAndPassword(auth, ADMIN_EMAIL, ADMIN_PASSWORD);
+      const cred = await a.signInWithEmailAndPassword(auth, email, password);
+      setUser(cred.user);
+      try { localStorage.setItem(HINT_KEY, '1'); } catch {}
     } catch (err: any) {
-      if (
-        err.code === 'auth/user-not-found' ||
-        err.code === 'auth/invalid-credential' ||
-        err.code === 'auth/invalid-email'
-      ) {
-        try {
-          await createUserWithEmailAndPassword(auth, ADMIN_EMAIL, ADMIN_PASSWORD);
-        } catch {
-          // Firebase tidak terima domain custom — gunakan sesi lokal
-          setIsAdmin(true);
-          localStorage.setItem('hk_admin_session', 'true');
-          return;
-        }
-      } else {
-        // Fallback ke sesi lokal
-        setIsAdmin(true);
-        localStorage.setItem('hk_admin_session', 'true');
-        return;
-      }
+      throw new Error(friendlyError(err?.code || 'unknown'));
     }
-  };
+  }, []);
 
-  const logout = async () => {
-    try { await signOut(auth); } catch {}
-    setIsAdmin(false);
-    setCurrentUser(null);
-    localStorage.removeItem('hk_admin_session');
-  };
+  const logout = useCallback(async () => {
+    const [auth, a] = await Promise.all([getAuthInstance(), import('firebase/auth')]);
+    await a.signOut(auth);
+    setUser(null);
+    try { localStorage.removeItem(HINT_KEY); localStorage.removeItem('hk_admin_session'); } catch {}
+  }, []);
 
   return (
-    <AuthContext.Provider value={{ currentUser, isAdmin, login, logout, loading }}>
+    <AuthContext.Provider value={{ user, isAdmin: !!user, loading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
@@ -91,6 +81,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
 export const useAuth = () => {
   const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error("useAuth must be inside AuthProvider");
+  if (!ctx) throw new Error('useAuth must be inside AuthProvider');
   return ctx;
 };
