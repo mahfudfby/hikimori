@@ -604,77 +604,27 @@
    "imageUrl": "",
    "credentialUrl": "",
    "desc": {
-    "id": "Sertifikasi Kompetensi SDM",
-    "en": "HR Competency Certification"
-   }
-  },
-  {
-   "id": "c2",
-   "name": {
-    "id": "Menyusun Uraian Jabatan",
-    "en": "Preparing Job Descriptions"
+    "id": "Sertifikasi kompetensi SDM dari BNSP. Materi pelatihan mencakup 4 unit kompetensi SKKNI di bawah ini.",
+    "en": "BNSP HR competency certification. The training covered the 4 SKKNI competency units below."
    },
-   "issuer": "Training MSDM — Cipta Innovasi Unggul",
-   "code": "M.70SDM01.010.2",
-   "category": "training",
-   "year": "2025",
-   "imageUrl": "",
-   "credentialUrl": "",
-   "desc": {
-    "id": "Unit kompetensi M.70SDM01.010.2",
-    "en": "Competency unit M.70SDM01.010.2"
-   }
-  },
-  {
-   "id": "c3",
-   "name": {
-    "id": "Melakukan Administrasi Jaminan Sosial",
-    "en": "Administering Social Security (BPJS)"
-   },
-   "issuer": "Training MSDM — Cipta Innovasi Unggul",
-   "code": "M.70SDM01.058.2",
-   "category": "training",
-   "year": "2025",
-   "imageUrl": "",
-   "credentialUrl": "",
-   "desc": {
-    "id": "Unit kompetensi M.70SDM01.058.2",
-    "en": "Competency unit M.70SDM01.058.2"
-   }
-  },
-  {
-   "id": "c4",
-   "name": {
-    "id": "Melakukan Analisis Beban Kerja",
-    "en": "Conducting Workload Analysis"
-   },
-   "issuer": "Training MSDM — Cipta Innovasi Unggul",
-   "code": "M.70SDM01.011.2",
-   "category": "training",
-   "year": "2025",
-   "imageUrl": "",
-   "credentialUrl": "",
-   "desc": {
-    "id": "Unit kompetensi M.70SDM01.011.2",
-    "en": "Competency unit M.70SDM01.011.2"
-   }
-  },
-  {
-   "id": "c5",
-   "name": {
-    "id": "Administrasi Penerapan Kebijakan MSDM",
-    "en": "HR Policy Implementation Administration"
-   },
-   "issuer": "Training MSDM — Cipta Innovasi Unggul",
-   "code": "M.70SDM01.059.2",
-   "category": "training",
-   "year": "2025",
-   "imageUrl": "",
-   "credentialUrl": "",
-   "desc": {
-    "id": "Unit kompetensi M.70SDM01.059.2",
-    "en": "Competency unit M.70SDM01.059.2"
-   }
+   "units": [
+    {
+     "id": "Menyusun Uraian Jabatan (M.70SDM01.010.2)",
+     "en": "Preparing Job Descriptions (M.70SDM01.010.2)"
+    },
+    {
+     "id": "Melakukan Administrasi Jaminan Sosial (M.70SDM01.058.2)",
+     "en": "Administering Social Security (BPJS) (M.70SDM01.058.2)"
+    },
+    {
+     "id": "Melakukan Analisis Beban Kerja (M.70SDM01.011.2)",
+     "en": "Conducting Workload Analysis (M.70SDM01.011.2)"
+    },
+    {
+     "id": "Administrasi Penerapan Kebijakan MSDM (M.70SDM01.059.2)",
+     "en": "HR Policy Implementation Administration (M.70SDM01.059.2)"
+    }
+   ]
   },
   {
    "id": "c6",
@@ -691,7 +641,8 @@
    "desc": {
     "id": "Excel for Administration",
     "en": "Excel for Administration"
-   }
+   },
+   "units": []
   }
  ]
 }

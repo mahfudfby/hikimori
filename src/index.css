@@ -146,7 +146,7 @@ button { cursor: pointer; }
 .card.dark .muted, .card.dark .faint { color: var(--on-ink-dim); }
 .card.flush { padding: 0; overflow: hidden; }
 .card.hoverable { transition: transform 0.35s var(--ease), box-shadow 0.35s var(--ease); }
-.card.hoverable:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+@media (hover: hover) { .card.hoverable:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); } }
 .card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
 
 /* ───────── Pills & buttons ───────── */
@@ -157,7 +157,7 @@ button { cursor: pointer; }
   border: 1px solid var(--line-2); background: transparent; text-decoration: none;
   transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.2s;
 }
-.pill:hover { border-color: var(--text-2); }
+@media (hover: hover) { .pill:hover { border-color: var(--text-2); } }
 .pill.dark { background: var(--ink); color: var(--on-ink); border-color: var(--ink); }
 :root[data-theme='dark'] .pill.dark { background: var(--on-ink); color: #1C1C1A; border-color: var(--on-ink); }
 .pill.yellow { background: var(--yellow); color: var(--on-yellow); border-color: var(--yellow); }
@@ -178,7 +178,7 @@ button { cursor: pointer; }
   background: var(--surface-strong); border: 1px solid transparent; color: var(--text);
   text-decoration: none; transition: transform 0.2s var(--ease), background 0.2s;
 }
-.icon-btn:hover { transform: rotate(-12deg) scale(1.05); }
+@media (hover: hover) { .icon-btn:hover { transform: rotate(-12deg) scale(1.05); } }
 .icon-btn.dark { background: var(--ink); color: var(--on-ink); }
 .card.dark .icon-btn { background: var(--ink-2); color: var(--on-ink); }
 .icon-btn.sm { width: 32px; height: 32px; flex-basis: 32px; }
@@ -278,7 +278,7 @@ button { cursor: pointer; }
 .bar.on .stick, .bar.on .dot { background: var(--yellow) !important; }
 .bar.on .lab { color: var(--text); font-weight: 600; }
 .bar .tip { position: absolute; top: -26px; left: 50%; transform: translateX(-50%); white-space: nowrap; }
-.bar:hover .stick { background: var(--text-2); }
+@media (hover: hover) { .bar:hover .stick { background: var(--text-2); } }
 
 /* Ring (Time tracker → deskripsi kerja) */
 .ring-wrap { position: relative; width: 168px; height: 168px; margin: 6px auto 4px; }
@@ -402,7 +402,7 @@ textarea.input { min-height: 96px; resize: vertical; line-height: 1.55; }
 /* Footer */
 .footer { padding: 26px 0 40px; color: var(--text-2); font-size: 0.85rem; }
 .footer a { text-decoration: none; }
-.footer a:hover { color: var(--text); }
+@media (hover: hover) { .footer a:hover { color: var(--text); } }
 
 /* Loading */
 .spinner { width: 34px; height: 34px; border-radius: 50%; border: 3px solid var(--line-2); border-top-color: var(--text); animation: spin 0.9s linear infinite; }
@@ -435,7 +435,7 @@ textarea.input { min-height: 96px; resize: vertical; line-height: 1.55; }
 .cms { display: grid; grid-template-columns: 250px minmax(0, 1fr); min-height: 100vh; gap: 0; }
 .cms-side { position: sticky; top: 0; height: 100vh; overflow: auto; padding: 18px 14px; display: flex; flex-direction: column; border-right: 1px solid var(--line); background: color-mix(in srgb, var(--surface) 70%, transparent); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
 .cms-nav { display: flex; align-items: center; gap: 10px; height: 42px; padding: 0 14px; border-radius: 999px; border: 0; background: none; text-align: left; font-size: 0.88rem; color: var(--text); }
-.cms-nav:hover { background: var(--surface-strong); }
+@media (hover: hover) { .cms-nav:hover { background: var(--surface-strong); } }
 .cms-nav.on { background: var(--ink); color: var(--on-ink); }
 :root[data-theme='dark'] .cms-nav.on { background: var(--on-ink); color: #1C1C1A; }
 .cms-main { padding: 18px clamp(14px, 3vw, 32px) 60px; min-width: 0; }
@@ -509,3 +509,69 @@ html.lite .nav-sheet { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18); }
 
 /* HP (lite): font sistem — tampilan tetap tipis & bersih */
 html.lite { --font: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; }
+
+/* ═════════ Carousel geser (Swipe) — hanya di layar sentuh / sempit ═════════ */
+.swipe-dots { display: none; }
+@media (max-width: 860px), (pointer: coarse) {
+  .swipe {
+    display: flex !important; gap: 12px; overflow-x: auto; overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory; scroll-padding-inline: 7%; -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; padding: 4px 7% 10px; margin: 0 calc(-1 * clamp(14px, 3vw, 32px));
+  }
+  .swipe::-webkit-scrollbar { display: none; }
+  .swipe > * { flex: 0 0 min(86%, 420px); scroll-snap-align: center; scroll-snap-stop: always; }
+  .swipe:focus-visible { outline-offset: -2px; }
+  .swipe-dots { display: flex; justify-content: center; gap: 4px; margin-top: 6px; }
+  /* Titik kecil tapi area ketuknya 44×44 px */
+  .swipe-dots button { width: 44px; height: 44px; border: 0; background: none; padding: 0; display: grid; place-items: center; }
+  .swipe-dots button::before { content: ''; width: 8px; height: 8px; border-radius: 99px; background: var(--line-2); transition: width .25s var(--ease), background .25s; }
+  .swipe-dots button.on::before { width: 22px; background: var(--text); }
+}
+
+/* ═════════ Ramah layar sentuh (HP & tablet) ═════════
+   Hover di atas hanya untuk perangkat ber-mouse (tidak nyangkut setelah diketuk).
+   Di bawah: area ketuk ≥ 44 px (pedoman Apple/Google), umpan balik saat ditekan,
+   filter yang bisa digeser, dan tanpa jeda ketuk ganda. */
+a, button, [role='button'], [role='tab'], [role='option'], input, select, textarea, label, summary { touch-action: manipulation; }
+@media (pointer: coarse) {
+  .pill { min-height: 44px; height: auto; }
+  .pill.sm { min-height: 40px; padding: 0 14px; }
+  .pill.lg { min-height: 50px; }
+  .icon-btn { width: 44px; height: 44px; flex-basis: 44px; }
+  .icon-btn.sm { width: 40px; height: 40px; flex-basis: 40px; }
+  .seg button { height: 44px; padding: 0 16px; }
+  .nav-links a { height: 44px; }
+  .nav-sheet a { padding: 14px 16px; }
+  .acc > button { min-height: 52px; }
+  .task { min-height: 48px; }
+  .cms-nav { height: 48px; }
+  .dash-pills .pill { height: 44px; }
+  /* Umpan balik saat ditekan (pengganti hover) */
+  .card.hoverable, .icon-btn, .pill, .task, .bar, .event { -webkit-tap-highlight-color: transparent; }
+  .card.hoverable:active { transform: scale(0.985); transition-duration: .1s; }
+  .icon-btn:active { transform: scale(0.9); }
+  .task:active, .event:active { opacity: .7; }
+  .bar:active .stick { background: var(--yellow); }
+  /* Teks tombol tidak ikut terseleksi saat ditekan lama */
+  .pill, .icon-btn, .seg button, .bar, .swipe-dots button { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+  .touch-hint { display: inline !important; }
+}
+.touch-hint { display: none; }
+/* Filter kategori: geser horizontal di layar sempit, bukan turun ke banyak baris */
+@media (max-width: 680px) {
+  .seg { flex-wrap: nowrap; overflow-x: auto; max-width: 100%; scrollbar-width: none; -webkit-overflow-scrolling: touch; scroll-snap-type: x proximity; }
+  .seg::-webkit-scrollbar { display: none; }
+  .seg button { flex: 0 0 auto; scroll-snap-align: start; }
+}
+/* Kartu Deskripsi Kerja: bisa digeser kanan/kiri tanpa ikut menggulir halaman ke samping */
+.b-tracker { touch-action: pan-y; }
+
+/* Navbar layar sempit: tema & admin masuk ke menu lipat → tidak melebar keluar layar */
+.nav-sheet-tools { display: none; }
+@media (max-width: 480px) {
+  .nav-opt { display: none !important; }
+  .nav-sheet-tools { display: flex; grid-column: 1 / -1; gap: 8px; padding-top: 8px; margin-top: 4px; border-top: 1px solid var(--line); }
+  .nav-sheet-tools .pill { flex: 1; text-decoration: none; }
+  .nav-inner { gap: 8px; }
+  .brand { padding-right: 14px; }
+}

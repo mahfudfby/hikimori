@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useContent } from '../content/ContentContext';
 import { useLang } from '../contexts/LanguageContext';
-import { Icon, PageHero, useTitle, useHashTarget, Modal, Staged, cld } from '../components/ui';
+import { Icon, PageHero, useTitle, useHashTarget, Modal, Staged, Swipe, cld } from '../components/ui';
 import { pick } from '../content/derive';
 import type { Certificate, CertCategory } from '../content/types';
 
@@ -10,6 +10,25 @@ const CAT: Record<CertCategory, { id: string; en: string; icon: string }> = {
   license: { id: 'Lisensi', en: 'License', icon: '🪪' },
   training: { id: 'Pelatihan', en: 'Training', icon: '🎓' },
   cert: { id: 'Sertifikat', en: 'Certificate', icon: '📜' },
+};
+
+/** Unit kompetensi / materi yang dipelajari dalam satu sertifikat. */
+const Units: React.FC<{ units?: Certificate['units']; dark?: boolean }> = ({ units, dark }) => {
+  const { lang, t } = useLang();
+  if (!units?.length) return null;
+  return (
+    <div className="mt-16">
+      <div className="eyebrow" style={dark ? { color: 'var(--on-ink-dim)' } : undefined}>{t('Unit kompetensi yang dipelajari', 'Competency units covered')}</div>
+      <ul className="task-list" style={{ marginTop: 10 }}>
+        {units.map((u, i) => (
+          <li key={i} className="row gap-8 small" style={{ alignItems: 'flex-start', listStyle: 'none' }}>
+            <span className="check" aria-hidden="true" style={{ marginTop: 1 }}><Icon name="check" size={12} /></span>
+            <span>{pick(u, lang)}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
 };
 
 const CertificatesPage: React.FC = () => {
@@ -41,7 +60,7 @@ const CertificatesPage: React.FC = () => {
         </div>
 
         {list.length === 0 ? <div className="empty">{t('Belum ada data.', 'Nothing yet.')}</div> : (
-          <div className="grid-3">
+          <Swipe label={t('Daftar sertifikat — geser kanan/kiri', 'Certificates — swipe left/right')}>
             {list.map(c => (
               <Staged key={c.id} minHeight={380} eager={hash === c.id}>
               <article key={c.id} id={c.id} className={`card ${c.category === 'license' ? 'dark' : ''} hoverable stack`}
@@ -59,6 +78,7 @@ const CertificatesPage: React.FC = () => {
                 <div className="small muted mt-8">{c.issuer}</div>
                 {c.code && <div className="xs faint">{t('Kode unit', 'Unit code')}: {c.code}</div>}
                 {pick(c.desc, lang) && <p className="small muted mt-8">{pick(c.desc, lang)}</p>}
+                <Units units={c.units} dark={c.category === 'license'} />
                 <div className="row gap-8 mt-16" style={{ marginTop: 'auto', paddingTop: 16 }}>
                   <button className="pill sm" onClick={() => setView(c)} style={c.category === 'license' ? { color: 'var(--on-ink)', borderColor: 'var(--ink-2)' } : undefined}><Icon name="eye" size={13} />{t('Lihat', 'View')}</button>
                   {c.credentialUrl && <a className="pill sm" href={c.credentialUrl} target="_blank" rel="noreferrer" style={c.category === 'license' ? { color: 'var(--on-ink)', borderColor: 'var(--ink-2)' } : undefined}><Icon name="external" size={13} />{t('Verifikasi', 'Verify')}</a>}
@@ -66,7 +86,7 @@ const CertificatesPage: React.FC = () => {
               </article>
               </Staged>
             ))}
-          </div>
+          </Swipe>
         )}
       </div>
 
@@ -76,6 +96,8 @@ const CertificatesPage: React.FC = () => {
             : <div className="empty">{t('Gambar sertifikat belum diunggah. Tambahkan lewat CMS.', 'No certificate image yet. Add one in the CMS.')}</div>}
           <h2 className="h-2 mt-16">{pick(view.name, lang)}</h2>
           <p className="muted">{view.issuer} · {view.year}{view.code ? ` · ${view.code}` : ''}</p>
+          {pick(view.desc, lang) && <p className="muted mt-8">{pick(view.desc, lang)}</p>}
+          <Units units={view.units} />
         </>)}
       </Modal>
     </main>
