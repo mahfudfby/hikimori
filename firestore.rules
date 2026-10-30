@@ -1,0 +1,32 @@
+rules_version = '2';
+// Tempel di Firebase Console → Firestore Database → Rules → Publish.
+// Publik boleh MEMBACA konten; hanya akun admin yang login boleh MENULIS.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.token.email == 'mahfudfebry@hikimori.web.id';
+    }
+
+    match /siteContent/{doc} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Riwayat versi konten (dibuat otomatis setiap "Publikasikan" di CMS) — hanya admin.
+    match /siteContentHistory/{doc} {
+      allow read, write: if isAdmin();
+    }
+
+    match /portfolio/{doc} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Data lama (versi sebelumnya) — tetap bisa dibaca, tidak dipakai lagi.
+    match /siteData/{doc} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+  }
+}

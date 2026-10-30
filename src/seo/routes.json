@@ -1,0 +1,42 @@
+{
+  "site": "https://hikimori.web.id",
+  "image": "https://res.cloudinary.com/dl4pyan8v/image/upload/f_auto,q_auto,w_1200/v1785800037/Hikimori_logo_02_hkexej.jpg",
+  "routes": {
+    "/": {
+      "title": "Mahfud Febry Styanto, S.Kom., CHRG | Human Resources & Administration",
+      "description": "Mahfud Febry Styanto, S.Kom., CHRG — Human Resources & Administration. Payroll, General Affairs, IT Support, BPJS & operasional manufaktur. Portofolio & CV dari Nganjuk, Jawa Timur."
+    },
+    "/profil": {
+      "title": "Profil — Mahfud Febry Styanto | HR & Administrasi",
+      "description": "Cerita, ringkasan profesional, pencapaian, organisasi, dan referensi Mahfud Febry Styanto — profesional HR, Payroll, General Affairs & IT Support."
+    },
+    "/pengalaman": {
+      "title": "Pengalaman Kerja — Mahfud Febry Styanto",
+      "description": "Riwayat kerja lengkap: Staff HRD/General Affairs, HR Generalist, IT Support, administrasi gudang & produksi di industri manufaktur, beserta deskripsi tugas dan durasi."
+    },
+    "/pendidikan": {
+      "title": "Pendidikan — Mahfud Febry Styanto",
+      "description": "S.Kom. Teknik Informatika, Institut Teknologi & Bisnis ASIA Malang (IPK 3,39) — cerita, detail studi, alur pendidikan, dan organisasi kampus."
+    },
+    "/sertifikat": {
+      "title": "Sertifikat & Lisensi — Mahfud Febry Styanto",
+      "description": "Lisensi BNSP Certified Human Resources Generalist (CHRG) dan pelatihan MSDM berbasis SKKNI: uraian jabatan, BPJS, analisis beban kerja, kebijakan MSDM."
+    },
+    "/keahlian": {
+      "title": "Keahlian & Tools — Mahfud Febry Styanto",
+      "description": "Hard skill & soft skill: payroll, BPJS, perizinan OSS, IT troubleshooting, jaringan, ERP/SaaS, inventori — beserta tools yang dikuasai."
+    },
+    "/layanan": {
+      "title": "Layanan — Mahfud Febry Styanto",
+      "description": "Layanan Human Resource Management, administrasi perkantoran, dan IT Support & technical untuk bisnis dan UMKM."
+    },
+    "/portofolio": {
+      "title": "Portofolio — Mahfud Febry Styanto",
+      "description": "Karya & proyek: sistem kerja, template HR, ERP internal, dan proyek lain yang pernah dikerjakan Mahfud Febry Styanto."
+    },
+    "/kontak": {
+      "title": "Kontak — Mahfud Febry Styanto",
+      "description": "Hubungi Mahfud Febry Styanto via WhatsApp atau email untuk peluang kerja, kolaborasi proyek, atau diskusi seputar HR & sistem kerja."
+    }
+  }
+}

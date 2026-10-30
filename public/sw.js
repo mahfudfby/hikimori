@@ -1,61 +1,51 @@
-// public/sw.js
-// Service worker ringan (tanpa perlu eject CRA / Workbox).
-// Strategi:
-//  - Aset statis di /static/ (JS/CSS ter-hash) → cache-first. Aman karena
-//    nama filenya berubah tiap build baru, jadi cache lama otomatis basi.
-//  - HTML/dokumen → network-first, fallback ke cache kalau offline/lemot.
-//  - Request cross-origin (Firebase, Cloudinary, dst) dibiarkan lewat
-//    langsung — tidak ikut di-cache di sini.
-const CACHE_NAME = 'hikimori-v1';
-const PRECACHE_URLS = ['/', '/index.html'];
+// public/sw.js — service worker ringan.
+//  - /static/* (JS/CSS ber-hash) → cache-first (nama file berubah tiap build)
+//  - halaman HTML → network-first, fallback cache saat offline
+//  - gambar Cloudinary → stale-while-revalidate (kunjungan ulang instan)
+//  - Firebase/Firestore → TIDAK disentuh
+const VERSION = 'hikimori-v2';
+const STATIC = VERSION + '-static';
+const IMG = VERSION + '-img';
 
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(PRECACHE_URLS)).catch(() => {})
-  );
+self.addEventListener('install', (e) => {
+  e.waitUntil(caches.open(STATIC).then((c) => c.addAll(['/', '/index.html'])).catch(() => {}));
   self.skipWaiting();
 });
 
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
-    )
+self.addEventListener('activate', (e) => {
+  e.waitUntil(
+    caches.keys().then((keys) => Promise.all(keys.filter((k) => !k.startsWith(VERSION)).map((k) => caches.delete(k))))
   );
   self.clients.claim();
 });
 
-self.addEventListener('fetch', (event) => {
-  const { request } = event;
-  if (request.method !== 'GET') return;
+const putSafe = (cacheName, req, res) => {
+  if (res && (res.ok || res.type === 'opaque')) caches.open(cacheName).then((c) => c.put(req, res)).catch(() => {});
+};
 
+self.addEventListener('fetch', (e) => {
+  const req = e.request;
+  if (req.method !== 'GET') return;
   let url;
-  try { url = new URL(request.url); } catch { return; }
-  if (url.origin !== self.location.origin) return; // biarkan CDN/Firebase/Cloudinary lewat network normal
+  try { url = new URL(req.url); } catch { return; }
+
+  if (url.hostname === 'res.cloudinary.com') {
+    e.respondWith(
+      caches.open(IMG).then((c) => c.match(req).then((hit) => {
+        const net = fetch(req).then((res) => { putSafe(IMG, req, res.clone()); return res; }).catch(() => hit);
+        return hit || net;
+      }))
+    );
+    return;
+  }
+  if (url.origin !== self.location.origin) return;
 
   if (url.pathname.startsWith('/static/')) {
-    // Cache-first untuk JS/CSS ter-hash
-    event.respondWith(
-      caches.match(request).then((cached) => {
-        if (cached) return cached;
-        return fetch(request).then((response) => {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
-          return response;
-        }).catch(() => cached);
-      })
-    );
-  } else if (request.mode === 'navigate' || request.destination === 'document') {
-    // Network-first untuk halaman HTML supaya konten selalu ter-update,
-    // tapi tetap bisa dibuka offline/jaringan mati lewat cache.
-    event.respondWith(
-      fetch(request)
-        .then((response) => {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
-          return response;
-        })
-        .catch(() => caches.match(request).then((c) => c || caches.match('/index.html')))
+    e.respondWith(caches.match(req).then((hit) => hit || fetch(req).then((res) => { putSafe(STATIC, req, res.clone()); return res; })));
+  } else if (req.mode === 'navigate') {
+    e.respondWith(
+      fetch(req).then((res) => { putSafe(STATIC, '/index.html', res.clone()); return res; })
+        .catch(() => caches.match('/index.html'))
     );
   }
 });
