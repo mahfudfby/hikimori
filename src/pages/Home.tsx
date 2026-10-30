@@ -25,7 +25,7 @@ const DashTop: React.FC = () => {
   return (
     <section className="dash-top">
       <div style={{ minWidth: 0 }}>
-        <h1 className="h-hero">{t('Halo, saya', "Hi, I'm")} {content.profile.shortName}</h1>
+        <h1 className="h-hero">{content.profile.name}</h1>
         <p className="muted mt-8" style={{ fontSize: '1.02rem' }}>{pick(content.profile.title, lang)} · {content.profile.location.split(',')[0]}</p>
         <div className="xs faint mt-24">{t('Komposisi pengalaman profesional', 'Professional experience mix')}</div>
         <div className="dash-pills mt-8" style={{ ['--cols' as any]: share.map(s => `${Math.max(2, Math.round(s.pct / 7))}fr`).join(' ') }}>
@@ -253,12 +253,12 @@ const AchievementsCard: React.FC = () => {
         <CardLink to="/pengalaman" label={t('Lihat pengalaman', 'See experience')} />
       </div>
       {list.length === 0 ? <p className="xs faint">{t('Tambahkan pencapaian di CMS → Profil.', 'Add highlights in CMS → Profile.')}</p> : (
-        <div className="stack gap-12">
-          {list.map((a, i) => (
-            <div key={a.id} className="row gap-12" style={{ alignItems: 'baseline' }}>
-              <span className="num-lg" style={{ fontSize: i === 0 ? '2.1rem' : '1.5rem', minWidth: 92, color: i === 0 ? 'var(--text)' : undefined }}>{a.value}</span>
-              <span className="small muted" style={{ lineHeight: 1.35 }}>{pick(a.label, lang)}</span>
-            </div>
+        <div className="ach-list">
+          {list.map(a => (
+            <React.Fragment key={a.id}>
+              <span className="ach-v">{a.value}</span>
+              <span className="ach-l">{pick(a.label, lang)}</span>
+            </React.Fragment>
           ))}
         </div>
       )}
