@@ -70,6 +70,8 @@ export interface Certificate {
   imageUrl: string;
   credentialUrl: string;
   desc: Bi;
+  /** Unit kompetensi / materi yang dipelajari (tampil sebagai daftar di kartu sertifikat) */
+  units: Bi[];
 }
 
 export interface Skill {
