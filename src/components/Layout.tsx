@@ -50,10 +50,10 @@ export const Navbar: React.FC = () => {
           <button className="pill white" onClick={toggleLang} aria-label={`${lang.toUpperCase()} — ${lang === 'en' ? 'ganti ke Bahasa Indonesia' : 'switch to English'}`} title="ID / EN">
             <Icon name="globe" size={16} />{lang.toUpperCase()}
           </button>
-          <button className="icon-btn" onClick={toggleTheme} aria-label={mode === 'dark' ? (lang === 'en' ? 'Light mode' : 'Mode terang') : (lang === 'en' ? 'Dark mode' : 'Mode gelap')}>
+          <button className="icon-btn nav-opt" onClick={toggleTheme} aria-label={mode === 'dark' ? (lang === 'en' ? 'Light mode' : 'Mode terang') : (lang === 'en' ? 'Dark mode' : 'Mode gelap')}>
             <Icon name={mode === 'dark' ? 'sun' : 'moon'} />
           </button>
-          <Link to={isAdmin ? '/admin' : '/admin/login'} className="icon-btn" aria-label="Admin" title={isAdmin ? 'CMS' : 'Login'}>
+          <Link to={isAdmin ? '/admin' : '/admin/login'} className="icon-btn nav-opt" aria-label="Admin" title={isAdmin ? 'CMS' : 'Login'}>
             <Icon name={isAdmin ? 'gear' : 'user'} />
           </Link>
           <button className="icon-btn dark nav-burger" onClick={() => setOpen(o => !o)} aria-expanded={open} aria-label="Menu">
@@ -68,6 +68,11 @@ export const Navbar: React.FC = () => {
               {pick({ id: n.id, en: n.en }, lang)}
             </NavLink>
           ))}
+          {/* Layar sempit: tema & admin pindah ke sini supaya navbar muat */}
+          <div className="nav-sheet-tools">
+            <button className="pill" onClick={toggleTheme}><Icon name={mode === 'dark' ? 'sun' : 'moon'} size={16} />{mode === 'dark' ? (lang === 'en' ? 'Light mode' : 'Mode terang') : (lang === 'en' ? 'Dark mode' : 'Mode gelap')}</button>
+            <Link to={isAdmin ? '/admin' : '/admin/login'} className="pill"><Icon name={isAdmin ? 'gear' : 'user'} size={16} />{isAdmin ? 'CMS' : 'Login'}</Link>
+          </div>
         </nav>
       )}
     </header>

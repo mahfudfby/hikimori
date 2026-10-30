@@ -120,16 +120,27 @@ const ProgressCard: React.FC<{ exps: Experience[]; idx: number; onPick: (i: numb
 };
 
 /* ───────── Time tracker → deskripsi pekerjaan (auto-slideshow) ───────── */
-const TrackerCard: React.FC<{ exp?: Experience; idx: number; count: number; playing: boolean; setPlaying: (p: boolean) => void; next: () => void; maxMonths: number }> =
-  ({ exp, idx, count, playing, setPlaying, next, maxMonths }) => {
+const TrackerCard: React.FC<{ exp?: Experience; idx: number; count: number; playing: boolean; setPlaying: (p: boolean) => void; next: () => void; prev: () => void; maxMonths: number }> =
+  ({ exp, idx, count, playing, setPlaying, next, prev, maxMonths }) => {
     const { lang, t } = useLang();
     const lite = isLite();
+    // Geser kiri = berikutnya, geser kanan = sebelumnya (layar sentuh). Gerakan vertikal tetap menggulir halaman.
+    const touch = useRef<{ x: number; y: number } | null>(null);
+    const onTouchStart = (e: React.TouchEvent) => { touch.current = { x: e.touches[0].clientX, y: e.touches[0].clientY }; };
+    const onTouchEnd = (e: React.TouchEvent) => {
+      const s = touch.current; touch.current = null;
+      if (!s) return;
+      const dx = e.changedTouches[0].clientX - s.x, dy = e.changedTouches[0].clientY - s.y;
+      if (Math.abs(dx) < 45 || Math.abs(dx) < Math.abs(dy) * 1.3) return;
+      setPlaying(false);
+      if (dx < 0) next(); else prev();
+    };
     if (!exp) return <div className="card b-tracker"><div className="empty">{t('Belum ada pengalaman', 'No experience yet')}</div></div>;
     const m = monthsOf(exp.start, exp.end);
     const R = 64, C = 2 * Math.PI * R;
     const desc = lines(pick(exp.desc, lang));
     return (
-      <div className="card b-tracker">
+      <div className="card b-tracker" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
         <div className="card-head">
           <h2 className="h-card">{t('Deskripsi Kerja', 'Job Description')}</h2>
           <CardLink to={`/pengalaman#${exp.id}`} label={t('Buka detail', 'Open details')} />
@@ -170,7 +181,7 @@ const TrackerCard: React.FC<{ exp?: Experience; idx: number; count: number; play
             <button className={`icon-btn ${playing ? '' : 'dark'}`} onClick={() => setPlaying(true)} aria-label="Play"><Icon name="play" /></button>
             <button className={`icon-btn ${playing ? 'dark' : ''}`} onClick={() => setPlaying(false)} aria-label="Pause"><Icon name="pause" /></button>
           </div>
-          <span className="xs faint">{idx + 1}/{count}</span>
+          <span className="xs faint center">{idx + 1}/{count}<span className="touch-hint"><br />‹ {t('geser', 'swipe')} ›</span></span>
           <button className="icon-btn dark" onClick={next} aria-label={t('Berikutnya', 'Next')}><Icon name="next" /></button>
         </div>
       </div>
@@ -368,7 +379,8 @@ const CertsCard: React.FC = () => {
         </div>
         <div className="task-list">
           {certs.slice(0, 6).map((c, i) => (
-            <Link key={c.id} to={`/sertifikat#${c.id}`} className={`task ${i === 0 ? 'top' : ''}`}>
+            <React.Fragment key={c.id}>
+            <Link to={`/sertifikat#${c.id}`} className={`task ${i === 0 ? 'top' : ''}`}>
               <span className="ico" aria-hidden="true">{c.category === 'license' ? '🪪' : c.category === 'training' ? '🎓' : '📜'}</span>
               <span className="grow">
                 <span className="t" style={{ display: 'block' }}>{pick(c.name, lang)}</span>
@@ -376,6 +388,13 @@ const CertsCard: React.FC = () => {
               </span>
               <span className="check" title={t('Lulus', 'Passed')}><Icon name="check" size={12} /></span>
             </Link>
+            {/* Unit kompetensi (mis. 4 materi pelatihan CHRG) sebagai sub-daftar; kode unit disembunyikan agar ringkas */}
+            {(c.units || []).length > 0 && (
+              <ul className="cert-units">
+                {c.units.map((u, k) => <li key={k}>{pick(u, lang).split(' (M.')[0]}</li>)}
+              </ul>
+            )}
+            </React.Fragment>
           ))}
         </div>
         <Link to="/sertifikat" className="pill sm mt-16" style={{ borderColor: 'var(--ink-2)', color: 'var(--on-ink)' }}>
@@ -395,6 +414,7 @@ const Home: React.FC = () => {
   const [playing, setPlaying] = useState(true);
   useEffect(() => { if (idx >= exps.length) setIdx(Math.max(0, exps.length - 1)); }, [exps.length, idx]);
   const next = () => setIdx(i => (exps.length ? (i + 1) % exps.length : 0));
+  const prev = () => setIdx(i => (exps.length ? (i - 1 + exps.length) % exps.length : 0));
   const maxMonths = useMemo(() => Math.max(1, ...exps.map(e => monthsOf(e.start, e.end))), [exps]);
 
   useEffect(() => { document.title = `${content.profile.name} | ${pick(content.profile.title, lang)}`; }, [content.profile, lang]);
@@ -407,7 +427,7 @@ const Home: React.FC = () => {
           {/* Mode HP: kartu dimuat bergiliran sesuai urutan ini */}
           <Staged className="b-photo" minHeight={340} eager><PhotoCard /></Staged>
           <Staged className="b-progress" minHeight={300}><ProgressCard exps={exps} idx={idx} onPick={i => { setIdx(i); setPlaying(false); }} /></Staged>
-          <Staged className="b-tracker" minHeight={420}><TrackerCard exp={exps[idx]} idx={idx} count={exps.length} playing={playing} setPlaying={setPlaying} next={next} maxMonths={maxMonths} /></Staged>
+          <Staged className="b-tracker" minHeight={420}><TrackerCard exp={exps[idx]} idx={idx} count={exps.length} playing={playing} setPlaying={setPlaying} next={next} prev={prev} maxMonths={maxMonths} /></Staged>
           <Staged className="b-onboard" minHeight={240}>{content.profile.showAgeCard ? <AgeCard /> : <AchievementsCard />}</Staged>
           <Staged className="b-bio" minHeight={220}><BioCard /></Staged>
           <Staged className="b-summary" minHeight={360}><SummaryCard /></Staged>

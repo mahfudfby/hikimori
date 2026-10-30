@@ -238,3 +238,47 @@ export const Modal: React.FC<{ open: boolean; onClose: () => void; children: Rea
     </div>
   );
 };
+
+/**
+ * Carousel geser kanan-kiri untuk layar sentuh (HP/tablet): CSS scroll-snap bawaan browser,
+ * tanpa library. Di desktop (mouse) tampil sebagai grid biasa. Titik indikator bisa diketuk.
+ */
+export const Swipe: React.FC<{ children: React.ReactNode; className?: string; label: string }> = ({ children, className = 'grid-3', label }) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState(0);
+  const count = React.Children.count(children);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    let raf = 0;
+    const onScroll = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        const first = el.children[0] as HTMLElement | undefined;
+        if (!first) return;
+        const step = first.getBoundingClientRect().width + parseFloat(getComputedStyle(el).columnGap || '0');
+        setActive(Math.max(0, Math.min(count - 1, Math.round(el.scrollLeft / (step || 1)))));
+      });
+    };
+    el.addEventListener('scroll', onScroll, { passive: true });
+    return () => { el.removeEventListener('scroll', onScroll); cancelAnimationFrame(raf); };
+  }, [count]);
+  const go = (i: number) => {
+    const el = ref.current; const child = el?.children[i] as HTMLElement | undefined;
+    if (el && child) el.scrollTo({ left: child.offsetLeft - el.offsetLeft - (el.clientWidth - child.clientWidth) / 2, behavior: 'smooth' });
+  };
+  return (
+    <div className="swipe-wrap">
+      <div ref={ref} className={`swipe ${className}`} role="region" aria-roledescription="carousel" aria-label={label} tabIndex={0}>
+        {children}
+      </div>
+      {count > 1 && (
+        <div className="swipe-dots" role="tablist" aria-label={label}>
+          {Array.from({ length: count }, (_, i) => (
+            <button key={i} role="tab" aria-selected={i === active} aria-label={`${i + 1} / ${count}`} className={i === active ? 'on' : ''} onClick={() => go(i)} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};

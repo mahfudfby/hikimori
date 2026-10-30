@@ -263,7 +263,7 @@ Tetap publikasikan dan TIMPA versi tersebut?
       case 'cert': return (
         <Section title="Sertifikat & lisensi" desc="Kategori “Lisensi” diberi tanda centang kuning di kartu dashboard. Upload gambar agar bisa dipreview pengunjung.">
           <ListEditor<Certificate> items={draft.certificates} onChange={v => set('certificates', v)} addLabel="Tambah sertifikat"
-            create={() => ({ id: uid('c'), name: eb(), issuer: '', code: '', category: 'training', year: '', imageUrl: '', credentialUrl: '', desc: eb() })}
+            create={() => ({ id: uid('c'), name: eb(), issuer: '', code: '', category: 'training', year: '', imageUrl: '', credentialUrl: '', desc: eb(), units: [] })}
             title={c => <>{pick(c.name, 'id')} <span className="faint">· {c.year}</span></>}
             render={(c, up) => (<>
               <BiField label="Nama sertifikat" value={c.name} onChange={v => up({ name: v })} />
@@ -274,6 +274,7 @@ Tetap publikasikan dan TIMPA versi tersebut?
                 <Text label="Kode unit / no. sertifikat" value={c.code} onChange={v => up({ code: v })} />
               </Grid>
               <BiField label="Keterangan" value={c.desc} onChange={v => up({ desc: v })} area rows={2} />
+              <BiLines label="Unit kompetensi / materi yang dipelajari" value={c.units || []} onChange={v => up({ units: v })} hint="Satu unit per baris (boleh sertakan kode, mis. Menyusun Uraian Jabatan (M.70SDM01.010.2)). Tampil sebagai daftar di kartu sertifikat & dashboard." />
               <Text label="Link verifikasi (opsional)" value={c.credentialUrl} onChange={v => up({ credentialUrl: v })} />
               <ImageInput label="Gambar sertifikat" value={c.imageUrl} onChange={v => up({ imageUrl: v })} />
             </>)} />
