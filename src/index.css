@@ -689,3 +689,10 @@ html.lite .reveal { transform: translateY(8px); }
 /* backdrop-filter merusak efek balik 3D di Chrome → wajah kartu flip pakai latar solid */
 .flip-face { -webkit-backdrop-filter: none; backdrop-filter: none; background: var(--surface-solid, var(--surface)); }
 .flip-face.dark { background: var(--ink); }
+
+/* Logo Hikimori (PNG putih + glow) → selalu di atas latar gelap */
+.logo-badge { display: inline-flex; align-items: center; padding: 6px 12px; border-radius: 12px; background: #121211; flex: 0 0 auto; }
+.brand.brand-logo { padding: 0 16px; background: #121211; border-color: #121211; }
+html.lite .brand.brand-logo { background: #121211; }
+.brand.brand-logo img { display: block; }
+@media (max-width: 480px) { .brand.brand-logo { padding: 0 12px; } .brand.brand-logo img { height: 26px !important; } }
