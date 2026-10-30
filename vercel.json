@@ -2,85 +2,26 @@
   "framework": null,
   "buildCommand": "npm run build",
   "outputDirectory": "build",
-  "redirects": [
+  "routes": [
+    { "src": "/static/(.*)", "headers": { "Cache-Control": "public, max-age=31536000, immutable" }, "continue": true },
+    { "src": "/sw.js", "headers": { "Cache-Control": "no-cache" }, "continue": true },
+    { "src": "/admin(.*)", "headers": { "X-Robots-Tag": "noindex" }, "continue": true },
     {
-      "source": "/about",
-      "destination": "/profil",
-      "permanent": true
+      "src": "/(.*)",
+      "headers": {
+        "X-Content-Type-Options": "nosniff",
+        "Referrer-Policy": "strict-origin-when-cross-origin",
+        "X-Frame-Options": "SAMEORIGIN",
+        "Permissions-Policy": "camera=(), microphone=(), geolocation=()"
+      },
+      "continue": true
     },
-    {
-      "source": "/services",
-      "destination": "/layanan",
-      "permanent": true
-    },
-    {
-      "source": "/portfolio",
-      "destination": "/portofolio",
-      "permanent": true
-    }
-  ],
-  "rewrites": [
-    {
-      "source": "/(profil|pengalaman|pendidikan|sertifikat|keahlian|layanan|portofolio|kontak)",
-      "destination": "/$1/index.html"
-    },
-    {
-      "source": "/admin",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/admin/(.*)",
-      "destination": "/index.html"
-    }
-  ],
-  "headers": [
-    {
-      "source": "/static/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
-        }
-      ]
-    },
-    {
-      "source": "/sw.js",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "no-cache"
-        }
-      ]
-    },
-    {
-      "source": "/admin(.*)",
-      "headers": [
-        {
-          "key": "X-Robots-Tag",
-          "value": "noindex"
-        }
-      ]
-    },
-    {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        },
-        {
-          "key": "Referrer-Policy",
-          "value": "strict-origin-when-cross-origin"
-        },
-        {
-          "key": "X-Frame-Options",
-          "value": "SAMEORIGIN"
-        },
-        {
-          "key": "Permissions-Policy",
-          "value": "camera=(), microphone=(), geolocation=()"
-        }
-      ]
-    }
+    { "src": "/about/?", "status": 308, "headers": { "Location": "/profil" } },
+    { "src": "/services/?", "status": 308, "headers": { "Location": "/layanan" } },
+    { "src": "/portfolio/?", "status": 308, "headers": { "Location": "/portofolio" } },
+    { "handle": "filesystem" },
+    { "src": "/(profil|pengalaman|pendidikan|sertifikat|keahlian|layanan|portofolio|kontak)/?", "dest": "/$1/index.html" },
+    { "src": "/admin(/.*)?", "dest": "/index.html" },
+    { "src": "/.*", "status": 404, "dest": "/404.html" }
   ]
 }
