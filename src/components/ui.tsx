@@ -282,3 +282,42 @@ export const Swipe: React.FC<{ children: React.ReactNode; className?: string; la
     </div>
   );
 };
+
+/* ───────── Efek kursor (desktop): kartu miring 3D + kilau, tombol "magnet" ─────────
+   Satu listener untuk seluruh halaman; mati di HP/lite, layar sentuh & reduced-motion. */
+export const useCursorFx = (enabled: boolean) => {
+  useEffect(() => {
+    if (!enabled || isLite() || !window.matchMedia('(hover: hover) and (pointer: fine)').matches
+      || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    let card: HTMLElement | null = null, mag: HTMLElement | null = null, raf = 0, ev: PointerEvent | null = null;
+    const clear = (el: HTMLElement | null, cls: string) => { if (el) { el.classList.remove(cls); el.style.removeProperty('--rx'); el.style.removeProperty('--ry'); el.style.removeProperty('--tx'); el.style.removeProperty('--ty'); } };
+    const frame = () => {
+      raf = 0; if (!ev) return;
+      const t = ev.target as HTMLElement;
+      const c = t.closest?.('.card:not(.no-tilt)') as HTMLElement | null;
+      if (c !== card) { clear(card, 'tilt'); card = c; }
+      if (card) {
+        const r = card.getBoundingClientRect(), x = (ev.clientX - r.left) / r.width, y = (ev.clientY - r.top) / r.height;
+        const k = Math.min(1, 420 / Math.max(r.width, r.height)); // kartu lebar → miring lebih halus
+        card.classList.add('tilt');
+        card.style.setProperty('--rx', `${((0.5 - y) * 7 * k).toFixed(2)}deg`);
+        card.style.setProperty('--ry', `${((x - 0.5) * 9 * k).toFixed(2)}deg`);
+        card.style.setProperty('--mx', `${(x * 100).toFixed(1)}%`);
+        card.style.setProperty('--my', `${(y * 100).toFixed(1)}%`);
+      }
+      const m = t.closest?.('.pill, .icon-btn') as HTMLElement | null;
+      if (m !== mag) { clear(mag, 'magnet'); mag = m; }
+      if (mag) {
+        const r = mag.getBoundingClientRect();
+        mag.classList.add('magnet');
+        mag.style.setProperty('--tx', `${((ev.clientX - r.left - r.width / 2) * 0.25).toFixed(1)}px`);
+        mag.style.setProperty('--ty', `${((ev.clientY - r.top - r.height / 2) * 0.35).toFixed(1)}px`);
+      }
+    };
+    const onMove = (e: PointerEvent) => { ev = e; if (!raf) raf = requestAnimationFrame(frame); };
+    const onLeave = () => { clear(card, 'tilt'); clear(mag, 'magnet'); card = mag = null; };
+    window.addEventListener('pointermove', onMove, { passive: true });
+    document.addEventListener('pointerleave', onLeave);
+    return () => { window.removeEventListener('pointermove', onMove); document.removeEventListener('pointerleave', onLeave); cancelAnimationFrame(raf); onLeave(); };
+  }, [enabled]);
+};

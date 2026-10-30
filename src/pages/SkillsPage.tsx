@@ -9,10 +9,10 @@ const SkillsPage: React.FC = () => {
   const { content } = useContent();
   const { lang, t } = useLang();
   useTitle(`${t('Keahlian', 'Skills')} — ${content.profile.name}`);
+  const [open, setOpen] = useState<string | null>(null);
   const [f, setF] = useState<'all' | 'hard' | 'soft'>('all');
   const skills = [...content.skills].sort((a, b) => b.level - a.level);
   const list = f === 'all' ? skills : skills.filter(s => s.category === f);
-  const avg = (c: 'hard' | 'soft') => { const x = skills.filter(s => s.category === c); return x.length ? Math.round(x.reduce((a, s) => a + s.level, 0) / x.length) : 0; };
   const groups = Array.from(new Set(content.tools.map(tl => tl.group || t('Lainnya', 'Other'))));
 
   return (
@@ -21,8 +21,8 @@ const SkillsPage: React.FC = () => {
         <PageHero crumb={t('Keahlian', 'Skills')} title={t('Keahlian & tools', 'Skills & tools')}
           lead={t('Kemampuan teknis dan interpersonal yang saya bangun dari pengalaman lintas divisi.', 'Technical and interpersonal abilities built through cross-division experience.')}
           aside={<div className="row gap-24">
-            <div><div className="num-xl">{skills.filter(s => s.category === 'hard').length}</div><div className="xs muted">Hard skill · {avg('hard')}%</div></div>
-            <div><div className="num-xl">{skills.filter(s => s.category === 'soft').length}</div><div className="xs muted">Soft skill · {avg('soft')}%</div></div>
+            <div><div className="num-xl">{skills.filter(s => s.category === 'hard').length}</div><div className="xs muted">Hard skill</div></div>
+            <div><div className="num-xl">{skills.filter(s => s.category === 'soft').length}</div><div className="xs muted">Soft skill</div></div>
             <div><div className="num-xl">{content.tools.length}</div><div className="xs muted">Tools</div></div>
           </div>} />
 
@@ -32,16 +32,23 @@ const SkillsPage: React.FC = () => {
 
         <div className="grid-3">
           {list.map((s, i) => (
-            <Reveal key={s.id} delay={(i % 6) * 40} className={`card ${i === 0 && f !== 'soft' ? 'dark' : ''}`}>
-              <div className="row between gap-8">
-                <span className="chip" style={i === 0 && f !== 'soft' ? undefined : undefined}>{s.category === 'hard' ? 'Hard' : 'Soft'}</span>
-                <span className="num-lg" style={{ fontSize: '1.7rem' }}>{s.level}<span style={{ fontSize: '0.9rem' }}>%</span></span>
-              </div>
-              <h2 className="h-card mt-16">{pick(s.name, lang)}</h2>
-              <p className="small muted mt-8" style={{ minHeight: '3em' }}>{pick(s.desc, lang)}</p>
-              <div className={`meter mt-16 ${s.category === 'soft' ? 'yellow' : ''}`} style={i === 0 && f !== 'soft' ? { background: 'var(--ink-2)' } : undefined}>
-                <span style={{ width: `${s.level}%`, ...(i === 0 && f !== 'soft' ? { background: 'var(--yellow)' } : {}) }} />
-              </div>
+            <Reveal key={s.id} delay={(i % 6) * 40} className="flip">
+              <button type="button" className={`flip-in ${open === s.id ? 'on' : ''}`} onClick={() => setOpen(o => (o === s.id ? null : s.id))}
+                aria-pressed={open === s.id} aria-label={pick(s.name, lang)}>
+                <div className={`card no-tilt flip-face ${i === 0 && f !== 'soft' ? 'dark' : ''}`}>
+                  <span className="chip">{s.category === 'hard' ? 'Hard' : 'Soft'}</span>
+                  <h2 className="h-card mt-16">{pick(s.name, lang)}</h2>
+                  <div className={`meter mt-16 ${s.category === 'soft' ? 'yellow' : ''}`} style={i === 0 && f !== 'soft' ? { background: 'var(--ink-2)' } : undefined}>
+                    <span style={{ width: `${s.level}%`, ...(i === 0 && f !== 'soft' ? { background: 'var(--yellow)' } : {}) }} />
+                  </div>
+                  <span className="xs faint flip-hint">{t('Arahkan / ketuk untuk detail', 'Hover / tap for details')}</span>
+                </div>
+                <div className="card no-tilt flip-face flip-back dark">
+                  <span className="chip">{s.category === 'hard' ? 'Hard' : 'Soft'}</span>
+                  <h2 className="h-card mt-16">{pick(s.name, lang)}</h2>
+                  <p className="small muted mt-8">{pick(s.desc, lang)}</p>
+                </div>
+              </button>
             </Reveal>
           ))}
         </div>

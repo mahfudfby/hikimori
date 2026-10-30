@@ -3,6 +3,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useContent } from '../content/ContentContext';
 import { useLang } from '../contexts/LanguageContext';
+import { usePortfolio } from '../hooks/usePortfolio';
 import { Icon, CardLink, CountUp, Reveal, Staged, isLite, cld, cldSet } from '../components/ui';
 import {
   pick, monthsOf, fmtDuration, fmtPeriod, careerMonths, categoryShare, CATEGORY_LABEL, ageOf, lines, waLink, RELEVANT, relevantExp,
@@ -22,11 +23,13 @@ const DashTop: React.FC = () => {
   const share = categoryShare(relevant, RELEVANT);
   const years = careerMonths(relevant) / 12;
   const styles = ['dark', 'yellow', 'stripe'];
+  const [nameMain, ...deg] = content.profile.name.split(',');
+  const nameDeg = deg.join(',').trim();
   return (
     <section className="dash-top">
       <div style={{ minWidth: 0 }}>
-        <h1 className="h-hero">{content.profile.name}</h1>
-        <p className="muted mt-8" style={{ fontSize: '1.02rem' }}>{pick(content.profile.title, lang)} · {content.profile.location.split(',')[0]}</p>
+        <h1 className="h-hero">{nameMain}{nameDeg && <span className="hero-deg">{nameDeg}</span>}</h1>
+        <p className="hero-sub">{pick(content.profile.title, lang)} · {content.profile.location.split(',')[0]}</p>
         <div className="xs faint mt-24">{t('Komposisi pengalaman profesional', 'Professional experience mix')}</div>
         <div className="dash-pills mt-8" style={{ ['--cols' as any]: share.map(s => `${Math.max(2, Math.round(s.pct / 7))}fr`).join(' ') }}>
           {share.map((s, i) => (
@@ -120,10 +123,9 @@ const ProgressCard: React.FC<{ exps: Experience[]; idx: number; onPick: (i: numb
 };
 
 /* ───────── Time tracker → deskripsi pekerjaan (auto-slideshow) ───────── */
-const TrackerCard: React.FC<{ exp?: Experience; idx: number; count: number; playing: boolean; setPlaying: (p: boolean) => void; next: () => void; prev: () => void; maxMonths: number }> =
-  ({ exp, idx, count, playing, setPlaying, next, prev, maxMonths }) => {
+const TrackerCard: React.FC<{ exp?: Experience; idx: number; count: number; playing: boolean; setPlaying: (p: boolean) => void; next: () => void; prev: () => void }> =
+  ({ exp, idx, count, playing, setPlaying, next, prev }) => {
     const { lang, t } = useLang();
-    const lite = isLite();
     // Geser kiri = berikutnya, geser kanan = sebelumnya (layar sentuh). Gerakan vertikal tetap menggulir halaman.
     const touch = useRef<{ x: number; y: number } | null>(null);
     const onTouchStart = (e: React.TouchEvent) => { touch.current = { x: e.touches[0].clientX, y: e.touches[0].clientY }; };
@@ -137,7 +139,6 @@ const TrackerCard: React.FC<{ exp?: Experience; idx: number; count: number; play
     };
     if (!exp) return <div className="card b-tracker"><div className="empty">{t('Belum ada pengalaman', 'No experience yet')}</div></div>;
     const m = monthsOf(exp.start, exp.end);
-    const R = 64, C = 2 * Math.PI * R;
     const desc = lines(pick(exp.desc, lang));
     return (
       <div className="card b-tracker" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
@@ -145,35 +146,15 @@ const TrackerCard: React.FC<{ exp?: Experience; idx: number; count: number; play
           <h2 className="h-card">{t('Deskripsi Kerja', 'Job Description')}</h2>
           <CardLink to={`/pengalaman#${exp.id}`} label={t('Buka detail', 'Open details')} />
         </div>
-        <div className="ring-wrap">
-          <svg viewBox="0 0 168 168" aria-hidden="true">
-            <circle cx="84" cy="84" r="78" fill="none" stroke="var(--line-2)" strokeWidth="5" strokeDasharray="1.5 6" />
-            <circle cx="84" cy="84" r={R} fill="none" stroke="var(--line)" strokeWidth="12" />
-            {lite ? (
-              /* HP: ring statis (proporsi masa kerja posisi ini) — tanpa repaint tiap frame */
-              <circle cx="84" cy="84" r={R} fill="none" stroke="var(--yellow)" strokeWidth="12" strokeLinecap="round"
-                strokeDasharray={C} strokeDashoffset={C * (1 - Math.max(0.08, Math.min(1, m / maxMonths)))}/>
-            ) : (
-              <circle key={`${exp.id}-${idx}`} cx="84" cy="84" r={R} fill="none" stroke="var(--yellow)" strokeWidth="12" strokeLinecap="round"
-                strokeDasharray={C} className="ring-run"
-                style={{ ['--c' as any]: C, animationDuration: `${SLIDE_MS}ms`, animationPlayState: playing ? 'running' : 'paused' }}
-                onAnimationEnd={() => playing && next()} />
-            )}
-          </svg>
-          <div className="ring-center">
-            <span className="big">{fmtDuration(m, lang, true)}</span>
-            <span className="xs muted" style={{ marginTop: 4, lineHeight: 1.25 }}>{pick(exp.position, lang)}</span>
-          </div>
-        </div>
-        {lite && (
-          /* HP: progres slideshow = bar transform:scaleX (di-composite GPU, sangat ringan) */
+        <div className="dur-box" key={`${exp.id}-${idx}`}>
+          <span className="dur-1">{fmtDuration(m, lang, true)}</span>
+          <span className="dur-2">{pick(exp.position, lang)}</span>
+          <span className="dur-3">{exp.company} · {fmtPeriod(exp.start, exp.end, lang)}{exp.type ? ` · ${exp.type}` : ''}</span>
           <div className="slide-prog" aria-hidden="true">
             <span key={`${exp.id}-${idx}`} style={{ animationDuration: `${SLIDE_MS}ms`, animationPlayState: playing ? 'running' : 'paused' }}
               onAnimationEnd={() => playing && next()} />
           </div>
-        )}
-        <div className="small" style={{ fontWeight: 500 }}>{exp.company}</div>
-        <div className="xs faint mb-8">{fmtPeriod(exp.start, exp.end, lang)}{exp.type ? ` · ${exp.type}` : ''}</div>
+        </div>
         {desc.length ? <ul className="job-desc">{desc.map((d, i) => <li key={i}>{d.text}</li>)}</ul>
           : <p className="xs faint">{t('Deskripsi belum diisi.', 'No description yet.')}</p>}
         <div className="row between mt-16">
@@ -340,7 +321,7 @@ const SummaryCard: React.FC = () => {
         <div className="lane">
           {hard.map((s, i) => (
             <Link key={s.id} to="/keahlian" className={`event ${i === 0 ? 'dark' : ''}`} style={{ textDecoration: 'none' }}>
-              {pick(s.name, lang)}<small>{s.level}%</small>
+              {pick(s.name, lang)}
             </Link>
           ))}
         </div>
@@ -348,7 +329,7 @@ const SummaryCard: React.FC = () => {
         <div className="lane">
           {soft.map((s, i) => (
             <Link key={s.id} to="/keahlian" className={`event ${i === 1 ? 'dark' : ''}`} style={{ textDecoration: 'none' }}>
-              {pick(s.name, lang)}<small>{s.level}%</small>
+              {pick(s.name, lang)}
             </Link>
           ))}
         </div>
@@ -405,6 +386,39 @@ const CertsCard: React.FC = () => {
   );
 };
 
+/* ───────── Slideshow portofolio: pita kartu bergerak otomatis, berhenti saat disentuh kursor ───────── */
+const FolioCard: React.FC = () => {
+  const { items, loading } = usePortfolio();
+  const { t } = useLang();
+  const list = items.slice().sort((a, b) => Number(b.featured) - Number(a.featured) || a.order - b.order).slice(0, 10);
+  // Pita digandakan agar putaran mulus tanpa lompatan
+  const loop = list.length > 1 ? [...list, ...list] : list;
+  return (
+    <div className="card b-folio no-tilt">
+      <div className="card-head">
+        <div><h2 className="h-card">{t('Portofolio', 'Portfolio')}</h2>
+          <div className="xs faint">{list.length ? `${items.length} ${t('proyek', 'projects')}` : t('Kumpulan karya & proyek', 'Selected work & projects')}</div></div>
+        <CardLink to="/portofolio" label={t('Lihat semua', 'See all')} />
+      </div>
+      {loading ? <div className="skeleton" style={{ height: 210 }} />
+        : list.length === 0 ? <div className="empty">{t('Proyek segera ditambahkan.', 'Projects coming soon.')}</div>
+        : (
+          <div className="folio-view">
+            <div className="folio-track" style={{ animationDuration: `${Math.max(20, list.length * 6)}s`, animationName: list.length > 1 ? undefined : 'none' }}>
+              {loop.map((p, i) => (
+                <Link key={`${p.id}-${i}`} to="/portofolio" className="folio-slide" aria-hidden={i >= list.length || undefined} tabIndex={i >= list.length ? -1 : undefined}>
+                  <div className="folio-img">{p.imageUrl ? <img src={cld(p.imageUrl, 480)} alt={i < list.length ? p.title : ''} loading="lazy" decoding="async" /> : <Icon name="grid" />}</div>
+                  <span className="dur-2">{p.title}</span>
+                  <span className="dur-3">{[p.category, p.client, p.year].filter(Boolean).join(' · ')}</span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+    </div>
+  );
+};
+
 const Home: React.FC = () => {
   const { content } = useContent();
   const { lang, t } = useLang();
@@ -415,7 +429,6 @@ const Home: React.FC = () => {
   useEffect(() => { if (idx >= exps.length) setIdx(Math.max(0, exps.length - 1)); }, [exps.length, idx]);
   const next = () => setIdx(i => (exps.length ? (i + 1) % exps.length : 0));
   const prev = () => setIdx(i => (exps.length ? (i - 1 + exps.length) % exps.length : 0));
-  const maxMonths = useMemo(() => Math.max(1, ...exps.map(e => monthsOf(e.start, e.end))), [exps]);
 
   useEffect(() => { document.title = `${content.profile.name} | ${pick(content.profile.title, lang)}`; }, [content.profile, lang]);
 
@@ -427,11 +440,12 @@ const Home: React.FC = () => {
           {/* Mode HP: kartu dimuat bergiliran sesuai urutan ini */}
           <Staged className="b-photo" minHeight={340} eager><PhotoCard /></Staged>
           <Staged className="b-progress" minHeight={300}><ProgressCard exps={exps} idx={idx} onPick={i => { setIdx(i); setPlaying(false); }} /></Staged>
-          <Staged className="b-tracker" minHeight={420}><TrackerCard exp={exps[idx]} idx={idx} count={exps.length} playing={playing} setPlaying={setPlaying} next={next} prev={prev} maxMonths={maxMonths} /></Staged>
+          <Staged className="b-tracker" minHeight={420}><TrackerCard exp={exps[idx]} idx={idx} count={exps.length} playing={playing} setPlaying={setPlaying} next={next} prev={prev} /></Staged>
           <Staged className="b-onboard" minHeight={240}>{content.profile.showAgeCard ? <AgeCard /> : <AchievementsCard />}</Staged>
           <Staged className="b-bio" minHeight={220}><BioCard /></Staged>
           <Staged className="b-summary" minHeight={360}><SummaryCard /></Staged>
           <Staged className="b-certs" minHeight={420}><CertsCard /></Staged>
+          <Staged className="b-folio" minHeight={300}><FolioCard /></Staged>
         </div>
       </div>
 
