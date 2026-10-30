@@ -6,6 +6,7 @@ import { LanguageProvider, useLang } from './contexts/LanguageContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { ContentProvider } from './content/ContentContext';
 import { Navbar, Footer, Floaters } from './components/Layout';
+import { useCursorFx } from './components/ui';
 import Home from './pages/Home';
 import seo from './seo/routes.json';
 
@@ -67,6 +68,7 @@ const NotFound: React.FC = () => {
 const Shell: React.FC = () => {
   const { pathname } = useLocation();
   const isAdmin = pathname.startsWith('/admin');
+  useCursorFx(!isAdmin);
   useEffect(() => { if (!window.location.hash) window.scrollTo(0, 0); setHeadMeta(pathname); }, [pathname]);
   return (
     <>
