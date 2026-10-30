@@ -1,0 +1,697 @@
+{
+ "exp": [
+  {
+   "id": "e1",
+   "position": {
+    "id": "Staff HRD / General Affairs",
+    "en": "Staff HRD / General Affairs"
+   },
+   "company": "UD Duta Pangan",
+   "industry": {
+    "id": "Food Manufacturing & Distribution",
+    "en": "Food Manufacturing & Distribution"
+   },
+   "location": "Sidoarjo, Jawa Timur",
+   "start": "2025-06",
+   "end": "2026-06",
+   "type": "Full-time",
+   "category": "hr",
+   "logoUrl": "https://images.unsplash.com/photo-1786148203853-09d9383c7511?auto=format&fit=crop&w=200&q=80",
+   "tags": [
+    "Payroll & Penggajian",
+    "BPJS & BPJS-Tk",
+    "Perizinan OSS",
+    "Legal & Notaris",
+    "Jobdesk & KPI 6 Divisi",
+    "Pengelolaan Fasilitas & Aset"
+   ],
+   "desc": {
+    "id": "• Memproses payroll bulanan untuk 121 karyawan, meliputi perhitungan gaji, potongan, dan bonus\n• Menghitung dan mengelola iuran BPJS Kesehatan & BPJS Ketenagakerjaan untuk 121 karyawan, memastikan kepatuhan penuh dan penyetoran tepat waktu\n• Mengelola perizinan usaha dan kepatuhan hukum melalui platform OSS pemerintah, termasuk registrasi dan perpanjangan NIB, Akta, SK Kemenkumham, NPWP, dan SIUP untuk entitas CV dan PT\n• Mengoordinasikan proses administrasi internal & eksternal, termasuk dokumentasi notaris dan perpanjangan berkala dokumen legal & pajak perusahaan\n• Menyusun uraian jabatan (jobdesk) dan melakukan evaluasi KPI di 6 divisi (Eksekutif, Finance, Logistik, Warehouse, Marketing, dan HR/General Affairs) untuk menentukan perpanjangan kontrak dan keputusan staffing\n• Mengelola fasilitas perusahaan dan aset operasional, termasuk kendaraan pengiriman (blind van, truk, motor), peralatan kantor & produksi, serta utilitas gedung di berbagai kota",
+    "en": "• Processed monthly payroll for 121 employees, including salary, deductions, and bonus calculations\n• Calculated and administered BPJS Kesehatan and BPJS Ketenagakerjaan contributions for 121 employees, ensuring full compliance and on-time submission\n• Managed business licensing and legal compliance through the government’s OSS platform, including registration and renewal of NIB, business deeds (Akta), SK Kemenkumham, NPWP, and SIUP for CV and PT entities\n• Coordinated internal and external administrative processes, including notary-related documentation and periodic renewal of legal and tax-related company documents\n• Drafted job descriptions and conducted KPI evaluations across 6 divisions (Executive, Finance, Logistics, Warehouse, Marketing, and HR/General Affairs) to determine contract renewals and staffing decisions\n• Managed company facilities and operational assets, including delivery vehicles (blind vans, trucks, motorcycles), office and production equipment, and building utilities across multiple cities"
+   }
+  },
+  {
+   "id": "e2",
+   "position": {
+    "id": "Human Resources Generalist",
+    "en": "Human Resources Generalist"
+   },
+   "company": "UD Duta Pangan",
+   "industry": {
+    "id": "Food Manufacturing",
+    "en": "Food Manufacturing"
+   },
+   "location": "Sidoarjo, Jawa Timur",
+   "start": "2025-06",
+   "end": "2026-06",
+   "type": "Full-time",
+   "category": "hr",
+   "logoUrl": "https://images.unsplash.com/photo-1786148203853-09d9383c7511?auto=format&fit=crop&w=200&q=80",
+   "tags": [
+    "BPJS",
+    "Analisa Beban Kerja"
+   ],
+   "desc": {
+    "id": "• Mengelola administrasi BPJS Kesehatan & BPJS Ketenagakerjaan karyawan\n• Melakukan analisa beban kerja untuk dasar penyusunan kebutuhan tenaga kerja",
+    "en": "• Managed employee BPJS Kesehatan & BPJS Ketenagakerjaan administration\n• Conducted workload analysis as the basis for manpower planning"
+   }
+  },
+  {
+   "id": "e3",
+   "position": {
+    "id": "IT Support Specialist",
+    "en": "IT Support Specialist"
+   },
+   "company": "UD Duta Pangan",
+   "industry": {
+    "id": "Food Manufacturing & Distribution",
+    "en": "Food Manufacturing & Distribution"
+   },
+   "location": "Sidoarjo, Jawa Timur",
+   "start": "2025-01",
+   "end": "2025-06",
+   "type": "Full-time",
+   "category": "it",
+   "logoUrl": "https://images.unsplash.com/photo-1786148203853-09d9383c7511?auto=format&fit=crop&w=200&q=80",
+   "tags": [
+    "Technical Support",
+    "Preventive Maintenance",
+    "Mikrotik & Wireshark",
+    "ERP/SaaS Self-Developed"
+   ],
+   "desc": {
+    "id": "• Menjaga 90% uptime perangkat di 30 komputer & perangkat kantor melalui preventive maintenance rutin\n• Menangani 1-3 tiket support harian, menyelesaikan isu minor dalam 30 menit dan isu major (termasuk pengadaan part) dalam 1-2 jam\n• Mengurangi insiden IT berulang sebesar 50% dan menghilangkan ketergantungan pada teknisi eksternal dengan membangun fungsi IT support internal\n• Mengimplementasikan Class Based Queuing (CBQ) menggunakan Mikrotik & Winbox untuk mengalokasikan bandwidth khusus divisi prioritas sekaligus membatasi akses jaringan umum, dipantau via Wireshark pada sistem berbasis Linux\n• Merancang dan mengimplementasikan sistem ERP/SaaS berbasis web real-time untuk menggantikan pelaporan Excel manual offline, memangkas waktu pelaporan dari 4 jam menjadi kurang dari 1 jam dan menghilangkan keterlambatan pelaporan antar-divisi",
+    "en": "• Maintained 90% device uptime across 30 computer and office devices through regular preventive maintenance\n• Handled 1-3 support tickets daily, resolving minor issues within 30 minutes and major issues (including part procurement) within 1-2 hours\n• Reduced recurring IT incidents by 50% and eliminated dependency on external technicians by establishing an in-house IT support function\n• Implemented Class Based Queuing (CBQ) using Mikrotik and Winbox to allocate exclusive bandwidth for priority divisions while limiting general network access, monitored via Wireshark on a Linux-based system\n• Designed and implemented a real-time, web-based ERP/SaaS system to replace manual, paper-based, offline Excel reporting, reducing report turnaround time from 4 hours to under 1 hour and eliminating inter-division reporting delays"
+   }
+  },
+  {
+   "id": "e4",
+   "position": {
+    "id": "Warehouse & Production Administrative Staff",
+    "en": "Warehouse & Production Administrative Staff"
+   },
+   "company": "UD Duta Pangan",
+   "industry": {
+    "id": "Food Manufacturing & Distribution",
+    "en": "Food Manufacturing & Distribution"
+   },
+   "location": "Sidoarjo, Jawa Timur",
+   "start": "2024-06",
+   "end": "2024-12",
+   "type": "Contract",
+   "category": "ops",
+   "logoUrl": "https://images.unsplash.com/photo-1786148203853-09d9383c7511?auto=format&fit=crop&w=200&q=80",
+   "tags": [
+    "FIFO/FEFO",
+    "Stock Opname",
+    "5S",
+    "Vendor Coordination"
+   ],
+   "desc": {
+    "id": "• Mengelola administrasi produksi harian untuk 25 SKU, melacak ±100kg penggunaan bahan baku berbasis tepung per SKU\n• Menerapkan metode inventory FIFO/FEFO untuk meminimalkan pemborosan bahan baku dan menjaga kesegaran produk\n• Menjaga safety stock buffer untuk bahan baku mudah rusak guna mencegah stockout dan meminimalkan risiko kerusakan\n• Menetapkan level stok min-max serta batch/lot tracking untuk mencegah stockout, mengurangi overstock, dan menjaga traceability\n• Mengatur layout gudang dengan sistem put-away & picking serta prinsip 5S untuk penyimpanan & pengambilan yang efisien\n• Berkoordinasi dengan vendor & supplier terkait jadwal pengiriman bahan baku demi kelancaran produksi\n• Memantau inventori bahan baku & produk di 200+ SKU, menjaga akurasi stok 85% melalui stock opname rutin\n• Melakukan closing bulanan untuk merekonsiliasi data inventori, produksi, dan distribusi di akhir bulan",
+    "en": "• Managed daily production administration for 25 SKUs, tracking approximately 100kg of flour-based raw material usage per SKU\n• Applied FIFO / FEFO inventory methods to minimize raw material waste and ensure product freshness\n• Maintained safety stock buffers for perishable raw materials to prevent stockouts and minimize spoilage risk\n• Set min-max stock levels and batch/lot tracking to prevent stockouts, reduce overstock, and maintain traceability\n• Organized warehouse layout using put-away and picking systems and 5S principles for efficient storage and retrieval\n• Coordinated with vendors and suppliers on raw material delivery schedules to ensure production continuity\n• Monitored raw material and product inventory across 200+ SKUs, maintaining 85% stock accuracy through regular stock opname\n• Performed monthly closing to reconcile inventory, production, and distribution records at month-end"
+   }
+  },
+  {
+   "id": "e5",
+   "position": {
+    "id": "Sales Marketing Positions",
+    "en": "Sales Marketing Positions"
+   },
+   "company": "UD Duta Pangan",
+   "industry": {
+    "id": "Food Manufacturing",
+    "en": "Food Manufacturing"
+   },
+   "location": "Sidoarjo, Jawa Timur",
+   "start": "2024-01",
+   "end": "2024-07",
+   "type": "Contract",
+   "category": "ops",
+   "logoUrl": "https://images.unsplash.com/photo-1786148203853-09d9383c7511?auto=format&fit=crop&w=200&q=80",
+   "tags": [
+    "Marketing",
+    "Sales Operations"
+   ],
+   "desc": {
+    "id": "• Sales Lapangan\n• Menjual Produk Premix Tepung Bakso",
+    "en": "• Field sales\n• Sold Premix Meatball Flour products"
+   }
+  },
+  {
+   "id": "e6",
+   "position": {
+    "id": "Driver Bike",
+    "en": "Driver Bike"
+   },
+   "company": "Grab",
+   "industry": {
+    "id": "Transportasi & Logistik Online",
+    "en": "Ride-Hailing & On-Demand Logistics"
+   },
+   "location": "Jakarta, Indonesia",
+   "start": "2022-02",
+   "end": "2025-12",
+   "type": "Part-time",
+   "category": "other",
+   "logoUrl": "",
+   "tags": [],
+   "desc": {
+    "id": "• Mengantar penumpang dengan aman dan tepat waktu\n• Mengantar pesanan makanan (GrabFood)\n• Mengantar paket/barang (GrabExpress)\n• Melayani titip belanja (GrabMart)\n• Menjaga rating dan kepuasan pelanggan\n• Mematuhi standar keselamatan berkendara",
+    "en": "• Delivered passengers safely and on time\n• Delivered food orders (GrabFood)\n• Delivered packages/goods (GrabExpress)\n• Handled shopping requests (GrabMart)\n• Maintained customer rating and satisfaction\n• Complied with driving safety standards"
+   }
+  },
+  {
+   "id": "e7",
+   "position": {
+    "id": "Crew",
+    "en": "Crew"
+   },
+   "company": "PT. Richeese Kuliner Indonesia",
+   "industry": {
+    "id": "Makanan & Minuman",
+    "en": "Food & Beverage"
+   },
+   "location": "Indonesia",
+   "start": "2023-10",
+   "end": "2024-01",
+   "type": "Contract",
+   "category": "other",
+   "logoUrl": "",
+   "tags": [
+    "Cooking",
+    "Platting"
+   ],
+   "desc": {
+    "id": "• Memasak ayam goreng crispy sesuai SOP dan standar resep\n• Meracik sauce/saus sesuai standar rasa perusahaan\n• Melakukan food preparation harian (marinasi, potong, susun stok)\n• Menjaga kualitas dan kebersihan bahan baku (food safety)\n• Merekap inventory harian (stok masuk, terpakai, sisa stok)\n• Melaporkan kebutuhan restock ke supervisor/leader shift\n• Berkoordinasi dengan tim dapur dan kasir untuk kelancaran operasional\n• Menjaga kecepatan penyajian sesuai target service time",
+    "en": "• Cooked crispy fried chicken per SOP and recipe standards\n• Prepared sauces to the company’s taste standards\n• Performed daily food preparation (marinating, cutting, stock arrangement)\n• Maintained raw-material quality and cleanliness (food safety)\n• Recorded daily inventory (stock in, used, remaining)\n• Reported restock needs to the supervisor/shift leader\n• Coordinated with the kitchen and cashier team for smooth operations\n• Maintained serving speed to meet service-time targets"
+   }
+  },
+  {
+   "id": "e8",
+   "position": {
+    "id": "Kitchen Staff",
+    "en": "Kitchen Staff"
+   },
+   "company": "Mikane Gepuktular",
+   "industry": {
+    "id": "Kuliner",
+    "en": "Culinary"
+   },
+   "location": "Malang, Jawa Timur",
+   "start": "2023-01",
+   "end": "2023-11",
+   "type": "Part-time",
+   "category": "other",
+   "logoUrl": "",
+   "tags": [],
+   "desc": {
+    "id": "• Sebagai Juru Masak Dan Persiapan Bahan Mentah",
+    "en": "• Cook and raw-material preparation"
+   }
+  },
+  {
+   "id": "e9",
+   "position": {
+    "id": "Crew",
+    "en": "Crew"
+   },
+   "company": "Mie Gacoan",
+   "industry": {
+    "id": "Makanan & Minuman",
+    "en": "Food & Beverage"
+   },
+   "location": "Indonesia",
+   "start": "2022-10",
+   "end": "2022-12",
+   "type": "Contract",
+   "category": "other",
+   "logoUrl": "",
+   "tags": [
+    "Hospitality Industry",
+    "Food and Beverage Operations"
+   ],
+   "desc": {
+    "id": "• Hospitality Customer",
+    "en": "• Hospitality customer service"
+   }
+  },
+  {
+   "id": "e10",
+   "position": {
+    "id": "Welding Operator",
+    "en": "Welding Operator"
+   },
+   "company": "Lancar Jaya Kota Malang",
+   "industry": {
+    "id": "Bengkel Las & Konstruksi",
+    "en": "Welding & Construction"
+   },
+   "location": "Kota Malang, Jawa Timur",
+   "start": "2018-08",
+   "end": "2021-01",
+   "type": "Freelance",
+   "category": "other",
+   "logoUrl": "",
+   "tags": [
+    "Welding",
+    "Project Planning"
+   ],
+   "desc": {
+    "id": "• Operator welder pembuatan pagar, tralis, kanopi, rolling door, dll hingga finishing serta pemasangan di lapangan",
+    "en": "• Welding operator producing fences, railings, canopies, rolling doors, etc. through finishing and on-site installation"
+   }
+  },
+  {
+   "id": "e11",
+   "position": {
+    "id": "Human Resources Assistant",
+    "en": "Human Resources Assistant"
+   },
+   "company": "Dinas Sosial PPPA Kab Nganjuk",
+   "industry": {
+    "id": "Instansi Pemerintah",
+    "en": "Government Agency"
+   },
+   "location": "Nganjuk, Jawa Timur",
+   "start": "2017-05",
+   "end": "2018-06",
+   "type": "Full-time",
+   "category": "hr",
+   "logoUrl": "",
+   "tags": [
+    "Sumber Daya Manusia (SDM)",
+    "Project Management"
+   ],
+   "desc": {
+    "id": "• Staff SDM bertugas dalam menyiapkan materi untuk anggota Forum Perlindungan Anak Nganjuk untuk mewujudkan nganjuk kabupaten layak anak",
+    "en": "• HR staff preparing materials for the Nganjuk Child Protection Forum to support a child-friendly Nganjuk regency"
+   }
+  },
+  {
+   "id": "e12",
+   "position": {
+    "id": "Human Resources Assistant",
+    "en": "Human Resources Assistant"
+   },
+   "company": "Dinas Kesehatan Nganjuk",
+   "industry": {
+    "id": "Instansi Pemerintah",
+    "en": "Government Agency"
+   },
+   "location": "Nganjuk, Jawa Timur",
+   "start": "2016-03",
+   "end": "2017-05",
+   "type": "Full-time",
+   "category": "hr",
+   "logoUrl": "",
+   "tags": [
+    "Sumber Daya Manusia (SDM)",
+    "Project Management"
+   ],
+   "desc": {
+    "id": "• Sebagai staff yang menangani perencanaan kegiatan dan agenda program kerja dalam mensosialisasikan kesehatan remaja di kabupaten nganjuk",
+    "en": "• Staff handling planning of activities and program agendas for youth-health outreach in Nganjuk regency"
+   }
+  }
+ ],
+ "skills": [
+  {
+   "id": "s1",
+   "name": {
+    "id": "Administrasi Payroll",
+    "en": "Payroll Administration"
+   },
+   "category": "hard",
+   "level": 92,
+   "desc": {
+    "id": "Menghitung gaji, potongan, bonus, dan komponen penggajian karyawan secara akurat dan tepat waktu.",
+    "en": "Accurately and punctually calculating salary, deductions, bonuses, and payroll components."
+   }
+  },
+  {
+   "id": "s2",
+   "name": {
+    "id": "Administrasi BPJS",
+    "en": "BPJS Administration"
+   },
+   "category": "hard",
+   "level": 88,
+   "desc": {
+    "id": "Mengelola pendaftaran dan iuran BPJS Kesehatan & BPJS Ketenagakerjaan karyawan.",
+    "en": "Managing employee BPJS Kesehatan & BPJS Ketenagakerjaan registration and contributions."
+   }
+  },
+  {
+   "id": "s3",
+   "name": {
+    "id": "Legal & Perizinan (OSS)",
+    "en": "Legal & Licensing (OSS)"
+   },
+   "category": "hard",
+   "level": 84,
+   "desc": {
+    "id": "Mengurus perizinan usaha dan kepatuhan hukum lewat platform OSS (NIB, Akta, NPWP, SIUP).",
+    "en": "Handling business licensing and legal compliance through the OSS platform (NIB, Akta, NPWP, SIUP)."
+   }
+  },
+  {
+   "id": "s4",
+   "name": {
+    "id": "Analisa Aset",
+    "en": "Asset Analyst"
+   },
+   "category": "hard",
+   "level": 80,
+   "desc": {
+    "id": "Menganalisa dan mengelola aset operasional serta fasilitas perusahaan.",
+    "en": "Analyzing and managing company operational assets and facilities."
+   }
+  },
+  {
+   "id": "s5",
+   "name": {
+    "id": "IT Troubleshooting",
+    "en": "IT Troubleshooting"
+   },
+   "category": "hard",
+   "level": 86,
+   "desc": {
+    "id": "Menangani troubleshooting hardware & software untuk operasional kantor sehari-hari.",
+    "en": "Handling hardware & software troubleshooting for daily office operations."
+   }
+  },
+  {
+   "id": "s6",
+   "name": {
+    "id": "Dukungan Jaringan",
+    "en": "Network Support"
+   },
+   "category": "hard",
+   "level": 82,
+   "desc": {
+    "id": "Konfigurasi dan monitoring jaringan (Mikrotik, Wireshark) untuk kelancaran operasional IT.",
+    "en": "Configuring and monitoring networks (Mikrotik, Wireshark) for smooth IT operations."
+   }
+  },
+  {
+   "id": "s7",
+   "name": {
+    "id": "Pengembangan ERP/SaaS",
+    "en": "ERP / SaaS Development"
+   },
+   "category": "hard",
+   "level": 78,
+   "desc": {
+    "id": "Merancang dan membangun sistem ERP/SaaS internal untuk efisiensi pelaporan.",
+    "en": "Designing and building internal ERP/SaaS systems for reporting efficiency."
+   }
+  },
+  {
+   "id": "s8",
+   "name": {
+    "id": "Manajemen Inventori",
+    "en": "Inventory Management"
+   },
+   "category": "hard",
+   "level": 80,
+   "desc": {
+    "id": "Mengelola inventori bahan baku dan produk lintas ratusan SKU.",
+    "en": "Managing raw material and product inventory across hundreds of SKUs."
+   }
+  },
+  {
+   "id": "s9",
+   "name": {
+    "id": "Operasional Gudang",
+    "en": "Warehouse Operational"
+   },
+   "category": "hard",
+   "level": 78,
+   "desc": {
+    "id": "Mengatur alur kerja gudang: put-away, picking, dan prinsip 5S.",
+    "en": "Organizing warehouse workflow: put-away, picking, and 5S principles."
+   }
+  },
+  {
+   "id": "s10",
+   "name": {
+    "id": "Excel & Pelaporan Workspace",
+    "en": "Excel & Workspace Reporting"
+   },
+   "category": "hard",
+   "level": 90,
+   "desc": {
+    "id": "Menyusun laporan kerja menggunakan Excel dan Google Workspace secara rapi dan efisien.",
+    "en": "Producing clean, efficient work reports using Excel and Google Workspace."
+   }
+  },
+  {
+   "id": "s11",
+   "name": {
+    "id": "Koordinasi Lintas Divisi",
+    "en": "Cross-Dept Coordination"
+   },
+   "category": "soft",
+   "level": 88,
+   "desc": {
+    "id": "Menjembatani komunikasi dan kerja sama antar divisi untuk kelancaran operasional.",
+    "en": "Bridging communication and collaboration between divisions for smooth operations."
+   }
+  },
+  {
+   "id": "s12",
+   "name": {
+    "id": "Relasi Vendor",
+    "en": "Vendor Relation"
+   },
+   "category": "soft",
+   "level": 84,
+   "desc": {
+    "id": "Membina hubungan kerja yang baik dengan vendor dan supplier.",
+    "en": "Maintaining good working relationships with vendors and suppliers."
+   }
+  },
+  {
+   "id": "s13",
+   "name": {
+    "id": "Kepemimpinan",
+    "en": "Leadership"
+   },
+   "category": "soft",
+   "level": 82,
+   "desc": {
+    "id": "Memimpin dan mengarahkan tim untuk mencapai target kerja.",
+    "en": "Leading and directing teams to meet work targets."
+   }
+  },
+  {
+   "id": "s14",
+   "name": {
+    "id": "Resolusi Konflik",
+    "en": "Conflict Resolution"
+   },
+   "category": "soft",
+   "level": 80,
+   "desc": {
+    "id": "Menengahi dan menyelesaikan konflik internal secara profesional.",
+    "en": "Mediating and resolving internal conflicts professionally."
+   }
+  },
+  {
+   "id": "s15",
+   "name": {
+    "id": "Manajemen Waktu",
+    "en": "Time Management"
+   },
+   "category": "soft",
+   "level": 86,
+   "desc": {
+    "id": "Mengatur prioritas kerja agar tenggat waktu selalu terpenuhi.",
+    "en": "Managing work priorities so deadlines are consistently met."
+   }
+  },
+  {
+   "id": "s16",
+   "name": {
+    "id": "Pemecahan Masalah",
+    "en": "Problem Solving"
+   },
+   "category": "soft",
+   "level": 84,
+   "desc": {
+    "id": "Menganalisa masalah dan mengambil solusi yang tepat secara cepat.",
+    "en": "Analyzing problems and quickly reaching the right solution."
+   }
+  },
+  {
+   "id": "s17",
+   "name": {
+    "id": "Adaptabilitas Lintas Budaya",
+    "en": "Adaptability (Any Culture)"
+   },
+   "category": "soft",
+   "level": 80,
+   "desc": {
+    "id": "Cepat beradaptasi dengan lingkungan kerja dan budaya yang berbeda-beda.",
+    "en": "Adapting quickly to different work environments and cultures."
+   }
+  },
+  {
+   "id": "s18",
+   "name": {
+    "id": "Ketelitian & Fokus",
+    "en": "Attention to Detail & Focus"
+   },
+   "category": "soft",
+   "level": 88,
+   "desc": {
+    "id": "Teliti dan fokus dalam menangani detail pekerjaan administratif.",
+    "en": "Thorough and focused when handling administrative details."
+   }
+  },
+  {
+   "id": "s19",
+   "name": {
+    "id": "Hubungan Masyarakat",
+    "en": "Public Relation"
+   },
+   "category": "soft",
+   "level": 78,
+   "desc": {
+    "id": "Menjaga komunikasi dan citra baik dengan pihak eksternal.",
+    "en": "Maintaining communication and a positive image with external parties."
+   }
+  },
+  {
+   "id": "s20",
+   "name": {
+    "id": "Inisiatif",
+    "en": "Initiative"
+   },
+   "category": "soft",
+   "level": 84,
+   "desc": {
+    "id": "Proaktif mengambil langkah tanpa harus selalu diarahkan.",
+    "en": "Proactively taking action without always needing direction."
+   }
+  },
+  {
+   "id": "s21",
+   "name": {
+    "id": "Membangun Tim",
+    "en": "Team Building"
+   },
+   "category": "soft",
+   "level": 82,
+   "desc": {
+    "id": "Membina soliditas dan semangat kerja sama dalam tim.",
+    "en": "Fostering solidarity and teamwork spirit within the team."
+   }
+  }
+ ],
+ "certs": [
+  {
+   "id": "c1",
+   "name": {
+    "id": "Certified Human Resources Generalist (CHRG)",
+    "en": "Certified Human Resources Generalist (CHRG)"
+   },
+   "issuer": "Badan Nasional Sertifikasi Profesi (BNSP)",
+   "code": "",
+   "category": "license",
+   "year": "2026 – 2029",
+   "imageUrl": "",
+   "credentialUrl": "",
+   "desc": {
+    "id": "Sertifikasi Kompetensi SDM",
+    "en": "HR Competency Certification"
+   }
+  },
+  {
+   "id": "c2",
+   "name": {
+    "id": "Menyusun Uraian Jabatan",
+    "en": "Preparing Job Descriptions"
+   },
+   "issuer": "Training MSDM — Cipta Innovasi Unggul",
+   "code": "M.70SDM01.010.2",
+   "category": "training",
+   "year": "2025",
+   "imageUrl": "",
+   "credentialUrl": "",
+   "desc": {
+    "id": "Unit kompetensi M.70SDM01.010.2",
+    "en": "Competency unit M.70SDM01.010.2"
+   }
+  },
+  {
+   "id": "c3",
+   "name": {
+    "id": "Melakukan Administrasi Jaminan Sosial",
+    "en": "Administering Social Security (BPJS)"
+   },
+   "issuer": "Training MSDM — Cipta Innovasi Unggul",
+   "code": "M.70SDM01.058.2",
+   "category": "training",
+   "year": "2025",
+   "imageUrl": "",
+   "credentialUrl": "",
+   "desc": {
+    "id": "Unit kompetensi M.70SDM01.058.2",
+    "en": "Competency unit M.70SDM01.058.2"
+   }
+  },
+  {
+   "id": "c4",
+   "name": {
+    "id": "Melakukan Analisis Beban Kerja",
+    "en": "Conducting Workload Analysis"
+   },
+   "issuer": "Training MSDM — Cipta Innovasi Unggul",
+   "code": "M.70SDM01.011.2",
+   "category": "training",
+   "year": "2025",
+   "imageUrl": "",
+   "credentialUrl": "",
+   "desc": {
+    "id": "Unit kompetensi M.70SDM01.011.2",
+    "en": "Competency unit M.70SDM01.011.2"
+   }
+  },
+  {
+   "id": "c5",
+   "name": {
+    "id": "Administrasi Penerapan Kebijakan MSDM",
+    "en": "HR Policy Implementation Administration"
+   },
+   "issuer": "Training MSDM — Cipta Innovasi Unggul",
+   "code": "M.70SDM01.059.2",
+   "category": "training",
+   "year": "2025",
+   "imageUrl": "",
+   "credentialUrl": "",
+   "desc": {
+    "id": "Unit kompetensi M.70SDM01.059.2",
+    "en": "Competency unit M.70SDM01.059.2"
+   }
+  },
+  {
+   "id": "c6",
+   "name": {
+    "id": "Certified Excel for Administration",
+    "en": "Certified Excel for Administration"
+   },
+   "issuer": "Jobstreet",
+   "code": "",
+   "category": "training",
+   "year": "2024",
+   "imageUrl": "",
+   "credentialUrl": "",
+   "desc": {
+    "id": "Excel for Administration",
+    "en": "Excel for Administration"
+   }
+  }
+ ]
+}

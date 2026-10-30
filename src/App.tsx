@@ -1,247 +1,113 @@
-// src/App.tsx
-import React from 'react';
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
-import { AnimatePresence } from 'framer-motion';
-import { Toaster } from 'react-hot-toast';
-
-import { AuthProvider } from './contexts/AuthContext';
-import { LanguageProvider } from './contexts/LanguageContext';
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
-import CursorGlow from './components/CursorGlow';
-import ScrollProgressBar from './components/ScrollProgressBar';
-import GlobalScrollBackground from './components/GlobalScrollBackground';
-import ProtectedRoute from './components/ProtectedRoute';
-import PageTransition from './components/PageTransition';
-import LanguageToggle from './components/LanguageToggle';
-import ThemeToggle from './components/ThemeToggle';
-import AuroraBackground from './components/AuroraBackground';
-import MagneticButton from './components/MagneticButton';
-import { useLang } from './contexts/LanguageContext';
+// src/App.tsx — routing. Home di bundle utama; semua halaman lain & CMS di-lazy-load.
+import React, { Suspense, lazy, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate, useLocation, Link } from 'react-router-dom';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { LanguageProvider, useLang } from './contexts/LanguageContext';
 import { ThemeProvider } from './contexts/ThemeContext';
-
+import { ContentProvider } from './content/ContentContext';
+import { Navbar, Footer, Floaters } from './components/Layout';
 import Home from './pages/Home';
-// Halaman selain Home di-lazy-load juga: pengunjung yang cuma buka landing
-// page tidak perlu download kode About/Services/Portofolio sama sekali.
-const About      = React.lazy(() => import('./pages/About'));
-const Services   = React.lazy(() => import('./pages/Services'));
-const Portofolio = React.lazy(() => import('./pages/Portofolio'));
-// Admin hanya dipakai pemilik situs — di-lazy-load supaya tidak membengkakkan
-// bundle JS utama yang didownload oleh setiap pengunjung publik.
-const AdminLogin = React.lazy(() => import('./pages/AdminLogin'));
-const AdminPanel = React.lazy(() => import('./pages/AdminPanel'));
+import seo from './seo/routes.json';
 
-const AdminFallback: React.FC = () => (
-  <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--black)', color: 'var(--amber)', fontFamily: 'var(--font-body)' }}>
-    Loading…
-  </div>
+/** Meta description / canonical / Open Graph per halaman (sumber sama dengan scripts/prerender-meta.js). */
+const setHeadMeta = (pathname: string) => {
+  const meta = (seo.routes as Record<string, { title: string; description: string }>)[pathname];
+  if (!meta) return;
+  const url = seo.site + (pathname === '/' ? '' : pathname);
+  const upsert = (sel: string, make: () => HTMLElement, attr: string, value: string) => {
+    let el = document.head.querySelector(sel) as HTMLElement | null;
+    if (!el) { el = make(); document.head.appendChild(el); }
+    el.setAttribute(attr, value);
+  };
+  const meta_ = (key: string, attr = 'name') => () => { const m = document.createElement('meta'); m.setAttribute(attr, key); return m; };
+  upsert('meta[name="description"]', meta_('description'), 'content', meta.description);
+  upsert('meta[property="og:title"]', meta_('og:title', 'property'), 'content', meta.title);
+  upsert('meta[property="og:description"]', meta_('og:description', 'property'), 'content', meta.description);
+  upsert('meta[property="og:url"]', meta_('og:url', 'property'), 'content', url);
+  upsert('link[rel="canonical"]', () => { const l = document.createElement('link'); l.rel = 'canonical'; return l; }, 'href', url);
+};
+
+const Profile = lazy(() => import('./pages/Profile'));
+const ExperiencePage = lazy(() => import('./pages/ExperiencePage'));
+const EducationPage = lazy(() => import('./pages/EducationPage'));
+const CertificatesPage = lazy(() => import('./pages/CertificatesPage'));
+const SkillsPage = lazy(() => import('./pages/SkillsPage'));
+const ServicesPage = lazy(() => import('./pages/ServicesPage'));
+const PortfolioPage = lazy(() => import('./pages/PortfolioPage'));
+const ContactPage = lazy(() => import('./pages/ContactPage'));
+const AdminLogin = lazy(() => import('./admin/AdminLogin'));
+const AdminPanel = lazy(() => import('./admin/AdminPanel'));
+
+const Loading: React.FC = () => (
+  <div style={{ minHeight: '60vh', display: 'grid', placeItems: 'center' }}><div className="spinner" aria-label="Loading" /></div>
 );
 
-/* ─── Floating Gear Button ─── */
-const FloatingGear: React.FC = () => {
-  // Read admin state from localStorage directly — avoids coupling to AuthContext
-  const [isAdmin, setIsAdmin] = React.useState(
-    () => localStorage.getItem('hk_admin_session') === 'true'
-  );
-  const location = useLocation();
-  const [hovered, setHovered] = React.useState(false);
-  const [spinning, setSpinning] = React.useState(false);
+const Protected: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { isAdmin, loading } = useAuth();
+  if (loading) return <Loading />;
+  return isAdmin ? <>{children}</> : <Navigate to="/admin/login" replace />;
+};
+
+const NotFound: React.FC = () => {
   const { t } = useLang();
-
-  // Sync with storage changes (login/logout in other tab)
-  React.useEffect(() => {
-    const sync = () =>
-      setIsAdmin(localStorage.getItem('hk_admin_session') === 'true');
-    window.addEventListener('storage', sync);
-    return () => window.removeEventListener('storage', sync);
-  }, []);
-
-  if (location.pathname.startsWith('/admin')) return null;
-
-  const handleClick = () => {
-    setSpinning(true);
-    setTimeout(() => setSpinning(false), 600);
-    window.location.href = isAdmin ? '/admin' : '/admin/login';
-  };
-
-  const btnStyle: React.CSSProperties = {
-    position: 'fixed',
-    bottom: '1.5rem',
-    right: '1.5rem',
-    zIndex: 9999,
-    width: 52,
-    height: 52,
-    borderRadius: '50%',
-    border: 'none',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    background: hovered
-      ? 'linear-gradient(135deg, #F5A623, #D4891F)'
-      : 'linear-gradient(135deg, rgba(245,166,35,0.85), rgba(212,137,31,0.85))',
-    boxShadow: hovered
-      ? '0 8px 32px rgba(245,166,35,0.6), 0 0 0 3px rgba(245,166,35,0.2)'
-      : '0 4px 20px rgba(245,166,35,0.4), 0 0 0 1px rgba(245,166,35,0.15)',
-    backdropFilter: 'blur(8px)',
-    WebkitBackdropFilter: 'blur(8px)',
-    transition: 'all 0.25s ease',
-    transform: hovered ? 'scale(1.1)' : 'scale(1)',
-    overflow: 'hidden',
-  };
-
-  const ringStyle: React.CSSProperties = {
-    position: 'absolute',
-    inset: -4,
-    borderRadius: '50%',
-    border: '2px solid rgba(245,166,35,0.4)',
-    animation: 'gear-pulse 2s ease-in-out infinite',
-    pointerEvents: 'none',
-  };
-
-  const svgStyle: React.CSSProperties = {
-    transition: 'transform 0.6s ease',
-    transform: spinning ? 'rotate(180deg)' : hovered ? 'rotate(60deg)' : 'rotate(0deg)',
-    flexShrink: 0,
-  };
-
   return (
-    <button
-      onClick={handleClick}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      title={isAdmin ? t('Buka Admin Panel', 'Open Admin Panel') : t('Login Admin', 'Admin Login')}
-      style={btnStyle}
-      aria-label="Admin Panel"
-    >
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" style={svgStyle}>
-        <path
-          d="M12 15.5A3.5 3.5 0 0 1 8.5 12 3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5m7.43-2.92c.04-.3.07-.62.07-.92s-.03-.63-.07-.93l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.3-.07.63-.07.94s.03.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58z"
-          fill="#0a0a0a"
-        />
-      </svg>
-      <span style={ringStyle} />
-      <style>{`
-        @keyframes gear-pulse {
-          0%, 100% { transform: scale(1); opacity: 0.6; }
-          50%       { transform: scale(1.18); opacity: 0; }
-        }
-      `}</style>
-    </button>
+    <main className="shell page-in">
+      <div className="frame center" style={{ padding: '80px 20px' }}>
+        <div className="num-xl" style={{ fontSize: 'clamp(5rem,16vw,9rem)' }}>404</div>
+        <p className="muted mt-16">{t('Halaman yang kamu cari tidak ditemukan.', "The page you're looking for doesn't exist.")}</p>
+        <div className="row gap-8 mt-24" style={{ justifyContent: 'center' }}>
+          <Link to="/" className="pill dark lg">{t('Ke Dashboard', 'To Dashboard')}</Link>
+          <Link to="/kontak" className="pill lg">{t('Kontak', 'Contact')}</Link>
+        </div>
+      </div>
+    </main>
   );
 };
 
-/* ─── Animated Routes ─── */
-const AnimatedRoutes: React.FC = () => {
-  const location = useLocation();
-  const isAdmin = location.pathname.startsWith('/admin');
-  const isHome  = location.pathname === '/';
-  const { t } = useLang();
-
+const Shell: React.FC = () => {
+  const { pathname } = useLocation();
+  const isAdmin = pathname.startsWith('/admin');
+  useEffect(() => { if (!window.location.hash) window.scrollTo(0, 0); setHeadMeta(pathname); }, [pathname]);
   return (
     <>
       {!isAdmin && <Navbar />}
-
-      <AnimatePresence mode="wait">
-        <Routes location={location} key={location.pathname}>
-          <Route path="/"            element={<PageTransition><Home /></PageTransition>} />
-          <Route path="/about"       element={
-            <React.Suspense fallback={<AdminFallback />}>
-              <PageTransition><About /></PageTransition>
-            </React.Suspense>
-          } />
-          <Route path="/services"    element={
-            <React.Suspense fallback={<AdminFallback />}>
-              <PageTransition><Services /></PageTransition>
-            </React.Suspense>
-          } />
-          <Route path="/portofolio"  element={
-            <React.Suspense fallback={<AdminFallback />}>
-              <PageTransition><Portofolio /></PageTransition>
-            </React.Suspense>
-          } />
-          <Route path="/admin/login" element={
-            <React.Suspense fallback={<AdminFallback />}>
-              <PageTransition><AdminLogin /></PageTransition>
-            </React.Suspense>
-          } />
-          <Route path="/admin" element={
-            <React.Suspense fallback={<AdminFallback />}>
-              <ProtectedRoute>
-                <AdminPanel />
-              </ProtectedRoute>
-            </React.Suspense>
-          } />
-          <Route path="*" element={
-            <PageTransition>
-              <div style={{ minHeight: '100vh', position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'var(--black)', gap: '1rem', padding: '2rem', textAlign: 'center' }}>
-                <AuroraBackground variant="full" />
-                {/* ensō — lingkaran tinta tipis, sentuhan Jepang minimal, senada sama hero Home */}
-                <svg viewBox="0 0 400 400" aria-hidden="true" style={{ position: 'absolute', top: '50%', left: '50%', width: 'min(70vw,480px)', height: 'min(70vw,480px)', transform: 'translate(-50%,-50%)', opacity: 0.08, zIndex: 0 }}>
-                  <circle cx="200" cy="200" r="160" fill="none" stroke="var(--amber)" strokeWidth="2.5" strokeLinecap="round" strokeDasharray="880" strokeDashoffset="70" />
-                </svg>
-                <div style={{ position: 'relative', zIndex: 1 }}>
-                  <div style={{
-                    fontFamily: 'var(--font-display)', fontSize: 'clamp(5rem,18vw,9rem)', lineHeight: 1,
-                    background: 'linear-gradient(90deg, var(--amber), var(--accent2))',
-                    WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent',
-                  }}>404</div>
-                  <p style={{ color: 'var(--white-dim)', fontSize: '1.1rem', marginTop: '0.5rem' }}>
-                    {t('Halaman yang kamu cari tidak ditemukan.', "The page you're looking for doesn't exist.")}
-                  </p>
-                  <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap', marginTop: '2rem' }}>
-                    <MagneticButton strength={0.35}>
-                      <a href="/" className="text-shadow-onlight" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'var(--amber)', color: 'var(--black)', padding: '12px 28px', borderRadius: '999px', textDecoration: 'none', fontWeight: 700, minHeight: 44 }}>
-                        {t('Kembali ke Beranda', 'Back to Home')}
-                      </a>
-                    </MagneticButton>
-                    <MagneticButton strength={0.35}>
-                      <a href="/portofolio" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'transparent', color: 'var(--amber)', padding: '12px 28px', borderRadius: '999px', textDecoration: 'none', fontWeight: 700, border: '1.5px solid var(--amber)', minHeight: 44 }}>
-                        {t('Lihat Portofolio', 'View Portfolio')}
-                      </a>
-                    </MagneticButton>
-                  </div>
-                </div>
-              </div>
-            </PageTransition>
-          } />
+      <Suspense fallback={<Loading />}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/profil" element={<Profile />} />
+          <Route path="/pengalaman" element={<ExperiencePage />} />
+          <Route path="/pendidikan" element={<EducationPage />} />
+          <Route path="/sertifikat" element={<CertificatesPage />} />
+          <Route path="/keahlian" element={<SkillsPage />} />
+          <Route path="/layanan" element={<ServicesPage />} />
+          <Route path="/portofolio" element={<PortfolioPage />} />
+          <Route path="/kontak" element={<ContactPage />} />
+          {/* URL lama tetap jalan */}
+          <Route path="/about" element={<Navigate to="/profil" replace />} />
+          <Route path="/services" element={<Navigate to="/layanan" replace />} />
+          <Route path="/portfolio" element={<Navigate to="/portofolio" replace />} />
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin/*" element={<Protected><AdminPanel /></Protected>} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
-      </AnimatePresence>
-
-      {!isAdmin && !isHome && <Footer />}
-      <FloatingGear />
-      {!isAdmin && <LanguageToggle />}
-      {!isAdmin && <ThemeToggle />}
+      </Suspense>
+      {!isAdmin && <Footer />}
+      {!isAdmin && <Floaters />}
     </>
   );
 };
 
-/* ─── App ─── */
 const App: React.FC = () => (
   <BrowserRouter>
-    <AuthProvider>
-      <ThemeProvider>
+    <ThemeProvider>
       <LanguageProvider>
-      <CursorGlow />
-      <GlobalScrollBackground />
-      <ScrollProgressBar />
-      <Toaster
-        position="top-right"
-        toastOptions={{
-          style: {
-            background: 'var(--black-2)',
-            color: 'var(--white)',
-            border: '1px solid var(--card-border)',
-            fontFamily: 'var(--font-body)',
-            fontSize: '0.9rem',
-          },
-          success: { iconTheme: { primary: '#0E6FA8', secondary: '#FFFFFF' } },
-        }}
-      />
-      <AnimatedRoutes />
+        <AuthProvider>
+          <ContentProvider>
+            <Shell />
+          </ContentProvider>
+        </AuthProvider>
       </LanguageProvider>
-      </ThemeProvider>
-    </AuthProvider>
+    </ThemeProvider>
   </BrowserRouter>
 );
 
