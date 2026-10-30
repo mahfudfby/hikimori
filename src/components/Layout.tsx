@@ -33,9 +33,8 @@ export const Navbar: React.FC = () => {
   return (
     <header className="nav no-print">
       <div className="shell nav-inner">
-        <Link to="/" className="brand">
-          <LogoMark height={24} />
-          <span>{content.profile.shortName || 'Hikimori'}</span>
+        <Link to="/" className="brand brand-logo" aria-label={`Hikimori — ${content.profile.name}`}>
+          <LogoMark height={30} bare />
         </Link>
 
         <nav className="nav-links" aria-label="Main">
@@ -88,7 +87,7 @@ export const Footer: React.FC = () => {
       <div className="shell">
         <div className="row between wrap gap-16" style={{ borderTop: '1px solid var(--line)', paddingTop: 22 }}>
           <div className="row gap-12">
-            <LogoMark height={20} />
+            <LogoMark height={22} />
             <span>© {new Date().getFullYear()} {p.name}</span>
           </div>
           <div className="row wrap gap-16">
