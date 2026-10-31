@@ -9,7 +9,8 @@ const KEEP: Record<string, string> = {
   H1: 'h2', H2: 'h2', H3: 'h3', H4: 'h4', H5: 'h4', H6: 'h4',
 };
 const DROP = new Set(['SCRIPT', 'STYLE', 'IFRAME', 'OBJECT', 'EMBED', 'NOSCRIPT', 'TEMPLATE', 'TITLE', 'META', 'LINK', 'SVG', 'MATH', 'IMG', 'VIDEO', 'AUDIO', 'FORM', 'INPUT', 'BUTTON', 'SELECT', 'TEXTAREA', 'HEAD']);
-export const FX = ['fx-shadow', 'fx-glow', 'fx-outline', 'fx-gold', 'btn-link'];
+const INLINE = new Set(['strong', 'em', 'u', 's', 'sub', 'sup', 'span', 'mark']);
+export const FX = ['fx-shadow', 'fx-glow', 'fx-outline', 'fx-gold', 'fx-auto', 'btn-link'];
 
 const COLOR = /^(#[0-9a-f]{3,8}|rgba?\(\s*[\d.]+%?\s*,\s*[\d.]+%?\s*,\s*[\d.]+%?\s*(,\s*[\d.]+\s*)?\)|[a-z]{3,20})$/i;
 const LEN = /^\d+(\.\d+)?(px|pt|em|rem|%)$/;
@@ -56,6 +57,7 @@ function clean(src: Node, out: Node, doc: Document) {
     }
     out.appendChild(o);
     if (name !== 'br') clean(el, o, doc);
+    if (INLINE.has(name) && !o.childNodes.length) o.remove(); // sisa format kosong (mis. setelah Ganti semua)
   });
 }
 
