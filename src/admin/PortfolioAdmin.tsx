@@ -5,6 +5,7 @@ import { usePortfolio, PortfolioItem, ArticleBlock, BlockType } from '../hooks/u
 import { Icon } from '../components/ui';
 import { parseEmbed, isTikTokShort, resolveTikTok, mediaKind } from '../utils/embed';
 import { MediaFrameEditor } from './MediaFrameEditor';
+import { RichEditor } from './RichEditor';
 import { Text, Area, Tags, ImageInput, Toggle, Grid, Section, Select, ListEditor, uid } from './fields';
 
 type Draft = Omit<PortfolioItem, 'id'> & { id?: string };
@@ -87,7 +88,6 @@ const EmbedStatus: React.FC<{ url: string; onChange: (v: string) => void }> = ({
   return <small className="xs faint">{e ? <>Terbaca: <strong>{KIND_NAME[e.kind]}</strong>{/[?&]start=/.test(e.src) && ' · mulai dari detik ' + e.src.match(/start=(\d+)/)![1]}{/[?&]list=/.test(e.src) && ' · playlist'}</> : <strong style={{ color: '#d14343' }}>Link belum terbaca. Cek panduan di bawah.</strong>}</small>;
 };
 
-const TEXT_HINT = 'Baris kosong = paragraf baru. **tebal**, *miring*, `kode`, [teks](https://link)';
 
 /** Daftar foto slideshow / galeri: tambah & hapus satu per satu. */
 const Photos: React.FC<{ value: string[]; onChange: (v: string[]) => void }> = ({ value, onChange }) => (
@@ -137,8 +137,7 @@ const BlockFields: React.FC<{ b: ArticleBlock; up: (p: Partial<ArticleBlock>) =>
       <Text label="Keterangan (opsional)" value={b.caption} onChange={v => up({ caption: v })} />
     </>);
     case 'media': return (<>
-      <Area label="Teks" value={b.text} onChange={v => up({ text: v })} rows={6} />
-      <small className="xs faint">{TEXT_HINT}</small>
+      <RichEditor label="Teks" value={b.text} onChange={v => up({ text: v })} minHeight={140} />
       <ImageInput label="Media: upload foto, atau tempel link / kode embed YouTube / TikTok / Instagram" value={b.url} onChange={v => up({ url: v })} />
       <EmbedStatus url={b.url} onChange={v => up({ url: v })} />
       <EmbedGuide />
@@ -158,8 +157,7 @@ const BlockFields: React.FC<{ b: ArticleBlock; up: (p: Partial<ArticleBlock>) =>
         { value: 'columns', label: 'Kolom koran (2 kolom)' },
         { value: 'note', label: 'Catatan sorot (garis emas)' },
       ]} />
-      <Area label="Isi paragraf" value={b.text} onChange={v => up({ text: v })} rows={7} />
-      <small className="xs faint">{TEXT_HINT}</small>
+      <RichEditor label="Isi paragraf" value={b.text} onChange={v => up({ text: v })} />
     </>);
   }
 };
@@ -210,7 +208,7 @@ const PortfolioAdmin: React.FC = () => {
         <small className="xs faint">Susun bebas tanpa batas: tambah blok, ubah urutan dengan panah, duplikat, atau hapus. Kosong = ringkasan dipakai sebagai isi.</small>
         <ListEditor<ArticleBlock> items={edit.blocks} onChange={v => setEdit({ ...edit, blocks: v })} addLabel="Tambah paragraf"
           create={() => newBlock('text')}
-          title={b => <><strong>{blockLabel(b.type)}</strong> <span className="faint">· {(b.text || b.caption || b.url || (b.urls.length ? `${b.urls.length} foto` : '')).slice(0, 70)}</span></>}
+          title={b => <><strong>{blockLabel(b.type)}</strong> <span className="faint">· {(b.text.replace(/<[^>]*>/g, ' ').replace(/&nbsp;/g, ' ').trim() || b.caption || b.url || (b.urls.length ? `${b.urls.length} foto` : '')).slice(0, 70)}</span></>}
           render={(b, up) => <BlockFields b={b} up={up} />}
           extraAdd={BLOCKS.filter(x => x.type !== 'text').map(x => ({ label: x.label, icon: x.icon, create: () => newBlock(x.type) }))} />
       </div>
