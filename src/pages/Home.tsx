@@ -169,7 +169,7 @@ const TrackerCard: React.FC<{ exp?: Experience; idx: number; count: number; play
           </div>
         </div>
         {desc.length ? <ul className="job-desc">{desc.map((d, i) => <li key={i}>{d.text}</li>)}</ul>
-          : <p className="xs faint">{t('Deskripsi belum diisi.', 'No description yet.')}</p>}
+          : <p className="job-desc faint">{t('Deskripsi belum diisi.', 'No description yet.')}</p>}
         <div className="row between mt-16">
           <div className="row gap-8">
             <button className={`icon-btn ${playing ? '' : 'dark'}`} onClick={() => setPlaying(true)} aria-label="Play"><Icon name="play" /></button>
@@ -243,7 +243,7 @@ const AchievementsCard: React.FC = () => {
   return (
     <div className="card b-onboard">
       <div className="card-head" style={{ alignItems: 'center' }}>
-        <h2 className="h-card">{t('Pencapaian', 'Highlights')}</h2>
+        <h2 className="h-card">{t('Pernah Menangani', 'Previously Handled')}</h2>
         <CardLink to="/pengalaman" label={t('Lihat pengalaman', 'See experience')} />
       </div>
       {list.length === 0 ? <p className="xs faint">{t('Tambahkan pencapaian di CMS → Profil.', 'Add highlights in CMS → Profile.')}</p> : (
