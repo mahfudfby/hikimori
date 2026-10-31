@@ -8,6 +8,7 @@ import { useLang } from '../contexts/LanguageContext';
 import { pick, waLink } from '../content/derive';
 import { Icon, useTitle, cld } from '../components/ui';
 import { ArticleBlocks, Media } from '../components/Article';
+import { hyphenate } from '../utils/richHtml';
 
 const Ornament: React.FC = () => (
   <div className="mag-ornament" aria-hidden="true">
@@ -46,12 +47,12 @@ const PortfolioArticle: React.FC = () => {
   return (
     <main className="shell shell-wide page-in">
       <div className="frame mag">
-        <article className="mag-article">
+        <article className="mag-article" lang="id">
           <nav className="crumb" aria-label="breadcrumb"><Link to="/">Home</Link><span>/</span><Link to="/portofolio">{t('Portofolio', 'Portfolio')}</Link></nav>
           <header className="mag-head">
             <div className="mag-kicker">{[post.category, post.year].filter(Boolean).join(' · ')}</div>
-            <h1 className="mag-title">{post.title}</h1>
-            {post.subtitle && <p className="mag-sub">{post.subtitle}</p>}
+            <h1 className="mag-title">{hyphenate(post.title)}</h1>
+            {post.subtitle && <p className="mag-sub">{hyphenate(post.subtitle)}</p>}
             <div className="mag-byline">
               {p.photoUrl && <img src={cld(p.photoUrl, 96)} alt="" width={36} height={36} />}
               <span>{t('Oleh', 'By')} <strong>{p.name}</strong>{post.client && <> · {post.client}</>}</span>
