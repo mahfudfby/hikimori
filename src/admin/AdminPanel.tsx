@@ -12,7 +12,7 @@ import { Icon } from '../components/ui';
 import { saveFile } from '../utils/saveFile';
 import LogoMark from '../components/LogoMark';
 import { pick, monthsOf, fmtDuration, CATEGORY_LABEL } from '../content/derive';
-import type { SiteContent, Experience, Certificate, Skill, Service, Education, JourneyStep, Organization, Reference, Tool, ProcessStep, Achievement } from '../content/types';
+import type { SiteContent, Experience, Certificate, Skill, Service, Education, JourneyStep, Organization, Reference, Tool, ProcessStep, Achievement, Award } from '../content/types';
 import { Text, Select, Toggle, BiField, BiLines, BiPoints, BiBulletText, Tags, ImageInput, ListEditor, Grid, Section, uid } from './fields';
 import PortfolioAdmin from './PortfolioAdmin';
 
@@ -145,15 +145,25 @@ Tetap publikasikan dan TIMPA versi tersebut?
           </Grid>
           <Toggle label="Tampilkan status “Terbuka untuk peluang kerja”" value={p.openToWork} onChange={v => setP({ openToWork: v })} />
           <Toggle label="Tampilkan tanggal lahir, usia & jenis kelamin ke publik (disarankan: mati — cegah bias usia & lindungi data pribadi)" value={p.showBirthDate} onChange={v => setP({ showBirthDate: v })} />
-          <Toggle label="Kartu dashboard: tampilkan bar Usia (mati = kartu Pencapaian)" value={p.showAgeCard} onChange={v => setP({ showAgeCard: v })} />
+          <Toggle label="Kartu dashboard: tampilkan bar Usia (mati = kartu Pernah Menangani)" value={p.showAgeCard} onChange={v => setP({ showAgeCard: v })} />
         </Section>
-        <Section title="Pencapaian" desc="Angka-angka yang menjual — tampil di kartu Pencapaian dashboard (5 teratas) dan halaman /profil. Isi angka singkat (mis. 121, -50%, 4j → <1j).">
-          <ListEditor<Achievement> items={draft.achievements} onChange={v => set('achievements', v)} addLabel="Tambah pencapaian"
+        <Section title="Pernah Menangani" desc="Angka-angka yang menjual — tampil di kartu Pernah Menangani di dashboard (5 teratas) dan halaman /profil. Isi angka singkat (mis. 121, -50%, 4j → <1j).">
+          <ListEditor<Achievement> items={draft.achievements} onChange={v => set('achievements', v)} addLabel="Tambah data"
             create={() => ({ id: uid('a'), value: '', label: eb() })}
             title={a => <>{a.value} <span className="faint">· {pick(a.label, 'id')}</span></>}
             render={(a, up) => (<>
               <Text label="Angka / nilai" value={a.value} onChange={v => up({ value: v })} placeholder="121" />
               <BiField label="Keterangan" value={a.label} onChange={v => up({ label: v })} />
+            </>)} />
+        </Section>
+        <Section title="Pencapaian" desc="Prestasi / penghargaan nyata (mis. karyawan terbaik, juara lomba, proyek berdampak besar). Tampil sebagai bagian Pencapaian di /profil; kosong = tidak tampil.">
+          <ListEditor<Award> items={draft.awards} onChange={v => set('awards', v)} addLabel="Tambah pencapaian"
+            create={() => ({ id: uid('aw'), title: eb(), desc: eb(), year: '' })}
+            title={a => <>{pick(a.title, 'id') || 'Pencapaian baru'} {a.year && <span className="faint">· {a.year}</span>}</>}
+            render={(a, up) => (<>
+              <BiField label="Judul pencapaian" value={a.title} onChange={v => up({ title: v })} />
+              <BiField label="Keterangan (opsional)" value={a.desc} onChange={v => up({ desc: v })} area rows={3} />
+              <Text label="Tahun" value={a.year} onChange={v => up({ year: v })} placeholder="2025" />
             </>)} />
         </Section>
         <Section title="Ringkasan & cerita" desc="Ringkasan tampil di kartu Summary dashboard; cerita panjang di /profil (pisahkan paragraf dengan baris kosong).">

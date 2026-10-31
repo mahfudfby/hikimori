@@ -181,6 +181,8 @@ export const DEFAULT_CONTENT: SiteContent = {
     { id: 'a5', value: '200+', label: bi('SKU inventori dipantau', 'inventory SKUs monitored') },
   ],
 
+  awards: [],
+
   contact: {
     headline: bi('Mari bekerja sama', "Let's work together"),
     sub: bi('Terbuka untuk peluang kerja, kolaborasi proyek, atau sekadar diskusi seputar SDM & sistem kerja.', 'Open to job opportunities, project collaboration, or simply a chat about HR and work systems.'),

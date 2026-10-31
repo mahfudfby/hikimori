@@ -156,6 +156,14 @@ export interface Achievement {
   label: Bi;
 }
 
+/** Pencapaian nyata (penghargaan, prestasi) — tampil di /profil bila diisi */
+export interface Award {
+  id: string;
+  title: Bi;
+  desc: Bi;
+  year: string;
+}
+
 export interface ContactInfo {
   headline: Bi;
   sub: Bi;
@@ -182,7 +190,9 @@ export interface SiteContent {
   services: Service[];
   process: ProcessStep[];
   references: Reference[];
-  /** Angka-angka pencapaian (kartu dashboard & halaman profil) */
+  /** Angka-angka "Pernah Menangani" (kartu dashboard & halaman profil) */
   achievements: Achievement[];
+  /** Pencapaian / penghargaan (kosong = bagian tidak tampil) */
+  awards: Award[];
   contact: ContactInfo;
 }

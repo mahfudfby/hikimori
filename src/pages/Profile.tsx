@@ -84,7 +84,7 @@ const Profile: React.FC = () => {
 
             {content.achievements.length > 0 && (
               <Reveal className="card">
-                <span className="eyebrow">{t('Pencapaian', 'Highlights')}</span>
+                <span className="eyebrow">{t('Pernah Menangani', 'Previously Handled')}</span>
                 <div className="grid-3 mt-16">
                   {content.achievements.map(a => (
                     <div key={a.id}>
@@ -93,6 +93,23 @@ const Profile: React.FC = () => {
                     </div>
                   ))}
                 </div>
+              </Reveal>
+            )}
+
+            {content.awards.length > 0 && (
+              <Reveal className="card">
+                <span className="eyebrow">{t('Pencapaian', 'Achievements')}</span>
+                <ul className="award-list mt-16">
+                  {content.awards.map(a => (
+                    <li key={a.id}>
+                      <span className="award-ic" aria-hidden="true"><Icon name="award" size={18} /></span>
+                      <div>
+                        <div className="row between gap-8"><strong>{pick(a.title, lang)}</strong>{a.year && <span className="chip">{a.year}</span>}</div>
+                        {pick(a.desc, lang) && <p className="small muted mt-4">{pick(a.desc, lang)}</p>}
+                      </div>
+                    </li>
+                  ))}
+                </ul>
               </Reveal>
             )}
 
