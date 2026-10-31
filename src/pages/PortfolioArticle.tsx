@@ -1,6 +1,6 @@
 // src/pages/PortfolioArticle.tsx — /portofolio/:id : artikel proyek gaya majalah/koran.
 // Headline → sub-judul → hero banner → isi blok. Kiri: kontak + ornamen. Kanan: rekomendasi baca.
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { usePortfolio, ArticleBlock } from '../hooks/usePortfolio';
 import { useContent } from '../content/ContentContext';
@@ -28,7 +28,25 @@ const PortfolioArticle: React.FC = () => {
   const { t, lang } = useLang();
   const p = content.profile;
   const post = items.find(i => i.id === id);
-  useTitle(`${post?.title || t('Portofolio', 'Portfolio')} — ${p.name}`);
+  useTitle(`${post?.seoTitle || post?.title || t('Portofolio', 'Portfolio')} — ${p.name}`);
+  // SEO: deskripsi & kata kunci halaman artikel, dikembalikan saat keluar
+  useEffect(() => {
+    if (!post) return;
+    const set = (sel: string, attr: string, key: string, val: string) => {
+      let m = document.head.querySelector<HTMLMetaElement>(sel);
+      if (!m) { m = document.createElement('meta'); m.setAttribute(attr, key); document.head.appendChild(m); }
+      const old = m.content; m.content = val;
+      return () => { m!.content = old; };
+    };
+    const desc = post.seoDesc || post.description || post.subtitle;
+    const undo = [
+      desc && set('meta[name="description"]', 'name', 'description', desc),
+      desc && set('meta[property="og:description"]', 'property', 'og:description', desc),
+      set('meta[property="og:title"]', 'property', 'og:title', post.seoTitle || post.title),
+      post.keywords?.length && set('meta[name="keywords"]', 'name', 'keywords', post.keywords.join(', ')),
+    ];
+    return () => undo.forEach(u => typeof u === 'function' && u());
+  }, [post]);
 
   if (loading) return <main className="shell page-in"><div className="frame"><div className="skeleton" style={{ height: 520 }} /></div></main>;
   if (error || !post) return (
@@ -63,6 +81,12 @@ const PortfolioArticle: React.FC = () => {
           <footer className="mag-foot">
             {post.tags?.length > 0 && <div className="row wrap gap-8">{post.tags.map(tg => <span key={tg} className="chip">{tg}</span>)}</div>}
             {post.link && <a className="pill dark mt-16" href={post.link} target="_blank" rel="noopener noreferrer"><Icon name="external" size={15} />{t('Buka proyek', 'Open project')}</a>}
+            {(post.hashtags?.length > 0 || post.keywords?.length > 0) && (
+              <div className="mag-meta">
+                {post.hashtags?.length > 0 && <p className="mag-hashtags">{post.hashtags.map(h => <span key={h}>#{h}</span>)}</p>}
+                {post.keywords?.length > 0 && <p className="mag-keywords"><strong>{t('Kata kunci', 'Keywords')}:</strong> {post.keywords.join(' · ')}</p>}
+              </div>
+            )}
           </footer>
         </article>
 

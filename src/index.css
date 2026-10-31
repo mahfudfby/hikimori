@@ -963,3 +963,13 @@ html.lite .logo-badge::after, html.lite .brand.brand-logo::after { animation: no
 #root { white-space: pre-line; }
 #root .rte-page, #root .mag-rich { white-space: normal; }
 textarea.input { resize: vertical; overflow: hidden; min-height: 2.6em; }
+
+/* Hashtag & kata kunci di akhir artikel */
+.mag-meta { margin-top: 22px; padding-top: 16px; border-top: 1px dashed var(--line-2); display: flex; flex-direction: column; gap: 8px; }
+.mag-hashtags { margin: 0; display: flex; flex-wrap: wrap; gap: 6px 12px; }
+.mag-hashtags span { color: #1971c2; font-weight: 600; font-size: .92rem; }
+.mag-keywords { margin: 0; font-size: .82rem; color: var(--text-2, inherit); opacity: .85; }
+.seo-preview { display: flex; flex-direction: column; gap: 2px; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--line-2); background: var(--surface-solid); }
+.seo-preview strong { color: #1a0dab; font-weight: 500; font-size: 1.05rem; }
+:root[data-theme='dark'] .seo-preview strong { color: #8ab4f8; }
+.seo-preview p { margin: 0; color: var(--text-2, inherit); }
