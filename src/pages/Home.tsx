@@ -162,7 +162,7 @@ const TrackerCard: React.FC<{ exp?: Experience; idx: number; count: number; play
             <Logo key={exp.id} src={exp.logoUrl} alt={exp.company} />
           </div>
           <span className="dur-2">{pick(exp.position, lang)}</span>
-          <span className="dur-3">{exp.company} · {fmtPeriod(exp.start, exp.end, lang)}{exp.type ? ` · ${exp.type}` : ''}</span>
+          <span className="dur-3"><span>{exp.company}</span><span>{fmtPeriod(exp.start, exp.end, lang)}</span><span>{exp.type || ' '}</span></span>
           <div className="slide-prog" aria-hidden="true">
             <span key={`${exp.id}-${idx}`} style={{ animationDuration: `${SLIDE_MS}ms`, animationPlayState: playing ? 'running' : 'paused' }}
               onAnimationEnd={() => playing && next()} />
