@@ -1,9 +1,10 @@
 // src/pages/PortfolioPage.tsx — /portofolio : proyek dari koleksi Firestore `portfolio`.
 import React, { useMemo, useState } from 'react';
-import { usePortfolio, PortfolioItem } from '../hooks/usePortfolio';
+import { Link } from 'react-router-dom';
+import { usePortfolio } from '../hooks/usePortfolio';
 import { useContent } from '../content/ContentContext';
 import { useLang } from '../contexts/LanguageContext';
-import { Icon, PageHero, Reveal, useTitle, Modal, cld } from '../components/ui';
+import { Icon, PageHero, Reveal, useTitle, cld } from '../components/ui';
 
 const PortfolioPage: React.FC = () => {
   const { items, loading, error } = usePortfolio();
@@ -11,7 +12,6 @@ const PortfolioPage: React.FC = () => {
   const { t } = useLang();
   useTitle(`${t('Portofolio', 'Portfolio')} — ${content.profile.name}`);
   const [cat, setCat] = useState('all');
-  const [view, setView] = useState<PortfolioItem | null>(null);
   const cats = useMemo(() => Array.from(new Set(items.map(i => i.category).filter(Boolean))), [items]);
   const list = (cat === 'all' ? items : items.filter(i => i.category === cat)).slice().sort((a, b) => Number(b.featured) - Number(a.featured) || a.order - b.order);
 
@@ -39,7 +39,7 @@ const PortfolioPage: React.FC = () => {
           <div className="grid-3">
             {list.map((p, i) => (
               <Reveal key={p.id} delay={(i % 6) * 40}>
-                <button className={`card hoverable stack ${p.featured ? 'dark' : ''}`} onClick={() => setView(p)} style={{ width: '100%', textAlign: 'left', height: '100%' }}>
+                <Link to={`/portofolio/${p.id}`} className={`card hoverable stack ${p.featured ? 'dark' : ''}`} style={{ width: '100%', textAlign: 'left', height: '100%', color: 'inherit', textDecoration: 'none' }}>
                   {p.imageUrl ? <img className="thumb" src={cld(p.imageUrl, 640)} alt={p.title} loading="lazy" decoding="async" /> : <div className="thumb row" style={{ justifyContent: 'center' }}><Icon name="image" size={32} /></div>}
                   <div className="row between gap-8 mt-16">
                     <span className={`chip ${p.featured ? 'yellow' : ''}`}>{p.category || '—'}</span>
@@ -47,24 +47,15 @@ const PortfolioPage: React.FC = () => {
                   </div>
                   <h2 className="h-card mt-8">{p.title}</h2>
                   {p.client && <div className="xs muted">{p.client}</div>}
-                  <p className="small muted mt-8" style={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{p.description}</p>
-                </button>
+                  <p className="small muted mt-8" style={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{p.subtitle || p.description}</p>
+                  <span className="xs mt-8" style={{ fontWeight: 600 }}>{t('Baca artikel →', 'Read article →')}</span>
+                </Link>
               </Reveal>
             ))}
           </div>
         )}
       </div>
 
-      <Modal open={!!view} onClose={() => setView(null)} label={view?.title || ''}>
-        {view && (<>
-          {view.imageUrl && <img src={view.imageUrl} alt={view.title} style={{ width: '100%', borderRadius: 16 }} />}
-          <div className="row wrap gap-8 mt-16"><span className="chip">{view.category}</span>{view.year && <span className="chip">{view.year}</span>}{view.client && <span className="chip">{view.client}</span>}</div>
-          <h2 className="h-2 mt-16">{view.title}</h2>
-          <p className="muted mt-8" style={{ whiteSpace: 'pre-line', lineHeight: 1.75 }}>{view.description}</p>
-          {view.tags?.length > 0 && <div className="row wrap gap-8 mt-16">{view.tags.map(tg => <span key={tg} className="chip">{tg}</span>)}</div>}
-          {view.link && <a className="pill dark mt-16" href={view.link} target="_blank" rel="noreferrer"><Icon name="external" size={15} />{t('Buka proyek', 'Open project')}</a>}
-        </>)}
-      </Modal>
     </main>
   );
 };
