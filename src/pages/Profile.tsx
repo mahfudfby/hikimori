@@ -5,6 +5,7 @@ import { useContent } from '../content/ContentContext';
 import { useLang } from '../contexts/LanguageContext';
 import { Icon, PageHero, Reveal, useTitle, Bullets, cld, cldSet } from '../components/ui';
 import { pick, paragraphs, careerMonths, ageOf, waLink } from '../content/derive';
+import { downloadUrl } from '../utils/saveFile';
 
 const Profile: React.FC = () => {
   const { content } = useContent();
@@ -27,7 +28,7 @@ const Profile: React.FC = () => {
         <PageHero crumb={t('Profil', 'Profile')} title={p.name} lead={pick(p.tagline, lang)}
           aside={<div className="row wrap gap-8">
             {p.openToWork && <span className="chip yellow">● {pick(content.contact.availability, lang)}</span>}
-            {p.cvUrl && <a className="pill dark" href={p.cvUrl} download><Icon name="download" size={16} />{t('Unduh CV', 'Download CV')}</a>}
+            {p.cvUrl && <a className="pill dark" href={p.cvUrl} download onClick={e => { e.preventDefault(); downloadUrl(p.cvUrl, 'CV-Mahfud-Febry-Styanto.pdf'); }}><Icon name="download" size={16} />{t('Unduh CV', 'Download CV')}</a>}
           </div>} />
 
         <div className="split">
