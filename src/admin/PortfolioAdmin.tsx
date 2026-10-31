@@ -1,9 +1,9 @@
 // src/admin/PortfolioAdmin.tsx — CRUD koleksi `portfolio` (setiap simpan langsung live) + penyusun artikel blok.
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import { usePortfolio, PortfolioItem, ArticleBlock, BlockType } from '../hooks/usePortfolio';
 import { Icon } from '../components/ui';
-import { parseEmbed } from '../utils/embed';
+import { parseEmbed, isTikTokShort, resolveTikTok, mediaKind } from '../utils/embed';
 import { MediaFrameEditor } from './MediaFrameEditor';
 import { Text, Area, Tags, ImageInput, Toggle, Grid, Section, Select, ListEditor, uid } from './fields';
 
@@ -35,15 +35,14 @@ const GUIDES: { name: string; steps: string[]; note?: string }[] = [
     'Tempel kodenya di kolom di atas. Bisa juga: ••• → Copy link, lalu tempel link-nya.',
   ], note: 'Akun harus publik dan izin embed aktif (Pengaturan → Privasi → "Izinkan orang menyematkan postingan Anda").' },
   { name: 'TikTok', steps: [
-    'Buka video di tiktok.com lewat browser komputer.',
-    'Klik tombol Bagikan (panah) → Embed → Copy code, lalu tempel.',
-    'Atau salin link dari kolom alamat browser: tiktok.com/@akun/video/1234567890…',
-  ], note: 'Link pendek dari aplikasi HP (vt.tiktok.com/…) tidak bisa: buka dulu di browser agar jadi link lengkap. Video harus publik.' },
-  { name: 'YouTube (video / Shorts)', steps: [
-    'Buka video → klik Bagikan (Share).',
-    'Pilih Sematkan (Embed) → Salin kode <iframe>, lalu tempel.',
-    'Atau cukup Salin link (youtu.be/… atau youtube.com/shorts/…).',
-  ], note: 'Video harus Publik atau Tidak publik (unlisted), dan opsi "Izinkan penyematan" di YouTube Studio aktif.' },
+    'Di aplikasi HP: Bagikan (panah) → Salin tautan, lalu tempel. Link pendek vt.tiktok.com otomatis diubah ke link lengkap.',
+    'Di komputer: Bagikan → Sematkan (Embed) → Copy code, atau salin link dari kolom alamat (tiktok.com/@akun/video/…).',
+  ], note: 'Video harus publik dan izin sematkan aktif (Pengaturan → Privasi → Izinkan video Anda disematkan). Dengan caption = nama akun, caption & musik tampil di video.' },
+  { name: 'YouTube (video / Shorts / playlist)', steps: [
+    'Buka video → Bagikan (Share) → Salin link, atau Sematkan (Embed) → salin kode <iframe>.',
+    'Mulai dari detik tertentu: centang "Mulai pada" saat Bagikan (link berisi ?t=90). Waktu mulai ikut terbawa.',
+    'Shorts (youtube.com/shorts/…) otomatis tampil vertikal 9:16. Link playlist (…list=…) tampil sebagai playlist.',
+  ], note: 'Video harus Publik atau Tidak publik (unlisted), dan "Izinkan penyematan" di YouTube Studio aktif. Video berlisensi musik/film kadang tidak bisa disematkan.' },
   { name: 'Program web hasil developer', steps: [
     'Tempel link https dari demo program (Vercel, Netlify, GitHub Pages, CodeSandbox, StackBlitz, dll.).',
     'Atur "Tinggi program web" agar program tampil penuh.',
@@ -64,6 +63,29 @@ const EmbedGuide: React.FC<{ open?: boolean }> = ({ open }) => (
     <small className="xs muted"><strong>Dengan caption</strong>: kartu lengkap platform (nama akun, caption) + keterangan Anda. <strong>Frameless</strong>: video saja, tanpa caption.</small>
   </details>
 );
+
+const KIND_NAME: Record<string, string> = { youtube: 'YouTube', tiktok: 'TikTok', instagram: 'Instagram', web: 'program web' };
+/** Status link embed. Link pendek TikTok (vt.tiktok.com/…) otomatis diubah ke link lengkap. */
+const EmbedStatus: React.FC<{ url: string; onChange: (v: string) => void }> = ({ url, onChange }) => {
+  const [failed, setFailed] = useState('');
+  const latest = useRef(onChange);
+  latest.current = onChange;
+  const short = isTikTokShort(url);
+  useEffect(() => {
+    if (!short) return;
+    let alive = true;
+    // jeda singkat: jangan memanggil TikTok di setiap ketikan
+    const t = window.setTimeout(() => resolveTikTok(url).then(full => {
+      if (!alive) return;
+      if (full) { latest.current(full); toast.success('Link pendek TikTok diubah ke link lengkap'); } else setFailed(url);
+    }), 600);
+    return () => { alive = false; window.clearTimeout(t); };
+  }, [url, short]);
+  if (!url.trim() || mediaKind(url) !== 'embed') return null;
+  if (short) return <small className="xs faint">{failed === url ? <strong style={{ color: '#d14343' }}>Link pendek TikTok tidak bisa dibaca. Buka videonya di browser, lalu salin link lengkap (tiktok.com/@akun/video/…).</strong> : 'Membaca link pendek TikTok…'}</small>;
+  const e = parseEmbed(url);
+  return <small className="xs faint">{e ? <>Terbaca: <strong>{KIND_NAME[e.kind]}</strong>{/[?&]start=/.test(e.src) && ' · mulai dari detik ' + e.src.match(/start=(\d+)/)![1]}{/[?&]list=/.test(e.src) && ' · playlist'}</> : <strong style={{ color: '#d14343' }}>Link belum terbaca. Cek panduan di bawah.</strong>}</small>;
+};
 
 const TEXT_HINT = 'Baris kosong = paragraf baru. **tebal**, *miring*, `kode`, [teks](https://link)';
 
@@ -100,7 +122,8 @@ const BlockFields: React.FC<{ b: ArticleBlock; up: (p: Partial<ArticleBlock>) =>
       <Select label="Tampilan embed" value={b.style === 'frameless' ? 'frameless' : 'plain'} onChange={v => up({ style: v })} options={FRAME_OPTS} />
       <EmbedGuide open />
       <Area label="Link atau kode embed" value={b.url} onChange={v => up({ url: v })} rows={3} />
-      <small className="xs faint">Tempel link, atau kode dari menu <strong>Embed</strong> Instagram / TikTok / YouTube. Juga bisa link program web hasil developer (tampil interaktif).{b.url && <> → {parseEmbed(b.url) ? <strong>terbaca: {parseEmbed(b.url)!.kind}</strong> : <strong style={{ color: '#d14343' }}>belum terbaca</strong>}</>}</small>
+      <small className="xs faint">Tempel link, atau kode dari menu <strong>Embed</strong> Instagram / TikTok / YouTube. Juga bisa link program web hasil developer (tampil interaktif).</small>
+      <EmbedStatus url={b.url} onChange={v => up({ url: v })} />
       <Grid>
         <Text label="Keterangan (opsional)" value={b.caption} onChange={v => up({ caption: v })} />
         <Text label="Tinggi program web (px)" type="number" value={b.height} onChange={v => up({ height: Math.max(240, Math.min(1400, Number(v) || 520)) })} hint="Hanya untuk link program web." />
@@ -117,6 +140,7 @@ const BlockFields: React.FC<{ b: ArticleBlock; up: (p: Partial<ArticleBlock>) =>
       <Area label="Teks" value={b.text} onChange={v => up({ text: v })} rows={6} />
       <small className="xs faint">{TEXT_HINT}</small>
       <ImageInput label="Media: upload foto, atau tempel link / kode embed YouTube / TikTok / Instagram" value={b.url} onChange={v => up({ url: v })} />
+      <EmbedStatus url={b.url} onChange={v => up({ url: v })} />
       <EmbedGuide />
       <Grid>
         <Select label="Tampilan video embed" value={b.style === 'frameless' ? 'frameless' : 'plain'} onChange={v => up({ style: v })} options={FRAME_OPTS} />
@@ -178,6 +202,7 @@ const PortfolioAdmin: React.FC = () => {
       <Text label="Link proyek (opsional)" value={edit.link || ''} onChange={v => setEdit({ ...edit, link: v })} />
       <ImageInput label="Gambar cover / hero banner" value={edit.imageUrl} onChange={v => setEdit({ ...edit, imageUrl: v })} />
       <Area label="Video hero banner (opsional): link atau kode embed" value={edit.videoUrl} onChange={v => setEdit({ ...edit, videoUrl: v })} rows={2} />
+      <EmbedStatus url={edit.videoUrl} onChange={v => setEdit(e => (e && { ...e, videoUrl: v }))} />
       <small className="xs faint">YouTube / TikTok / Instagram, tampil frameless. Bila diisi, hero banner artikel memakai video ini; gambar cover tetap dipakai di kartu daftar.</small>
       <EmbedGuide />
       <div className="field">
