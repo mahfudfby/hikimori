@@ -140,7 +140,7 @@ Tetap publikasikan dan TIMPA versi tersebut?
           </Grid>
           <Grid>
             <ImageInput label="Foto profil" value={p.photoUrl} onChange={v => setP({ photoUrl: v })} />
-            <ImageInput label="Logo gambar (untuk ikon tab & bagikan link — logo di situs memakai monogram HK vektor)" value={p.logoUrl} onChange={v => setP({ logoUrl: v })} />
+            <ImageInput label="Logo gambar (cadangan — logo situs, ikon tab & gambar bagikan link diatur di kode)" value={p.logoUrl} onChange={v => setP({ logoUrl: v })} />
           </Grid>
           <Toggle label="Tampilkan status “Terbuka untuk peluang kerja”" value={p.openToWork} onChange={v => setP({ openToWork: v })} />
           <Toggle label="Tampilkan tanggal lahir, usia & jenis kelamin ke publik (disarankan: mati — cegah bias usia & lindungi data pribadi)" value={p.showBirthDate} onChange={v => setP({ showBirthDate: v })} />

@@ -22,7 +22,7 @@ export const DEFAULT_CONTENT: SiteContent = {
     ),
     badge: 'CHRG',
     photoUrl: 'https://res.cloudinary.com/dl4pyan8v/image/upload/f_auto,q_auto,w_900/v1783866519/Mahfudfebry_casual_oj8r1d.png',
-    logoUrl: 'https://res.cloudinary.com/dl4pyan8v/image/upload/f_auto,q_auto,w_160/v1785800037/Hikimori_logo_02_hkexej.jpg',
+    logoUrl: 'https://res.cloudinary.com/dl4pyan8v/image/upload/e_trim/f_auto,q_auto,h_160/v1793385513/1EF88D88-4DEB-4541-A073-0ED603FFF1CA_hyknub.png',
     cvUrl: '/CV-Mahfud-Febry-Styanto.pdf',
     summary: bi(
       'Profesional multidisiplin di bidang HRD, Payroll, General Affairs, IT Support, FMCG, dan Administrasi Operasional dengan pengalaman nyata di industri manufaktur. Telah melewati perjalanan lintas divisi dalam satu perusahaan pada periode berbeda, sebagai bukti loyalitas dan kepercayaan yang diberikan atas pencapaian di setiap peran. Kompeten dalam payroll, analisa beban kerja, BPJS, pengelolaan 100+ perangkat IT, serta koordinasi operasional. Bersertifikat BNSP CHRG, S.Kom., IPK 3.39.',

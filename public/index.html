@@ -9,15 +9,15 @@
     <meta name="theme-color" content="#EEECE6" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#181816" media="(prefers-color-scheme: dark)" />
     <link rel="canonical" href="https://hikimori.web.id" />
-    <link rel="icon" type="image/jpeg" href="https://res.cloudinary.com/dl4pyan8v/image/upload/f_auto,q_auto,w_64/v1785799964/Hikimori_logo_ku11u1.jpg" />
-    <link rel="apple-touch-icon" href="https://res.cloudinary.com/dl4pyan8v/image/upload/f_auto,q_auto,w_180/v1785799964/Hikimori_logo_ku11u1.jpg" />
+    <link rel="icon" type="image/png" href="https://res.cloudinary.com/dl4pyan8v/image/upload/c_crop,x_15,y_245,w_860,h_410/e_trim/e_shadow:60,x_0,y_20,co_grey/c_pad,w_64,h_64/f_png/v1793385513/1EF88D88-4DEB-4541-A073-0ED603FFF1CA_hyknub.png" />
+    <link rel="apple-touch-icon" href="https://res.cloudinary.com/dl4pyan8v/image/upload/c_crop,x_15,y_245,w_860,h_410/e_trim/e_shadow:60,x_0,y_20,co_grey/c_pad,w_180,h_180/f_png/v1793385513/1EF88D88-4DEB-4541-A073-0ED603FFF1CA_hyknub.png" />
 
     <meta property="og:type" content="profile" />
     <meta property="og:site_name" content="Hikimori — Mahfud Febry Styanto" />
     <meta property="og:title" content="Mahfud Febry Styanto, S.Kom., CHRG — Human Resources & Administration" />
     <meta property="og:description" content="Portofolio profesional: Payroll, General Affairs, IT Support, BPJS, dan koordinasi operasional di industri manufaktur." />
     <meta property="og:url" content="https://hikimori.web.id" />
-    <meta property="og:image" content="https://res.cloudinary.com/dl4pyan8v/image/upload/f_auto,q_auto,w_1200/v1785800037/Hikimori_logo_02_hkexej.jpg" />
+    <meta property="og:image" content="https://res.cloudinary.com/dl4pyan8v/image/upload/e_trim/c_pad,w_1200,h_630,b_rgb:121211/f_jpg,q_auto/v1793385513/1EF88D88-4DEB-4541-A073-0ED603FFF1CA_hyknub.png" />
     <meta property="og:locale" content="id_ID" />
     <meta property="og:locale:alternate" content="en_US" />
     <meta name="twitter:card" content="summary_large_image" />
@@ -50,8 +50,8 @@
       #intro canvas.dry{opacity:0}
       #intro .stage{position:relative;display:flex;flex-direction:column;align-items:center;gap:clamp(18px,3.4vh,30px);transition:transform 1s cubic-bezier(.77,0,.18,1),opacity .6s ease}
       /* Monogram HK — dirakit dari piksel, semua animasi transform/opacity (ringan) */
-      #intro .mark{width:clamp(130px,22vw,190px);color:#F4F2EC;filter:drop-shadow(0 10px 30px rgba(42,70,255,.25))}
-      #intro .mark svg{display:block;width:100%;height:auto;overflow:visible}
+      #intro .mark{width:clamp(180px,34vw,300px);color:#F4F2EC;position:relative;padding:14px 22px;border-radius:22px;box-sizing:content-box}#intro .mark img{display:block;width:100%;height:auto;filter:drop-shadow(0 6px 6px rgba(128,128,128,.6))}#intro .mark::after{content:"";opacity:0;position:absolute;inset:0;border-radius:inherit;padding:1.5px;pointer-events:none;background:linear-gradient(110deg,#8a6414 0%,#d9a92e 22%,#f6dc85 38%,#fffbe6 46%,#f6dc85 54%,#c9971c 70%,#8a6414 100%);background-size:250% 100%;animation:hkFrameIn .6s ease .45s forwards,goldGlare 4.5s ease-in-out infinite;-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}@keyframes hkFrameIn{to{opacity:1}}@keyframes goldGlare{0%,100%{background-position:100% 0}50%{background-position:0 0}}
+      #intro .mark img{display:block;width:100%;height:auto}
       #intro .mark .px{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.4);transform-box:fill-box;transform-origin:center;animation:hkPx .7s cubic-bezier(.2,1,.3,1) forwards}
       #intro .mark .hb{opacity:0;transform:scaleY(0);transform-box:fill-box;transform-origin:50% 100%;animation:hkBar .55s cubic-bezier(.2,1,.3,1) forwards}
       #intro .mark .box{opacity:0;transform:scale(.7) rotate(-8deg);transform-box:fill-box;transform-origin:center;animation:hkBox .7s cubic-bezier(.2,1.25,.3,1) .45s forwards}
@@ -108,19 +108,8 @@
       <canvas id="intro-paint"></canvas>
       <div class="stage" id="intro-stage">
         <div class="mark">
-          <!-- Monogram HK (sama dengan src/components/LogoMark.tsx) -->
-          <svg viewBox="0 0 260 150" id="intro-mark">
-            <defs><linearGradient id="ihk" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2a46ff"/><stop offset="1" stop-color="#9aabff"/></linearGradient></defs>
-            <g fill="currentColor" id="intro-px"></g>
-            <g fill="currentColor">
-              <rect class="hb" x="46" y="16" width="26" height="118" rx="2" style="animation-delay:.18s"/>
-              <rect class="hb" x="106" y="16" width="26" height="118" rx="2" style="animation-delay:.28s"/>
-              <rect class="hb" x="70" y="62" width="38" height="26" style="animation-delay:.36s"/>
-            </g>
-            <rect class="box" x="148" y="12" width="104" height="126" rx="20" fill="none" stroke="url(#ihk)" stroke-width="7"/>
-            <polygon class="chev" points="214,34 234,34 192,75 234,116 214,116 172,75" fill="currentColor"/>
-            <rect class="cur" x="226" y="120" width="16" height="6" rx="2" fill="currentColor"/>
-          </svg>
+          <!-- Ikon HK (potongan logo Cloudinary, sama dengan src/components/LogoMark.tsx) -->
+          <img id="intro-mark" class="box" alt="" width="361" height="160" src="https://res.cloudinary.com/dl4pyan8v/image/upload/c_crop,x_15,y_245,w_860,h_410/e_trim/f_auto,q_auto,h_320/v1793385513/1EF88D88-4DEB-4541-A073-0ED603FFF1CA_hyknub.png" />
         </div>
         <div class="word" id="intro-word"></div>
         <div class="line"></div>
@@ -139,18 +128,6 @@
         var QUICK = false;
         try { QUICK = sessionStorage.getItem('hk_intro_seen') === '1'; sessionStorage.setItem('hk_intro_seen', '1'); } catch (e) {}
         if (QUICK) el.classList.add('quick');
-
-        /* ── Piksel pecahan huruf H: terbang dari arah acak lalu merakit ── */
-        var PX = [[30,22,10,.95],[16,34,8,.7],[34,44,9,.85],[6,52,6,.45],[22,60,8,.75],[36,70,7,.9],[12,78,9,.55],[28,88,8,.8],[2,96,5,.35],[18,104,7,.6],[34,112,9,.9],[10,120,6,.4],[26,128,6,.65]];
-        var pxg = document.getElementById('intro-px'), NS = 'http://www.w3.org/2000/svg';
-        PX.forEach(function (p, i) {
-          var r = document.createElementNS(NS, 'rect');
-          r.setAttribute('x', p[0]); r.setAttribute('y', p[1]); r.setAttribute('width', p[2]); r.setAttribute('height', p[2]);
-          r.setAttribute('class', 'px');
-          r.style.setProperty('--dx', (-60 - Math.random() * 140) + 'px'); r.style.setProperty('--dy', ((Math.random() - .5) * 160) + 'px');
-          r.style.setProperty('--o', p[3]); r.style.animationDelay = (i * 0.025) + 's';
-          pxg.appendChild(r);
-        });
 
         /* ── Huruf HIKIMORI (disembunyikan; muncul saat cat selesai membentuknya) ── */
         var TXT = 'HIKIMORI', w = document.getElementById('intro-word'), letters = [];
