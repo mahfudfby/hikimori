@@ -1,12 +1,92 @@
-// src/admin/PortfolioAdmin.tsx — CRUD koleksi `portfolio` (setiap simpan langsung live).
+// src/admin/PortfolioAdmin.tsx — CRUD koleksi `portfolio` (setiap simpan langsung live) + penyusun artikel blok.
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
-import { usePortfolio, PortfolioItem } from '../hooks/usePortfolio';
+import { usePortfolio, PortfolioItem, ArticleBlock, BlockType } from '../hooks/usePortfolio';
 import { Icon } from '../components/ui';
-import { Text, Area, Tags, ImageInput, Toggle, Grid, Section } from './fields';
+import { Text, Area, Tags, ImageInput, Toggle, Grid, Section, Select, ListEditor, uid } from './fields';
 
 type Draft = Omit<PortfolioItem, 'id'> & { id?: string };
-const EMPTY: Draft = { title: '', category: '', description: '', imageUrl: '', tags: [], client: '', year: String(new Date().getFullYear()), link: '', featured: false, order: 0 };
+const EMPTY: Draft = { title: '', subtitle: '', videoUrl: '', blocks: [], category: '', description: '', imageUrl: '', tags: [], client: '', year: String(new Date().getFullYear()), link: '', featured: false, order: 0 };
+
+const BLOCKS: { type: BlockType; label: string; icon: string }[] = [
+  { type: 'text', label: 'Paragraf', icon: 'layers' },
+  { type: 'heading', label: 'Subjudul', icon: 'menu' },
+  { type: 'media', label: 'Teks + Media', icon: 'image' },
+  { type: 'gallery', label: 'Slideshow / Galeri', icon: 'grid' },
+  { type: 'embed', label: 'Embed video / program', icon: 'play' },
+  { type: 'quote', label: 'Kutipan', icon: 'chat' },
+  { type: 'code', label: 'Kode', icon: 'tool' },
+  { type: 'divider', label: 'Ornamen pemisah', icon: 'spark' },
+];
+const newBlock = (type: BlockType): ArticleBlock => ({ id: uid('b'), type, text: '', style: type === 'gallery' ? 'slideshow' : 'plain', url: '', urls: [], caption: '', side: 'right', height: 520 });
+const blockLabel = (t: BlockType) => BLOCKS.find(b => b.type === t)?.label || t;
+const TEXT_HINT = 'Baris kosong = paragraf baru. **tebal**, *miring*, `kode`, [teks](https://link)';
+
+/** Daftar foto slideshow / galeri: tambah & hapus satu per satu. */
+const Photos: React.FC<{ value: string[]; onChange: (v: string[]) => void }> = ({ value, onChange }) => (
+  <div className="field">
+    <span>Foto ({value.length})</span>
+    <div className="cms-points">
+      {value.map((u, i) => (
+        <div key={i} className="cms-point cms-photo">
+          <span className="cms-point-n xs faint">{i + 1}</span>
+          <ImageInput label="" value={u} onChange={v => onChange(value.map((x, j) => (j === i ? v : x)))} />
+          <button type="button" className="icon-btn sm" aria-label={`Hapus foto ${i + 1}`} onClick={() => onChange(value.filter((_, j) => j !== i))}><Icon name="close" size={14} /></button>
+        </div>
+      ))}
+    </div>
+    <button type="button" className="pill sm" style={{ alignSelf: 'flex-start' }} onClick={() => onChange([...value, ''])}><Icon name="plus" size={14} />Tambah foto</button>
+  </div>
+);
+
+const BlockFields: React.FC<{ b: ArticleBlock; up: (p: Partial<ArticleBlock>) => void }> = ({ b, up }) => {
+  switch (b.type) {
+    case 'heading': return <Text label="Subjudul" value={b.text} onChange={v => up({ text: v })} />;
+    case 'divider': return <p className="xs muted">Ornamen ✦ pemisah antar bagian artikel. Tidak perlu diisi.</p>;
+    case 'quote': return (<>
+      <Area label="Kutipan" value={b.text} onChange={v => up({ text: v })} rows={3} />
+      <Text label="Sumber / nama (opsional)" value={b.caption} onChange={v => up({ caption: v })} />
+    </>);
+    case 'code': return (<>
+      <Area label="Kode / potongan program" value={b.text} onChange={v => up({ text: v })} rows={8} />
+      <Text label="Keterangan (opsional)" value={b.caption} onChange={v => up({ caption: v })} />
+    </>);
+    case 'embed': return (<>
+      <Text label="Link video / program" value={b.url} onChange={v => up({ url: v })} placeholder="https://www.youtube.com/watch?v=…"
+        hint="YouTube, TikTok (link lengkap …/video/angka), Instagram (post / reel), atau link program web hasil developer (tampil interaktif)." />
+      <Grid>
+        <Text label="Keterangan (opsional)" value={b.caption} onChange={v => up({ caption: v })} />
+        <Text label="Tinggi program web (px)" type="number" value={b.height} onChange={v => up({ height: Math.max(240, Math.min(1400, Number(v) || 520)) })} hint="Hanya untuk link program web." />
+      </Grid>
+    </>);
+    case 'gallery': return (<>
+      <Select label="Tampilan" value={b.style} onChange={v => up({ style: v })} options={[{ value: 'slideshow', label: 'Slideshow animasi (geser otomatis)' }, { value: 'grid', label: 'Galeri grid' }]} />
+      <Photos value={b.urls} onChange={v => up({ urls: v })} />
+      <Text label="Keterangan (opsional)" value={b.caption} onChange={v => up({ caption: v })} />
+    </>);
+    case 'media': return (<>
+      <Area label="Teks" value={b.text} onChange={v => up({ text: v })} rows={6} />
+      <small className="xs faint">{TEXT_HINT}</small>
+      <ImageInput label="Media: upload foto, atau tempel link video YouTube / TikTok / Instagram" value={b.url} onChange={v => up({ url: v })} />
+      <Grid>
+        <Select label="Posisi media" value={b.side} onChange={v => up({ side: v as ArticleBlock['side'] })} options={[{ value: 'right', label: 'Media di kanan' }, { value: 'left', label: 'Media di kiri' }]} />
+        <Text label="Keterangan media (opsional)" value={b.caption} onChange={v => up({ caption: v })} />
+      </Grid>
+    </>);
+    default: return (<>
+      <Select label="Gaya paragraf" value={b.style} onChange={v => up({ style: v })} options={[
+        { value: 'plain', label: 'Biasa' },
+        { value: 'dropcap', label: 'Pembuka majalah (huruf awal besar)' },
+        { value: 'lead', label: 'Lead (teks pengantar besar)' },
+        { value: 'card', label: 'Magazine card (kotak)' },
+        { value: 'columns', label: 'Kolom koran (2 kolom)' },
+        { value: 'note', label: 'Catatan sorot (garis emas)' },
+      ]} />
+      <Area label="Isi paragraf" value={b.text} onChange={v => up({ text: v })} rows={7} />
+      <small className="xs faint">{TEXT_HINT}</small>
+    </>);
+  }
+};
 
 const PortfolioAdmin: React.FC = () => {
   const { items, loading, error, addItem, updateItem, deleteItem } = usePortfolio({ live: true });
@@ -35,15 +115,29 @@ const PortfolioAdmin: React.FC = () => {
   if (edit) return (
     <Section title={edit.id ? 'Edit proyek' : 'Proyek baru'} actions={<button className="pill sm" onClick={() => setEdit(null)}>Batal</button>}>
       <Grid>
-        <Text label="Judul" value={edit.title} onChange={v => setEdit({ ...edit, title: v })} />
+        <Text label="Judul / headline" value={edit.title} onChange={v => setEdit({ ...edit, title: v })} />
         <Text label="Kategori (mis. HR, IT Support, Desain)" value={edit.category} onChange={v => setEdit({ ...edit, category: v })} />
         <Text label="Klien / perusahaan" value={edit.client} onChange={v => setEdit({ ...edit, client: v })} />
         <Text label="Tahun" value={edit.year} onChange={v => setEdit({ ...edit, year: v })} />
       </Grid>
-      <Area label="Deskripsi" value={edit.description} onChange={v => setEdit({ ...edit, description: v })} rows={6} />
+      <Text label="Sub-judul artikel" value={edit.subtitle} onChange={v => setEdit({ ...edit, subtitle: v })} hint="Tampil di bawah headline." />
+      <Area label="Ringkasan (kartu daftar portofolio)" value={edit.description} onChange={v => setEdit({ ...edit, description: v })} rows={3} />
       <Tags label="Tag" value={edit.tags} onChange={v => setEdit({ ...edit, tags: v })} />
       <Text label="Link proyek (opsional)" value={edit.link || ''} onChange={v => setEdit({ ...edit, link: v })} />
-      <ImageInput label="Gambar cover" value={edit.imageUrl} onChange={v => setEdit({ ...edit, imageUrl: v })} />
+      <ImageInput label="Gambar cover / hero banner" value={edit.imageUrl} onChange={v => setEdit({ ...edit, imageUrl: v })} />
+      <Text label="Video hero banner (opsional)" value={edit.videoUrl} onChange={v => setEdit({ ...edit, videoUrl: v })} placeholder="Link YouTube / TikTok / Instagram"
+        hint="Bila diisi, hero banner artikel memakai video ini; gambar cover tetap dipakai di kartu daftar." />
+      <div className="field">
+        <span>Isi artikel ({edit.blocks.length} blok)</span>
+        <small className="xs faint">Susun bebas tanpa batas: tambah blok, ubah urutan dengan panah, duplikat, atau hapus. Kosong = ringkasan dipakai sebagai isi.</small>
+        <ListEditor<ArticleBlock> items={edit.blocks} onChange={v => setEdit({ ...edit, blocks: v })} addLabel="Tambah paragraf"
+          create={() => newBlock('text')}
+          title={b => <><strong>{blockLabel(b.type)}</strong> <span className="faint">· {(b.text || b.caption || b.url || (b.urls.length ? `${b.urls.length} foto` : '')).slice(0, 70)}</span></>}
+          render={(b, up) => <BlockFields b={b} up={up} />} />
+        <div className="row wrap gap-8">
+          {BLOCKS.map(x => <button key={x.type} type="button" className="pill sm" onClick={() => setEdit({ ...edit, blocks: [...edit.blocks, newBlock(x.type)] })}><Icon name={x.icon} size={13} />{x.label}</button>)}
+        </div>
+      </div>
       <Toggle label="Unggulan (tampil paling depan & kartu gelap)" value={edit.featured} onChange={v => setEdit({ ...edit, featured: v })} />
       <div className="row gap-8"><button className="pill dark" onClick={save} disabled={busy}><Icon name="save" size={15} />{busy ? 'Menyimpan…' : 'Simpan proyek'}</button></div>
     </Section>
@@ -57,7 +151,8 @@ const PortfolioAdmin: React.FC = () => {
           {items.map((it, i) => (
             <div key={it.id} className="cms-item row gap-12" style={{ padding: 10 }}>
               {it.imageUrl ? <img src={it.imageUrl} alt="" style={{ width: 64, height: 48, objectFit: 'cover', borderRadius: 10 }} /> : <span className="logo-box"><Icon name="image" /></span>}
-              <div className="grow"><div className="small">{it.featured && '⭐ '}{it.title}</div><div className="xs muted">{it.category} · {it.year}</div></div>
+              <div className="grow"><div className="small">{it.featured && '⭐ '}{it.title}</div><div className="xs muted">{it.category} · {it.year} · {it.blocks.length} blok</div></div>
+              <a className="icon-btn sm" href={`/portofolio/${it.id}`} target="_blank" rel="noreferrer" aria-label="Lihat artikel"><Icon name="eye" size={14} /></a>
               <button className="icon-btn sm" onClick={() => move(i, -1)} disabled={i === 0} aria-label="Naik"><Icon name="up" size={14} /></button>
               <button className="icon-btn sm" onClick={() => move(i, 1)} disabled={i === items.length - 1} aria-label="Turun"><Icon name="down" size={14} /></button>
               <button className="pill sm" onClick={() => setEdit({ ...EMPTY, ...it })}>Edit</button>

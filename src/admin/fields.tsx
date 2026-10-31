@@ -84,6 +84,44 @@ export const BiLines: React.FC<{ label: string; value: Bi[]; onChange: (v: Bi[])
   );
 };
 
+/** Daftar poin bilingual: satu baris per poin (ID + EN), tombol tambah & hapus per poin. */
+export const BiPoints: React.FC<{ label: string; value: Bi[]; onChange: (v: Bi[]) => void; hint?: string; addLabel?: string }> =
+  ({ label, value, onChange, hint, addLabel = 'Tambah poin' }) => {
+    // state lokal agar poin baru yang masih kosong tidak langsung hilang; yang tersimpan hanya poin berisi
+    const [rows, setRows] = useState<Bi[]>(() => (value.length ? value : [{ id: '', en: '' }]).map(x => ({ id: x.id, en: x.en })));
+    const commit = (next: Bi[]) => { setRows(next); onChange(next.filter(x => x.id.trim() || x.en.trim())); };
+    const edit = (i: number, lang: 'id' | 'en', text: string) => commit(rows.map((r, j) => (j === i ? { ...r, [lang]: text } : r)));
+    return (
+      <div className="field">
+        <span>{label}</span>
+        <div className="cms-points">
+          {rows.map((r, i) => (
+            <div className="cms-point" key={i}>
+              <span className="cms-point-n xs faint">{i + 1}</span>
+              <textarea className="input" rows={2} placeholder="🇮🇩 Indonesia" aria-label={`Poin ${i + 1} Indonesia`} value={r.id} onChange={e => edit(i, 'id', e.target.value)} />
+              <textarea className="input" rows={2} placeholder="🇬🇧 English" aria-label={`Poin ${i + 1} English`} value={r.en} onChange={e => edit(i, 'en', e.target.value)} />
+              <button type="button" className="icon-btn sm" aria-label={`Hapus poin ${i + 1}`} title="Hapus poin" onClick={() => commit(rows.filter((_, j) => j !== i))}><Icon name="close" size={14} /></button>
+            </div>
+          ))}
+        </div>
+        <button type="button" className="pill sm" style={{ alignSelf: 'flex-start' }} onClick={() => setRows([...rows, { id: '', en: '' }])}><Icon name="plus" size={14} />{addLabel}</button>
+        {hint && <small className="xs faint">{hint}</small>}
+      </div>
+    );
+  };
+
+/** Teks bilingual berisi baris "• ..." diedit sebagai daftar poin (disimpan tetap sebagai teks berbaris). */
+export const BiBulletText: React.FC<{ label: string; value: Bi; onChange: (v: Bi) => void; hint?: string; addLabel?: string }> =
+  ({ label, value, onChange, hint, addLabel }) => {
+    const split = (t: string) => (t || '').split('\n').map(l => l.trim().replace(/^[•-]\s*/, '')).filter(Boolean);
+    const [initial] = useState<Bi[]>(() => {
+      const a = split(value?.id), b = split(value?.en);
+      return Array.from({ length: Math.max(a.length, b.length) }, (_, i) => ({ id: a[i] ?? '', en: b[i] ?? '' }));
+    });
+    const join = (rows: Bi[], lang: 'id' | 'en') => rows.map(r => r[lang].trim()).filter(Boolean).map(l => `• ${l.replace(/\s*\n\s*/g, ' ')}`).join('\n');
+    return <BiPoints label={label} value={initial} hint={hint} addLabel={addLabel} onChange={rows => onChange({ id: join(rows, 'id'), en: join(rows, 'en') })} />;
+  };
+
 export const Tags: React.FC<{ label: string; value: string[]; onChange: (v: string[]) => void }> = ({ label, value, onChange }) => {
   const [text, setText] = useState(value.join(', '));
   return (
@@ -149,7 +187,7 @@ export function ListEditor<T extends { id: string }>({ items, onChange, create, 
       {items.map((it, i) => {
         const isOpen = open === it.id;
         return (
-          <div key={it.id} className="cms-item">
+          <div key={it.id} className={`cms-item${isOpen ? ' open' : ''}`}>
             <div className="row gap-8">
               <button type="button" className="grow row gap-8 cms-item-head" onClick={() => setOpen(isOpen ? null : it.id)} aria-expanded={isOpen}>
                 <span className="xs faint" style={{ width: 22 }}>{i + 1}</span>
