@@ -22,7 +22,7 @@
     { "handle": "filesystem" },
     { "src": "/(profil|pengalaman|pendidikan|sertifikat|keahlian|layanan|portofolio|kontak)/?", "dest": "/$1/index.html" },
     { "src": "/portofolio/([A-Za-z0-9_-]+)/?", "dest": "/portofolio/$1/index.html", "check": true },
-    { "src": "/portofolio/[^/]+/?", "dest": "/portofolio/index.html" },
+    { "src": "/portofolio/[^/]+(/index[.]html)?/?", "dest": "/portofolio/index.html" },
     { "src": "/admin(/.*)?", "dest": "/index.html" },
     { "src": "/.*", "status": 404, "dest": "/404.html" }
   ]
