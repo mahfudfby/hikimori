@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 import { usePortfolio, PortfolioItem, ArticleBlock, BlockType } from '../hooks/usePortfolio';
 import { Icon } from '../components/ui';
+import { parseEmbed } from '../utils/embed';
+import { MediaFrameEditor } from './MediaFrameEditor';
 import { Text, Area, Tags, ImageInput, Toggle, Grid, Section, Select, ListEditor, uid } from './fields';
 
 type Draft = Omit<PortfolioItem, 'id'> & { id?: string };
@@ -11,15 +13,58 @@ const EMPTY: Draft = { title: '', subtitle: '', videoUrl: '', blocks: [], catego
 const BLOCKS: { type: BlockType; label: string; icon: string }[] = [
   { type: 'text', label: 'Paragraf', icon: 'layers' },
   { type: 'heading', label: 'Subjudul', icon: 'menu' },
-  { type: 'media', label: 'Teks + Media', icon: 'image' },
+  { type: 'media', label: 'Teks + Media / Reels', icon: 'image' },
   { type: 'gallery', label: 'Slideshow / Galeri', icon: 'grid' },
   { type: 'embed', label: 'Embed video / program', icon: 'play' },
   { type: 'quote', label: 'Kutipan', icon: 'chat' },
   { type: 'code', label: 'Kode', icon: 'tool' },
   { type: 'divider', label: 'Ornamen pemisah', icon: 'spark' },
 ];
-const newBlock = (type: BlockType): ArticleBlock => ({ id: uid('b'), type, text: '', style: type === 'gallery' ? 'slideshow' : 'plain', url: '', urls: [], caption: '', side: 'right', height: 520 });
+const newBlock = (type: BlockType): ArticleBlock => ({ id: uid('b'), type, text: '', style: type === 'gallery' ? 'slideshow' : 'plain', url: '', urls: [], caption: '', side: 'right', height: 520, width: type === 'media' ? 45 : 100, ratio: 'auto', zoom: 100, shiftY: 0 });
 const blockLabel = (t: BlockType) => BLOCKS.find(b => b.type === t)?.label || t;
+const FRAME_OPTS = [
+  { value: 'plain', label: 'Dengan caption (kartu lengkap platform + keterangan)' },
+  { value: 'frameless', label: 'Frameless (video saja, tanpa caption)' },
+];
+/** Panduan embed per sosmed (tampil di blok embed). */
+const GUIDES: { name: string; steps: string[]; note?: string }[] = [
+  { name: 'Instagram (post / reel)', steps: [
+    'Buka postingan di instagram.com lewat browser komputer.',
+    'Klik ikon ••• di kanan atas postingan → Embed.',
+    'Centang / hapus "Include caption" sesuai selera → Copy embed code.',
+    'Tempel kodenya di kolom di atas. Bisa juga: ••• → Copy link, lalu tempel link-nya.',
+  ], note: 'Akun harus publik dan izin embed aktif (Pengaturan → Privasi → "Izinkan orang menyematkan postingan Anda").' },
+  { name: 'TikTok', steps: [
+    'Buka video di tiktok.com lewat browser komputer.',
+    'Klik tombol Bagikan (panah) → Embed → Copy code, lalu tempel.',
+    'Atau salin link dari kolom alamat browser: tiktok.com/@akun/video/1234567890…',
+  ], note: 'Link pendek dari aplikasi HP (vt.tiktok.com/…) tidak bisa: buka dulu di browser agar jadi link lengkap. Video harus publik.' },
+  { name: 'YouTube (video / Shorts)', steps: [
+    'Buka video → klik Bagikan (Share).',
+    'Pilih Sematkan (Embed) → Salin kode <iframe>, lalu tempel.',
+    'Atau cukup Salin link (youtu.be/… atau youtube.com/shorts/…).',
+  ], note: 'Video harus Publik atau Tidak publik (unlisted), dan opsi "Izinkan penyematan" di YouTube Studio aktif.' },
+  { name: 'Program web hasil developer', steps: [
+    'Tempel link https dari demo program (Vercel, Netlify, GitHub Pages, CodeSandbox, StackBlitz, dll.).',
+    'Atur "Tinggi program web" agar program tampil penuh.',
+  ], note: 'Situs tujuan harus mengizinkan ditampilkan di iframe; bila kotak kosong, situsnya menolak.' },
+];
+const EmbedGuide: React.FC<{ open?: boolean }> = ({ open }) => (
+  <details className="cms-guide" open={open}>
+    <summary><Icon name="eye" size={14} />Panduan embed tiap sosmed</summary>
+    <div className="cms-guide-grid">
+      {GUIDES.map(g => (
+        <div key={g.name} className="cms-guide-item">
+          <strong className="small">{g.name}</strong>
+          <ol>{g.steps.map(st => <li key={st}>{st}</li>)}</ol>
+          {g.note && <small className="xs muted">{g.note}</small>}
+        </div>
+      ))}
+    </div>
+    <small className="xs muted"><strong>Dengan caption</strong>: kartu lengkap platform (nama akun, caption) + keterangan Anda. <strong>Frameless</strong>: video saja, tanpa caption.</small>
+  </details>
+);
+
 const TEXT_HINT = 'Baris kosong = paragraf baru. **tebal**, *miring*, `kode`, [teks](https://link)';
 
 /** Daftar foto slideshow / galeri: tambah & hapus satu per satu. */
@@ -52,26 +97,33 @@ const BlockFields: React.FC<{ b: ArticleBlock; up: (p: Partial<ArticleBlock>) =>
       <Text label="Keterangan (opsional)" value={b.caption} onChange={v => up({ caption: v })} />
     </>);
     case 'embed': return (<>
-      <Text label="Link video / program" value={b.url} onChange={v => up({ url: v })} placeholder="https://www.youtube.com/watch?v=…"
-        hint="YouTube, TikTok (link lengkap …/video/angka), Instagram (post / reel), atau link program web hasil developer (tampil interaktif)." />
+      <Select label="Tampilan embed" value={b.style === 'frameless' ? 'frameless' : 'plain'} onChange={v => up({ style: v })} options={FRAME_OPTS} />
+      <EmbedGuide open />
+      <Area label="Link atau kode embed" value={b.url} onChange={v => up({ url: v })} rows={3} />
+      <small className="xs faint">Tempel link, atau kode dari menu <strong>Embed</strong> Instagram / TikTok / YouTube. Juga bisa link program web hasil developer (tampil interaktif).{b.url && <> → {parseEmbed(b.url) ? <strong>terbaca: {parseEmbed(b.url)!.kind}</strong> : <strong style={{ color: '#d14343' }}>belum terbaca</strong>}</>}</small>
       <Grid>
         <Text label="Keterangan (opsional)" value={b.caption} onChange={v => up({ caption: v })} />
         <Text label="Tinggi program web (px)" type="number" value={b.height} onChange={v => up({ height: Math.max(240, Math.min(1400, Number(v) || 520)) })} hint="Hanya untuk link program web." />
       </Grid>
+      <MediaFrameEditor b={b} up={up} />
     </>);
     case 'gallery': return (<>
       <Select label="Tampilan" value={b.style} onChange={v => up({ style: v })} options={[{ value: 'slideshow', label: 'Slideshow animasi (geser otomatis)' }, { value: 'grid', label: 'Galeri grid' }]} />
       <Photos value={b.urls} onChange={v => up({ urls: v })} />
+      <MediaFrameEditor b={b} up={up} />
       <Text label="Keterangan (opsional)" value={b.caption} onChange={v => up({ caption: v })} />
     </>);
     case 'media': return (<>
       <Area label="Teks" value={b.text} onChange={v => up({ text: v })} rows={6} />
       <small className="xs faint">{TEXT_HINT}</small>
-      <ImageInput label="Media: upload foto, atau tempel link video YouTube / TikTok / Instagram" value={b.url} onChange={v => up({ url: v })} />
+      <ImageInput label="Media: upload foto, atau tempel link / kode embed YouTube / TikTok / Instagram" value={b.url} onChange={v => up({ url: v })} />
+      <EmbedGuide />
       <Grid>
+        <Select label="Tampilan video embed" value={b.style === 'frameless' ? 'frameless' : 'plain'} onChange={v => up({ style: v })} options={FRAME_OPTS} />
         <Select label="Posisi media" value={b.side} onChange={v => up({ side: v as ArticleBlock['side'] })} options={[{ value: 'right', label: 'Media di kanan' }, { value: 'left', label: 'Media di kiri' }]} />
         <Text label="Keterangan media (opsional)" value={b.caption} onChange={v => up({ caption: v })} />
       </Grid>
+      <MediaFrameEditor b={b} up={up} />
     </>);
     default: return (<>
       <Select label="Gaya paragraf" value={b.style} onChange={v => up({ style: v })} options={[
@@ -125,18 +177,17 @@ const PortfolioAdmin: React.FC = () => {
       <Tags label="Tag" value={edit.tags} onChange={v => setEdit({ ...edit, tags: v })} />
       <Text label="Link proyek (opsional)" value={edit.link || ''} onChange={v => setEdit({ ...edit, link: v })} />
       <ImageInput label="Gambar cover / hero banner" value={edit.imageUrl} onChange={v => setEdit({ ...edit, imageUrl: v })} />
-      <Text label="Video hero banner (opsional)" value={edit.videoUrl} onChange={v => setEdit({ ...edit, videoUrl: v })} placeholder="Link YouTube / TikTok / Instagram"
-        hint="Bila diisi, hero banner artikel memakai video ini; gambar cover tetap dipakai di kartu daftar." />
+      <Area label="Video hero banner (opsional): link atau kode embed" value={edit.videoUrl} onChange={v => setEdit({ ...edit, videoUrl: v })} rows={2} />
+      <small className="xs faint">YouTube / TikTok / Instagram, tampil frameless. Bila diisi, hero banner artikel memakai video ini; gambar cover tetap dipakai di kartu daftar.</small>
+      <EmbedGuide />
       <div className="field">
         <span>Isi artikel ({edit.blocks.length} blok)</span>
         <small className="xs faint">Susun bebas tanpa batas: tambah blok, ubah urutan dengan panah, duplikat, atau hapus. Kosong = ringkasan dipakai sebagai isi.</small>
         <ListEditor<ArticleBlock> items={edit.blocks} onChange={v => setEdit({ ...edit, blocks: v })} addLabel="Tambah paragraf"
           create={() => newBlock('text')}
           title={b => <><strong>{blockLabel(b.type)}</strong> <span className="faint">· {(b.text || b.caption || b.url || (b.urls.length ? `${b.urls.length} foto` : '')).slice(0, 70)}</span></>}
-          render={(b, up) => <BlockFields b={b} up={up} />} />
-        <div className="row wrap gap-8">
-          {BLOCKS.map(x => <button key={x.type} type="button" className="pill sm" onClick={() => setEdit({ ...edit, blocks: [...edit.blocks, newBlock(x.type)] })}><Icon name={x.icon} size={13} />{x.label}</button>)}
-        </div>
+          render={(b, up) => <BlockFields b={b} up={up} />}
+          extraAdd={BLOCKS.filter(x => x.type !== 'text').map(x => ({ label: x.label, icon: x.icon, create: () => newBlock(x.type) }))} />
       </div>
       <Toggle label="Unggulan (tampil paling depan & kartu gelap)" value={edit.featured} onChange={v => setEdit({ ...edit, featured: v })} />
       <div className="row gap-8"><button className="pill dark" onClick={save} disabled={busy}><Icon name="save" size={15} />{busy ? 'Menyimpan…' : 'Simpan proyek'}</button></div>
