@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { useContent } from '../content/ContentContext';
 import { useLang } from '../contexts/LanguageContext';
 import { usePortfolio } from '../hooks/usePortfolio';
-import { Icon, CardLink, CountUp, Reveal, Staged, isLite, cld, cldSet } from '../components/ui';
+import { Icon, CardLink, CountUp, Reveal, Staged, isLite, cld, cldSet, Logo } from '../components/ui';
 import {
   pick, monthsOf, fmtDuration, fmtPeriod, careerMonths, categoryShare, CATEGORY_LABEL, ageOf, lines, waLink, RELEVANT, relevantExp,
 } from '../content/derive';
@@ -147,7 +147,10 @@ const TrackerCard: React.FC<{ exp?: Experience; idx: number; count: number; play
           <CardLink to={`/pengalaman#${exp.id}`} label={t('Buka detail', 'Open details')} />
         </div>
         <div className="dur-box" key={`${exp.id}-${idx}`}>
-          <span className="dur-1">{fmtDuration(m, lang, true)}</span>
+          <div className="dur-top">
+            <span className="dur-1">{fmtDuration(m, lang, true)}</span>
+            <Logo key={exp.id} src={exp.logoUrl} alt={exp.company} />
+          </div>
           <span className="dur-2">{pick(exp.position, lang)}</span>
           <span className="dur-3">{exp.company} · {fmtPeriod(exp.start, exp.end, lang)}{exp.type ? ` · ${exp.type}` : ''}</span>
           <div className="slide-prog" aria-hidden="true">
