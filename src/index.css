@@ -895,6 +895,7 @@ html.lite .logo-badge::after, html.lite .brand.brand-logo::after { animation: no
 .mag-rich blockquote { margin: 0 0 .9em 40px; padding: 0; border: 0; font: inherit; }
 .mag-rich a { color: inherit; text-decoration: underline; text-decoration-color: var(--mag-gold); }
 .mag-rich h2, .mag-rich h3, .mag-rich h4 { font-family: var(--serif); margin: .2em 0 .5em; }
+.fx-auto { color: var(--text); }
 .fx-shadow { text-shadow: 2px 2px 3px rgba(0, 0, 0, .35); }
 .fx-glow { text-shadow: 0 0 6px #f4cb4d, 0 0 12px rgba(244, 203, 77, .7); }
 .fx-outline { -webkit-text-stroke: 1px currentColor; color: transparent !important; }
