@@ -581,10 +581,12 @@ a, button, [role='button'], [role='tab'], [role='option'], input, select, textar
 .cert-units li { list-style: none; position: relative; padding-left: 14px; font-size: 0.76rem; line-height: 1.4; color: var(--on-ink-dim); }
 .cert-units li::before { content: ''; position: absolute; left: 0; top: 0.5em; width: 6px; height: 6px; border-radius: 50%; background: var(--yellow); }
 
-/* Pencapaian: kolom angka selebar sama → keterangan lurus sejajar */
-.ach-list { display: grid; grid-template-columns: minmax(4.6em, auto) minmax(0, 1fr); gap: 12px 14px; align-items: baseline; }
-.ach-list .ach-v { font-size: 1.6rem; font-weight: 300; letter-spacing: -0.03em; line-height: 1.1; font-variant-numeric: tabular-nums; white-space: nowrap; }
+/* Pencapaian: keterangan di atas, angka di bawahnya bergaya Sub-Title */
+.ach-list { display: flex; flex-direction: column; gap: 14px; }
+.ach-item { display: flex; flex-direction: column; gap: 3px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+.ach-item:last-child { padding-bottom: 0; border-bottom: 0; }
 .ach-list .ach-l { font-size: 0.82rem; line-height: 1.4; color: var(--text-2); }
+.ach-list .ach-v { font-size: 0.98rem; font-weight: 600; line-height: 1.3; font-variant-numeric: tabular-nums; }
 
 /* ═════════ Tata letak HP (≤ 680 px): rapi, lurus, tidak bertumpuk ═════════ */
 @media (max-width: 860px) {
