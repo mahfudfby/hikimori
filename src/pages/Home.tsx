@@ -9,6 +9,7 @@ import {
   pick, monthsOf, fmtDuration, fmtPeriod, careerMonths, categoryShare, CATEGORY_LABEL, ageOf, lines, waLink, RELEVANT, relevantExp,
 } from '../content/derive';
 import type { Experience } from '../content/types';
+import { downloadUrl } from '../utils/saveFile';
 
 const SLIDE_MS = 6500;
 const MAX_BARS = 10;
@@ -461,7 +462,7 @@ const Home: React.FC = () => {
         <div className="row wrap gap-8">
           <a className="pill yellow lg" href={waLink(content, lang)} target="_blank" rel="noreferrer"><Icon name="chat" />{t('Chat WhatsApp', 'Chat on WhatsApp')}</a>
           <Link className="pill lg" to="/kontak" style={{ borderColor: 'var(--ink-2)', color: 'var(--on-ink)' }}><Icon name="mail" />{t('Kontak', 'Contact')}</Link>
-          {content.profile.cvUrl && <a className="pill lg" href={content.profile.cvUrl} download style={{ borderColor: 'var(--ink-2)', color: 'var(--on-ink)' }}><Icon name="download" />CV</a>}
+          {content.profile.cvUrl && <a className="pill lg" href={content.profile.cvUrl} download onClick={e => { e.preventDefault(); downloadUrl(content.profile.cvUrl, 'CV-Mahfud-Febry-Styanto.pdf'); }} style={{ borderColor: 'var(--ink-2)', color: 'var(--on-ink)' }}><Icon name="download" />CV</a>}
         </div>
       </Reveal>
     </main>
