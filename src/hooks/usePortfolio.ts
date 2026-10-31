@@ -41,6 +41,13 @@ export interface PortfolioItem {
   client: string;
   year: string;
   link?: string;
+  /** Hashtag (tanpa #), tampil di akhir artikel */
+  hashtags: string[];
+  /** Judul & deskripsi untuk Google / pratinjau share; kosong = pakai judul & ringkasan */
+  seoTitle: string;
+  seoDesc: string;
+  /** Kata kunci (meta keywords), tampil di akhir artikel */
+  keywords: string[];
   featured: boolean;
   order: number;
 }
@@ -48,7 +55,7 @@ export interface PortfolioItem {
 const fsMod = () => import('firebase/firestore');
 
 const normalize = (v: any, id: string): PortfolioItem =>
-  ({ tags: [], featured: false, order: 0, link: '', subtitle: '', videoUrl: '', blocks: [], ...v, id } as PortfolioItem);
+  ({ tags: [], featured: false, order: 0, link: '', subtitle: '', videoUrl: '', blocks: [], hashtags: [], seoTitle: '', seoDesc: '', keywords: [], ...v, id } as PortfolioItem);
 
 /**
  * Publik (default): sekali baca via Firestore REST — tanpa SDK, ringan di HP.
