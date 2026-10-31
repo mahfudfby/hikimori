@@ -17,6 +17,13 @@ export interface ArticleBlock {
   side: 'left' | 'right';
   /** tinggi iframe (px) untuk embed web / program interaktif */
   height: number;
+  /** lebar media, % lebar artikel (20–100). Data lama tanpa field ini memakai default. */
+  width?: number;
+  /** rasio kotak media: auto | 16:9 | 9:16 | 1:1 | 4:5 | 4:3 | angka (hasil drag) */
+  ratio?: string;
+  /** crop: zoom (%) & geser vertikal (%) — mis. hilangkan bar hitam video landscape */
+  zoom?: number;
+  shiftY?: number;
 }
 
 export interface PortfolioItem {

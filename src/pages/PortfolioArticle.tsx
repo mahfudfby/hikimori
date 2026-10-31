@@ -44,7 +44,7 @@ const PortfolioArticle: React.FC = () => {
   const hero = post.videoUrl || post.imageUrl;
 
   return (
-    <main className="shell page-in">
+    <main className="shell shell-wide page-in">
       <div className="frame mag">
         <article className="mag-article">
           <nav className="crumb" aria-label="breadcrumb"><Link to="/">Home</Link><span>/</span><Link to="/portofolio">{t('Portofolio', 'Portfolio')}</Link></nav>
@@ -57,7 +57,7 @@ const PortfolioArticle: React.FC = () => {
               <span>{t('Oleh', 'By')} <strong>{p.name}</strong>{post.client && <> · {post.client}</>}</span>
             </div>
           </header>
-          {hero && <figure className="mag-hero"><Media url={hero} alt={post.title} eager /></figure>}
+          {hero && <figure className="mag-hero"><Media url={hero} alt={post.title} eager frameless /></figure>}
           <div className="mag-body"><ArticleBlocks blocks={blocks} title={post.title} /></div>
           <footer className="mag-foot">
             {post.tags?.length > 0 && <div className="row wrap gap-8">{post.tags.map(tg => <span key={tg} className="chip">{tg}</span>)}</div>}
