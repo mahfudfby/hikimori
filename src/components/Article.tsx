@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import type { ArticleBlock } from '../hooks/usePortfolio';
 import { parseEmbed, mediaKind, parseInline, embedUrlFromCode } from '../utils/embed';
 import { Icon, cld } from './ui';
+import { sanitizeHtml, isRichHtml, hyphenate, hyphenateHtml } from '../utils/richHtml';
 
 /** Link https saja untuk tombol cadangan (kode embed / teks lain tidak dijadikan href). */
 const parseHref = (raw: string) => { const u = embedUrlFromCode(raw); return /^https:\/\//.test(u) ? u : ''; };
@@ -20,13 +21,17 @@ export const RichText: React.FC<{ text: string; className?: string }> = ({ text,
                 : n.t === 'i' ? <em key={k}>{n.v}</em>
                   : n.t === 'code' ? <code key={k}>{n.v}</code>
                     : n.t === 'a' ? <a key={k} href={n.href} target="_blank" rel="noopener noreferrer">{n.v}</a>
-                      : <React.Fragment key={k}>{n.v}</React.Fragment>)}
+                      : <React.Fragment key={k}>{hyphenate(n.v)}</React.Fragment>)}
           </React.Fragment>
         ))}
       </p>
     ))}
   </>
 );
+
+/** Isi paragraf: HTML dari editor gaya Word (dibersihkan lagi saat tampil) atau teks format lama. */
+export const ArticleText: React.FC<{ text: string }> = ({ text }) =>
+  isRichHtml(text) ? <div className="mag-rich" dangerouslySetInnerHTML={{ __html: hyphenateHtml(sanitizeHtml(text)) }} /> : <RichText text={text} />;
 
 /** iframe YouTube / TikTok / Instagram / program web. Link tidak dikenal → tautan biasa. */
 export const EmbedFrame: React.FC<{ url: string; title: string; height?: number; frameless?: boolean }> = ({ url, title, height, frameless }) => {
@@ -124,7 +129,7 @@ export const Slideshow: React.FC<{ urls: string[]; caption?: string; alt: string
           <div className="slide-dots">{list.map((_, j) => <button type="button" key={j} className={j === i ? 'on' : ''} aria-label={`Foto ${j + 1}`} onClick={() => setI(j)} />)}</div>
         </>)}
       </div>
-      {caption && <figcaption>{caption}</figcaption>}
+      {caption && <figcaption>{hyphenate(caption)}</figcaption>}
     </figure>
   );
 };
@@ -132,7 +137,7 @@ export const Slideshow: React.FC<{ urls: string[]; caption?: string; alt: string
 export const Block: React.FC<{ b: ArticleBlock; title: string }> = ({ b, title }) => {
   const fig: React.CSSProperties = { width: `${widthOf(b)}%`, marginInline: 'auto' };
   switch (b.type) {
-    case 'heading': return <h2 className="mag-h2">{b.text}</h2>;
+    case 'heading': return <h2 className="mag-h2">{hyphenate(b.text)}</h2>;
     case 'quote': return (
       <blockquote className="mag-quote"><RichText text={b.text} />{b.caption && <cite>— {b.caption}</cite>}</blockquote>
     );
@@ -141,7 +146,7 @@ export const Block: React.FC<{ b: ArticleBlock; title: string }> = ({ b, title }
       <figure className="mag-figure"><pre className="mag-code"><code>{b.text}</code></pre>{b.caption && <figcaption>{b.caption}</figcaption>}</figure>
     );
     case 'embed': return (
-      <figure className="mag-figure" style={fig}><FitMedia url={b.url} alt={b.caption || title} fit={fitOf(b)} height={b.height} frameless={b.style === 'frameless'} />{b.caption && b.style !== 'frameless' && <figcaption>{b.caption}</figcaption>}</figure>
+      <figure className="mag-figure" style={fig}><FitMedia url={b.url} alt={b.caption || title} fit={fitOf(b)} height={b.height} frameless={b.style === 'frameless'} />{b.caption && b.style !== 'frameless' && <figcaption>{hyphenate(b.caption)}</figcaption>}</figure>
     );
     case 'gallery': return b.style === 'grid' ? (
       <figure className="mag-figure" style={fig}>
@@ -152,11 +157,11 @@ export const Block: React.FC<{ b: ArticleBlock; title: string }> = ({ b, title }
     case 'media': return (
       <div className={`mag-split ${b.side === 'left' ? 'media-left' : ''}`}
         style={{ ['--split' as any]: b.side === 'left' ? `${widthOf(b)}% minmax(0, 1fr)` : `minmax(0, 1fr) ${widthOf(b)}%` }}>
-        <div className="mag-split-text"><RichText text={b.text} /></div>
-        <figure className="mag-figure"><FitMedia url={b.url} alt={b.caption || title} fit={fitOf(b)} height={b.height} frameless={b.style === 'frameless'} />{b.caption && b.style !== 'frameless' && <figcaption>{b.caption}</figcaption>}</figure>
+        <div className="mag-split-text"><ArticleText text={b.text} /></div>
+        <figure className="mag-figure"><FitMedia url={b.url} alt={b.caption || title} fit={fitOf(b)} height={b.height} frameless={b.style === 'frameless'} />{b.caption && b.style !== 'frameless' && <figcaption>{hyphenate(b.caption)}</figcaption>}</figure>
       </div>
     );
-    default: return <div className={`mag-text mag-${b.style || 'plain'}`}><RichText text={b.text} /></div>;
+    default: return <div className={`mag-text mag-${b.style || 'plain'}`}><ArticleText text={b.text} /></div>;
   }
 };
 
