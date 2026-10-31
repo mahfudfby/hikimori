@@ -236,10 +236,10 @@ const AchievementsCard: React.FC = () => {
       {list.length === 0 ? <p className="xs faint">{t('Tambahkan pencapaian di CMS → Profil.', 'Add highlights in CMS → Profile.')}</p> : (
         <div className="ach-list">
           {list.map(a => (
-            <React.Fragment key={a.id}>
-              <span className="ach-v">{a.value}</span>
+            <div className="ach-item" key={a.id}>
               <span className="ach-l">{pick(a.label, lang)}</span>
-            </React.Fragment>
+              <span className="ach-v">{a.value}</span>
+            </div>
           ))}
         </div>
       )}
