@@ -169,15 +169,18 @@ export const ImageInput: React.FC<{ label: string; value: string; onChange: (v: 
 };
 
 /** Editor daftar generik: tambah, hapus, duplikat, urutkan naik/turun, buka-tutup item. */
-export function ListEditor<T extends { id: string }>({ items, onChange, create, title, render, addLabel = 'Tambah' }: {
+export function ListEditor<T extends { id: string }>({ items, onChange, create, title, render, addLabel = 'Tambah', extraAdd = [] }: {
   items: T[];
   onChange: (items: T[]) => void;
   create: () => T;
   title: (item: T, i: number) => React.ReactNode;
   render: (item: T, update: (patch: Partial<T>) => void) => React.ReactNode;
   addLabel?: string;
+  /** tombol tambah lain (mis. per jenis blok); item baru langsung terbuka */
+  extraAdd?: { label: string; icon: string; create: () => T }[];
 }) {
   const [open, setOpen] = useState<string | null>(null);
+  const add = (n: T) => { onChange([...items, n]); setOpen(n.id); };
   const move = (i: number, d: number) => {
     const j = i + d; if (j < 0 || j >= items.length) return;
     const next = [...items]; [next[i], next[j]] = [next[j], next[i]]; onChange(next);
@@ -203,9 +206,10 @@ export function ListEditor<T extends { id: string }>({ items, onChange, create, 
           </div>
         );
       })}
-      <button type="button" className="pill" style={{ alignSelf: 'flex-start' }} onClick={() => { const n = create(); onChange([...items, n]); setOpen(n.id); }}>
-        <Icon name="plus" size={15} />{addLabel}
-      </button>
+      <div className="row wrap gap-8">
+        <button type="button" className="pill" onClick={() => add(create())}><Icon name="plus" size={15} />{addLabel}</button>
+        {extraAdd.map(x => <button key={x.label} type="button" className="pill sm" onClick={() => add(x.create())}><Icon name={x.icon} size={13} />{x.label}</button>)}
+      </div>
     </div>
   );
 }

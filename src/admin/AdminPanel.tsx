@@ -256,7 +256,7 @@ Tetap publikasikan dan TIMPA versi tersebut?
             render={(o, up) => (<>
               <BiField label="Nama organisasi" value={o.name} onChange={v => up({ name: v })} />
               <Grid><BiField label="Jabatan" value={o.role} onChange={v => up({ role: v })} /><Text label="Periode" value={o.period} onChange={v => up({ period: v })} /></Grid>
-              <BiLines label="Tanggung jawab" value={o.points} onChange={v => up({ points: v })} />
+              <BiPoints label="Tanggung jawab" value={o.points} onChange={v => up({ points: v })} addLabel="Tambah tanggung jawab" />
             </>)} />
         </Section>
       </>);
@@ -313,7 +313,7 @@ Tetap publikasikan dan TIMPA versi tersebut?
               <Grid cols={3}><Text label="Ikon (emoji)" value={s.icon} onChange={v => up({ icon: v })} /></Grid>
               <Grid><BiField label="Judul" value={s.title} onChange={v => up({ title: v })} /><BiField label="Sub judul" value={s.subtitle} onChange={v => up({ subtitle: v })} /></Grid>
               <BiField label="Deskripsi" value={s.desc} onChange={v => up({ desc: v })} area rows={3} />
-              <BiLines label="Cakupan layanan" value={s.points} onChange={v => up({ points: v })} />
+              <BiPoints label="Cakupan layanan" value={s.points} onChange={v => up({ points: v })} addLabel="Tambah cakupan" />
             </>)} />
         </Section>
         <Section title="Alur kerja sama">
