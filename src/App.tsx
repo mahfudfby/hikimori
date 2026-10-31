@@ -7,6 +7,7 @@ import { ThemeProvider } from './contexts/ThemeContext';
 import { ContentProvider } from './content/ContentContext';
 import { Navbar, Footer, Floaters } from './components/Layout';
 import { useCursorFx } from './components/ui';
+import ShareSheet from './components/ShareSheet';
 import Home from './pages/Home';
 import seo from './seo/routes.json';
 
@@ -73,6 +74,7 @@ const Shell: React.FC = () => {
   return (
     <>
       {!isAdmin && <Navbar />}
+      <ShareSheet />
       <Suspense fallback={<Loading />}>
         <Routes>
           <Route path="/" element={<Home />} />

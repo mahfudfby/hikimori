@@ -9,6 +9,7 @@ import { DEFAULT_CONTENT } from '../content/defaults';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { Icon } from '../components/ui';
+import { saveFile } from '../utils/saveFile';
 import LogoMark from '../components/LogoMark';
 import { pick, monthsOf, fmtDuration, CATEGORY_LABEL } from '../content/derive';
 import type { SiteContent, Experience, Certificate, Skill, Service, Education, JourneyStep, Organization, Reference, Tool, ProcessStep, Achievement } from '../content/types';
@@ -350,8 +351,7 @@ Tetap publikasikan dan TIMPA versi tersebut?
           <div className="row wrap gap-8">
             <button className="pill dark" onClick={() => {
               const blob = new Blob([JSON.stringify(draft, null, 2)], { type: 'application/json' });
-              const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-              a.download = `hikimori-konten-${new Date().toISOString().slice(0, 10)}.json`; a.click(); URL.revokeObjectURL(a.href);
+              saveFile(blob, `hikimori-konten-${new Date().toISOString().slice(0, 10)}.json`);
             }}><Icon name="download" size={15} />Unduh backup (.json)</button>
             <label className="pill" style={{ cursor: 'pointer' }}><Icon name="upload" size={15} />Import backup
               <input type="file" accept="application/json" hidden onChange={async e => {

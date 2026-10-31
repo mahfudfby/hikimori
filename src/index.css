@@ -711,3 +711,9 @@ html.lite .reveal { transform: translateY(8px); }
 @media (prefers-reduced-motion: reduce) { .logo-badge::after, .brand.brand-logo::after { animation: none; } }
 html.lite .logo-badge::after, html.lite .brand.brand-logo::after { animation: none; }
 @media (max-width: 480px) { .brand.brand-logo { padding: 0 12px; } .brand.brand-logo img { height: 26px !important; } }
+
+/* Dialog "File siap" (iOS: Bagikan → Simpan ke File) */
+.share-sheet { position: fixed; inset: 0; z-index: 80; display: flex; align-items: flex-end; justify-content: center; padding: 16px; background: rgba(0,0,0,.55); }
+.share-box { width: 100%; max-width: 380px; text-align: center; background: var(--surface-solid, var(--surface)); }
+@media (min-width: 640px) { .share-sheet { align-items: center; } }
+@media print { .share-sheet { display: none; } }
