@@ -13,7 +13,7 @@ import { saveFile } from '../utils/saveFile';
 import LogoMark from '../components/LogoMark';
 import { pick, monthsOf, fmtDuration, CATEGORY_LABEL } from '../content/derive';
 import type { SiteContent, Experience, Certificate, Skill, Service, Education, JourneyStep, Organization, Reference, Tool, ProcessStep, Achievement } from '../content/types';
-import { Text, Select, Toggle, BiField, BiLines, Tags, ImageInput, ListEditor, Grid, Section, uid } from './fields';
+import { Text, Select, Toggle, BiField, BiLines, BiPoints, BiBulletText, Tags, ImageInput, ListEditor, Grid, Section, uid } from './fields';
 import PortfolioAdmin from './PortfolioAdmin';
 
 const DRAFT_KEY = 'hk_cms_draft';
@@ -209,7 +209,7 @@ Tetap publikasikan dan TIMPA versi tersebut?
               </Grid>
               <ImageInput label="Logo perusahaan" value={e.logoUrl} onChange={v => up({ logoUrl: v })} />
               <Tags label="Tag / kata kunci" value={e.tags} onChange={v => up({ tags: v })} />
-              <BiField label="Deskripsi pekerjaan" value={e.desc} onChange={v => up({ desc: v })} area rows={8} hint="Satu tugas per baris, awali dengan •" />
+              <BiBulletText label="Deskripsi pekerjaan" value={e.desc} onChange={v => up({ desc: v })} addLabel="Tambah poin deskripsi" hint="Satu tugas per poin. Tanda • ditambahkan otomatis." />
             </>)} />
         </Section>
       );
@@ -275,7 +275,7 @@ Tetap publikasikan dan TIMPA versi tersebut?
                 <Text label="Kode unit / no. sertifikat" value={c.code} onChange={v => up({ code: v })} />
               </Grid>
               <BiField label="Keterangan" value={c.desc} onChange={v => up({ desc: v })} area rows={2} />
-              <BiLines label="Unit kompetensi / materi yang dipelajari" value={c.units || []} onChange={v => up({ units: v })} hint="Satu unit per baris (boleh sertakan kode, mis. Menyusun Uraian Jabatan (M.70SDM01.010.2)). Tampil sebagai daftar di kartu sertifikat & dashboard." />
+              <BiPoints label="Unit kompetensi / materi yang dipelajari" value={c.units || []} onChange={v => up({ units: v })} addLabel="Tambah materi" hint="Satu unit per poin (boleh sertakan kode, mis. Menyusun Uraian Jabatan (M.70SDM01.010.2)). Tampil sebagai daftar di kartu sertifikat & dashboard." />
               <Text label="Link verifikasi (opsional)" value={c.credentialUrl} onChange={v => up({ credentialUrl: v })} />
               <ImageInput label="Gambar sertifikat" value={c.imageUrl} onChange={v => up({ imageUrl: v })} />
             </>)} />
