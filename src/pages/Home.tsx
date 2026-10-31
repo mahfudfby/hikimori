@@ -92,9 +92,8 @@ const ProgressCard: React.FC<{ exps: Experience[]; idx: number; onPick: (i: numb
   const max = Math.max(1, ...months);
   const total = careerMonths(content.experience);
   const cur = exps[idx];
-  // "Nganjuk, Jawa Timur" → "Nganjuk"; urutan kota mengikuti riwayat kerja
+  // "Kota Malang, Jawa Timur" → "Malang"
   const city = (loc: string) => (loc || '').split(',')[0].trim().replace(/^(Kota|Kabupaten|Kab\.)\s+/i, '');
-  const cities = Array.from(new Set(exps.map(e => city(e.location)).filter(c => c && c !== 'Indonesia')));
   return (
     <div className="card b-progress">
       <div className="card-head">
@@ -104,6 +103,12 @@ const ProgressCard: React.FC<{ exps: Experience[]; idx: number; onPick: (i: numb
       <div className="row gap-12">
         <span className="num-lg">{(total / 12).toFixed(1)} <span style={{ fontSize: '1.1rem' }}>{t('th', 'y')}</span></span>
         <span className="xs muted" style={{ lineHeight: 1.3 }} title={t('Periode menganggur tidak dihitung', 'Unemployed periods are excluded')}>{t('Masa kerja efektif', 'Effective work time')}<br />{t('tanpa jeda', 'excluding gaps')}</span>
+        {cur?.location && (
+          <a key={cur.id} className="prog-city" href={`https://maps.google.com/?q=${encodeURIComponent(`${cur.company} ${cur.location}`)}`} target="_blank" rel="noopener noreferrer"
+            title={`${t('Lokasi kerja', 'Work location')}: ${cur.company}, ${cur.location}`}>
+            <Icon name="map" size={12} />{city(cur.location)}
+          </a>
+        )}
       </div>
       <div className="bars" role="listbox" aria-label={t('Pilih pengalaman', 'Pick an experience')}>
         {exps.map((e, i) => {
@@ -123,24 +128,6 @@ const ProgressCard: React.FC<{ exps: Experience[]; idx: number; onPick: (i: numb
           );
         })}
       </div>
-      {cur?.location && (
-        <div className="prog-loc">
-          <a key={cur.id} className="prog-city" href={`https://maps.google.com/?q=${encodeURIComponent(`${cur.company} ${cur.location}`)}`} target="_blank" rel="noopener noreferrer"
-            title={t('Buka di Google Maps', 'Open in Google Maps')}>
-            <span className="icon-btn sm"><Icon name="map" size={15} /></span>
-            <span className="grow" style={{ minWidth: 0 }}>
-              <span className="eyebrow">{t('Lokasi kerja', 'Work location')}</span>
-              <span className="prog-city-name">{city(cur.location)}</span>
-              <span className="xs muted">{cur.company}</span>
-            </span>
-          </a>
-          {cities.length > 1 && (
-            <div className="row wrap gap-4 mt-8" aria-label={t('Kota tempat bekerja', 'Cities worked in')}>
-              {cities.map(c => <span key={c} className={`chip ${c === city(cur.location) ? 'yellow' : ''}`}>{c}</span>)}
-            </div>
-          )}
-        </div>
-      )}
     </div>
   );
 };
