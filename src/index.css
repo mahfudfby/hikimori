@@ -877,11 +877,10 @@ html.lite .logo-badge::after, html.lite .brand.brand-logo::after { animation: no
 @media (hover: none) { .mfe-h { opacity: .8; width: 14px; } .mfe-bottom { width: 64px; height: 14px; } .mfe-corner { width: 22px; height: 22px; } }
 
 /* Kartu Pengalaman: kota tempat bekerja (ikut slide yang berjalan) */
-.prog-loc { margin-top: 18px; padding-top: 14px; border-top: 1px dashed var(--line-2); }
-.prog-city { display: flex; align-items: center; gap: 12px; color: inherit; text-decoration: none; animation: progCity .5s var(--ease); }
-.prog-city > span:last-child { display: flex; flex-direction: column; gap: 2px; }
-.prog-city-name { font-size: 1.35rem; letter-spacing: -.01em; line-height: 1.15; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 @keyframes progCity { from { opacity: 0; transform: translateY(6px); } }
+/* Kota kerja slide aktif: kecil, kanan atas sejajar angka masa kerja */
+.prog-city { margin-left: auto; align-self: flex-start; display: inline-flex; align-items: center; gap: 4px; max-width: 42%; padding: 4px 9px; border-radius: 999px; border: 1px solid var(--line-2); background: var(--surface-solid); color: inherit; font-size: .74rem; line-height: 1.2; text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; animation: progCity .5s var(--ease); }
+.prog-city:hover { border-color: var(--yellow); }
 @media (prefers-reduced-motion: reduce) { .prog-city { animation: none; } }
 
 /* ---------- Isi artikel dari editor gaya Word ---------- */
