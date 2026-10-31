@@ -4,11 +4,12 @@ import { Link } from 'react-router-dom';
 import { useContent } from '../content/ContentContext';
 import { useLang } from '../contexts/LanguageContext';
 import { usePortfolio } from '../hooks/usePortfolio';
-import { Icon, CardLink, CountUp, Reveal, Staged, isLite, cld, cldSet } from '../components/ui';
+import { Icon, CardLink, CountUp, Reveal, Staged, isLite, cld, cldSet, Logo } from '../components/ui';
 import {
   pick, monthsOf, fmtDuration, fmtPeriod, careerMonths, categoryShare, CATEGORY_LABEL, ageOf, lines, waLink, RELEVANT, relevantExp,
 } from '../content/derive';
 import type { Experience } from '../content/types';
+import { downloadUrl } from '../utils/saveFile';
 
 const SLIDE_MS = 6500;
 const MAX_BARS = 10;
@@ -147,7 +148,10 @@ const TrackerCard: React.FC<{ exp?: Experience; idx: number; count: number; play
           <CardLink to={`/pengalaman#${exp.id}`} label={t('Buka detail', 'Open details')} />
         </div>
         <div className="dur-box" key={`${exp.id}-${idx}`}>
-          <span className="dur-1">{fmtDuration(m, lang, true)}</span>
+          <div className="dur-top">
+            <span className="dur-1">{fmtDuration(m, lang, true)}</span>
+            <Logo key={exp.id} src={exp.logoUrl} alt={exp.company} />
+          </div>
           <span className="dur-2">{pick(exp.position, lang)}</span>
           <span className="dur-3">{exp.company} · {fmtPeriod(exp.start, exp.end, lang)}{exp.type ? ` · ${exp.type}` : ''}</span>
           <div className="slide-prog" aria-hidden="true">
@@ -458,7 +462,7 @@ const Home: React.FC = () => {
         <div className="row wrap gap-8">
           <a className="pill yellow lg" href={waLink(content, lang)} target="_blank" rel="noreferrer"><Icon name="chat" />{t('Chat WhatsApp', 'Chat on WhatsApp')}</a>
           <Link className="pill lg" to="/kontak" style={{ borderColor: 'var(--ink-2)', color: 'var(--on-ink)' }}><Icon name="mail" />{t('Kontak', 'Contact')}</Link>
-          {content.profile.cvUrl && <a className="pill lg" href={content.profile.cvUrl} download style={{ borderColor: 'var(--ink-2)', color: 'var(--on-ink)' }}><Icon name="download" />CV</a>}
+          {content.profile.cvUrl && <a className="pill lg" href={content.profile.cvUrl} download onClick={e => { e.preventDefault(); downloadUrl(content.profile.cvUrl, 'CV-Mahfud-Febry-Styanto.pdf'); }} style={{ borderColor: 'var(--ink-2)', color: 'var(--on-ink)' }}><Icon name="download" />CV</a>}
         </div>
       </Reveal>
     </main>
