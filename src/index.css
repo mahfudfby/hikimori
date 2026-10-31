@@ -690,9 +690,19 @@ html.lite .reveal { transform: translateY(8px); }
 .flip-face { -webkit-backdrop-filter: none; backdrop-filter: none; background: var(--surface-solid, var(--surface)); }
 .flip-face.dark { background: var(--ink); }
 
-/* Logo Hikimori (PNG putih + glow) → selalu di atas latar gelap */
-.logo-badge { display: inline-flex; align-items: center; padding: 6px 12px; border-radius: 12px; background: #121211; flex: 0 0 auto; }
-.brand.brand-logo { padding: 0 16px; background: #121211; border-color: #121211; }
-html.lite .brand.brand-logo { background: #121211; }
-.brand.brand-logo img { display: block; }
+/* Logo Hikimori: tanpa latar, bayangan abu 90° (lurus ke bawah) 60%, bingkai garis tipis emas bergradasi + kilau */
+.logo-badge { display: inline-flex; align-items: center; padding: 6px 12px; border-radius: 12px; flex: 0 0 auto; }
+.logo-badge, .brand.brand-logo { position: relative; isolation: isolate; }
+.brand.brand-logo, html.lite .brand.brand-logo { padding: 0 16px; background: transparent; border-color: transparent; -webkit-backdrop-filter: none; backdrop-filter: none; }
+.logo-badge img, .brand.brand-logo img { display: block; filter: drop-shadow(0 4px 4px rgba(128,128,128,.6)); }
+.logo-badge::after, .brand.brand-logo::after {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1.5px; pointer-events: none; z-index: -1;
+  background: linear-gradient(110deg, #8a6414 0%, #d9a92e 22%, #f6dc85 38%, #fffbe6 46%, #f6dc85 54%, #c9971c 70%, #8a6414 100%);
+  background-size: 250% 100%; animation: goldGlare 4.5s ease-in-out infinite;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+}
+@keyframes goldGlare { 0%, 100% { background-position: 100% 0; } 50% { background-position: 0 0; } }
+@media (prefers-reduced-motion: reduce) { .logo-badge::after, .brand.brand-logo::after { animation: none; } }
+html.lite .logo-badge::after, html.lite .brand.brand-logo::after { animation: none; }
 @media (max-width: 480px) { .brand.brand-logo { padding: 0 12px; } .brand.brand-logo img { height: 26px !important; } }
