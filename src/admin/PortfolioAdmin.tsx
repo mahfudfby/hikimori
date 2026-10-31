@@ -9,7 +9,7 @@ import { RichEditor } from './RichEditor';
 import { Text, Area, Tags, ImageInput, Toggle, Grid, Section, Select, ListEditor, uid } from './fields';
 
 type Draft = Omit<PortfolioItem, 'id'> & { id?: string };
-const EMPTY: Draft = { title: '', subtitle: '', videoUrl: '', blocks: [], category: '', description: '', imageUrl: '', tags: [], client: '', year: String(new Date().getFullYear()), link: '', featured: false, order: 0 };
+const EMPTY: Draft = { title: '', subtitle: '', videoUrl: '', blocks: [], category: '', description: '', imageUrl: '', tags: [], hashtags: [], seoTitle: '', seoDesc: '', keywords: [], client: '', year: String(new Date().getFullYear()), link: '', featured: false, order: 0 };
 
 const BLOCKS: { type: BlockType; label: string; icon: string }[] = [
   { type: 'text', label: 'Paragraf', icon: 'layers' },
@@ -211,6 +211,18 @@ const PortfolioAdmin: React.FC = () => {
           title={b => <><strong>{blockLabel(b.type)}</strong> <span className="faint">· {(b.text.replace(/<[^>]*>/g, ' ').replace(/&nbsp;/g, ' ').trim() || b.caption || b.url || (b.urls.length ? `${b.urls.length} foto` : '')).slice(0, 70)}</span></>}
           render={(b, up) => <BlockFields b={b} up={up} />}
           extraAdd={BLOCKS.filter(x => x.type !== 'text').map(x => ({ label: x.label, icon: x.icon, create: () => newBlock(x.type) }))} />
+      </div>
+      <div className="field cms-seo">
+        <span>Hashtag, SEO & Keyword (tampil di akhir artikel)</span>
+        <Tags label="Hashtag" value={edit.hashtags} onChange={v => setEdit({ ...edit, hashtags: v.map(h => h.replace(/^#+/, '').replace(/\s+/g, '')).filter(Boolean) })} />
+        <Tags label="Keyword / kata kunci" value={edit.keywords} onChange={v => setEdit({ ...edit, keywords: v })} />
+        <Text label={`Judul SEO (${(edit.seoTitle || edit.title).length}/60)`} value={edit.seoTitle} onChange={v => setEdit({ ...edit, seoTitle: v })} hint="Judul di hasil pencarian Google & saat dibagikan. Kosong = judul artikel. Ideal ≤ 60 karakter." />
+        <Area label={`Deskripsi SEO (${(edit.seoDesc || edit.description).length}/160)`} value={edit.seoDesc} onChange={v => setEdit({ ...edit, seoDesc: v })} rows={2} hint="Ringkasan di bawah judul pada hasil Google. Kosong = ringkasan kartu. Ideal 120–160 karakter." />
+        <div className="seo-preview" aria-label="Pratinjau hasil Google">
+          <small className="xs faint">hikimori.web.id › portofolio</small>
+          <strong>{(edit.seoTitle || edit.title || 'Judul artikel').slice(0, 70)}</strong>
+          <p className="xs">{(edit.seoDesc || edit.description || 'Deskripsi artikel…').slice(0, 170)}</p>
+        </div>
       </div>
       <Toggle label="Unggulan (tampil paling depan & kartu gelap)" value={edit.featured} onChange={v => setEdit({ ...edit, featured: v })} />
       <div className="row gap-8"><button className="pill dark" onClick={save} disabled={busy}><Icon name="save" size={15} />{busy ? 'Menyimpan…' : 'Simpan proyek'}</button></div>
