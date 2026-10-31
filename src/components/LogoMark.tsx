@@ -1,36 +1,24 @@
-// src/components/LogoMark.tsx — monogram HK Hikimori sebagai SVG (tajam, transparan, tanpa crop lingkaran).
-// Bentuk: "H" yang pecah jadi piksel di sisi kiri + "K" (chevron) di dalam kotak membulat bergradasi biru.
-// Markup yang sama dipakai di intro (public/index.html) — kalau diubah, samakan keduanya.
+// src/components/LogoMark.tsx — logo Hikimori (PNG transparan di Cloudinary, teks putih + glow).
+// Logo dirancang untuk latar gelap → secara default dibungkus "badge" gelap agar terbaca di tema terang.
 import React from 'react';
 
-export const HK_PIXELS: [number, number, number, number][] = [
-  // x, y, size, opacity — piksel "pecahan" di kiri huruf H
-  [30, 22, 10, 0.95], [16, 34, 8, 0.7], [34, 44, 9, 0.85], [6, 52, 6, 0.45], [22, 60, 8, 0.75],
-  [36, 70, 7, 0.9], [12, 78, 9, 0.55], [28, 88, 8, 0.8], [2, 96, 5, 0.35], [18, 104, 7, 0.6],
-  [34, 112, 9, 0.9], [10, 120, 6, 0.4], [26, 128, 6, 0.65],
-];
+const SRC = 'v1793385513/1EF88D88-4DEB-4541-A073-0ED603FFF1CA_hyknub.png';
+const BASE = 'https://res.cloudinary.com/dl4pyan8v/image/upload';
+// Logo penuh (HK + HIKIMORI + tagline), sisi transparan dipangkas; rasio ±4.46 : 1
+export const LOGO_FULL = (h: number) => `${BASE}/e_trim/f_auto,q_auto,h_${h}/${SRC}`;
+// Ikon HK saja (dipotong dari logo penuh); rasio ±2.26 : 1
+export const LOGO_MARK = (h: number) => `${BASE}/c_crop,x_15,y_245,w_860,h_410/e_trim/f_auto,q_auto,h_${h}/${SRC}`;
 
-const LogoMark: React.FC<{ height?: number; className?: string; title?: string; mono?: boolean }> = ({ height = 28, className, title = 'Hikimori', mono }) => {
-  const id = React.useId().replace(/:/g, '');
-  return (
-    <svg viewBox="0 0 260 150" height={height} width={(height * 260) / 150} className={className} role="img" aria-label={title}>
-      <defs>
-        <linearGradient id={`hkg${id}`} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#2a46ff" />
-          <stop offset="1" stopColor="#9aabff" />
-        </linearGradient>
-      </defs>
-      <g fill="currentColor">
-        {HK_PIXELS.map(([x, y, s, o], i) => <rect key={i} x={x} y={y} width={s} height={s} opacity={o} />)}
-        <rect x="46" y="16" width="26" height="118" rx="2" />
-        <rect x="106" y="16" width="26" height="118" rx="2" />
-        <rect x="70" y="62" width="38" height="26" />
-      </g>
-      <rect x="148" y="12" width="104" height="126" rx="20" fill="none" stroke={mono ? 'currentColor' : `url(#hkg${id})`} strokeWidth="7" />
-      <polygon points="214,34 234,34 192,75 234,116 214,116 172,75" fill="currentColor" />
-      <rect x="226" y="120" width="16" height="6" rx="2" fill="currentColor" />
-    </svg>
-  );
-};
+const RATIO = { full: 535 / 120, mark: 361 / 160 };
+
+const LogoMark: React.FC<{ height?: number; className?: string; title?: string; variant?: 'full' | 'mark'; bare?: boolean }> =
+  ({ height = 28, className, title = 'Hikimori', variant = 'full', bare }) => {
+    const url = variant === 'full' ? LOGO_FULL : LOGO_MARK;
+    const img = (
+      <img src={url(height * 2)} srcSet={`${url(height * 2)} 2x, ${url(height * 3)} 3x`} alt={title}
+        height={height} width={Math.round(height * RATIO[variant])} decoding="async" style={{ display: 'block', height, width: 'auto' }} />
+    );
+    return bare ? img : <span className={`logo-badge ${className || ''}`}>{img}</span>;
+  };
 
 export default LogoMark;
