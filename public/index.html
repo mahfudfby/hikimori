@@ -9,8 +9,8 @@
     <meta name="theme-color" content="#EEECE6" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#181816" media="(prefers-color-scheme: dark)" />
     <link rel="canonical" href="https://hikimori.web.id" />
-    <link rel="icon" type="image/png" href="https://res.cloudinary.com/dl4pyan8v/image/upload/c_crop,x_15,y_245,w_860,h_410/e_trim/c_pad,w_64,h_64,b_rgb:121211/f_png/v1793385513/1EF88D88-4DEB-4541-A073-0ED603FFF1CA_hyknub.png" />
-    <link rel="apple-touch-icon" href="https://res.cloudinary.com/dl4pyan8v/image/upload/c_crop,x_15,y_245,w_860,h_410/e_trim/c_pad,w_180,h_180,b_rgb:121211/f_png/v1793385513/1EF88D88-4DEB-4541-A073-0ED603FFF1CA_hyknub.png" />
+    <link rel="icon" type="image/png" href="https://res.cloudinary.com/dl4pyan8v/image/upload/c_crop,x_15,y_245,w_860,h_410/e_trim/e_shadow:60,x_0,y_20,co_grey/c_pad,w_64,h_64/f_png/v1793385513/1EF88D88-4DEB-4541-A073-0ED603FFF1CA_hyknub.png" />
+    <link rel="apple-touch-icon" href="https://res.cloudinary.com/dl4pyan8v/image/upload/c_crop,x_15,y_245,w_860,h_410/e_trim/e_shadow:60,x_0,y_20,co_grey/c_pad,w_180,h_180/f_png/v1793385513/1EF88D88-4DEB-4541-A073-0ED603FFF1CA_hyknub.png" />
 
     <meta property="og:type" content="profile" />
     <meta property="og:site_name" content="Hikimori — Mahfud Febry Styanto" />
@@ -50,7 +50,7 @@
       #intro canvas.dry{opacity:0}
       #intro .stage{position:relative;display:flex;flex-direction:column;align-items:center;gap:clamp(18px,3.4vh,30px);transition:transform 1s cubic-bezier(.77,0,.18,1),opacity .6s ease}
       /* Monogram HK — dirakit dari piksel, semua animasi transform/opacity (ringan) */
-      #intro .mark{width:clamp(180px,34vw,300px);color:#F4F2EC;filter:drop-shadow(0 10px 34px rgba(244,203,77,.28))}
+      #intro .mark{width:clamp(180px,34vw,300px);color:#F4F2EC;position:relative;padding:14px 22px;border-radius:22px;box-sizing:content-box}#intro .mark img{display:block;width:100%;height:auto;filter:drop-shadow(0 6px 6px rgba(128,128,128,.6))}#intro .mark::after{content:"";opacity:0;position:absolute;inset:0;border-radius:inherit;padding:1.5px;pointer-events:none;background:linear-gradient(110deg,#8a6414 0%,#d9a92e 22%,#f6dc85 38%,#fffbe6 46%,#f6dc85 54%,#c9971c 70%,#8a6414 100%);background-size:250% 100%;animation:hkFrameIn .6s ease .45s forwards,goldGlare 4.5s ease-in-out infinite;-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}@keyframes hkFrameIn{to{opacity:1}}@keyframes goldGlare{0%,100%{background-position:100% 0}50%{background-position:0 0}}
       #intro .mark img{display:block;width:100%;height:auto}
       #intro .mark .px{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.4);transform-box:fill-box;transform-origin:center;animation:hkPx .7s cubic-bezier(.2,1,.3,1) forwards}
       #intro .mark .hb{opacity:0;transform:scaleY(0);transform-box:fill-box;transform-origin:50% 100%;animation:hkBar .55s cubic-bezier(.2,1,.3,1) forwards}
