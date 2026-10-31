@@ -18,6 +18,8 @@ test('menyimpan format gaya Word', () => {
 test('tempelan dari Word: tag o:p & komentar dibuang, isi tetap', () => {
   expect(sanitizeHtml('<p class="MsoNormal"><!--[if gte mso 9]>x<![endif]--><span style="mso-bidi-font-weight:bold">Teks<o:p></o:p></span></p>')).toBe('<p><span>Teks</span></p>');
   expect(sanitizeHtml('<p><br></p>')).toBe('');
+  expect(sanitizeHtml('<p>a<strong></strong>b<span style="color:red"></span></p>')).toBe('<p>ab</p>');
+  expect(sanitizeHtml('<p><span class="fx-auto">x</span></p>')).toBe('<p><span class="fx-auto">x</span></p>');
 });
 
 test('format lama tetap terbaca', () => {

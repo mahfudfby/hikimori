@@ -5,7 +5,7 @@ import toast from 'react-hot-toast';
 import { sanitizeHtml, isRichHtml, legacyToHtml } from '../utils/richHtml';
 
 const FONTS = ['Georgia', 'Calibri', 'Arial', 'Times New Roman', 'Verdana', 'Trebuchet MS', 'Garamond', 'Courier New', 'Inter'];
-const SIZES = [8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 28, 32, 36, 48, 72];
+const SIZES = [8, 9, 10, 10.5, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72]; // pt, seperti Word
 const COLORS = ['#000000', '#444444', '#888888', '#ffffff', '#c00000', '#e8590c', '#c9a227', '#2b8a3e', '#1971c2', '#6741d9', '#c2255c', '#0c8599'];
 const MARKS = ['#fff200', '#8ce99a', '#99e9f2', '#fcc2d7', '#a5d8ff', '#ffc9c9', '#d0bfff', '#ced4da'];
 const SHADES = ['#fff9db', '#ebfbee', '#e7f5ff', '#fff0f6', '#f3f0ff', '#f1f3f5', '#212529', '#c9a227'];
@@ -38,9 +38,9 @@ const G = {
 };
 
 /** Tombol toolbar: tidak mencuri seleksi teks (preventDefault saat mousedown). */
-const Btn: React.FC<{ title: string; on?: boolean; disabled?: boolean; onClick: () => void; children: React.ReactNode; wide?: boolean }> = ({ title, on, disabled, onClick, children, wide }) => (
+const Btn: React.FC<{ title: string; on?: boolean; disabled?: boolean; onClick: () => void; onDoubleClick?: () => void; children: React.ReactNode; wide?: boolean }> = ({ title, on, disabled, onClick, onDoubleClick, children, wide }) => (
   <button type="button" className={`rte-btn${on ? ' on' : ''}${wide ? ' wide' : ''}`} title={title} aria-label={title} aria-pressed={on} disabled={disabled}
-    onMouseDown={e => e.preventDefault()} onClick={onClick}>{children}</button>
+    onMouseDown={e => e.preventDefault()} onClick={onClick} onDoubleClick={onDoubleClick}>{children}</button>
 );
 
 /** Tombol dengan menu turun (palet warna, daftar pilihan). */
@@ -78,6 +78,7 @@ export const RichEditor: React.FC<{ label: string; value: string; onChange: (v: 
   const [st, setSt] = useState({ bold: false, italic: false, underline: false, strike: false, sub: false, sup: false, ul: false, ol: false, align: 'left', font: '', size: '', sel: false });
   const [marks, setMarks] = useState(false);
   const [painter, setPainter] = useState<Painter | null>(null);
+  const sticky = useRef(false); // klik dua kali Format Painter = tetap aktif sampai diklik lagi / Esc
   const [sortDesc, setSortDesc] = useState(false);
   const [panel, setPanel] = useState<'' | 'link' | 'find'>('');
   const [link, setLink] = useState({ text: '', href: '' });
@@ -113,7 +114,7 @@ export const RichEditor: React.FC<{ label: string; value: string; onChange: (v: 
       ul: q('insertUnorderedList'), ol: q('insertOrderedList'),
       align: q('justifyCenter') ? 'center' : q('justifyRight') ? 'right' : q('justifyFull') ? 'justify' : 'left',
       font: (cs?.fontFamily || '').split(',')[0].replace(/["']/g, '').trim(),
-      size: cs ? String(Math.round(parseFloat(cs.fontSize))) : '',
+      size: cs ? String(Math.round(parseFloat(cs.fontSize) * 0.75 * 2) / 2) : '', // px → pt
       sel: !s.isCollapsed,
     });
   };
@@ -174,8 +175,9 @@ export const RichEditor: React.FC<{ label: string; value: string; onChange: (v: 
     try { const t = await navigator.clipboard.readText(); restore(); insertPlain(t); }
     catch { toast('Browser menolak akses clipboard. Tekan Ctrl+V (⌘V di Mac).'); }
   };
-  const startPainter = () => {
-    if (painter) { setPainter(null); return; }
+  const startPainter = (keep = false) => {
+    if (painter && !keep) { setPainter(null); sticky.current = false; return; }
+    sticky.current = keep;
     restore();
     const q = (c: string) => { try { return document.queryCommandState(c); } catch { return false; } };
     const s = window.getSelection();
@@ -185,13 +187,13 @@ export const RichEditor: React.FC<{ label: string; value: string; onChange: (v: 
     let back = '';
     for (let n: HTMLElement | null = el; n && n !== ed.current; n = n.parentElement) if (n.style.backgroundColor) { back = n.style.backgroundColor; break; }
     setPainter({ bold: q('bold'), italic: q('italic'), underline: q('underline'), strike: q('strikeThrough'), sub: q('subscript'), sup: q('superscript'), color: cs.color, font: cs.fontFamily, size: cs.fontSize, back });
-    toast('Format disalin. Blok teks tujuan untuk menempelkan format.');
+    toast(keep ? 'Format Painter aktif terus. Klik lagi atau tekan Esc untuk berhenti.' : 'Format disalin. Blok teks tujuan untuk menempelkan format.');
   };
   const applyPainter = () => {
     const s = window.getSelection();
     if (!painter || !s || s.isCollapsed) return;
     const p = painter;
-    setPainter(null);
+    if (!sticky.current) setPainter(null);
     range.current = s.getRangeAt(0).cloneRange();
     run('removeFormat');
     const toggles: [boolean, string][] = [[p.bold, 'bold'], [p.italic, 'italic'], [p.underline, 'underline'], [p.strike, 'strikeThrough'], [p.sub, 'subscript'], [p.sup, 'superscript']];
@@ -201,20 +203,41 @@ export const RichEditor: React.FC<{ label: string; value: string; onChange: (v: 
 
   // ---------- Font ----------
   const step = (d: number) => {
-    const cur = Number(st.size) || 16;
-    const next = d > 0 ? SIZES.find(x => x > cur) || 96 : [...SIZES].reverse().find(x => x < cur) || 8;
-    wrap({ fontSize: `${next}px` });
+    const cur = Number(st.size) || 12;
+    const next = d > 0 ? SIZES.find(x => x > cur) || Math.min(cur + 12, 96) : [...SIZES].reverse().find(x => x < cur) || 8;
+    wrap({ fontSize: `${next}pt` });
   };
   const changeCase = (mode: string) => {
     restore();
     const s = window.getSelection();
-    const t = s?.toString() || '';
-    if (!t) { toast('Pilih (blok) teksnya dulu'); return; }
-    const out = mode === 'upper' ? t.toUpperCase() : mode === 'lower' ? t.toLowerCase()
-      : mode === 'title' ? t.toLowerCase().replace(/(^|[\s(-])(\p{L})/gu, (_, a, b) => a + b.toUpperCase())
-        : mode === 'toggle' ? [...t].map(c => (c === c.toUpperCase() ? c.toLowerCase() : c.toUpperCase())).join('')
-          : t.toLowerCase().replace(/(^\s*|[.!?]\s+)(\p{L})/gu, (_, a, b) => a + b.toUpperCase());
-    document.execCommand('insertText', false, out);
+    if (!s || s.isCollapsed || !s.rangeCount) { toast('Pilih (blok) teksnya dulu'); return; }
+    const r = s.getRangeAt(0);
+    // potongan teks di dalam seleksi (bisa beda-beda format)
+    const segs = texts().filter(t => r.intersectsNode(t)).map(t => ({
+      t, a: t === r.startContainer ? r.startOffset : 0, b: t === r.endContainer ? r.endOffset : t.data.length,
+    })).filter(x => x.b > x.a);
+    const full = segs.map(x => x.t.data.slice(x.a, x.b)).join('');
+    const out = mode === 'upper' ? full.toUpperCase() : mode === 'lower' ? full.toLowerCase()
+      : mode === 'title' ? full.toLowerCase().replace(/(^|[\s(-])(\p{L})/gu, (_, a, b) => a + b.toUpperCase())
+        : mode === 'toggle' ? [...full].map(c => (c === c.toUpperCase() ? c.toLowerCase() : c.toUpperCase())).join('')
+          : full.toLowerCase().replace(/(^\s*|[.!?]\s+)(\p{L})/gu, (_, a, b) => a + b.toUpperCase());
+    if (out.length !== full.length) { document.execCommand('insertText', false, out); emit(); return; } // huruf khusus (mis. ß)
+    let pos = 0;
+    const first = segs[0], last = segs[segs.length - 1];
+    segs.forEach(x => { const len = x.b - x.a; x.t.data = x.t.data.slice(0, x.a) + out.slice(pos, pos + len) + x.t.data.slice(x.b); pos += len; });
+    const nr = document.createRange();
+    nr.setStart(first.t, first.a); nr.setEnd(last.t, last.b);
+    s.removeAllRanges(); s.addRange(nr); range.current = nr.cloneRange();
+    emit();
+  };
+
+  /** Warna huruf kembali ke warna tema (ikut mode terang / gelap). */
+  const autoColor = () => {
+    wrap({}, 'fx-auto');
+    ed.current!.querySelectorAll<HTMLElement>('.fx-auto, .fx-auto *').forEach(n => {
+      n.style.removeProperty('color');
+      if (n.tagName === 'FONT') n.removeAttribute('color');
+    });
     emit();
   };
 
@@ -276,44 +299,63 @@ export const RichEditor: React.FC<{ label: string; value: string; onChange: (v: 
     setPanel(''); linkEl.current = null;
   };
 
-  // ---------- Cari & Ganti ----------
-  // shortcut: hanya menemukan teks di dalam satu potongan format; kata yang setengah ditebalkan tidak ketemu.
+  // ---------- Cari & Ganti (juga kata yang sebagian tebal / berwarna) ----------
   const texts = () => {
     const out: Text[] = [];
     const w = document.createTreeWalker(ed.current!, NodeFilter.SHOW_TEXT);
     for (let n = w.nextNode(); n; n = w.nextNode()) out.push(n as Text);
     return out;
   };
-  const rx = (g = true) => new RegExp(fr.find.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), (g ? 'g' : '') + (fr.caseOn ? '' : 'i'));
+  const rx = () => new RegExp(fr.find.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g' + (fr.caseOn ? '' : 'i'));
+  type Hit = { s: Text; so: number; e: Text; eo: number };
+  const hits = (): Hit[] => {
+    const map: { t: Text; at: number }[] = [];
+    let full = '', prev: Element | null | undefined;
+    texts().forEach(t => {
+      const blk = t.parentElement?.closest('p, div, li, h2, h3, h4, blockquote');
+      if (full && blk !== prev) full += '\u0000'; // tidak mencocokkan melewati batas paragraf
+      prev = blk;
+      map.push({ t, at: full.length });
+      full += t.data;
+    });
+    const loc = (pos: number, end: boolean) => map.find(x => pos >= x.at && (end ? pos <= x.at + x.t.data.length : pos < x.at + x.t.data.length));
+    const out: Hit[] = [];
+    const re = rx();
+    for (let m = re.exec(full); m; m = re.exec(full)) {
+      if (!m[0]) { re.lastIndex++; continue; }
+      const a = loc(m.index, false), b = loc(m.index + m[0].length, true);
+      if (a && b) out.push({ s: a.t, so: m.index - a.at, e: b.t, eo: m.index + m[0].length - b.at });
+    }
+    return out;
+  };
+  const toRange = (h: Hit) => { const r = document.createRange(); r.setStart(h.s, h.so); r.setEnd(h.e, h.eo); return r; };
   const findNext = () => {
     if (!fr.find) return;
-    const r = range.current;
-    const hits: { t: Text; i: number }[] = [];
-    texts().forEach(t => { const re = rx(); let m: RegExpExecArray | null; while ((m = re.exec(t.data))) hits.push({ t, i: m.index }); });
-    if (!hits.length) { setFrInfo('Tidak ditemukan'); return; }
-    const next = hits.find(h => !r || r.comparePoint(h.t, h.i) > 0 || (r.collapsed && r.comparePoint(h.t, h.i) === 0)) || hits[0];
-    const nr = document.createRange();
-    nr.setStart(next.t, next.i); nr.setEnd(next.t, next.i + fr.find.length);
-    const s = window.getSelection()!;
+    const r = range.current, list = hits();
+    if (!list.length) { setFrInfo('Tidak ditemukan'); return; }
+    const next = list.find(h => !r || r.comparePoint(h.s, h.so) > 0 || (r.collapsed && r.comparePoint(h.s, h.so) === 0)) || list[0];
+    const nr = toRange(next), s = window.getSelection()!;
     ed.current!.focus(); s.removeAllRanges(); s.addRange(nr); range.current = nr.cloneRange();
-    next.t.parentElement?.scrollIntoView({ block: 'nearest' });
-    setFrInfo(`${hits.indexOf(next) + 1} dari ${hits.length}`);
+    next.s.parentElement?.scrollIntoView({ block: 'nearest' });
+    setFrInfo(`${list.indexOf(next) + 1} dari ${list.length}`);
   };
   const replaceOne = () => {
     restore();
     const sel = window.getSelection()?.toString() || '';
-    if (sel.length === fr.find.length && rx(false).test(sel)) { document.execCommand('insertText', false, fr.rep); emit(); }
+    if (sel && (fr.caseOn ? sel === fr.find : sel.toLowerCase() === fr.find.toLowerCase())) { document.execCommand('insertText', false, fr.rep); emit(); }
     findNext();
   };
   const replaceAll = () => {
     if (!fr.find) return;
-    let n = 0;
-    texts().forEach(t => { t.data = t.data.replace(rx(), () => { n++; return fr.rep; }); });
+    const list = hits();
+    [...list].reverse().forEach(h => { const r = toRange(h); r.deleteContents(); r.insertNode(document.createTextNode(fr.rep)); });
+    ed.current!.normalize();
     emit();
-    setFrInfo(n ? `${n} teks diganti` : 'Tidak ditemukan');
+    setFrInfo(list.length ? `${list.length} teks diganti` : 'Tidak ditemukan');
   };
 
   const onKey = (e: React.KeyboardEvent) => {
+    if (e.key === 'Escape' && painter) { setPainter(null); sticky.current = false; return; }
     if ((e.ctrlKey || e.metaKey) && (e.key === 'f' || e.key === 'h')) { e.preventDefault(); setPanel('find'); return; }
     if ((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault(); openLink(); return; }
     if (e.key === 'Tab') { e.preventDefault(); run(e.shiftKey ? 'outdent' : 'indent'); }
@@ -338,7 +380,7 @@ export const RichEditor: React.FC<{ label: string; value: string; onChange: (v: 
               <div className="rte-col">
                 <Btn title="Potong (Ctrl+X)" disabled={!st.sel} onClick={() => run('cut')}>{G.cut}<span>Potong</span></Btn>
                 <Btn title="Salin (Ctrl+C)" disabled={!st.sel} onClick={() => run('copy')}>{G.copy}<span>Salin</span></Btn>
-                <Btn title="Format Painter: salin format teks ini, lalu blok teks tujuan" on={!!painter} onClick={startPainter}>{G.painter}<span>Format Painter</span></Btn>
+                <Btn title="Format Painter: klik = sekali pakai, klik dua kali = terus aktif" on={!!painter} onClick={() => startPainter()} onDoubleClick={() => startPainter(true)}>{G.painter}<span>Format Painter</span></Btn>
               </div>
             </div>
             <small className="rte-label">Clipboard</small>
@@ -350,7 +392,7 @@ export const RichEditor: React.FC<{ label: string; value: string; onChange: (v: 
                 <option value="">{st.font || 'Huruf'}</option>
                 {FONTS.map(f => <option key={f} value={f} style={{ fontFamily: f }}>{f}</option>)}
               </select>
-              <select className="rte-select rte-size" title="Ukuran huruf (px)" value={SIZES.includes(Number(st.size)) ? st.size : ''} onChange={e => e.target.value && wrap({ fontSize: `${e.target.value}px` })}>
+              <select className="rte-select rte-size" title="Ukuran huruf (pt)" value={SIZES.includes(Number(st.size)) ? st.size : ''} onChange={e => e.target.value && wrap({ fontSize: `${e.target.value}pt` })}>
                 <option value="">{st.size || '—'}</option>
                 {SIZES.map(s => <option key={s} value={s}>{s}</option>)}
               </select>
@@ -383,7 +425,7 @@ export const RichEditor: React.FC<{ label: string; value: string; onChange: (v: 
                 <Palette colors={MARKS} none="Tanpa warna" onPick={c => { close(); run('hiliteColor', c || 'transparent'); }} />
               )}</Drop>
               <Drop title="Warna huruf" label={<span className="rte-t rte-under" style={{ borderColor: '#c00000' }}>A</span>}>{close => (
-                <Palette colors={COLORS} custom onPick={c => { close(); if (c) run('foreColor', c); }} />
+                <Palette colors={COLORS} none="Otomatis (warna teks tema)" custom onPick={c => { close(); if (c) run('foreColor', c); else autoColor(); }} />
               )}</Drop>
             </div>
             <small className="rte-label">Font</small>
