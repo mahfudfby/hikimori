@@ -21,6 +21,7 @@
     { "src": "/portfolio/?", "status": 308, "headers": { "Location": "/portofolio" } },
     { "handle": "filesystem" },
     { "src": "/(profil|pengalaman|pendidikan|sertifikat|keahlian|layanan|portofolio|kontak)/?", "dest": "/$1/index.html" },
+    { "src": "/portofolio/[^/]+/?", "dest": "/portofolio/index.html" },
     { "src": "/admin(/.*)?", "dest": "/index.html" },
     { "src": "/.*", "status": 404, "dest": "/404.html" }
   ]

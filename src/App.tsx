@@ -36,6 +36,7 @@ const CertificatesPage = lazy(() => import('./pages/CertificatesPage'));
 const SkillsPage = lazy(() => import('./pages/SkillsPage'));
 const ServicesPage = lazy(() => import('./pages/ServicesPage'));
 const PortfolioPage = lazy(() => import('./pages/PortfolioPage'));
+const PortfolioArticle = lazy(() => import('./pages/PortfolioArticle'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
 const AdminLogin = lazy(() => import('./admin/AdminLogin'));
 const AdminPanel = lazy(() => import('./admin/AdminPanel'));
@@ -85,6 +86,7 @@ const Shell: React.FC = () => {
           <Route path="/keahlian" element={<SkillsPage />} />
           <Route path="/layanan" element={<ServicesPage />} />
           <Route path="/portofolio" element={<PortfolioPage />} />
+          <Route path="/portofolio/:id" element={<PortfolioArticle />} />
           <Route path="/kontak" element={<ContactPage />} />
           {/* URL lama tetap jalan */}
           <Route path="/about" element={<Navigate to="/profil" replace />} />
