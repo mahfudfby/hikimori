@@ -3,9 +3,30 @@ import { useState, useEffect, useCallback } from 'react';
 import { getDb } from '../config/firebase';
 import { listCollectionRest } from '../content/firestoreRest';
 
+/** Satu blok isi artikel portofolio (semua field selalu terisi: Firestore menolak nilai undefined). */
+export type BlockType = 'text' | 'heading' | 'quote' | 'media' | 'gallery' | 'embed' | 'code' | 'divider';
+export interface ArticleBlock {
+  id: string;
+  type: BlockType;
+  text: string;
+  /** text: plain | dropcap | lead | card | columns | note · gallery: slideshow | grid */
+  style: string;
+  url: string;
+  urls: string[];
+  caption: string;
+  side: 'left' | 'right';
+  /** tinggi iframe (px) untuk embed web / program interaktif */
+  height: number;
+}
+
 export interface PortfolioItem {
   id: string;
   title: string;
+  /** Sub-judul di bawah headline artikel */
+  subtitle: string;
+  /** Hero banner berupa video (YouTube/TikTok/Instagram/file video); kosong = pakai imageUrl */
+  videoUrl: string;
+  blocks: ArticleBlock[];
   category: string;
   description: string;
   imageUrl: string;
@@ -20,7 +41,7 @@ export interface PortfolioItem {
 const fsMod = () => import('firebase/firestore');
 
 const normalize = (v: any, id: string): PortfolioItem =>
-  ({ tags: [], featured: false, order: 0, link: '', ...v, id } as PortfolioItem);
+  ({ tags: [], featured: false, order: 0, link: '', subtitle: '', videoUrl: '', blocks: [], ...v, id } as PortfolioItem);
 
 /**
  * Publik (default): sekali baca via Firestore REST — tanpa SDK, ringan di HP.
