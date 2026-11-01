@@ -6,7 +6,7 @@ import { useLang } from '../contexts/LanguageContext';
 import { usePortfolio } from '../hooks/usePortfolio';
 import { Icon, CardLink, CountUp, Reveal, Staged, isLite, cld, cldSet, Logo } from '../components/ui';
 import {
-  pick, monthsOf, fmtDuration, fmtPeriod, careerMonths, categoryShare, CATEGORY_LABEL, ageOf, lines, waLink, RELEVANT, relevantExp,
+  pick, monthsOf, fmtDuration, fmtPeriod, fmtRange, careerMonths, categoryShare, CATEGORY_LABEL, ageOf, lines, waLink, RELEVANT, relevantExp,
 } from '../content/derive';
 import type { Experience } from '../content/types';
 import { downloadUrl } from '../utils/saveFile';
@@ -258,7 +258,14 @@ const AgeCard: React.FC = () => {
 const AchievementsCard: React.FC = () => {
   const { content } = useContent();
   const { lang, t } = useLang();
-  const list = content.achievements.slice(0, 5);
+  const list = content.achievements;
+  const item = (a: typeof list[number], dup?: boolean) => (
+    <div className="ach-item" key={(dup ? 'b' : 'a') + a.id}>
+      <span className="ach-l">{pick(a.label, lang)}</span>
+      <span className="ach-v">{a.value}</span>
+      {a.job && <span className="ach-job">{a.job}</span>}
+    </div>
+  );
   return (
     <div className="card b-onboard">
       <div className="card-head" style={{ alignItems: 'center' }}>
@@ -266,13 +273,12 @@ const AchievementsCard: React.FC = () => {
         <CardLink to="/pengalaman" label={t('Lihat pengalaman', 'See experience')} />
       </div>
       {list.length === 0 ? <p className="xs faint">{t('Tambahkan pencapaian di CMS → Profil.', 'Add highlights in CMS → Profile.')}</p> : (
-        <div className="ach-list">
-          {list.map(a => (
-            <div className="ach-item" key={a.id}>
-              <span className="ach-l">{pick(a.label, lang)}</span>
-              <span className="ach-v">{a.value}</span>
-            </div>
-          ))}
+        // Bergulir naik seperti kredit akhir film; daftar digandakan agar putarannya mulus. Lambat (4,5 dtk per baris); kursor / sentuh / fokus = berhenti.
+        <div className="ach-roll" tabIndex={0} aria-label={t('Daftar yang pernah ditangani', 'Previously handled list')}>
+          <div className="ach-track" style={{ animationDuration: `${list.length * 4.5}s` }}>
+            <div className="ach-list">{list.map(a => item(a))}</div>
+            <div className="ach-list ach-dup" aria-hidden="true">{list.map(a => item(a, true))}</div>
+          </div>
         </div>
       )}
     </div>
@@ -397,7 +403,7 @@ const CertsCard: React.FC = () => {
               <span className="ico" aria-hidden="true">{c.category === 'license' ? '🪪' : c.category === 'training' ? '🎓' : '📜'}</span>
               <span className="grow">
                 <span className="t" style={{ display: 'block' }}>{pick(c.name, lang)}</span>
-                <span className="s">{c.issuer.split('—')[0].trim()} · {c.year}</span>
+                <span className="s">{c.issuer.split('—')[0].trim()} · {fmtRange(c.year, lang)}</span>
               </span>
               <span className="check" title={t('Lulus', 'Passed')}><Icon name="check" size={12} /></span>
             </Link>
