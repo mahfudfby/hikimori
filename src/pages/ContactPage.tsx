@@ -5,6 +5,7 @@ import { useContent } from '../content/ContentContext';
 import { useLang } from '../contexts/LanguageContext';
 import { Icon, PageHero, useTitle } from '../components/ui';
 import { pick } from '../content/derive';
+import { mailLink } from '../utils/mailLink';
 
 const ContactPage: React.FC = () => {
   const { content } = useContent();
@@ -19,12 +20,12 @@ const ContactPage: React.FC = () => {
   const valid = name.trim().length > 0 && msg.trim().length > 0;
   const [tried, setTried] = useState(false); // tampilkan pesan bila tombol diklik sebelum form lengkap
   const waHref = `https://wa.me/${p.whatsapp}?text=${encodeURIComponent(body)}`;
-  const mailHref = `mailto:${p.email}?subject=${encodeURIComponent(topic || t('Halo dari portofolio', 'Hello from your portfolio'))}&body=${encodeURIComponent(body)}`;
+  const mailHref = mailLink(p.email, `?subject=${encodeURIComponent(topic || t('Halo dari portofolio', 'Hello from your portfolio'))}&body=${encodeURIComponent(body)}`);
   // Tautan biasa (bukan window.open) agar Safari iOS tidak memblokir pembukaan WhatsApp / aplikasi email
   const guard = (e: React.MouseEvent) => { if (!valid) { e.preventDefault(); setTried(true); } };
 
   const items = [
-    { icon: 'mail', label: 'Email', value: p.email, href: `mailto:${p.email}` },
+    { icon: 'mail', label: 'Email', value: p.email, href: mailLink(p.email) },
     { icon: 'chat', label: 'WhatsApp', value: p.phone, href: `https://wa.me/${p.whatsapp}` },
     { icon: 'map', label: t('Lokasi', 'Location'), value: p.location, href: `https://maps.google.com/?q=${encodeURIComponent(p.location)}` },
     p.socials.linkedin && { icon: 'link', label: 'LinkedIn', value: p.socials.linkedin, href: `https://linkedin.com/in/${p.socials.linkedin}` },
