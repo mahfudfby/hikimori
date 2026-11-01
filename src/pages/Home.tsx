@@ -255,17 +255,64 @@ const AgeCard: React.FC = () => {
 };
 
 /* ───────── Pencapaian: angka-angka yang menjual (pengganti kartu Usia, bisa diatur di CMS) ───────── */
+/** Gulir otomatis pelan ke atas (kredit film). Kursor / sentuh / fokus = berhenti; roda mouse & geser jari = gulir manual
+ *  naik-turun untuk melihat yang sudah lewat. Isi digandakan → posisi dibungkus agar putaran tak pernah habis. */
+const useCreditRoll = (count: number) => {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = ref.current; if (!el || !count) return;
+    const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    let pos = 0, last = 0, raf = 0, hold = false, resumeAt = 0;
+    const half = () => el.scrollHeight / 2;
+    const wrap = () => { // tetap di paruh pertama: atas ↔ bawah menyambung mulus
+      const h = half(); if (reduce || h <= el.clientHeight / 2) return;
+      if (el.scrollTop > h) el.scrollTop -= h; else if (el.scrollTop < 1) el.scrollTop += h - 1;
+    };
+    const onScroll = () => { wrap(); if (Math.abs(el.scrollTop - pos) > 1) pos = el.scrollTop; }; // gulir manual
+    const pause = () => { hold = true; };
+    const resume = (ms = 0) => { hold = false; resumeAt = performance.now() + ms; };
+    const onLeave = () => resume(); const onTouchEnd = () => resume(2500);
+    const tick = (now: number) => {
+      const dt = last ? Math.min(.1, (now - last) / 1000) : 0; last = now;
+      if (!hold && now >= resumeAt && document.visibilityState === 'visible') {
+        const h = half();
+        pos += (h / (count * 4.5)) * dt; // 4,5 detik per baris
+        if (pos >= h) pos -= h;
+        el.scrollTop = pos;
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    el.addEventListener('scroll', onScroll, { passive: true });
+    el.addEventListener('mouseenter', pause); el.addEventListener('mouseleave', onLeave);
+    el.addEventListener('focusin', pause); el.addEventListener('focusout', onLeave);
+    el.addEventListener('touchstart', pause, { passive: true }); el.addEventListener('touchend', onTouchEnd, { passive: true });
+    if (!reduce) raf = requestAnimationFrame(tick);
+    return () => {
+      cancelAnimationFrame(raf);
+      el.removeEventListener('scroll', onScroll);
+      el.removeEventListener('mouseenter', pause); el.removeEventListener('mouseleave', onLeave);
+      el.removeEventListener('focusin', pause); el.removeEventListener('focusout', onLeave);
+      el.removeEventListener('touchstart', pause); el.removeEventListener('touchend', onTouchEnd);
+    };
+  }, [count]);
+  return ref;
+};
+
 const AchievementsCard: React.FC = () => {
   const { content } = useContent();
   const { lang, t } = useLang();
   const list = content.achievements;
-  const item = (a: typeof list[number], dup?: boolean) => (
-    <div className="ach-item" key={(dup ? 'b' : 'a') + a.id}>
-      <span className="ach-l">{pick(a.label, lang)}</span>
-      <span className="ach-v">{a.value}</span>
-      {a.job && <span className="ach-job">{a.job}</span>}
-    </div>
-  );
+  const roll = useCreditRoll(list.length);
+  const item = (a: typeof list[number], dup?: boolean) => {
+    const [role, company] = (a.job || '').split(/\s+·\s+/); // "Posisi · Perusahaan" → dua baris
+    return (
+      <div className="ach-item" key={(dup ? 'b' : 'a') + a.id}>
+        <span className="ach-l">{pick(a.label, lang)}</span>
+        <span className="ach-v">{a.value}</span>
+        {a.job && <span className="ach-job"><b>{role}</b>{company && <span>{company}</span>}</span>}
+      </div>
+    );
+  };
   return (
     <div className="card b-onboard">
       <div className="card-head" style={{ alignItems: 'center' }}>
@@ -273,12 +320,9 @@ const AchievementsCard: React.FC = () => {
         <CardLink to="/pengalaman" label={t('Lihat pengalaman', 'See experience')} />
       </div>
       {list.length === 0 ? <p className="xs faint">{t('Tambahkan pencapaian di CMS → Profil.', 'Add highlights in CMS → Profile.')}</p> : (
-        // Bergulir naik seperti kredit akhir film; daftar digandakan agar putarannya mulus. Lambat (4,5 dtk per baris); kursor / sentuh / fokus = berhenti.
-        <div className="ach-roll" tabIndex={0} aria-label={t('Daftar yang pernah ditangani', 'Previously handled list')}>
-          <div className="ach-track" style={{ animationDuration: `${list.length * 4.5}s` }}>
-            <div className="ach-list">{list.map(a => item(a))}</div>
-            <div className="ach-list ach-dup" aria-hidden="true">{list.map(a => item(a, true))}</div>
-          </div>
+        <div className="ach-roll" ref={roll} tabIndex={0} aria-label={t('Daftar yang pernah ditangani', 'Previously handled list')}>
+          <div className="ach-list">{list.map(a => item(a))}</div>
+          <div className="ach-list ach-dup" aria-hidden="true">{list.map(a => item(a, true))}</div>
         </div>
       )}
     </div>

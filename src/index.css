@@ -994,20 +994,14 @@ textarea.input { resize: vertical; overflow: hidden; min-height: 2.6em; }
 :where(#root) p { text-align: justify; }
 :where(.center, .empty, .share-box, .mag-head, .mag-quote, .mag-figure, .mfe-empty) p { text-align: inherit; }
 
-/* Pernah Menangani: daftar bergulir naik seperti kredit akhir film */
+/* Pernah Menangani: daftar bergulir naik seperti kredit akhir film (JS: useCreditRoll di Home.tsx) */
 .b-onboard { display: flex; flex-direction: column; }
-.ach-roll { position: relative; flex: 1 1 0; min-height: 300px; overflow: hidden; outline: none; contain: size; /* isi tidak ikut menentukan tinggi kartu */
-  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 14%, #000 86%, transparent); mask-image: linear-gradient(to bottom, transparent, #000 14%, #000 86%, transparent); }
-.ach-track { animation: achRoll linear infinite; will-change: transform; }
-.ach-roll:hover .ach-track, .ach-roll:focus .ach-track, .ach-roll:active .ach-track { animation-play-state: paused; }
-.ach-track .ach-item { transition: background .2s, padding .2s; border-radius: 10px; }
-.ach-track .ach-item:hover { background: var(--surface-solid); padding-left: 10px; padding-right: 10px; }
-.ach-track .ach-list { gap: 0; }
-.ach-track .ach-item, .ach-track .ach-item:last-child { padding: 12px 0; border-bottom: 1px solid var(--line); }
-.ach-job { align-self: flex-start; margin-top: 4px; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--line-2); background: var(--surface-solid); font-size: .68rem; line-height: 1.4; color: var(--text-2); }
-@keyframes achRoll { from { transform: translateY(0); } to { transform: translateY(-50%); } }
-@media (prefers-reduced-motion: reduce) {
-  .ach-roll { overflow-y: auto; -webkit-mask-image: none; mask-image: none; }
-  .ach-track { animation: none; }
-  .ach-dup { display: none; }
-}
+.ach-roll { position: relative; flex: 1 1 0; min-height: 300px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; outline: none; contain: size; /* isi tidak ikut menentukan tinggi kartu */
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 88%, transparent); mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 88%, transparent); }
+.ach-roll::-webkit-scrollbar { display: none; }
+.ach-roll .ach-list { gap: 0; }
+.ach-roll .ach-item, .ach-roll .ach-item:last-child { padding: 12px 0; border-bottom: 1px solid var(--line); border-radius: 10px; transition: background .2s, padding .2s; }
+.ach-roll .ach-item:hover { background: var(--surface-solid); padding-left: 10px; padding-right: 10px; }
+.ach-job { display: flex; flex-direction: column; align-self: flex-start; margin-top: 4px; padding: 4px 10px; border-radius: 10px; border: 1px solid var(--line-2); background: var(--surface-solid); font-size: .68rem; line-height: 1.35; color: var(--text-2); }
+.ach-job b { font-weight: 600; color: var(--text); }
+@media (prefers-reduced-motion: reduce) { .ach-roll { -webkit-mask-image: none; mask-image: none; } .ach-dup { display: none; } }
