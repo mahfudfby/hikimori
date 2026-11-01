@@ -30,6 +30,9 @@ export const fmtYM = (s: string, lang: Lang): string => {
 /** Pemisah rentang tanggal tanpa garis: "Okt 2023 s.d. Jan 2024" / "Oct 2023 to Jan 2024". */
 export const rangeSep = (lang: Lang) => (lang === 'en' ? ' to ' : ' s.d. ');
 
+/** Rentang tahun dari teks bebas ("2026 s.d. 2029" / "2026 – 2029") → pemisah sesuai bahasa. */
+export const fmtRange = (s: string, lang: Lang) => (s || '').replace(/\s*(?:s\.d\.|\bto\b|[\u2013\u2014-])\s*/, rangeSep(lang));
+
 export const fmtPeriod = (start: string, end: string, lang: Lang): string => {
   const a = fmtYM(start, lang); const b = end ? fmtYM(end, lang) : (lang === 'en' ? 'Present' : 'Sekarang');
   return a ? `${a}${rangeSep(lang)}${b}` : b;

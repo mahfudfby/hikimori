@@ -154,6 +154,8 @@ export interface Achievement {
   id: string;
   value: string;
   label: Bi;
+  /** posisi · perusahaan tempat pengalaman ini (opsional) */
+  job?: string;
 }
 
 /** Pencapaian nyata (penghargaan, prestasi) — tampil di /profil bila diisi */

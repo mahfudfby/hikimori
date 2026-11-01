@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useContent } from '../content/ContentContext';
 import { useLang } from '../contexts/LanguageContext';
 import { Icon, PageHero, useTitle, useHashTarget, Modal, Staged, Swipe, cld } from '../components/ui';
-import { pick } from '../content/derive';
+import { pick, fmtRange } from '../content/derive';
 import type { Certificate, CertCategory } from '../content/types';
 
 const CAT: Record<CertCategory, { id: string; en: string; icon: string }> = {
@@ -72,7 +72,7 @@ const CertificatesPage: React.FC = () => {
                 </button>
                 <div className="row between gap-8 mt-16">
                   <span className={`chip ${c.category === 'license' ? 'yellow' : ''}`}>{pick(CAT[c.category], lang)}</span>
-                  <span className="xs muted">{c.year}</span>
+                  <span className="xs muted">{fmtRange(c.year, lang)}</span>
                 </div>
                 <h2 className="h-card mt-8">{pick(c.name, lang)}</h2>
                 <div className="small muted mt-8">{c.issuer}</div>
@@ -95,7 +95,7 @@ const CertificatesPage: React.FC = () => {
           {view.imageUrl ? <img src={view.imageUrl} alt={pick(view.name, lang)} style={{ width: '100%', borderRadius: 16 }} />
             : <div className="empty">{t('Gambar sertifikat belum diunggah. Tambahkan lewat CMS.', 'No certificate image yet. Add one in the CMS.')}</div>}
           <h2 className="h-2 mt-16">{pick(view.name, lang)}</h2>
-          <p className="muted">{view.issuer} · {view.year}{view.code ? ` · ${view.code}` : ''}</p>
+          <p className="muted">{view.issuer} · {fmtRange(view.year, lang)}{view.code ? ` · ${view.code}` : ''}</p>
           {pick(view.desc, lang) && <p className="muted mt-8">{pick(view.desc, lang)}</p>}
           <Units units={view.units} />
         </>)}

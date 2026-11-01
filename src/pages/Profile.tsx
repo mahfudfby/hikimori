@@ -90,6 +90,7 @@ const Profile: React.FC = () => {
                     <div key={a.id}>
                       <div className="num-lg">{a.value}</div>
                       <div className="small muted mt-8">{pick(a.label, lang)}</div>
+                      {a.job && <div className="xs faint mt-4">{a.job}</div>}
                     </div>
                   ))}
                 </div>

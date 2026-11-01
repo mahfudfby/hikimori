@@ -147,13 +147,14 @@ Tetap publikasikan dan TIMPA versi tersebut?
           <Toggle label="Tampilkan tanggal lahir, usia & jenis kelamin ke publik (disarankan: mati — cegah bias usia & lindungi data pribadi)" value={p.showBirthDate} onChange={v => setP({ showBirthDate: v })} />
           <Toggle label="Kartu dashboard: tampilkan bar Usia (mati = kartu Pernah Menangani)" value={p.showAgeCard} onChange={v => setP({ showAgeCard: v })} />
         </Section>
-        <Section title="Pernah Menangani" desc="Angka-angka yang menjual — tampil di kartu Pernah Menangani di dashboard (5 teratas) dan halaman /profil. Isi angka singkat (mis. 121, -50%, 4j → <1j).">
+        <Section title="Pernah Menangani" desc="Angka-angka yang menjual — tampil bergulir di kartu Pernah Menangani di dashboard dan di halaman /profil. Isi angka singkat (mis. 121, -50%, 4j → <1j).">
           <ListEditor<Achievement> items={draft.achievements} onChange={v => set('achievements', v)} addLabel="Tambah data"
             create={() => ({ id: uid('a'), value: '', label: eb() })}
             title={a => <>{a.value} <span className="faint">· {pick(a.label, 'id')}</span></>}
             render={(a, up) => (<>
               <Text label="Angka / nilai" value={a.value} onChange={v => up({ value: v })} placeholder="121" />
               <BiField label="Keterangan" value={a.label} onChange={v => up({ label: v })} />
+              <Text label="Pengalaman di (posisi · perusahaan)" value={a.job || ''} onChange={v => up({ job: v })} placeholder="IT Support · UD Duta Pangan" />
             </>)} />
         </Section>
         <Section title="Pencapaian" desc="Prestasi / penghargaan nyata (mis. karyawan terbaik, juara lomba, proyek berdampak besar). Tampil sebagai bagian Pencapaian di /profil; kosong = tidak tampil.">
