@@ -69,7 +69,7 @@ const ExperiencePage: React.FC = () => {
       <div className="frame">
         <PageHero crumb={t('Pengalaman', 'Experience')}
           title={<>{t('Perjalanan', 'Career')}<br />{t('karier', 'journey')}</>}
-          lead={t('Seluruh riwayat kerja — dari instansi pemerintah, lapangan, hingga lintas divisi di industri manufaktur.', 'My complete work history — from government offices and frontline roles to cross-division work in manufacturing.')}
+          lead={t('Seluruh riwayat kerja, dari instansi pemerintah, lapangan, hingga lintas divisi di industri manufaktur.', 'My complete work history, from government offices and frontline roles to cross-division work in manufacturing.')}
           aside={<div className="row gap-24">
             <div><div className="num-xl">{(careerMonths(all) / 12).toFixed(1)}</div><div className="xs muted">{t('tahun kerja efektif', 'effective years')}</div></div>
             <div><div className="num-xl">{all.length}</div><div className="xs muted">{t('posisi', 'positions')}</div></div>

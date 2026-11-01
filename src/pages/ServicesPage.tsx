@@ -14,7 +14,7 @@ const ServicesPage: React.FC = () => {
     <main className="shell page-in">
       <div className="frame">
         <PageHero crumb={t('Layanan', 'Services')} title={t('Yang bisa saya bantu', 'How I can help')}
-          lead={t('Dari pengelolaan SDM hingga dukungan IT — layanan yang lahir dari pengalaman langsung di lapangan.', 'From people management to IT support — services grounded in hands-on field experience.')}
+          lead={t('Dari pengelolaan SDM hingga dukungan IT, layanan yang lahir dari pengalaman langsung di lapangan.', 'From people management to IT support, services grounded in hands-on field experience.')}
           aside={<a className="pill dark lg" href={waLink(content, lang)} target="_blank" rel="noreferrer"><Icon name="chat" />{t('Konsultasi gratis', 'Free consultation')}</a>} />
 
         <div className="grid-2">
@@ -43,7 +43,7 @@ const ServicesPage: React.FC = () => {
         </div>
 
         <div className="card mt-24 row wrap between gap-16">
-          <div><div className="h-card">{t('Punya kebutuhan spesifik?', 'Have a specific need?')}</div><div className="small muted">{t('Ceritakan kebutuhanmu — saya balas secepatnya.', 'Tell me what you need — I reply quickly.')}</div></div>
+          <div><div className="h-card">{t('Punya kebutuhan spesifik?', 'Have a specific need?')}</div><div className="small muted">{t('Ceritakan kebutuhanmu, saya balas secepatnya.', 'Tell me what you need, I reply quickly.')}</div></div>
           <div className="row gap-8"><Link to="/kontak" className="pill dark">{t('Kirim pesan', 'Send a message')}</Link><Link to="/portofolio" className="pill">{t('Lihat portofolio', 'See portfolio')}</Link></div>
         </div>
       </div>
