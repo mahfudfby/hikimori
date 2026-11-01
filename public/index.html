@@ -40,7 +40,7 @@
     <!-- Font Inter (47 KB) hanya untuk desktop. HP memakai font sistem (Roboto / San Francisco) → lebih cepat & tanpa teks loncat -->
     <script>if(!document.documentElement.classList.contains('lite')){var l=document.createElement('link');l.rel='stylesheet';l.href='https://fonts.googleapis.com/css2?family=Inter:wght@300..600&display=swap';document.head.appendChild(l);}</script>
 
-    <!-- ═══ Intro futuristik minimalis (motion graphic, slow-motion, warna lembut): sulur cairan hitam merambat dari logo HK → menggumpal jadi HIKIMORI & nama ═══ -->
+    <!-- ═══ Intro futuristik minimalis (motion graphic, slow-motion, warna lembut): hujan meteor pink/saber/cyan/biru meledak memenuhi layar → serpihannya memusat jadi logo HK, HIKIMORI & nama ═══ -->
     <style>
       #intro{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;overflow:hidden;color:#EEF4FA;font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;cursor:pointer;--cy:#9EE6F2;--mg:#F3B4CF;--lv:#BCAEF6;--yl:#F4D58A;--ez:cubic-bezier(.22,1,.36,1)}
       #intro .pane{position:absolute;left:0;right:0;height:50.5%;background:#0C0E18;overflow:hidden;transition:transform 1.5s cubic-bezier(.76,0,.24,1)}
@@ -89,6 +89,7 @@
       #intro.out .stage{transform:scale(1.06);opacity:0}
       #intro.out canvas,#intro.out .hud,#intro.out .load,#intro.out .skip{opacity:0!important;transition:opacity .8s ease}
       #intro.out{pointer-events:none}
+      #intro.mt .mark .box{animation-delay:var(--lg)}#intro.mt .mark::after{animation-delay:calc(var(--lg) + .6s),0s}#intro.mt .mark .ring{animation-delay:calc(var(--lg) + .3s)}#intro.mt .mark .ring.r2{animation-delay:calc(var(--lg) + 1.9s)}#intro.mt .mark .tag{animation-delay:calc(var(--lg) + 1s)}
       html.intro-lock,html.intro-lock body{overflow:hidden}
       @keyframes hkFade{to{opacity:1}}
       @keyframes goldGlare{0%,100%{background-position:100% 0}50%{background-position:0 0}}
@@ -161,7 +162,7 @@
           c.textContent = TXT[i]; if (i === 4) c.className = 'y';
           s.appendChild(c); w.appendChild(s); letters.push(c);
         }
-        // Nama per huruf (ikut dibentuk sulur)
+        // Nama per huruf (ikut dibentuk serpihan meteor)
         var NAME = 'Mahfud Febry Styanto', sub = document.getElementById('intro-sub'), nameEls = [];
         for (var n0 = 0; n0 < NAME.length; n0++) {
           var s2 = document.createElement('span'), c2 = document.createElement('i');
@@ -173,8 +174,8 @@
 
         /* ── Timeline slow-motion (detik) ── */
         var T = LITE
-          ? { splash: .7, swirl: 1.3, letter0: 2.0, step: .2, form: .75, fade: .9 }
-          : { splash: .8, swirl: 1.6, letter0: 2.5, step: .26, form: .9, fade: 1.1 };
+          ? { logo: 2.1, letter0: 2.2, step: .2, form: .75, fade: .9 }
+          : { logo: 2.6, letter0: 2.7, step: .26, form: .9, fade: 1.1 };
         var lastOn = T.letter0 + (TXT.length - 1) * T.step + T.form;
         var letterOn = letters.map(function (_, i) { return T.letter0 + i * T.step + T.form * .7; });
         var nameOn = nameEls.map(function (_, j) { return lastOn + .1 + j * (LITE ? .025 : .035); });
@@ -202,12 +203,17 @@
         }
         if (reduce || QUICK) { hud(lastOn); letters.concat(nameEls).forEach(function (l) { l.classList.add('on'); }); stage.classList.add('done'); return; }
 
-        /* ════════ Sulur cairan hitam (symbiote) merambat dari logo → menggumpal jadi HIKIMORI & nama (canvas 2D) ════════ */
+        /* ════════ Hujan meteor: melesat dari luar layar, meledak memenuhi layar, serpihannya memusat jadi logo, HIKIMORI & nama (canvas 2D) ════════ */
         var cv = document.getElementById('intro-paint'), ctx = cv.getContext('2d');
         var DPR = Math.min(window.devicePixelRatio || 1, LITE ? 1 : 1.5), W = 0, H = 0;
         function rnd(a, b) { return a + Math.random() * (b - a); }
-        function size() { W = innerWidth; H = innerHeight; cv.width = W * DPR; cv.height = H * DPR; ctx.setTransform(DPR, 0, 0, DPR, 0, 0); ctx.lineCap = 'round'; ctx.lineJoin = 'round'; }
+        function size() { W = innerWidth; H = innerHeight; cv.width = W * DPR; cv.height = H * DPR; ctx.setTransform(DPR, 0, 0, DPR, 0, 0); ctx.lineCap = 'round'; }
         size();
+        var COL = ['#FF6FB5', '#C77DFF', '#4FF0FF', '#4C8DFF']; // pink, saber (ungu laser), cyan, biru
+        function pick() { return COL[(Math.random() * COL.length) | 0]; }
+        var SC = Math.min(1, Math.max(.5, Math.min(W, H) / 800)); // HP: meteor & serpihan lebih kecil
+        el.style.setProperty('--lg', (T.logo - .3) + 's'); // logo baru muncul saat serpihan memusat
+        el.classList.add('mt');
 
         // Titik-titik bentuk satu huruf (sampling dari canvas kecil), dibatasi maksimal `cap` titik
         function sample(el, ch, cap) {
@@ -223,78 +229,104 @@
           return { pts: pts.slice(0, cap), st: st, sp: span };
         }
 
-        var V = [], groups = [];
-        var markR = document.getElementById('intro-mark').getBoundingClientRect();
-        var SC = Math.min(1, Math.max(.45, parseFloat(getComputedStyle(letters[0]).fontSize) / 80)); // tebal sulur ikut ukuran huruf (HP lebih tipis)
-        var WDUR = LITE ? 1.6 : 2.2, NDUR = LITE ? 1.4 : 1.9, LAG = .45; // LAG: jeda agar bentuk cairan terlihat dulu sebelum teks muncul
-        // Huruf HIKIMORI: sulur keluar dari tepi bawah logo
-        letterOn.forEach(function (at, i) {
-          groups.push({ at: at - LAG - WDUR * 1.15 - .3, build: function (now) {
-            var s = sample(letters[i], TXT[i], LITE ? 28 : 46), arr = at - LAG;
-            var r = s.sp.getBoundingClientRect();
-            s.pts.forEach(function (q) {
-              var tx = r.left + q[0], ty = r.top + q[1];
-              var sx = markR.left + markR.width * rnd(.04, .96), sy = markR.bottom - rnd(2, 18), d = WDUR * rnd(.85, 1.15);
-              V.push({ sp: s.sp, ox: q[0], oy: q[1], sx: sx, sy: sy, cx: sx + (tx - sx) * rnd(.1, .9) + rnd(-140, 140) * SC, cy: sy + (ty - sy) * rnd(.05, .7) + rnd(-60, 60) * SC,
-                s: arr - d - rnd(0, .3), d: d, r0: rnd(5, 10) * SC, blob: s.st * 1.6, ph: rnd(0, 6.28), px: sx, py: sy, k: 0 });
-            });
+        // Meteor: titik ledak disebar merata (grid acak) sampai ke tepi layar, arah datang acak
+        var CX = LITE ? 4 : 6, CY = LITE ? 4 : 5, M = [], cells = [], SPAN = LITE ? 1.0 : 1.3;
+        for (var gy = 0; gy < CY; gy++) for (var gx = 0; gx < CX; gx++) cells.push([gx, gy]);
+        cells.sort(function () { return Math.random() - .5; });
+        cells.forEach(function (c, i) {
+          var ex = (c[0] + rnd(.08, .92)) / CX * W, ey = (c[1] + rnd(.08, .92)) / CY * H, a = rnd(0, 6.283), L = Math.max(W, H) * rnd(.5, .9);
+          var ts = .1 + i / cells.length * SPAN + rnd(0, .12);
+          M.push({ sx: ex - Math.cos(a) * L, sy: ey - Math.sin(a) * L, ex: ex, ey: ey, ts: ts, te: ts + rnd(.45, .8), c: pick(), px: null, py: null, boom: 0 });
+        });
+        var S = [], F = [], P = []; // S: serpihan ledakan, F: kilatan cincin, P: serpihan yang memusat ke bentuk
+        function explode(m, t) {
+          F.push({ x: m.ex, y: m.ey, t0: t, c: m.c });
+          for (var k = 0, n = LITE ? 18 : 34; k < n; k++) {
+            var a = rnd(0, 6.283), sp = rnd(140, 820) * SC;
+            S.push({ x: m.ex, y: m.ey, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, t0: t, life: rnd(.6, 1.3), c: Math.random() < .2 ? '#fff' : Math.random() < .6 ? m.c : pick() });
+          }
+        }
+        // Serpihan memusat: berangkat dari titik ledakan yang sudah terjadi, tiba di titik bentuk tepat waktu `arr`
+        var CDUR = LITE ? 1.1 : 1.3;
+        function launch(t, arr, sp, ox, oy, r) {
+          var b = M.filter(function (m) { return m.te <= t; }); if (!b.length) b = M;
+          var m = b[(Math.random() * b.length) | 0], sx = m.ex + rnd(-90, 90) * SC, sy = m.ey + rnd(-90, 90) * SC;
+          var rr = sp ? sp.getBoundingClientRect() : { left: 0, top: 0 }, tx = rr.left + ox, ty = rr.top + oy;
+          P.push({ sp: sp, ox: ox, oy: oy, sx: sx, sy: sy, cx: (sx + tx) / 2 + rnd(-220, 220) * SC, cy: (sy + ty) / 2 + rnd(-220, 220) * SC,
+            s: t, d: Math.max(.3, arr - t), r: r, c: pick(), px: sx, py: sy });
+        }
+        var groups = [], mk = document.getElementById('intro-mark');
+        groups.push({ at: T.logo - CDUR, build: function (t) { // logo
+          var r = mk.getBoundingClientRect();
+          for (var k = 0, n = LITE ? 70 : 150; k < n; k++) {
+            var a = rnd(0, 6.283), q = Math.sqrt(Math.random());
+            launch(t, T.logo, null, r.left + r.width / 2 + Math.cos(a) * q * r.width / 2, r.top + r.height / 2 + Math.sin(a) * q * r.height / 2, rnd(1, 2.2) * SC + .3);
+          }
+        } });
+        letterOn.forEach(function (at, i) { // HIKIMORI
+          groups.push({ at: at - .15 - CDUR, build: function (t) {
+            sample(letters[i], TXT[i], LITE ? 28 : 46).pts.forEach(function (q, _, a) { launch(t, at - .15, letters[i].parentNode, q[0], q[1], rnd(1.2, 2.2) * SC + .4); });
           } });
         });
-        // Nama: sulur lanjut merambat dari bawah tulisan HIKIMORI
-        nameOn.forEach(function (at, j) {
-          groups.push({ at: at - LAG - NDUR * 1.15 - .3, build: function () {
-            var s = sample(nameEls[j], NAME[j].toUpperCase(), LITE ? 10 : 22), wr = w.getBoundingClientRect(), arr = at - LAG * .6;
-            var r = s.sp.getBoundingClientRect();
-            s.pts.forEach(function (q) {
-              var tx = r.left + q[0], ty = r.top + q[1];
-              var sx = tx * .55 + (wr.left + wr.width / 2) * .45 + rnd(-30, 30), sy = wr.bottom - rnd(2, 10), d = NDUR * rnd(.85, 1.15);
-              V.push({ sp: s.sp, ox: q[0], oy: q[1], sx: sx, sy: sy, cx: sx + (tx - sx) * rnd(.2, .8) + rnd(-40, 40), cy: sy + (ty - sy) * rnd(.2, .7) + rnd(-14, 14),
-                s: arr - d - rnd(0, .25), d: d, r0: rnd(2, 3.2) * Math.max(.6, SC), blob: s.st * 1.3, ph: rnd(0, 6.28), px: sx, py: sy, k: 0 });
-            });
+        nameOn.forEach(function (at, j) { // nama
+          groups.push({ at: at - .1 - CDUR * .8, build: function (t) {
+            sample(nameEls[j], NAME[j].toUpperCase(), LITE ? 10 : 20).pts.forEach(function (q) { launch(t, at - .1, nameEls[j].parentNode, q[0], q[1], rnd(.7, 1.1)); });
           } });
         });
 
-        function pos(v, e) { // kurva bezier + liukan kecil tegak lurus arah rambat
-          var r = v.sp._r, tx = r.left + v.ox, ty = r.top + v.oy; // posisi huruf terkini (aman bila font telat dimuat)
-          var a = 1 - e, x = a * a * v.sx + 2 * a * e * v.cx + e * e * tx, y = a * a * v.sy + 2 * a * e * v.cy + e * e * ty;
-          var wob = Math.sin(e * 8 + v.ph) * 11 * e * a;
-          return [x + wob, y - wob * .5];
-        }
-        var spans = letters.concat(nameEls).map(function (el) { return el.parentNode; });
-        var BODY = '#2A2E45', RIM = 'rgba(6,7,12,.85)'; // cairan gelap: tepi pekat, tubuh grafit
-        var segs = [];
+        var spans = letters.concat(nameEls).map(function (el) { return el.parentNode; }), last = 0;
+        function line(x0, y0, x1, y1, w, c, a) { ctx.globalAlpha = a; ctx.strokeStyle = c; ctx.lineWidth = w; ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke(); }
+        function dot(x, y, r, c, a) { ctx.globalAlpha = a; ctx.fillStyle = c; ctx.beginPath(); ctx.arc(x, y, r, 0, 6.283); ctx.fill(); }
 
         function frame(now) {
           if (!running) return;
-          var t = (now - t0) / 1000;
+          var t = (now - t0) / 1000, dt = last ? Math.min(.05, (now - last) / 1000) : .016; last = now;
           hud(t);
-          for (var gi = 0; gi < groups.length; gi++) if (!groups[gi].done && t >= groups[gi].at) { groups[gi].done = 1; groups[gi].build(); }
+          for (var gi = 0; gi < groups.length; gi++) if (!groups[gi].done && t >= groups[gi].at) { groups[gi].done = 1; groups[gi].build(t); }
 
-          // Huruf & nama muncul tepat saat sulur selesai menggumpal di bentuknya
+          // Huruf & nama muncul tepat saat serpihan selesai memusat di bentuknya
           for (var i = 0; i < letters.length; i++) if (t >= letterOn[i]) letters[i].classList.add('on');
           if (t >= lastOn && !stage.classList.contains('done')) stage.classList.add('done');
           for (var j = 0; j < nameEls.length; j++) if (t >= nameOn[j]) nameEls[j].classList.add('on');
-          if (t >= nameEnd + .35 && !cv.classList.contains('dry')) cv.classList.add('dry'); // cairan surut, teks tajam tersisa
-
+          if (t >= nameEnd + .35 && !cv.classList.contains('dry')) cv.classList.add('dry'); // cahaya surut, teks tajam tersisa
           spans.forEach(function (sp) { sp._r = sp.getBoundingClientRect(); });
-          // Kumpulkan potongan sulur yang tumbuh di frame ini (jejak tidak dihapus → sulur menumpuk seperti cairan)
-          segs.length = 0;
-          for (var n = 0; n < V.length; n++) {
-            var v = V[n]; if (v.k >= 1 || t < v.s) continue;
-            var k = Math.min(1, (t - v.s) / v.d), e = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2, p = pos(v, e); // ease-in-out: merambat pelan → cepat → pelan
-            segs.push([v.px, v.py, p[0], p[1], v.r0 * (1 - .72 * e) + .5, k >= 1 ? v : null]);
-            v.px = p[0]; v.py = p[1]; v.k = k;
+
+          // Gambar lama memudar pelan → ekor cahaya
+          ctx.globalCompositeOperation = 'destination-out'; ctx.globalAlpha = 1; ctx.fillStyle = 'rgba(0,0,0,.24)'; ctx.fillRect(0, 0, W, H);
+          ctx.globalCompositeOperation = 'lighter';
+          var n, k, e, x, y;
+          for (n = 0; n < M.length; n++) { // meteor melesat (makin cepat), meledak di tujuan
+            var m = M[n]; if (t < m.ts || m.boom) continue;
+            k = Math.min(1, (t - m.ts) / (m.te - m.ts)); e = k * k;
+            x = m.sx + (m.ex - m.sx) * e; y = m.sy + (m.ey - m.sy) * e;
+            if (m.px !== null) { line(m.px, m.py, x, y, 4 * SC + 1.5, m.c, .9); line(m.px, m.py, x, y, 1.4, '#fff', 1); }
+            dot(x, y, 8 * SC + 2, m.c, .35);
+            m.px = x; m.py = y;
+            if (k >= 1) { m.boom = 1; explode(m, t); }
           }
-          if (segs.length) {
-            var q, m;
-            ctx.strokeStyle = RIM; // pendar tepi
-            for (m = 0; m < segs.length; m++) { q = segs[m]; ctx.lineWidth = q[4] * 2 + 2.5; ctx.beginPath(); ctx.moveTo(q[0], q[1]); ctx.lineTo(q[2], q[3]); ctx.stroke(); }
-            ctx.strokeStyle = BODY; ctx.fillStyle = BODY; // tubuh cairan hitam
-            for (m = 0; m < segs.length; m++) {
-              q = segs[m]; ctx.lineWidth = q[4] * 2; ctx.beginPath(); ctx.moveTo(q[0], q[1]); ctx.lineTo(q[2], q[3]); ctx.stroke();
-              if (q[5]) { ctx.beginPath(); ctx.arc(q[2], q[3], q[5].blob + q[4], 0, 6.283); ctx.fill(); } // menggumpal di titik huruf
-            }
+          F = F.filter(function (f) { // kilatan cincin ledakan
+            var a = (t - f.t0) / .45; if (a >= 1) return false;
+            ctx.globalAlpha = 1 - a; ctx.strokeStyle = f.c; ctx.lineWidth = 2.5 * (1 - a) + .5;
+            ctx.beginPath(); ctx.arc(f.x, f.y, 6 + 150 * SC * (1 - Math.pow(1 - a, 3)), 0, 6.283); ctx.stroke();
+            if (a < .3) dot(f.x, f.y, 22 * SC * (1 - a / .3) + 2, '#fff', .8 * (1 - a / .3));
+            return true;
+          });
+          var drag = Math.exp(-2.3 * dt);
+          S = S.filter(function (s) { // serpihan terlempar sampai tepi layar
+            var a = (t - s.t0) / s.life; if (a >= 1) return false;
+            s.vx *= drag; s.vy = s.vy * drag + 70 * dt;
+            var nx = s.x + s.vx * dt, ny = s.y + s.vy * dt;
+            line(s.x, s.y, nx, ny, 1.8 * SC + .4, s.c, 1 - a);
+            s.x = nx; s.y = ny; return true;
+          });
+          for (n = 0; n < P.length; n++) { // serpihan memusat (kurva bezier, pelan → cepat → pelan)
+            var p = P[n], r = p.sp ? p.sp._r : { left: 0, top: 0 }, tx = r.left + p.ox, ty = r.top + p.oy;
+            k = Math.min(1, (t - p.s) / p.d); e = k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+            var u = 1 - e; x = u * u * p.sx + 2 * u * e * p.cx + e * e * tx; y = u * u * p.sy + 2 * u * e * p.cy + e * e * ty;
+            if (k < 1) line(p.px, p.py, x, y, p.r * 1.6, p.c, .9); else dot(x, y, p.r, p.c, .8);
+            p.px = x; p.py = y;
           }
+          ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
           requestAnimationFrame(frame);
         }
         requestAnimationFrame(frame);
