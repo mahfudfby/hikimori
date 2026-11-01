@@ -16,11 +16,26 @@ const ContactPage: React.FC = () => {
   const [topic, setTopic] = useState('');
   const [msg, setMsg] = useState('');
   const topics = [t('Peluang kerja', 'Job opportunity'), t('Kolaborasi proyek', 'Project collaboration'), ...content.services.map(s => pick(s.title, lang))];
-  const body = `${t('Halo', 'Hi')} ${p.shortName},\n\n${msg}\n\n${name}${topic ? `\n(${t('Topik', 'Topic')}: ${topic})` : ''}`;
+  // Isi pesan rapi: salam pembuka, isi (Enter pengunjung dipertahankan), topik, penutup + nama.
+  // WhatsApp: *tebal* & _miring_; email: teks polos dengan pemisah baris CRLF (standar mailto, agar Gmail/Mail tidak menyatukan baris).
+  const fullName = p.name.split(',')[0].trim();
+  const compose = (wa: boolean) => {
+    const b = (x: string) => (wa ? `*${x}*` : x);
+    return [
+      t('Hallo,', 'Hello,'),
+      b(`${t('Bapak', 'Mr.')} ${fullName}`),
+      '',
+      msg.trim(),
+      '',
+      ...(topic ? [`${b(t('Topik:', 'Topic:'))} ${wa ? `_${topic}_` : topic}`, ''] : []),
+      t('Salam,', 'Regards,'),
+      b(name.trim()),
+    ].join('\n');
+  };
   const valid = name.trim().length > 0 && msg.trim().length > 0;
   const [tried, setTried] = useState(false); // tampilkan pesan bila tombol diklik sebelum form lengkap
-  const waHref = `https://wa.me/${p.whatsapp}?text=${encodeURIComponent(body)}`;
-  const mailHref = mailLink(p.email, `?subject=${encodeURIComponent(topic || t('Halo dari portofolio', 'Hello from your portfolio'))}&body=${encodeURIComponent(body)}`);
+  const waHref = `https://wa.me/${p.whatsapp}?text=${encodeURIComponent(compose(true))}`;
+  const mailHref = mailLink(p.email, `?subject=${encodeURIComponent(topic || t('Halo dari portofolio', 'Hello from your portfolio'))}&body=${encodeURIComponent(compose(false).replace(/\r?\n/g, '\r\n'))}`);
   // Tautan biasa (bukan window.open) agar Safari iOS tidak memblokir pembukaan WhatsApp / aplikasi email
   const guard = (e: React.MouseEvent) => { if (!valid) { e.preventDefault(); setTried(true); } };
 
