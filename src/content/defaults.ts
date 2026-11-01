@@ -17,8 +17,8 @@ export const DEFAULT_CONTENT: SiteContent = {
     shortName: 'Mahfud',
     title: bi('Human Resources & Administration'),
     tagline: bi(
-      'HRD, Payroll, General Affairs, IT Support, FMCG & Administrasi Operasional — pengalaman nyata di industri manufaktur.',
-      'HRD, Payroll, General Affairs, IT Support, FMCG & Operational Administration — hands-on experience in the manufacturing industry.'
+      'HRD, Payroll, General Affairs, IT Support, FMCG & Administrasi Operasional, pengalaman nyata di industri manufaktur.',
+      'HRD, Payroll, General Affairs, IT Support, FMCG & Operational Administration, hands-on experience in the manufacturing industry.'
     ),
     badge: 'CHRG',
     photoUrl: 'https://res.cloudinary.com/dl4pyan8v/image/upload/f_auto,q_auto,w_900/v1783866519/Mahfudfebry_casual_oj8r1d.png',
@@ -29,8 +29,8 @@ export const DEFAULT_CONTENT: SiteContent = {
       'A multidisciplinary professional in HRD, Payroll, General Affairs, IT Support, FMCG, and Operational Administration with hands-on experience in the manufacturing industry. Has held cross-departmental roles within the same company at different times, demonstrating loyalty and the trust placed in me based on my achievements in each role. Competent in payroll, workload analysis, BPJS, managing over 100 IT devices, and operational coordination. BNSP CHRG certified, S.Kom., GPA 3.39.'
     ),
     story: bi(
-      'Perjalanan karier saya dimulai di instansi pemerintah Kabupaten Nganjuk sebagai Human Resources Assistant — tempat saya pertama kali belajar bahwa administrasi SDM yang rapi adalah fondasi organisasi yang sehat.\n\nSetelah itu saya merantau ke Malang. Di sana saya bekerja di berbagai bidang — dari bengkel las, dapur restoran, hingga layanan transportasi online — sambil menempuh kuliah Teknik Informatika di kelas karyawan. Masa itu mengajarkan disiplin, manajemen waktu, dan empati terhadap pekerja lapangan.\n\nDi UD Duta Pangan saya dipercaya berpindah lintas divisi: Sales Marketing, Administrasi Gudang & Produksi, IT Support, hingga HR Generalist dan Staff HRD / General Affairs. Kombinasi latar belakang IT dan SDM membuat saya terbiasa membangun sistem kerja yang efisien — dari payroll, BPJS, perizinan OSS, sampai ERP internal.',
-      'My career started at the Nganjuk Regency government as a Human Resources Assistant — where I first learned that tidy HR administration is the foundation of a healthy organization.\n\nI then moved to Malang, working across many fields — a welding workshop, restaurant kitchens, and ride-hailing — while studying Informatics Engineering in an employee class. Those years taught me discipline, time management, and empathy for frontline workers.\n\nAt UD Duta Pangan I was trusted to move across divisions: Sales Marketing, Warehouse & Production Administration, IT Support, and finally HR Generalist and HRD / General Affairs Staff. Combining IT and HR backgrounds, I build efficient work systems — from payroll, BPJS and OSS licensing to an internal ERP.'
+      'Perjalanan karier saya dimulai di instansi pemerintah Kabupaten Nganjuk sebagai Human Resources Assistant, tempat saya pertama kali belajar bahwa administrasi SDM yang rapi adalah fondasi organisasi yang sehat.\n\nSetelah itu saya merantau ke Malang. Di sana saya bekerja di berbagai bidang, dari bengkel las, dapur restoran, hingga layanan transportasi online, sambil menempuh kuliah Teknik Informatika di kelas karyawan. Masa itu mengajarkan disiplin, manajemen waktu, dan empati terhadap pekerja lapangan.\n\nDi UD Duta Pangan saya dipercaya berpindah lintas divisi: Sales Marketing, Administrasi Gudang & Produksi, IT Support, hingga HR Generalist dan Staff HRD / General Affairs. Kombinasi latar belakang IT dan SDM membuat saya terbiasa membangun sistem kerja yang efisien, dari payroll, BPJS, perizinan OSS, sampai ERP internal.',
+      'My career started at the Nganjuk Regency government as a Human Resources Assistant, where I first learned that tidy HR administration is the foundation of a healthy organization.\n\nI then moved to Malang, working across many fields, a welding workshop, restaurant kitchens, and ride-hailing, while studying Informatics Engineering in an employee class. Those years taught me discipline, time management, and empathy for frontline workers.\n\nAt UD Duta Pangan I was trusted to move across divisions: Sales Marketing, Warehouse & Production Administration, IT Support, and finally HR Generalist and HRD / General Affairs Staff. Combining IT and HR backgrounds, I build efficient work systems, from payroll, BPJS and OSS licensing to an internal ERP.'
     ),
     birthPlace: 'Nganjuk',
     birthDate: '12 Februari 2000',
@@ -65,12 +65,12 @@ export const DEFAULT_CONTENT: SiteContent = {
 
   education: {
     intro: bi(
-      'Latar belakang Teknik Informatika yang saya tempuh sambil bekerja — pondasi yang membuat saya nyaman di persimpangan SDM dan teknologi.',
-      'An Informatics Engineering background earned while working — the foundation that makes me comfortable where HR meets technology.'
+      'Latar belakang Teknik Informatika yang saya tempuh sambil bekerja, pondasi yang membuat saya nyaman di persimpangan SDM dan teknologi.',
+      'An Informatics Engineering background earned while working, the foundation that makes me comfortable where HR meets technology.'
     ),
     story: bi(
-      'Saya memilih kelas karyawan di Institut Teknologi & Bisnis ASIA Malang supaya bisa tetap bekerja sambil kuliah. Pagi hingga sore bekerja, malam dan akhir pekan kuliah — ritme yang melatih saya mengatur prioritas dengan ketat.\n\nIlmu informatika yang saya dapat — basis data, jaringan, dan pengembangan sistem — kemudian saya terapkan langsung di dunia kerja: mengelola 100+ perangkat IT, membangun ERP internal, dan mengotomasi laporan SDM.\n\nSetelah lulus sebagai S.Kom. dengan IPK 3.39, saya melanjutkan pengembangan diri lewat pelatihan Certified Human Resources Generalist (CHRG) berbasis SKKNI dan meraih sertifikasinya dari BNSP.',
-      'I chose the employee class at Institut Teknologi & Bisnis ASIA Malang so I could keep working while studying. Working by day, studying at night and on weekends — a rhythm that trained me to prioritize strictly.\n\nThe informatics knowledge I gained — databases, networking and systems development — went straight into my work: managing 100+ IT devices, building an internal ERP, and automating HR reports.\n\nAfter graduating as S.Kom. with a 3.39 GPA, I continued developing through SKKNI-based Certified Human Resources Generalist (CHRG) training and earned the certification from BNSP.'
+      'Saya memilih kelas karyawan di Institut Teknologi & Bisnis ASIA Malang supaya bisa tetap bekerja sambil kuliah. Pagi hingga sore bekerja, malam dan akhir pekan kuliah, ritme yang melatih saya mengatur prioritas dengan ketat.\n\nIlmu informatika yang saya dapat, basis data, jaringan, dan pengembangan sistem, kemudian saya terapkan langsung di dunia kerja: mengelola 100+ perangkat IT, membangun ERP internal, dan mengotomasi laporan SDM.\n\nSetelah lulus sebagai S.Kom. dengan IPK 3.39, saya melanjutkan pengembangan diri lewat pelatihan Certified Human Resources Generalist (CHRG) berbasis SKKNI dan meraih sertifikasinya dari BNSP.',
+      'I chose the employee class at Institut Teknologi & Bisnis ASIA Malang so I could keep working while studying. Working by day, studying at night and on weekends, a rhythm that trained me to prioritize strictly.\n\nThe informatics knowledge I gained, databases, networking and systems development, went straight into my work: managing 100+ IT devices, building an internal ERP, and automating HR reports.\n\nAfter graduating as S.Kom. with a 3.39 GPA, I continued developing through SKKNI-based Certified Human Resources Generalist (CHRG) training and earned the certification from BNSP.'
     ),
     items: [
       {
@@ -91,7 +91,7 @@ export const DEFAULT_CONTENT: SiteContent = {
         thesis: bi('', ''),
         courses: ['Basis Data', 'Jaringan Komputer', 'Rekayasa Perangkat Lunak', 'Sistem Informasi Manajemen', 'Pemrograman Web'],
         highlights: [
-          bi('Lulus dengan gelar S.Kom. — IPK 3.39', 'Graduated as S.Kom. — GPA 3.39'),
+          bi('Lulus dengan gelar S.Kom., IPK 3.39', 'Graduated as S.Kom., GPA 3.39'),
           bi('Kepala Divisi Humas Internal, Paguyuban Mahasiswa Nganjuk di Malang', 'Head of Internal PR, Nganjuk Students Association in Malang'),
         ],
       },
@@ -101,7 +101,7 @@ export const DEFAULT_CONTENT: SiteContent = {
       { id: 'j2', year: '2018', title: bi('Merantau ke Malang', 'Moved to Malang'), desc: bi('Bekerja sambil menempuh kuliah Teknik Informatika kelas karyawan.', 'Worked while studying Informatics Engineering in an employee class.') },
       { id: 'j3', year: '—', title: bi('Aktif berorganisasi', 'Active in organizations'), desc: bi('Kepala Divisi Humas Internal Paguyuban Mahasiswa Nganjuk di Malang.', 'Head of Internal PR at the Nganjuk Students Association in Malang.') },
       { id: 'j4', year: '—', title: bi('Lulus S.Kom.', 'Graduated S.Kom.'), desc: bi('Menyelesaikan studi dengan IPK 3.39.', 'Completed studies with a 3.39 GPA.') },
-      { id: 'j5', year: '2025', title: bi('Pelatihan CHRG', 'CHRG training'), desc: bi('Pelatihan Certified Human Resources Generalist: 4 unit kompetensi SKKNI MSDM — Cipta Innovasi Unggul.', 'Certified Human Resources Generalist training: 4 SKKNI HR competency units — Cipta Innovasi Unggul.') },
+      { id: 'j5', year: '2025', title: bi('Pelatihan CHRG', 'CHRG training'), desc: bi('Pelatihan Certified Human Resources Generalist: 4 unit kompetensi SKKNI MSDM, Cipta Innovasi Unggul.', 'Certified Human Resources Generalist training: 4 SKKNI HR competency units, Cipta Innovasi Unggul.') },
       { id: 'j6', year: '2026', title: bi('Sertifikasi BNSP CHRG', 'BNSP CHRG certification'), desc: bi('Certified Human Resources Generalist, berlaku 2026–2029.', 'Certified Human Resources Generalist, valid 2026–2029.') },
     ],
   },
@@ -109,7 +109,7 @@ export const DEFAULT_CONTENT: SiteContent = {
   organizations: [
     {
       id: 'o1',
-      name: bi('PANGLIMA — Paguyuban Mahasiswa Nganjuk Kuliah di Malang', 'PANGLIMA — Nganjuk Students Association in Malang'),
+      name: bi('PANGLIMA (Paguyuban Mahasiswa Nganjuk Kuliah di Malang)', 'PANGLIMA (Nganjuk Students Association in Malang)'),
       role: bi('Kepala Divisi Humas Internal', 'Head of Internal Public Relations'),
       period: '',
       points: [
@@ -126,7 +126,7 @@ export const DEFAULT_CONTENT: SiteContent = {
 
   tools: [
     'Microsoft Excel, Word, PowerPoint|Office',
-    'Google Workspace — Sheets, Docs, Forms|Office',
+    'Google Workspace (Sheets, Docs, Forms)|Office',
     'OSS Platform|HR & Legal',
     'SIPP BPJS Ketenagakerjaan|HR & Legal',
     'e-Dabu BPJS Kesehatan|HR & Legal',
@@ -142,19 +142,19 @@ export const DEFAULT_CONTENT: SiteContent = {
     {
       id: 'sv1', icon: '👥',
       title: bi('Human Resource Management'), subtitle: bi('HR Professional'),
-      desc: bi('Pengelolaan sumber daya manusia secara menyeluruh — dari rekrutmen, onboarding, evaluasi kinerja, hingga pengembangan organisasi.', 'End-to-end people management — from recruitment and onboarding to performance reviews and organizational development.'),
+      desc: bi('Pengelolaan sumber daya manusia secara menyeluruh, dari rekrutmen, onboarding, evaluasi kinerja, hingga pengembangan organisasi.', 'End-to-end people management, from recruitment and onboarding to performance reviews and organizational development.'),
       points: [bi('Analisa Beban Kerja', 'Workload Analysis'), bi('Menyusun Uraian Jabatan', 'Job Descriptions'), bi('Payroll & BPJS'), bi('Rekrutmen & Seleksi', 'Recruitment & Selection'), bi('Employee Relations'), bi('Performance Evaluation')],
     },
     {
       id: 'sv2', icon: '📋',
       title: bi('Staff Administrasi', 'Administration'), subtitle: bi('Administration'),
-      desc: bi('Layanan administrasi profesional yang efisien — pengelolaan dokumen, pelaporan, dan koordinasi operasional harian perusahaan.', 'Efficient professional administration — document management, reporting and daily operational coordination.'),
+      desc: bi('Layanan administrasi profesional yang efisien, pengelolaan dokumen, pelaporan, dan koordinasi operasional harian perusahaan.', 'Efficient professional administration, document management, reporting and daily operational coordination.'),
       points: [bi('Document Management'), bi('Vendor Coordination'), bi('Stock Monitoring'), bi('Facility Maintenance'), bi('Laporan Operasional', 'Operational Reports'), bi('Arsip & Filing', 'Archiving & Filing')],
     },
     {
       id: 'sv3', icon: '💻',
       title: bi('IT Support & Technical'), subtitle: bi('Technology'),
-      desc: bi('Dukungan teknis komprehensif untuk kebutuhan IT perusahaan — dari hardware, software, jaringan, hingga pelatihan pengguna.', 'Comprehensive technical support — hardware, software, networking and user training.'),
+      desc: bi('Dukungan teknis komprehensif untuk kebutuhan IT perusahaan, dari hardware, software, jaringan, hingga pelatihan pengguna.', 'Comprehensive technical support, hardware, software, networking and user training.'),
       points: [bi('Hardware Troubleshooting'), bi('Software Installation'), bi('Network Setup & Config'), bi('Data Backup & Recovery'), bi('User Training'), bi('IT Documentation')],
     },
   ],
@@ -174,8 +174,8 @@ export const DEFAULT_CONTENT: SiteContent = {
   ],
 
   achievements: [
-    { id: 'a1', value: '121', label: bi('karyawan — payroll & BPJS bulanan', 'employees — monthly payroll & BPJS') },
-    { id: 'a2', value: '6', label: bi('divisi — uraian jabatan & evaluasi KPI', 'divisions — job descriptions & KPI reviews') },
+    { id: 'a1', value: '121', label: bi('karyawan, payroll & BPJS bulanan', 'employees, monthly payroll & BPJS') },
+    { id: 'a2', value: '6', label: bi('divisi, uraian jabatan & evaluasi KPI', 'divisions, job descriptions & KPI reviews') },
     { id: 'a3', value: '4j → <1j', label: bi('waktu pelaporan lewat ERP buatan sendiri', 'reporting time via self-built ERP') },
     { id: 'a4', value: '-50%', label: bi('insiden IT berulang', 'recurring IT incidents') },
     { id: 'a5', value: '200+', label: bi('SKU inventori dipantau', 'inventory SKUs monitored') },

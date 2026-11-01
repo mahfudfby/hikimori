@@ -139,7 +139,7 @@ export const Block: React.FC<{ b: ArticleBlock; title: string }> = ({ b, title }
   switch (b.type) {
     case 'heading': return <h2 className="mag-h2">{hyphenate(b.text)}</h2>;
     case 'quote': return (
-      <blockquote className="mag-quote"><RichText text={b.text} />{b.caption && <cite>— {b.caption}</cite>}</blockquote>
+      <blockquote className="mag-quote"><RichText text={b.text} />{b.caption && <cite>{b.caption}</cite>}</blockquote>
     );
     case 'divider': return <div className="mag-divider" aria-hidden="true"><span>✦</span></div>;
     case 'code': return (

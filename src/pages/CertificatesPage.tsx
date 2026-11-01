@@ -46,7 +46,7 @@ const CertificatesPage: React.FC = () => {
     <main className="shell page-in">
       <div className="frame">
         <PageHero crumb={t('Sertifikat', 'Certificates')} title={t('Sertifikat & lisensi', 'Certificates & licenses')}
-          lead={t('Kompetensi yang sudah diuji dan diakui — lisensi profesi BNSP, pelatihan berbasis SKKNI, dan sertifikasi lainnya.', 'Tested and recognized competencies — BNSP professional licenses, SKKNI-based training, and other certifications.')}
+          lead={t('Kompetensi yang sudah diuji dan diakui, lisensi profesi BNSP, pelatihan berbasis SKKNI, dan sertifikasi lainnya.', 'Tested and recognized competencies, BNSP professional licenses, SKKNI-based training, and other certifications.')}
           aside={<div className="row gap-24">
             {(['license', 'training', 'cert'] as CertCategory[]).map(c => (
               <div key={c}><div className="num-xl">{count(c)}</div><div className="xs muted">{pick(CAT[c], lang)}</div></div>
@@ -60,7 +60,7 @@ const CertificatesPage: React.FC = () => {
         </div>
 
         {list.length === 0 ? <div className="empty">{t('Belum ada data.', 'Nothing yet.')}</div> : (
-          <Swipe label={t('Daftar sertifikat — geser kanan/kiri', 'Certificates — swipe left/right')}>
+          <Swipe label={t('Daftar sertifikat, geser kanan/kiri', 'Certificates, swipe left/right')}>
             {list.map(c => (
               <Staged key={c.id} minHeight={380} eager={hash === c.id}>
               <article key={c.id} id={c.id} className={`card ${c.category === 'license' ? 'dark' : ''} hoverable stack`}

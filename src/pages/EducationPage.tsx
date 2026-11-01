@@ -59,7 +59,7 @@ const EducationPage: React.FC = () => {
 
             {ed.items.map(it => (
               <Reveal key={it.id} className="card">
-                <span className="eyebrow">{t('Detail studi', 'Study details')} — {it.school}</span>
+                <span className="eyebrow">{t('Detail studi', 'Study details')}: {it.school}</span>
                 {pick(it.story, lang) && <p className="muted mt-16" style={{ lineHeight: 1.75 }}>{pick(it.story, lang)}</p>}
                 <dl className="kv mt-16">
                   <dt>{t('Jenjang', 'Level')}</dt><dd>{pick(it.level, lang)}</dd>

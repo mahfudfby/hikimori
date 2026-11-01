@@ -15,7 +15,7 @@ const ContactPage: React.FC = () => {
   const [topic, setTopic] = useState('');
   const [msg, setMsg] = useState('');
   const topics = [t('Peluang kerja', 'Job opportunity'), t('Kolaborasi proyek', 'Project collaboration'), ...content.services.map(s => pick(s.title, lang))];
-  const body = `${t('Halo', 'Hi')} ${p.shortName},\n\n${msg}\n\n— ${name}${topic ? `\n(${t('Topik', 'Topic')}: ${topic})` : ''}`;
+  const body = `${t('Halo', 'Hi')} ${p.shortName},\n\n${msg}\n\n${name}${topic ? `\n(${t('Topik', 'Topic')}: ${topic})` : ''}`;
   const valid = name.trim().length > 1 && msg.trim().length > 4;
 
   const items = [
@@ -52,7 +52,7 @@ const ContactPage: React.FC = () => {
               <a className="pill lg" href={valid ? `mailto:${p.email}?subject=${encodeURIComponent(topic || t('Halo dari portofolio', 'Hello from your portfolio'))}&body=${encodeURIComponent(body)}` : undefined}
                 aria-disabled={!valid} style={!valid ? { opacity: 0.5, pointerEvents: 'none' } : undefined}><Icon name="mail" />{t('Kirim via Email', 'Send via Email')}</a>
             </div>
-            <p className="xs faint">{t('Pesan dibuka di aplikasi WhatsApp/email kamu — tidak ada data yang disimpan di situs ini.', 'Your message opens in your WhatsApp/email app — nothing is stored on this site.')}</p>
+            <p className="xs faint">{t('Pesan dibuka di aplikasi WhatsApp/email kamu, tidak ada data yang disimpan di situs ini.', 'Your message opens in your WhatsApp/email app, nothing is stored on this site.')}</p>
           </form>
         </div>
       </div>
