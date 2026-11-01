@@ -27,9 +27,12 @@ export const fmtYM = (s: string, lang: Lang): string => {
   return `${MONTHS[lang][v % 12]} ${Math.floor(v / 12)}`;
 };
 
+/** Pemisah rentang tanggal tanpa garis: "Okt 2023 s.d. Jan 2024" / "Oct 2023 to Jan 2024". */
+export const rangeSep = (lang: Lang) => (lang === 'en' ? ' to ' : ' s.d. ');
+
 export const fmtPeriod = (start: string, end: string, lang: Lang): string => {
   const a = fmtYM(start, lang); const b = end ? fmtYM(end, lang) : (lang === 'en' ? 'Present' : 'Sekarang');
-  return a ? `${a} – ${b}` : b;
+  return a ? `${a}${rangeSep(lang)}${b}` : b;
 };
 
 export const fmtDuration = (months: number, lang: Lang, short = false): string => {

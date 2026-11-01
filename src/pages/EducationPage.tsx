@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { useContent } from '../content/ContentContext';
 import { useLang } from '../contexts/LanguageContext';
 import { Icon, PageHero, Reveal, useTitle, Logo, Bullets } from '../components/ui';
-import { pick, paragraphs, fmtYM } from '../content/derive';
+import { pick, paragraphs, fmtYM, rangeSep } from '../content/derive';
 
 const EducationPage: React.FC = () => {
   const { content } = useContent();
@@ -12,7 +12,7 @@ const EducationPage: React.FC = () => {
   useTitle(`${t('Pendidikan', 'Education')} — ${content.profile.name}`);
   const ed = content.education;
   const main = ed.items[0];
-  const period = (s: string, e: string) => [s && (fmtYM(s, lang) || s), e && (fmtYM(e, lang) || e)].filter(Boolean).join(' – ');
+  const period = (s: string, e: string) => [s && (fmtYM(s, lang) || s), e && (fmtYM(e, lang) || e)].filter(Boolean).join(rangeSep(lang));
 
   return (
     <main className="shell page-in">

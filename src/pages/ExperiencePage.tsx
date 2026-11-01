@@ -4,7 +4,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useContent } from '../content/ContentContext';
 import { useLang } from '../contexts/LanguageContext';
 import { Icon, PageHero, Reveal, useTitle, useHashTarget, Logo, Staged } from '../components/ui';
-import { pick, monthsOf, fmtDuration, fmtPeriod, careerMonths, categoryShare, CATEGORY_LABEL, sortExp, lines, careerGaps, calendarSpanMonths, fmtYM } from '../content/derive';
+import { pick, monthsOf, fmtDuration, fmtPeriod, rangeSep, careerMonths, categoryShare, CATEGORY_LABEL, sortExp, lines, careerGaps, calendarSpanMonths, fmtYM } from '../content/derive';
 import type { Experience, ExpCategory } from '../content/types';
 
 const ExpCard: React.FC<{ e: Experience; max: number; on: boolean }> = ({ e, max, on }) => {
@@ -122,7 +122,7 @@ const ExperiencePage: React.FC = () => {
                   <div className="row wrap gap-8">
                     {careerGaps(all).map(g => (
                       <span key={g.start} className="chip" style={{ padding: '3px 10px' }}>
-                        {g.start === g.end ? fmtYM(g.start, lang) : `${fmtYM(g.start, lang)} – ${fmtYM(g.end, lang)}`} · {fmtDuration(g.months, lang, true)}
+                        {g.start === g.end ? fmtYM(g.start, lang) : `${fmtYM(g.start, lang)}${rangeSep(lang)}${fmtYM(g.end, lang)}`} · {fmtDuration(g.months, lang, true)}
                       </span>
                     ))}
                   </div>
