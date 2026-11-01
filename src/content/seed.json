@@ -231,13 +231,18 @@
    "location": "Malang, Jawa Timur",
    "start": "2023-01",
    "end": "2023-11",
-   "type": "Part-time",
+   "type": "Full-time",
    "category": "other",
    "logoUrl": "",
-   "tags": [],
+   "tags": [
+    "Cooking",
+    "Food Preparation",
+    "Plating",
+    "Culinary Consulting"
+   ],
    "desc": {
-    "id": "• Sebagai Juru Masak Dan Persiapan Bahan Mentah",
-    "en": "• Cook and raw-material preparation"
+    "id": "• Menyiapkan bahan baku harian (mise en place): memotong sayur, menyiapkan mi, marinasi ayam, dan meracik sambal\n• Mengolah kaldu, bumbu dasar, dan topping sesuai resep standar kedai\n• Memasak mi dan ayam gepuk sesuai pesanan dengan rasa dan porsi yang konsisten\n• Plating hidangan rapi sesuai standar penyajian sebelum keluar dari dapur\n• Mengantar pesanan ke meja pelanggan dan memastikan isi pesanan sesuai nota\n• Menangani ±100 nota pesanan per hari untuk 17 produk menu\n• Berperan sebagai konsultan kuliner: merekomendasikan menu dan level pedas kepada pelanggan serta memberi masukan pengembangan rasa\n• Menjaga kebersihan dapur, peralatan, dan keamanan pangan (food safety)\n• Mengecek stok bahan dan melaporkan kebutuhan belanja harian",
+    "en": "• Prepared daily ingredients (mise en place): cutting vegetables, preparing noodles, marinating chicken, and mixing sambal\n• Made broth, base seasonings, and toppings to the shop’s standard recipes\n• Cooked noodles and smashed fried chicken (ayam gepuk) to order with consistent taste and portions\n• Plated dishes neatly to serving standards before they left the kitchen\n• Delivered orders to customers’ tables and made sure each order matched its ticket\n• Handled ±100 order tickets per day across 17 menu items\n• Acted as a culinary consultant: recommended dishes and spice levels to customers and gave input on flavor development\n• Kept the kitchen, equipment, and food handling clean and safe (food safety)\n• Checked ingredient stock and reported daily purchasing needs"
    }
   },
   {

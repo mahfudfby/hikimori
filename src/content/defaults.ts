@@ -185,6 +185,8 @@ export const DEFAULT_CONTENT: SiteContent = {
     { id: 'a5', value: '200+', label: bi('SKU inventori dipantau', 'inventory SKUs monitored'), job: 'Admin Gudang & Produksi · UD Duta Pangan' },
     { id: 'a10', value: '85%', label: bi('akurasi stok lewat stock opname rutin', 'stock accuracy through regular stock counts'), job: 'Admin Gudang & Produksi · UD Duta Pangan' },
     { id: 'a11', value: '25 SKU', label: bi('administrasi produksi harian, ±100 kg bahan baku per SKU', 'daily production records, ±100 kg of raw material per SKU'), job: 'Admin Gudang & Produksi · UD Duta Pangan' },
+    { id: 'a14', value: '100 nota', label: bi('pesanan per hari, dari persiapan, plating, hingga diantar ke meja pelanggan', 'orders per day, from prep and plating to the customer’s table'), job: 'Kitchen Staff · Mikane Gepuktular' },
+    { id: 'a15', value: '17 menu', label: bi('produk disiapkan sekaligus sebagai konsultan kuliner bagi pelanggan', 'menu items prepared, also acting as culinary consultant for customers'), job: 'Kitchen Staff · Mikane Gepuktular' },
     { id: 'a12', value: '4', label: bi('layanan antar: penumpang, makanan, paket, belanja', 'delivery services: rides, food, parcels, groceries'), job: 'Driver Bike · Grab' },
     { id: 'a13', value: '2,5 th', label: bi('pembuatan & pemasangan pagar, tralis, kanopi, rolling door', 'building & installing fences, grilles, canopies, rolling doors'), job: 'Welding Operator · Lancar Jaya Malang' },
   ],
