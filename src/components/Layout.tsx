@@ -8,6 +8,7 @@ import { useLang } from '../contexts/LanguageContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
 import { pick } from '../content/derive';
+import { mailLink } from '../utils/mailLink';
 
 export const NAV = [
   { to: '/', id: 'Dashboard', en: 'Dashboard' },
@@ -94,7 +95,7 @@ export const Footer: React.FC = () => {
             {NAV.slice(1).map(n => <Link key={n.to} to={n.to}>{lang === 'en' ? n.en : n.id}</Link>)}
           </div>
           <div className="row gap-8">
-            {p.email && <a className="icon-btn sm" href={`mailto:${p.email}`} aria-label="Email"><Icon name="mail" size={15} /></a>}
+            {p.email && <a className="icon-btn sm" href={mailLink(p.email)} aria-label="Email"><Icon name="mail" size={15} /></a>}
             {p.whatsapp && <a className="icon-btn sm" href={`https://wa.me/${p.whatsapp}`} target="_blank" rel="noreferrer" aria-label="WhatsApp"><Icon name="chat" size={15} /></a>}
             {p.socials.linkedin && <a className="icon-btn sm" href={`https://linkedin.com/in/${p.socials.linkedin}`} target="_blank" rel="noreferrer" aria-label="LinkedIn"><Icon name="link" size={15} /></a>}
           </div>

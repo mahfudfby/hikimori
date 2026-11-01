@@ -9,6 +9,7 @@ import { pick, waLink } from '../content/derive';
 import { Icon, useTitle, cld } from '../components/ui';
 import { ArticleBlocks, Media } from '../components/Article';
 import { hyphenate } from '../utils/richHtml';
+import { mailLink } from '../utils/mailLink';
 
 const Ornament: React.FC = () => (
   <div className="mag-ornament" aria-hidden="true">
@@ -99,7 +100,7 @@ const PortfolioArticle: React.FC = () => {
             </div>
             <div className="stack gap-8 mt-16">
               {p.whatsapp && <a className="pill dark" href={waLink(content, lang)} target="_blank" rel="noopener noreferrer"><Icon name="chat" size={15} />WhatsApp</a>}
-              {p.email && <a className="pill" href={`mailto:${p.email}`}><Icon name="mail" size={15} />Email</a>}
+              {p.email && <a className="pill" href={mailLink(p.email)}><Icon name="mail" size={15} />Email</a>}
               <Link className="pill ghost" to="/kontak"><Icon name="arrow" size={15} />{t('Halaman kontak', 'Contact page')}</Link>
             </div>
           </div>

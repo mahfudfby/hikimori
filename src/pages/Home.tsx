@@ -10,6 +10,7 @@ import {
 } from '../content/derive';
 import type { Experience } from '../content/types';
 import { downloadUrl } from '../utils/saveFile';
+import { mailLink } from '../utils/mailLink';
 
 const SLIDE_MS = 6500;
 const MAX_BARS = 10;
@@ -371,7 +372,7 @@ const BioCard: React.FC = () => {
       </Acc>
       <Acc title={t('Kontak', 'Contact')} open={open === 'contact'} onToggle={() => tog('contact')}>
         <dl className="kv">
-          <dt>Email</dt><dd><a href={`mailto:${p.email}`}>{p.email}</a></dd>
+          <dt>Email</dt><dd><a href={mailLink(p.email)}>{p.email}</a></dd>
           <dt>{t('Telepon', 'Phone')}</dt><dd>{p.phone}</dd>
           <dt>Web</dt><dd>{p.website}</dd>
         </dl>

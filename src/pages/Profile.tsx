@@ -6,6 +6,7 @@ import { useLang } from '../contexts/LanguageContext';
 import { Icon, PageHero, Reveal, useTitle, Bullets, cld, cldSet } from '../components/ui';
 import { pick, paragraphs, careerMonths, ageOf, waLink } from '../content/derive';
 import { downloadUrl } from '../utils/saveFile';
+import { mailLink } from '../utils/mailLink';
 
 const Profile: React.FC = () => {
   const { content } = useContent();
@@ -52,7 +53,7 @@ const Profile: React.FC = () => {
                 </>}
                 <dt>{t('Kewarganegaraan', 'Nationality')}</dt><dd>{pick(p.nationality, lang)}</dd>
                 <dt>{t('Domisili', 'Location')}</dt><dd>{p.location}</dd>
-                <dt>Email</dt><dd><a href={`mailto:${p.email}`}>{p.email}</a></dd>
+                <dt>Email</dt><dd><a href={mailLink(p.email)}>{p.email}</a></dd>
                 <dt>{t('Telepon', 'Phone')}</dt><dd>{p.phone}</dd>
                 <dt>Website</dt><dd>{p.website}</dd>
               </dl>
