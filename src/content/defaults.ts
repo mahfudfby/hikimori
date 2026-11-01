@@ -102,7 +102,7 @@ export const DEFAULT_CONTENT: SiteContent = {
       { id: 'j3', year: '—', title: bi('Aktif berorganisasi', 'Active in organizations'), desc: bi('Kepala Divisi Humas Internal Paguyuban Mahasiswa Nganjuk di Malang.', 'Head of Internal PR at the Nganjuk Students Association in Malang.') },
       { id: 'j4', year: '—', title: bi('Lulus S.Kom.', 'Graduated S.Kom.'), desc: bi('Menyelesaikan studi dengan IPK 3.39.', 'Completed studies with a 3.39 GPA.') },
       { id: 'j5', year: '2025', title: bi('Pelatihan CHRG', 'CHRG training'), desc: bi('Pelatihan Certified Human Resources Generalist: 4 unit kompetensi SKKNI MSDM, Cipta Innovasi Unggul.', 'Certified Human Resources Generalist training: 4 SKKNI HR competency units, Cipta Innovasi Unggul.') },
-      { id: 'j6', year: '2026', title: bi('Sertifikasi BNSP CHRG', 'BNSP CHRG certification'), desc: bi('Certified Human Resources Generalist, berlaku 2026–2029.', 'Certified Human Resources Generalist, valid 2026–2029.') },
+      { id: 'j6', year: '2026', title: bi('Sertifikasi BNSP CHRG', 'BNSP CHRG certification'), desc: bi('Certified Human Resources Generalist, berlaku 2026 s.d. 2029.', 'Certified Human Resources Generalist, valid 2026 to 2029.') },
     ],
   },
 
