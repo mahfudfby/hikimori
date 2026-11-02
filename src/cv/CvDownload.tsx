@@ -20,6 +20,7 @@ import { translateMissing, trCache } from './translate';
 
 const LS_CHOICE = 'hk_cv_choice_v1';
 const LS_OPTS = 'hk_cv_opts_v1';
+const LS_PHOTO = 'hk_cv_photo_v1';
 const CERT_GROUPS: { key: CertCategory; id: string; en: string }[] = [
   { key: 'license', id: 'Lisensi', en: 'Licenses' }, { key: 'cert', id: 'Sertifikat', en: 'Certificates' }, { key: 'training', id: 'Pelatihan', en: 'Training' },
 ];
@@ -43,6 +44,27 @@ export const CvBuilder: React.FC = () => {
   const [lang, setLang] = useState<Lang>(siteLang);
   const [ch, setCh] = useState<Choice>(readChoice);
   const [photo, setPhoto] = useState('');
+  // Foto unggahan pengunjung (hanya di perangkat ini): diperkecil ke maks. 800 px lalu disimpan di localStorage; lebih diutamakan daripada foto situs
+  const [upPhoto, setUpPhoto] = useState(() => { try { return localStorage.getItem(LS_PHOTO) || ''; } catch { return ''; } });
+  const onFile = (f?: File) => {
+    if (!f) return;
+    const url = URL.createObjectURL(f);
+    const img = new Image();
+    img.onload = () => {
+      const k = Math.min(1, 800 / Math.max(img.width, img.height));
+      const c = document.createElement('canvas');
+      c.width = Math.round(img.width * k);
+      c.height = Math.round(img.height * k);
+      c.getContext('2d')?.drawImage(img, 0, 0, c.width, c.height);
+      const d = c.toDataURL('image/jpeg', 0.9);
+      URL.revokeObjectURL(url);
+      setUpPhoto(d);
+      try { localStorage.setItem(LS_PHOTO, d); } catch { /* penyimpanan penuh: foto hanya berlaku di sesi ini */ }
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); toast.error(t('File bukan gambar yang bisa dibaca.', 'That file is not a readable image.')); };
+    img.src = url;
+  };
+  const clearPhoto = () => { setUpPhoto(''); try { localStorage.removeItem(LS_PHOTO); } catch { /* abaikan */ } };
   const [fontTick, setFontTick] = useState(0);
   const [ver, setVer] = useState(0);
   const [retry, setRetry] = useState(0);
@@ -86,7 +108,7 @@ export const CvBuilder: React.FC = () => {
     return () => { live = false; clearTimeout(h); };
   }, [need, retry]);
 
-  const model = useMemo(() => buildModel(content, ch, lang, trCache(), photo), [content, ch, lang, photo, ver]); // eslint-disable-line react-hooks/exhaustive-deps
+  const model = useMemo(() => buildModel(content, ch, lang, trCache(), upPhoto || photo), [content, ch, lang, photo, upPhoto, ver]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Skala pratinjau mengikuti lebar kolom
   useLayoutEffect(() => {
@@ -181,6 +203,18 @@ export const CvBuilder: React.FC = () => {
                   </div>
                 );
               })}
+            </div>
+
+            <div style={box} role="group" aria-label={t('Foto CV', 'CV photo')}>
+              <strong className="small">{t('Foto CV', 'CV photo')}</strong>
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
+                <label className="pill dark" style={{ minHeight: 44, cursor: 'pointer' }}>
+                  <Icon name="image" size={16} />{upPhoto ? t('Ganti foto', 'Change photo') : t('Pilih foto (Upload)', 'Choose photo (Upload)')}
+                  <input type="file" accept="image/*" style={{ display: 'none' }} onChange={(e) => { onFile(e.target.files?.[0]); e.target.value = ''; }} />
+                </label>
+                {upPhoto && <button type="button" style={mini} onClick={clearPhoto}>{t('Hapus foto unggahan', 'Remove uploaded photo')}</button>}
+              </div>
+              <span className="xs muted">{t('Foto hanya dipakai di CV pada perangkat ini (tidak diunggah ke server). Tanpa unggahan, dipakai foto situs; bila gagal dimuat, tampil inisial. Aktifkan bagian "Foto" di bawah.', 'The photo is only used in the CV on this device (not uploaded to a server). Without an upload, the site photo is used; if it fails to load, initials show. Enable the "Photo" section below.')}</span>
             </div>
 
             <div style={box} role="group" aria-label={t('Bagian CV', 'CV sections')}>

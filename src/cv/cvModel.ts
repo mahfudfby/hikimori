@@ -105,6 +105,11 @@ export const splitDesc = (t: string): { intro: string[]; bullets: string[] } => 
 };
 console.assert(splitDesc('Buka\n• a\n• b').bullets.length === 2 && splitDesc('x\ny').bullets.length === 2 && splitDesc('x\ny').intro.length === 0, 'splitDesc');
 
+// Penyingkat khusus CV (data di situs tidak berubah): HRD menaungi HR, General Affairs, Personalia, Recruitment, dll
+const cvPos = (t: string) => t.replace(/Human Resources? Development(\s*\/\s*General Affairs)?/i, 'HRD');
+const cvCompany = (t: string) => t.replace(/^(ARCHIMAX Architect)\s+Indonesia$/i, '$1');
+console.assert(cvPos('Human Resource Development / General Affairs') === 'HRD' && cvCompany('ARCHIMAX Architect Indonesia') === 'ARCHIMAX Architect' && cvCompany('PT. Richeese Kuliner Indonesia') === 'PT. Richeese Kuliner Indonesia', 'cvPos/cvCompany');
+
 export function buildModel(c: SiteContent, ch: Choice, lang: Lang, map: Tmap, photo: string): CvModel {
   const s = ch.sec;
   const T = (b?: Bi) => biText(b, lang, map);
@@ -117,7 +122,7 @@ export function buildModel(c: SiteContent, ch: Choice, lang: Lang, map: Tmap, ph
   return {
     lang, name: p.name, title: T(p.title), summary: s.summary ? T(p.summary) : '', photo: s.photo ? photo : '',
     contact: s.contact ? [p.email, p.phone, p.website, p.location].filter(Boolean) : [],
-    jobs: selectedExp(c, ch).map((e) => ({ pos: T(e.position), company: e.company, industry: T(e.industry), period: fmtPeriod(e.start, e.end, lang), ...splitDesc(T(e.desc)) })),
+    jobs: selectedExp(c, ch).map((e) => ({ pos: cvPos(T(e.position)), company: cvCompany(e.company), industry: T(e.industry), period: fmtPeriod(e.start, e.end, lang), ...splitDesc(T(e.desc)) })),
     edu,
     skills: s.skills ? c.skills.map((k) => T(k.name)).filter(Boolean) : [],
     tools: s.tools ? c.tools.map((t) => t.name).filter(Boolean) : [],
