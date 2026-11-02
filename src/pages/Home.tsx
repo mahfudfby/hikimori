@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { useContent } from '../content/ContentContext';
 import { useLang } from '../contexts/LanguageContext';
 import { usePortfolio } from '../hooks/usePortfolio';
-import { Icon, CardLink, CountUp, Reveal, Staged, isLite, cld, cldSet, Logo } from '../components/ui';
+import { Icon, CardLink, CountUp, Reveal, Staged, isLite, cld, cldSet, Logo, Modal } from '../components/ui';
 import {
   pick, monthsOf, fmtDuration, fmtPeriod, fmtRange, careerMonths, categoryShare, CATEGORY_LABEL, ageOf, lines, waLink, RELEVANT, relevantExp,
 } from '../content/derive';
@@ -344,6 +344,7 @@ const BioCard: React.FC = () => {
   const [open, setOpen] = useState<string>('edu');
   const p = content.profile;
   const ed = content.education.items[0];
+  const trainings = content.certificates.filter(c => c.category === 'training');
   const tog = (k: string) => setOpen(o => (o === k ? '' : k));
   return (
     <div className="card b-bio">
@@ -380,6 +381,32 @@ const BioCard: React.FC = () => {
       <Acc title={t('Hobi', 'Hobbies')} open={open === 'hobby'} onToggle={() => tog('hobby')}>
         <div className="row wrap gap-8">{p.hobbies.map((h, i) => <span key={i} className="chip">{pick(h, lang)}</span>)}</div>
       </Acc>
+      {content.organizations.length > 0 && (
+        <Acc title={t('Pengalaman Organisasi', 'Organization Experience')} open={open === 'org'} onToggle={() => tog('org')}>
+          <div className="stack gap-12">
+            {content.organizations.map(o => (
+              <div key={o.id}>
+                <div className="small" style={{ fontWeight: 500 }}>{pick(o.role, lang)}</div>
+                <div className="xs muted">{pick(o.name, lang)}{o.period ? ` · ${fmtRange(o.period, lang)}` : ''}</div>
+                <ul className="bullets mt-8">{o.points.map((x, i) => <li key={i}>{pick(x, lang)}</li>)}</ul>
+              </div>
+            ))}
+          </div>
+        </Acc>
+      )}
+      {trainings.length > 0 && (
+        <Acc title={t('Pelatihan', 'Training')} open={open === 'train'} onToggle={() => tog('train')}>
+          <div className="stack gap-12">
+            {trainings.map(c => (
+              <div key={c.id}>
+                <div className="small" style={{ fontWeight: 500 }}>{pick(c.name, lang)}</div>
+                <div className="xs muted">{t('Lembaga pelaksana', 'Organizer')}: {c.issuer.split('—')[0].trim()}</div>
+                <div className="xs faint">{fmtRange(c.year, lang)}</div>
+              </div>
+            ))}
+          </div>
+        </Acc>
+      )}
     </div>
   );
 };
@@ -429,6 +456,7 @@ const CertsCard: React.FC = () => {
   const { lang, t } = useLang();
   const certs = content.certificates;
   const lic = certs.filter(c => c.category === 'license').length;
+  const [docs, setDocs] = useState(false);
   return (
     <div className="stack-tabs b-certs">
       <div className="card dark" style={{ height: '100%' }}>
@@ -461,10 +489,28 @@ const CertsCard: React.FC = () => {
             </React.Fragment>
           ))}
         </div>
-        <Link to="/sertifikat" className="pill sm mt-16" style={{ borderColor: 'var(--ink-2)', color: 'var(--on-ink)' }}>
-          {t('Lihat semua', 'View all')} <Icon name="arrow" size={13} />
-        </Link>
+        <div className="row wrap gap-8 mt-16">
+          <button type="button" className="pill sm" onClick={() => setDocs(true)} style={{ borderColor: 'var(--ink-2)', color: 'var(--on-ink)' }}>
+            <Icon name="eye" size={13} /> {t('Lihat Dokumen', 'View Documents')}
+          </button>
+          <Link to="/sertifikat" className="pill sm" style={{ borderColor: 'var(--ink-2)', color: 'var(--on-ink)' }}>
+            {t('Lihat semua', 'View all')} <Icon name="arrow" size={13} />
+          </Link>
+        </div>
       </div>
+      <Modal open={docs} onClose={() => setDocs(false)} label={t('Dokumen sertifikat dan lisensi', 'Certificate and license documents')}>
+        <h2 className="h-2">{t('Dokumen Sertifikat & Lisensi', 'Certificate & License Documents')}</h2>
+        <div className="stack gap-16 mt-16">
+          {certs.map(c => (
+            <figure key={c.id} style={{ margin: 0 }}>
+              {c.imageUrl
+                ? <img src={c.imageUrl} alt={pick(c.name, lang)} loading="lazy" decoding="async" style={{ width: '100%', borderRadius: 16 }} />
+                : <div className="empty">{t('Dokumen belum diunggah.', 'Document not uploaded yet.')}</div>}
+              <figcaption className="small mt-8"><b>{pick(c.name, lang)}</b><br /><span className="muted">{c.issuer} · {fmtRange(c.year, lang)}</span></figcaption>
+            </figure>
+          ))}
+        </div>
+      </Modal>
     </div>
   );
 };
