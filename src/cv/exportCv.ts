@@ -14,28 +14,49 @@ export async function ensureFont(): Promise<void> {
   await document.fonts.ready;
 }
 
-/** PDF A4: tiap halaman di-render ke gambar. Halaman disalin ke wadah di luar layar agar tidak ikut skala pratinjau.
- *  highRes: 4x (±384 dpi, file lebih besar); biasa: 2,5x (±240 dpi). */
-export async function exportPdf(pages: HTMLElement[], highRes = false): Promise<Blob> {
+/** Render tiap halaman CV ke kanvas (satu per satu, hemat memori). Halaman disalin ke wadah di luar layar agar tidak ikut skala pratinjau. */
+async function eachPage(pages: HTMLElement[], scale: number, fn: (canvas: HTMLCanvasElement, i: number) => void | Promise<void>) {
   await ensureFont();
-  const [{ default: html2canvas }, { jsPDF }] = await Promise.all([import('html2canvas'), import('jspdf')]);
+  const { default: html2canvas } = await import('html2canvas');
   const host = document.createElement('div');
   host.style.cssText = `position:fixed;left:-10000px;top:0;width:${PAGE_W}px;background:#fff`;
   document.body.appendChild(host);
   try {
-    const pdf = new jsPDF({ unit: 'mm', format: [210, 297], orientation: 'portrait' });
     for (const [i, page] of pages.entries()) {
       const clone = page.cloneNode(true) as HTMLElement;
       host.appendChild(clone);
-      const canvas = await html2canvas(clone, { scale: highRes ? 4 : 2.5, width: PAGE_W, height: PAGE_H, windowWidth: 1280, backgroundColor: '#ffffff', useCORS: true });
+      const canvas = await html2canvas(clone, { scale, width: PAGE_W, height: PAGE_H, windowWidth: 1280, backgroundColor: '#ffffff', useCORS: true });
       host.removeChild(clone);
-      if (i) pdf.addPage([210, 297], 'portrait');
-      pdf.addImage(canvas.toDataURL('image/jpeg', highRes ? 0.97 : 0.92), 'JPEG', 0, 0, 210, 297); // JPEG: PNG membuat PDF sangat besar
+      await fn(canvas, i);
     }
-    return pdf.output('blob');
   } finally {
     host.remove();
   }
+}
+
+/** Mutu PDF. min: tetap resolusi tinggi (3x, ±288 dpi, setara kualitas cetak 300 dpi) dengan JPEG 0,5; ±30% lebih kecil dari 4x (diukur: ±426 KB vs ±660 KB per halaman); std: 2,5x (±240 dpi); hd: 4x (±384 dpi). */
+export type PdfMode = 'min' | 'std' | 'hd';
+const PDF_Q: Record<PdfMode, { scale: number; q: number }> = { min: { scale: 3, q: 0.5 }, std: { scale: 2.5, q: 0.92 }, hd: { scale: 4, q: 0.97 } };
+
+/** PDF A4: tiap halaman di-render ke gambar JPEG lalu dirakit (JPEG: PNG membuat PDF sangat besar). */
+export async function exportPdf(pages: HTMLElement[], mode: PdfMode = 'std'): Promise<Blob> {
+  const { jsPDF } = await import('jspdf');
+  const pdf = new jsPDF({ unit: 'mm', format: [210, 297], orientation: 'portrait', compress: true });
+  const { scale, q } = PDF_Q[mode];
+  await eachPage(pages, scale, (canvas, i) => {
+    if (i) pdf.addPage([210, 297], 'portrait');
+    pdf.addImage(canvas.toDataURL('image/jpeg', q), 'JPEG', 0, 0, 210, 297, undefined, 'FAST');
+  });
+  return pdf.output('blob');
+}
+
+/** JPEG resolusi tinggi: satu file per halaman A4 (4x = 3176 x 4492 px, ±384 dpi). */
+export async function exportJpegs(pages: HTMLElement[]): Promise<Blob[]> {
+  const out: Blob[] = [];
+  await eachPage(pages, 4, async (canvas) => {
+    out.push(await new Promise<Blob>((ok, no) => canvas.toBlob((b) => (b ? ok(b) : no(new Error('Gagal membuat gambar.'))), 'image/jpeg', 0.97)));
+  });
+  return out;
 }
 
 /** Cetak teks asli lewat dialog cetak browser (pilih "Simpan sebagai PDF"): PDF-nya bisa dicari/disalin dan terbaca sistem ATS. */

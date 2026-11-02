@@ -1,6 +1,7 @@
 // src/components/ui.tsx — primitif UI bersama (ikon, reveal, header halaman, dll).
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { createPortal } from 'react-dom';
 
 /* ───────── Ikon (inline SVG, stroke = currentColor) ───────── */
 const P: Record<string, React.ReactNode> = {
@@ -228,14 +229,16 @@ export const Modal: React.FC<{ open: boolean; onClose: () => void; children: Rea
     return () => { document.removeEventListener('keydown', k); document.body.style.overflow = prev; };
   }, [open, onClose]);
   if (!open) return null;
-  return (
+  // Portal ke <body>: di dalam halaman beranimasi (transform) posisi fixed terjebak di bawah Navbar/footer
+  return createPortal(
     <div role="dialog" aria-modal="true" aria-label={label} onClick={onClose}
       style={{ position: 'fixed', inset: 0, zIndex: 100, background: 'rgba(20,18,12,0.55)', backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
       <div className="card solid page-in" onClick={e => e.stopPropagation()} style={{ width: 'min(860px, 100%)', maxHeight: '90vh', overflow: 'auto' }}>
         <div className="row" style={{ justifyContent: 'flex-end' }}><button className="icon-btn" onClick={onClose} aria-label="Close"><Icon name="close" /></button></div>
         {children}
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 };
 

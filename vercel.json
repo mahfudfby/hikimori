@@ -25,6 +25,7 @@
     { "src": "/portofolio/([A-Za-z0-9_-]+)/?", "dest": "/portofolio/$1/index.html", "check": true },
     { "src": "/portofolio/[^/]+(/index[.]html)?/?", "dest": "/portofolio/index.html" },
     { "src": "/admin(/.*)?", "dest": "/index.html" },
+    { "src": "/cv/?", "dest": "/index.html" },
     { "src": "/.*", "status": 404, "dest": "/404.html" }
   ]
 }

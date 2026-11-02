@@ -8,14 +8,14 @@ import { useLang } from '../contexts/LanguageContext';
 import type { Lang } from '../contexts/LanguageContext';
 import { fmtPeriod, pick, sortExp } from '../content/derive';
 import type { CertCategory } from '../content/types';
-import { Icon, Modal } from '../components/ui';
+import { Icon } from '../components/ui';
 import { saveFile } from '../utils/saveFile';
 import {
   DEFAULT_EXP_COUNT, SEC_DEFAULT, SEC_LABEL, buildModel, certKey, defaultExpIds, defaultOnCert, expKey, isOn, missingTexts,
   type Choice, type SecKey,
 } from './cvModel';
 import { CvDocument, PAGE_W } from './CvDocument';
-import { ensureFont, exportPdf, printText } from './exportCv';
+import { ensureFont, exportJpegs, exportPdf, printText } from './exportCv';
 import { translateMissing, trCache } from './translate';
 
 const LS_CHOICE = 'hk_cv_choice_v1';
@@ -36,18 +36,8 @@ const box: React.CSSProperties = { border: '1px solid var(--line, #d8d4c8)', bor
 const row: React.CSSProperties = { display: 'flex', alignItems: 'flex-start', gap: 10, minHeight: 44, cursor: 'pointer', fontSize: '0.9rem', lineHeight: 1.35 };
 const mini: React.CSSProperties = { border: '1px solid var(--line, #d8d4c8)', background: 'none', borderRadius: 999, padding: '6px 12px', minHeight: 36, fontSize: '0.78rem', cursor: 'pointer' };
 
-export const CvDownloadButton: React.FC<{ className?: string; label?: string; style?: React.CSSProperties }> = ({ className = 'pill dark', label, style }) => {
-  const [open, setOpen] = useState(false);
-  const { t } = useLang();
-  return (
-    <>
-      <button type="button" className={className} style={style} onClick={() => setOpen(true)}><Icon name="download" size={16} />{label ?? t('Unduh CV (pilih isi)', 'Download CV (choose content)')}</button>
-      {open && <CvDialog onClose={() => setOpen(false)} />}
-    </>
-  );
-};
-
-const CvDialog: React.FC<{ onClose: () => void }> = ({ onClose }) => {
+/** Isi halaman /cv: pilihan isi di kiri, pratinjau + tombol unduh di kanan. */
+export const CvBuilder: React.FC = () => {
   const { content } = useContent();
   const { lang: siteLang, t } = useLang();
   const [lang, setLang] = useState<Lang>(siteLang);
@@ -60,7 +50,8 @@ const CvDialog: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const [opts, setOpts] = useState<{ hc: boolean; hr: boolean }>(() => {
     try { return { hc: false, hr: false, ...JSON.parse(localStorage.getItem(LS_OPTS) || '{}') }; } catch { return { hc: false, hr: false }; }
   });
-  const [busy, setBusy] = useState<'' | 'pdf' | 'text'>('');
+  type Kind = 'pdf' | 'pdfmin' | 'jpeg' | 'text';
+  const [busy, setBusy] = useState<'' | Kind>('');
   const docRef = useRef<HTMLDivElement>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
   const [fit, setFit] = useState({ k: 0.5, h: 0 });
@@ -118,10 +109,16 @@ const CvDialog: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const fileName = `CV-${content.profile.name.split(',')[0].trim().replace(/[^\w-]+/g, '-')}-${lang.toUpperCase()}`;
   const blocked = tst.s === 'busy' || !!busy;
 
-  const run = async (kind: 'pdf' | 'text') => {
+  const run = async (kind: Kind) => {
     setBusy(kind);
     try {
-      if (kind === 'pdf') { saveFile(await exportPdf(pages(), opts.hr), `${fileName}${opts.hr ? '-HD' : ''}.pdf`); toast.success(t('CV berhasil diunduh.', 'CV downloaded.')); }
+      if (kind === 'pdf') { saveFile(await exportPdf(pages(), opts.hr ? 'hd' : 'std'), `${fileName}${opts.hr ? '-HD' : ''}.pdf`); toast.success(t('CV berhasil diunduh.', 'CV downloaded.')); }
+      else if (kind === 'pdfmin') { const b = await exportPdf(pages(), 'min'); saveFile(b, `${fileName}-mini.pdf`); toast.success(`${t('PDF resolusi tinggi (ukuran minimum) diunduh', 'High-resolution PDF (minimum size) downloaded')} (${Math.max(1, Math.round(b.size / 1024))} KB).`); }
+      else if (kind === 'jpeg') {
+        const imgs = await exportJpegs(pages());
+        imgs.forEach((b, i) => saveFile(b, `${fileName}-HD${imgs.length > 1 ? `-hal${i + 1}` : ''}.jpg`));
+        toast.success(t(`${imgs.length} gambar JPEG resolusi tinggi diunduh.`, `${imgs.length} high-resolution JPEG image(s) downloaded.`));
+      }
       else { await printText(pages(), fileName); toast.success(t('Pilih "Simpan sebagai PDF" di jendela cetak.', 'Choose "Save as PDF" in the print window.')); }
     } catch (e: any) {
       toast.error(`${t('Gagal membuat CV', 'Could not create CV')}: ${e?.message || ''}`);
@@ -132,10 +129,7 @@ const CvDialog: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const nCert = content.certificates.filter((c) => isOn(ch, certKey(c), defaultOnCert(c))).length;
 
   return (
-    <Modal open onClose={onClose} label={t('Unduh CV', 'Download CV')}>
       <div style={{ display: 'grid', gap: 14, padding: '0 4px 8px' }}>
-        <h3 style={{ margin: 0 }}>{t('Unduh CV (PDF)', 'Download CV (PDF)')}</h3>
-        <p className="small muted" style={{ margin: 0 }}>{t('Pilih pengalaman kerja, lisensi & sertifikat yang dimasukkan. Isi CV otomatis mengikuti konten situs.', 'Choose which work experience, licenses & certificates to include. CV content follows the website automatically.')}</p>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 16, alignItems: 'start' }}>
           <div style={{ display: 'grid', gap: 12, minWidth: 0 }}>
@@ -200,10 +194,16 @@ const CvDialog: React.FC<{ onClose: () => void }> = ({ onClose }) => {
             </div>
           </div>
 
-          <div style={{ display: 'grid', gap: 10, minWidth: 0, position: 'sticky', top: 0 }}>
-            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-              <button type="button" className="pill dark" style={{ minHeight: 44 }} disabled={blocked} onClick={() => run('pdf')}><Icon name="download" size={16} />{busy === 'pdf' ? t('Menyiapkan…', 'Preparing…') : t('Unduh PDF', 'Download PDF')}</button>
-              <button type="button" className="pill" style={{ minHeight: 44 }} disabled={blocked} onClick={() => run('text')}>{busy === 'text' ? t('Menyiapkan…', 'Preparing…') : t('PDF teks (ATS)', 'Text PDF (ATS)')}</button>
+          <div style={{ display: 'grid', gap: 10, minWidth: 0, position: 'sticky', top: 84 }}>
+            <div style={box} role="group" aria-label={t('Ekspor', 'Export')}>
+              <strong className="small">{t('Ekspor', 'Export')}</strong>
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                <button type="button" className="pill dark" style={{ minHeight: 44 }} disabled={blocked} onClick={() => run('pdfmin')}><Icon name="download" size={16} />{busy === 'pdfmin' ? t('Menyiapkan…', 'Preparing…') : t('PDF resolusi tinggi, ukuran minimum (online)', 'High-resolution PDF, minimum size (online)')}</button>
+                <button type="button" className="pill dark" style={{ minHeight: 44 }} disabled={blocked} onClick={() => run('jpeg')}><Icon name="download" size={16} />{busy === 'jpeg' ? t('Menyiapkan…', 'Preparing…') : t('JPEG resolusi tinggi', 'High-resolution JPEG')}</button>
+                <button type="button" className="pill" style={{ minHeight: 44 }} disabled={blocked} onClick={() => run('pdf')}>{busy === 'pdf' ? t('Menyiapkan…', 'Preparing…') : t('PDF standar', 'Standard PDF')}</button>
+                <button type="button" className="pill" style={{ minHeight: 44 }} disabled={blocked} onClick={() => run('text')}>{busy === 'text' ? t('Menyiapkan…', 'Preparing…') : t('PDF teks (ATS)', 'Text PDF (ATS)')}</button>
+              </div>
+              <span className="xs muted">{t('PDF minimum: tetap resolusi tinggi (±288 dpi, setara kualitas cetak 300 dpi) dengan kompresi lebih kuat, jadi file jauh lebih kecil untuk diunggah/dikirim online. JPEG: satu gambar per halaman, 3176 x 4492 px (±384 dpi). Bila CV lebih dari satu halaman, JPEG diunduh per halaman.', 'Minimum PDF: still high resolution (~288 dpi, print-grade 300 dpi) with stronger compression, so the file is much smaller for uploading/sending online. JPEG: one image per page, 3176 x 4492 px (~384 dpi). A multi-page CV downloads one JPEG per page.')}</span>
             </div>
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }} role="group" aria-label={t('Kualitas', 'Quality')}>
               <button type="button" aria-pressed={opts.hc} className={opts.hc ? 'pill dark' : 'pill'} style={{ minHeight: 44 }} onClick={() => setOpts((o) => ({ ...o, hc: !o.hc }))}>{opts.hc ? '✓ ' : ''}High Contrast</button>
@@ -221,6 +221,5 @@ const CvDialog: React.FC<{ onClose: () => void }> = ({ onClose }) => {
           </div>
         </div>
       </div>
-    </Modal>
   );
 };
