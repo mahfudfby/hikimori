@@ -5,7 +5,7 @@ import { useContent } from '../content/ContentContext';
 import { useLang } from '../contexts/LanguageContext';
 import { Icon, PageHero, Reveal, useTitle, Bullets, cld, cldSet } from '../components/ui';
 import { pick, paragraphs, careerMonths, ageOf, waLink } from '../content/derive';
-import { CvDownloadButton } from '../cv/CvDownload';
+import { CvDownloadButton } from '../cv/CvButton';
 import { mailLink } from '../utils/mailLink';
 
 const Profile: React.FC = () => {

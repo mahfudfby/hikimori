@@ -68,6 +68,8 @@ export interface Certificate {
   category: CertCategory;
   year: string;
   imageUrl: string;
+  /** halaman belakang (opsional), untuk blanko bolak-balik */
+  imageUrl2?: string;
   credentialUrl: string;
   desc: Bi;
   /** Unit kompetensi / materi yang dipelajari (tampil sebagai daftar di kartu sertifikat) */

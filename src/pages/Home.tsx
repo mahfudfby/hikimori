@@ -9,7 +9,7 @@ import {
   pick, monthsOf, fmtDuration, fmtPeriod, fmtRange, careerMonths, categoryShare, CATEGORY_LABEL, ageOf, lines, waLink, RELEVANT, relevantExp,
 } from '../content/derive';
 import type { Experience, Certificate } from '../content/types';
-import { CvDownloadButton } from '../cv/CvDownload';
+import { CvDownloadButton } from '../cv/CvButton';
 import { mailLink } from '../utils/mailLink';
 
 const SLIDE_MS = 6500;
@@ -499,8 +499,9 @@ const CertsCard: React.FC = () => {
       <Modal open={!!doc} onClose={() => setDoc(null)} label={doc ? pick(doc.name, lang) : ''}>
         {doc && (<>
           {doc.imageUrl
-            ? <img src={doc.imageUrl} alt={pick(doc.name, lang)} decoding="async" style={{ width: '100%', borderRadius: 16 }} />
+            ? <img src={doc.imageUrl} alt={`${pick(doc.name, lang)}${doc.imageUrl2 ? ` (${t('depan', 'front')})` : ''}`} decoding="async" style={{ width: '100%', borderRadius: 16 }} />
             : <div className="empty">{t('Dokumen belum diunggah. Tambahkan lewat CMS.', 'Document not uploaded yet. Add it in the CMS.')}</div>}
+          {doc.imageUrl2 && <img src={doc.imageUrl2} alt={`${pick(doc.name, lang)} (${t('belakang', 'back')})`} loading="lazy" decoding="async" style={{ width: '100%', borderRadius: 16, marginTop: 12 }} />}
           <h2 className="h-2 mt-16">{pick(doc.name, lang)}</h2>
           <p className="muted">{doc.issuer} · {fmtRange(doc.year, lang)}</p>
         </>)}

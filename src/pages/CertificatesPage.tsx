@@ -92,8 +92,9 @@ const CertificatesPage: React.FC = () => {
 
       <Modal open={!!view} onClose={() => setView(null)} label={view ? pick(view.name, lang) : ''}>
         {view && (<>
-          {view.imageUrl ? <img src={view.imageUrl} alt={pick(view.name, lang)} style={{ width: '100%', borderRadius: 16 }} />
+          {view.imageUrl ? <img src={view.imageUrl} alt={`${pick(view.name, lang)}${view.imageUrl2 ? ` (${t('depan', 'front')})` : ''}`} style={{ width: '100%', borderRadius: 16 }} />
             : <div className="empty">{t('Gambar sertifikat belum diunggah. Tambahkan lewat CMS.', 'No certificate image yet. Add one in the CMS.')}</div>}
+          {view.imageUrl2 && <img src={view.imageUrl2} alt={`${pick(view.name, lang)} (${t('belakang', 'back')})`} loading="lazy" style={{ width: '100%', borderRadius: 16, marginTop: 12 }} />}
           <h2 className="h-2 mt-16">{pick(view.name, lang)}</h2>
           <p className="muted">{view.issuer} · {fmtRange(view.year, lang)}{view.code ? ` · ${view.code}` : ''}</p>
           {pick(view.desc, lang) && <p className="muted mt-8">{pick(view.desc, lang)}</p>}
