@@ -1005,3 +1005,11 @@ textarea.input { resize: vertical; overflow: hidden; min-height: 2.6em; }
 .ach-job { display: flex; flex-direction: column; align-self: flex-start; margin-top: 4px; padding: 4px 10px; border-radius: 10px; border: 1px solid var(--line-2); background: var(--surface-solid); font-size: .68rem; line-height: 1.35; color: var(--text-2); }
 .ach-job b { font-weight: 600; color: var(--text); }
 @media (prefers-reduced-motion: reduce) { .ach-roll { -webkit-mask-image: none; mask-image: none; } .ach-dup { display: none; } }
+
+/* CMS di ponsel: bar aksi ringkas, tidak transparan (isi form tidak tembus), tombol satu baris penuh */
+@media (max-width: 680px) {
+  .cms-bar { top: 6px; padding: 10px 12px; gap: 8px; background: var(--surface-solid); border: 1px solid var(--line); -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .cms-bar > .grow { flex: 1 1 100%; min-width: 0; }
+  .cms-bar > .grow .xs { line-height: 1.35; }
+  .cms-bar > .pill { flex: 1 1 0; justify-content: center; white-space: nowrap; min-width: 0; padding-left: 10px; padding-right: 10px; }
+}
