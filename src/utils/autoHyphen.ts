@@ -9,7 +9,7 @@ const run = () => {
   queued = false;
   if (document.documentElement.lang !== 'id' || window.location.pathname.startsWith('/admin')) return;
   document.querySelectorAll('#root p, #root li, #root dd').forEach(el => {
-    if (el.closest('[contenteditable], .rte, .mag-rich')) return; // editor CMS & artikel (sudah dipenggal sendiri)
+    if (el.closest('[contenteditable], .rte, .mag-rich, [data-page]')) return; // editor CMS, artikel (sudah dipenggal sendiri), dan halaman CV (teks PDF harus bersih)
     const w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
     for (let n = w.nextNode(); n; n = w.nextNode()) {
       const v = n.nodeValue || '';

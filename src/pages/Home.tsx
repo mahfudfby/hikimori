@@ -8,8 +8,8 @@ import { Icon, CardLink, CountUp, Reveal, Staged, isLite, cld, cldSet, Logo, Mod
 import {
   pick, monthsOf, fmtDuration, fmtPeriod, fmtRange, careerMonths, categoryShare, CATEGORY_LABEL, ageOf, lines, waLink, RELEVANT, relevantExp,
 } from '../content/derive';
-import type { Experience } from '../content/types';
-import { downloadUrl } from '../utils/saveFile';
+import type { Experience, Certificate } from '../content/types';
+import { CvDownloadButton } from '../cv/CvDownload';
 import { mailLink } from '../utils/mailLink';
 
 const SLIDE_MS = 6500;
@@ -456,7 +456,7 @@ const CertsCard: React.FC = () => {
   const { lang, t } = useLang();
   const certs = content.certificates;
   const lic = certs.filter(c => c.category === 'license').length;
-  const [docs, setDocs] = useState(false);
+  const [doc, setDoc] = useState<Certificate | null>(null);
   return (
     <div className="stack-tabs b-certs">
       <div className="card dark" style={{ height: '100%' }}>
@@ -486,30 +486,24 @@ const CertsCard: React.FC = () => {
                 {c.units.map((u, k) => <li key={k}>{pick(u, lang).split(' (M.')[0]}</li>)}
               </ul>
             )}
+            <button type="button" className="pill sm" onClick={() => setDoc(c)} style={{ margin: '2px 0 10px 44px', borderColor: 'var(--ink-2)', color: 'var(--on-ink)' }}>
+              <Icon name="eye" size={13} /> {t('Lihat Dokumen', 'View Document')}
+            </button>
             </React.Fragment>
           ))}
         </div>
-        <div className="row wrap gap-8 mt-16">
-          <button type="button" className="pill sm" onClick={() => setDocs(true)} style={{ borderColor: 'var(--ink-2)', color: 'var(--on-ink)' }}>
-            <Icon name="eye" size={13} /> {t('Lihat Dokumen', 'View Documents')}
-          </button>
-          <Link to="/sertifikat" className="pill sm" style={{ borderColor: 'var(--ink-2)', color: 'var(--on-ink)' }}>
-            {t('Lihat semua', 'View all')} <Icon name="arrow" size={13} />
-          </Link>
-        </div>
+        <Link to="/sertifikat" className="pill sm mt-16" style={{ borderColor: 'var(--ink-2)', color: 'var(--on-ink)' }}>
+          {t('Lihat semua', 'View all')} <Icon name="arrow" size={13} />
+        </Link>
       </div>
-      <Modal open={docs} onClose={() => setDocs(false)} label={t('Dokumen sertifikat dan lisensi', 'Certificate and license documents')}>
-        <h2 className="h-2">{t('Dokumen Sertifikat & Lisensi', 'Certificate & License Documents')}</h2>
-        <div className="stack gap-16 mt-16">
-          {certs.map(c => (
-            <figure key={c.id} style={{ margin: 0 }}>
-              {c.imageUrl
-                ? <img src={c.imageUrl} alt={pick(c.name, lang)} loading="lazy" decoding="async" style={{ width: '100%', borderRadius: 16 }} />
-                : <div className="empty">{t('Dokumen belum diunggah.', 'Document not uploaded yet.')}</div>}
-              <figcaption className="small mt-8"><b>{pick(c.name, lang)}</b><br /><span className="muted">{c.issuer} · {fmtRange(c.year, lang)}</span></figcaption>
-            </figure>
-          ))}
-        </div>
+      <Modal open={!!doc} onClose={() => setDoc(null)} label={doc ? pick(doc.name, lang) : ''}>
+        {doc && (<>
+          {doc.imageUrl
+            ? <img src={doc.imageUrl} alt={pick(doc.name, lang)} decoding="async" style={{ width: '100%', borderRadius: 16 }} />
+            : <div className="empty">{t('Dokumen belum diunggah. Tambahkan lewat CMS.', 'Document not uploaded yet. Add it in the CMS.')}</div>}
+          <h2 className="h-2 mt-16">{pick(doc.name, lang)}</h2>
+          <p className="muted">{doc.issuer} · {fmtRange(doc.year, lang)}</p>
+        </>)}
       </Modal>
     </div>
   );
@@ -587,7 +581,7 @@ const Home: React.FC = () => {
         <div className="row wrap gap-8">
           <a className="pill yellow lg" href={waLink(content, lang)} target="_blank" rel="noreferrer"><Icon name="chat" />{t('Chat WhatsApp', 'Chat on WhatsApp')}</a>
           <Link className="pill lg" to="/kontak" style={{ borderColor: 'var(--ink-2)', color: 'var(--on-ink)' }}><Icon name="mail" />{t('Kontak', 'Contact')}</Link>
-          {content.profile.cvUrl && <a className="pill lg" href={content.profile.cvUrl} download onClick={e => { e.preventDefault(); downloadUrl(content.profile.cvUrl, 'CV-Mahfud-Febry-Styanto.pdf'); }} style={{ borderColor: 'var(--ink-2)', color: 'var(--on-ink)' }}><Icon name="download" />CV</a>}
+          <CvDownloadButton className="pill lg" label="CV" style={{ borderColor: 'var(--ink-2)', color: 'var(--on-ink)' }} />
         </div>
       </Reveal>
     </main>
