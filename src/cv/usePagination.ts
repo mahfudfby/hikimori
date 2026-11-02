@@ -26,6 +26,9 @@ console.assert(
   'nextCut',
 );
 
+// Kelompok terpotong dipindah utuh hanya bila bagian yang tertinggal <= ORPHAN_PX (judul + 1 butir): cegah judul yatim tanpa meninggalkan ruang putih besar
+const ORPHAN_PX = 110;
+
 // key: objek baru setiap isi/kertas/template/font berubah → pembagian dihitung ulang dari awal.
 // Kembalian: [awal, akhir) indeks unit per halaman.
 // sel: penanda aliran isi; dokumen dua kolom memanggil hook ini dua kali ('[data-flow="main"]' & '[data-flow="side"]').
@@ -46,7 +49,7 @@ export function usePagination(count: number, groups: number[], key: unknown, get
       for (let a = flow.parentElement; a && a !== page.parentElement; a = a.parentElement) ov = Math.max(ov, a.scrollHeight - a.clientHeight);
       if (ov <= 1) continue;
       const heights = [...flow.children].map((el) => (el as HTMLElement).offsetHeight);
-      const c = nextCut(heights, groups.slice(bounds[i], bounds[i + 1]), ov, page.offsetHeight * 0.35);
+      const c = nextCut(heights, groups.slice(bounds[i], bounds[i + 1]), ov, ORPHAN_PX);
       if (c === null) continue;
       setSt({ key, cuts: [...cuts.slice(0, i), bounds[i] + c] }); // halaman sesudahnya dihitung ulang
       return;
