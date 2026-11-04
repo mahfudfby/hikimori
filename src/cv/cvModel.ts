@@ -84,17 +84,17 @@ export type CvModel = {
   lang: Lang; name: string; title: string; summary: string; photo: string; contact: string[];
   jobs: { pos: string; company: string; industry: string; period: string; intro: string[]; bullets: string[] }[];
   edu: { head: string; school: string; note: string }[];
-  skills: string[]; tools: string[];
+  skills: string[]; soft: string[]; tools: string[]; // skills = hard skills
   refs: { name: string; role: string; company: string; note: string }[];
   certs: { title: string; sub: string[]; units: string[] }[];
   hobbies: string[];
   orgs: { role: string; name: string; period: string; points: string[] }[];
-  L: Record<'summary' | 'experience' | 'contact' | 'education' | 'skills' | 'tools' | 'references' | 'certs' | 'hobbies' | 'orgs', string>;
+  L: Record<'summary' | 'experience' | 'contact' | 'education' | 'skills' | 'soft' | 'tools' | 'references' | 'certs' | 'hobbies' | 'orgs', string>;
 };
 
 export const LABELS: Record<Lang, CvModel['L']> = {
-  id: { summary: 'Ringkasan', experience: 'Pengalaman Kerja', contact: 'Kontak', education: 'Pendidikan', skills: 'Keahlian', tools: 'Alat & Aplikasi', references: 'Referensi', certs: 'Pelatihan & Lisensi', hobbies: 'Hobi', orgs: 'Pengalaman Organisasi' },
-  en: { summary: 'Summary', experience: 'Work Experience', contact: 'Contact', education: 'Education', skills: 'Skills and Expertise', tools: 'Tools and Apps', references: 'References', certs: 'Training License', hobbies: 'Hobby', orgs: 'Organizational experience' },
+  id: { summary: 'Ringkasan', experience: 'Pengalaman Kerja', contact: 'Kontak', education: 'Pendidikan', skills: 'Hard Skills', soft: 'Soft Skills', tools: 'Alat & Aplikasi', references: 'Referensi', certs: 'Pelatihan & Lisensi', hobbies: 'Hobi', orgs: 'Pengalaman Organisasi' },
+  en: { summary: 'Summary', experience: 'Work Experience', contact: 'Contact', education: 'Education', skills: 'Hard Skills', soft: 'Soft Skills', tools: 'Tools and Apps', references: 'References', certs: 'Training License', hobbies: 'Hobby', orgs: 'Organizational experience' },
 };
 
 /** Deskripsi kerja: baris ber-"•" = butir; baris biasa = kalimat pembuka. Tanpa penanda sama sekali = tiap baris jadi butir. */
@@ -151,7 +151,9 @@ export function buildModel(c: SiteContent, ch: Choice, lang: Lang, map: Tmap, ph
     contact: s.contact ? [p.email, p.phone, p.website, p.location].filter(Boolean) : [],
     jobs: selectedExp(c, ch).map((e) => ({ pos: cvPos(T(e.position)), company: cvCompany(e.company), industry: T(e.industry), period: fmtPeriod(e.start, e.end, lang), ...splitDesc(T(e.desc)) })),
     edu,
-    skills: s.skills ? c.skills.map((k) => T(k.name)).filter(Boolean) : [],
+    // Keahlian dipisah menurut kategori CMS: hard / soft
+    skills: s.skills ? c.skills.filter((k) => k.category !== 'soft').map((k) => T(k.name)).filter(Boolean) : [],
+    soft: s.skills ? c.skills.filter((k) => k.category === 'soft').map((k) => T(k.name)).filter(Boolean) : [],
     tools: s.tools ? c.tools.map((t) => t.name).filter(Boolean) : [],
     refs: s.references ? c.references.map((r) => ({ name: r.name, role: T(r.role), company: r.company, note: T(r.note) })) : [],
     certs: selectedCerts(c, ch).map((x) => ({

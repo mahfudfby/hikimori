@@ -62,8 +62,8 @@ export const tplOf = (id?: string) => TEMPLATES.find((t) => t.id === id) || TEMP
 
 // Judul bagian standar untuk ATS (dikenali parser)
 const ATS_L: Record<Lang, CvModel['L']> = {
-  id: { summary: 'Ringkasan Profesional', experience: 'Pengalaman Kerja', contact: 'Kontak', education: 'Pendidikan', skills: 'Keahlian', tools: 'Perangkat Lunak', references: 'Referensi', certs: 'Sertifikasi & Pelatihan', hobbies: 'Minat', orgs: 'Organisasi' },
-  en: { summary: 'Professional Summary', experience: 'Work Experience', contact: 'Contact', education: 'Education', skills: 'Skills', tools: 'Software & Tools', references: 'References', certs: 'Certifications & Training', hobbies: 'Interests', orgs: 'Organizations' },
+  id: { summary: 'Ringkasan Profesional', experience: 'Pengalaman Kerja', contact: 'Kontak', education: 'Pendidikan', skills: 'Hard Skills', soft: 'Soft Skills', tools: 'Perangkat Lunak', references: 'Referensi', certs: 'Sertifikasi & Pelatihan', hobbies: 'Minat', orgs: 'Organisasi' },
+  en: { summary: 'Professional Summary', experience: 'Work Experience', contact: 'Contact', education: 'Education', skills: 'Hard Skills', soft: 'Soft Skills', tools: 'Software & Tools', references: 'References', certs: 'Certifications & Training', hobbies: 'Interests', orgs: 'Organizations' },
 };
 
 type Unit = { g: number; el: ReactNode };
@@ -177,6 +177,7 @@ function buildUnits(m: CvModel, hc: boolean, t: Tpl): { main: Unit[]; side: Unit
     <div style={{ fontWeight: 700, fontSize: hp(B * 1.07) }}>{e.head}</div><div style={{ fontWeight: LIGHT }}>{e.school}</div>{e.note && <div style={{ color: side ? sideMuted : MUTED, fontSize: hp(B * .96) }}>{e.note}</div>}
   </div>]), { side }) : [];
   const skills = (side?: boolean) => m.skills.length ? sec(L.skills, ats ? [[inline(m.skills)]] : [list(m.skills, side)], { tight: !ats, side }) : [];
+  const soft = (side?: boolean) => m.soft.length ? sec(L.soft, ats ? [[inline(m.soft)]] : [list(m.soft, side)], { tight: !ats, side }) : [];
   const tools = (side?: boolean) => m.tools.length ? sec(L.tools, ats ? [[inline(m.tools)]] : [list(m.tools, side)], { tight: !ats, side }) : [];
   const refs = (side?: boolean) => m.refs.length ? sec(L.references, m.refs.map((r) => [<div>
     <div style={{ fontWeight: 700 }}>{r.name}</div>{r.role && <div style={{ fontWeight: LIGHT }}>{r.role}</div>}<div style={{ fontWeight: LIGHT }}>{r.company}</div>{r.note && <div style={{ color: side ? sideMuted : MUTED, fontSize: hp(B * .96) }}>{r.note}</div>}
@@ -196,8 +197,8 @@ function buildUnits(m: CvModel, hc: boolean, t: Tpl): { main: Unit[]; side: Unit
   if (t.cols === 'one') {
     // ATS: urutan kronologis terbalik; varian "kompetensi" menaruh keahlian tepat setelah ringkasan
     const main = t.skillsFirst
-      ? [...header, ...summary, ...skills(), ...jobs, ...edu(), ...certs(), ...tools(), ...orgs(), ...refs(), ...hobbies()]
-      : [...header, ...summary, ...jobs, ...edu(), ...certs(), ...skills(), ...tools(), ...orgs(), ...refs(), ...hobbies()];
+      ? [...header, ...summary, ...skills(), ...soft(), ...jobs, ...edu(), ...certs(), ...tools(), ...orgs(), ...refs(), ...hobbies()]
+      : [...header, ...summary, ...jobs, ...edu(), ...certs(), ...skills(), ...soft(), ...tools(), ...orgs(), ...refs(), ...hobbies()];
     return { main, side: [] };
   }
 
@@ -207,7 +208,7 @@ function buildUnits(m: CvModel, hc: boolean, t: Tpl): { main: Unit[]; side: Unit
     : [];
   const main = [...header, ...summary, ...jobs, ...orgs()];
   // Kontak sudah ada di banner (template banner) → tidak diulang di kolom samping
-  const side = [...sidePhoto, ...(t.banner ? [] : contact), ...edu(true), ...skills(true), ...tools(true), ...certs(true), ...refs(true), ...hobbies(true)];
+  const side = [...sidePhoto, ...(t.banner ? [] : contact), ...edu(true), ...skills(true), ...soft(true), ...tools(true), ...certs(true), ...refs(true), ...hobbies(true)];
   return { main, side };
 }
 

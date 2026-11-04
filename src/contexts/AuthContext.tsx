@@ -41,7 +41,7 @@ const friendlyError = (code: string) => {
 
 // Pengunjung biasa (belum pernah login) tidak perlu memuat SDK auth sama sekali.
 const needsAuth = () => {
-  try { return localStorage.getItem(HINT_KEY) === '1' || window.location.pathname.startsWith('/admin'); } catch { return false; }
+  try { return localStorage.getItem(HINT_KEY) === '1' || window.location.pathname.startsWith('/admin') || window.location.pathname.startsWith('/cv'); } catch { return false; }
 };
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {

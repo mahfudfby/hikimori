@@ -162,21 +162,6 @@ export const CvBuilder: React.FC = () => {
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 16, alignItems: 'start' }}>
           <div style={{ display: 'grid', gap: 12, minWidth: 0 }}>
-            <div style={box} role="group" aria-label={t('Template CV', 'CV template')}>
-              <label className="small" htmlFor="cv-tpl"><strong>{t('Template CV', 'CV template')}</strong></label>
-              <select id="cv-tpl" className="input" value={opts.tpl} onChange={(e) => setOpts((o) => ({ ...o, tpl: e.target.value }))} style={{ minHeight: 44, fontSize: '0.95rem' }}>
-                <optgroup label={t('ATS-friendly (satu kolom, tanpa foto)', 'ATS-friendly (single column, no photo)')}>
-                  {TEMPLATES.filter((x) => x.kind === 'ats').map((x) => <option key={x.id} value={x.id}>{pick(x.name, siteLang)}</option>)}
-                </optgroup>
-                <optgroup label={t('Kreatif (desain, foto, warna)', 'Creative (design, photo, colour)')}>
-                  {TEMPLATES.filter((x) => x.kind === 'creative').map((x) => <option key={x.id} value={x.id}>{pick(x.name, siteLang)}</option>)}
-                </optgroup>
-              </select>
-              {tplOf(opts.tpl).kind === 'ats'
-                ? <span className="xs" style={{ color: 'var(--text-2)' }}>{t('ATS: untuk melamar lewat portal/sistem rekrutmen, ekspor dengan "PDF teks (ATS)" agar teksnya terbaca mesin. PDF gambar & JPEG tidak terbaca ATS. Foto tidak ditampilkan.', 'ATS: for job portals/recruiting systems, export with "Text PDF (ATS)" so machines can read the text. Image PDFs & JPEGs are not ATS-readable. No photo is shown.')}</span>
-                : <span className="xs muted">{t('Kreatif: untuk dikirim langsung ke HR / email / dicetak. Untuk portal lamaran online, pilih template ATS.', 'Creative: for sending directly to HR / email / print. For online application portals, choose an ATS template.')}</span>}
-            </div>
-
             <div style={box} role="group" aria-label={t('Bahasa CV', 'CV language')}>
               <strong className="small">{t('Bahasa CV', 'CV language')}</strong>
               <div className="seg" role="radiogroup">
@@ -247,15 +232,6 @@ export const CvBuilder: React.FC = () => {
               <span className="xs muted">{t('Foto unggahan hanya dipakai di CV pada perangkat ini (tidak diunggah ke server). Pastikan bagian "Foto" di bawah aktif.', 'An uploaded photo is only used in the CV on this device (not uploaded to a server). Make sure the "Photo" section below is on.')}</span>
             </div>
 
-            <div style={box} role="group" aria-label={t('Narasi deskripsi kerja', 'Job description style')}>
-              <strong className="small">{t('Narasi deskripsi kerja', 'Job description style')}</strong>
-              <div className="seg" role="radiogroup">
-                <button type="button" role="radio" aria-checked={!opts.short} className={!opts.short ? 'on' : ''} onClick={() => setOpts((o) => ({ ...o, short: false }))}>{t('Panjang (detail)', 'Long (detailed)')}</button>
-                <button type="button" role="radio" aria-checked={opts.short} className={opts.short ? 'on' : ''} onClick={() => setOpts((o) => ({ ...o, short: true }))}>{t('Singkat', 'Short')}</button>
-              </div>
-              <span className="xs muted">{t('Singkat: kata penghubung dan rincian dalam kurung dibuang, poin-poin pekerjaan tetap lengkap.', 'Short: connecting phrases and details in brackets are removed; every job point stays.')}</span>
-            </div>
-
             <div style={box} role="group" aria-label={t('Bagian CV', 'CV sections')}>
               <strong className="small">{t('Bagian CV', 'CV sections')}</strong>
               {(Object.keys(SEC_LABEL) as SecKey[]).map((k) => (
@@ -284,6 +260,31 @@ export const CvBuilder: React.FC = () => {
             </div>
             <span className="xs muted">{t('High Contrast: teks hitam murni, tanpa teks abu-abu/tipis, garis lebih tebal. High Resolution: PDF 4x (±384 dpi), ukuran file lebih besar.', 'High Contrast: pure black text, no grey/light text, thicker rules. High Resolution: 4x PDF (~384 dpi), larger file.')}</span>
             <span className="xs muted">{t('Unduh PDF = gambar persis pratinjau. PDF teks = lewat cetak browser, teks bisa dicari & dibaca sistem ATS.', 'Download PDF = exact image of the preview. Text PDF = via browser print, searchable and ATS-readable.')}</span>
+            {/* Template & narasi tepat di atas pratinjau */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 10, alignItems: 'start' }}>
+            <div style={box} role="group" aria-label={t('Template CV', 'CV template')}>
+              <label className="small" htmlFor="cv-tpl"><strong>{t('Template CV', 'CV template')}</strong></label>
+              <select id="cv-tpl" className="input" value={opts.tpl} onChange={(e) => setOpts((o) => ({ ...o, tpl: e.target.value }))} style={{ minHeight: 44, fontSize: '0.95rem' }}>
+                <optgroup label={t('ATS-friendly (satu kolom, tanpa foto)', 'ATS-friendly (single column, no photo)')}>
+                  {TEMPLATES.filter((x) => x.kind === 'ats').map((x) => <option key={x.id} value={x.id}>{pick(x.name, siteLang)}</option>)}
+                </optgroup>
+                <optgroup label={t('Kreatif (desain, foto, warna)', 'Creative (design, photo, colour)')}>
+                  {TEMPLATES.filter((x) => x.kind === 'creative').map((x) => <option key={x.id} value={x.id}>{pick(x.name, siteLang)}</option>)}
+                </optgroup>
+              </select>
+              {tplOf(opts.tpl).kind === 'ats'
+                ? <span className="xs" style={{ color: 'var(--text-2)' }}>{t('ATS: untuk melamar lewat portal/sistem rekrutmen, ekspor dengan "PDF teks (ATS)" agar teksnya terbaca mesin. PDF gambar & JPEG tidak terbaca ATS. Foto tidak ditampilkan.', 'ATS: for job portals/recruiting systems, export with "Text PDF (ATS)" so machines can read the text. Image PDFs & JPEGs are not ATS-readable. No photo is shown.')}</span>
+                : <span className="xs muted">{t('Kreatif: untuk dikirim langsung ke HR / email / dicetak. Untuk portal lamaran online, pilih template ATS.', 'Creative: for sending directly to HR / email / print. For online application portals, choose an ATS template.')}</span>}
+            </div>
+            <div style={box} role="group" aria-label={t('Narasi deskripsi kerja', 'Job description style')}>
+              <strong className="small">{t('Narasi deskripsi kerja', 'Job description style')}</strong>
+              <div className="seg" role="radiogroup">
+                <button type="button" role="radio" aria-checked={!opts.short} className={!opts.short ? 'on' : ''} onClick={() => setOpts((o) => ({ ...o, short: false }))}>{t('Panjang (detail)', 'Long (detailed)')}</button>
+                <button type="button" role="radio" aria-checked={opts.short} className={opts.short ? 'on' : ''} onClick={() => setOpts((o) => ({ ...o, short: true }))}>{t('Singkat', 'Short')}</button>
+              </div>
+              <span className="xs muted">{t('Singkat: kata penghubung dan rincian dalam kurung dibuang, poin-poin pekerjaan tetap lengkap.', 'Short: connecting phrases and details in brackets are removed; every job point stays.')}</span>
+            </div>
+            </div>
             <div ref={wrapRef} style={{ width: '100%', overflow: 'hidden' }} aria-label={t('Pratinjau CV', 'CV preview')}>
               <div style={{ width: PAGE_W * fit.k, height: fit.h || undefined }}>
                 <div style={{ width: PAGE_W, transform: `scale(${fit.k})`, transformOrigin: 'top left' }}>

@@ -1,6 +1,6 @@
 // src/admin/AdminLogin.tsx
 import React, { useEffect, useState } from 'react';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Icon } from '../components/ui';
 import LogoMark from '../components/LogoMark';
@@ -10,6 +10,9 @@ const REMEMBER_KEY = 'hk_admin_remember';
 const AdminLogin: React.FC = () => {
   const { login, loginGoogle, resetPassword, isAdmin, loading } = useAuth();
   const nav = useNavigate();
+  // Halaman tujuan setelah login (hanya jalur internal), mis. /cv dari tombol Unduh CV
+  const from = (useLocation().state as { from?: string } | null)?.from;
+  const back = from && from.startsWith('/') && !from.startsWith('//') ? from : '/admin';
   const [id, setId] = useState('');
   const [pw, setPw] = useState('');
   const [show, setShow] = useState(false);
@@ -20,7 +23,7 @@ const AdminLogin: React.FC = () => {
   useEffect(() => { document.title = 'Login CMS — Hikimori'; }, []);
   useEffect(() => { try { localStorage.setItem(REMEMBER_KEY, remember ? '1' : '0'); } catch {} }, [remember]);
 
-  if (!loading && isAdmin) return <Navigate to="/admin" replace />;
+  if (!loading && isAdmin) return <Navigate to={back} replace />;
 
   const run = async (kind: 'pw' | 'google' | 'reset', fn: () => Promise<void>, ok?: () => void) => {
     setErr(''); setInfo(''); setBusy(kind);
@@ -28,7 +31,7 @@ const AdminLogin: React.FC = () => {
     catch (x: any) { if (x?.message) setErr(x.message); }
     finally { setBusy(''); }
   };
-  const done = () => nav('/admin', { replace: true });
+  const done = () => nav(back, { replace: true });
   const submit = (e: React.FormEvent) => { e.preventDefault(); run('pw', () => login(id, pw, remember), done); };
 
   return (
