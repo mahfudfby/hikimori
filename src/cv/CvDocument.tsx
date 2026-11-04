@@ -12,6 +12,7 @@ export const PAGE_H = 1123;
 const M = 57; // 1,5 cm
 const SIDE = 268;
 const GAP = 40;
+const FOOT = 30; // tinggi area footer di bawah isi (isi berhenti lebih awal, footer di tepi bawah)
 // Helvetica Neue/Helvetica bila ada di perangkat (Mac, iPhone); selain itu Arimo (metrik Arial)
 export const CV_FONT = '"Helvetica Neue", Helvetica, Arimo, Arial, sans-serif';
 // Ukuran huruf kelipatan 0,5 pt supaya sama persis bila nanti diekspor ke Word
@@ -99,12 +100,16 @@ function buildUnits(m: CvModel, hc: boolean): { main: Unit[]; side: Unit[] } {
   return { main, side };
 }
 
-const Page = ({ main, side, ink }: { main: ReactNode[]; side: ReactNode[]; ink: string }) => (
+// Footer permanen di setiap halaman & setiap ekspor
+const FOOTER = { id: 'Lebih lengkap terkait pengalaman dan pencapaian kunjungi : H I K I M O R I .web.id', en: 'For more on my experience and achievements, visit : H I K I M O R I .web.id' };
+
+const Page = ({ main, side, ink, foot, hc }: { main: ReactNode[]; side: ReactNode[]; ink: string; foot: string; hc: boolean }) => (
   <div data-page style={{ position: 'relative', width: PAGE_W, height: PAGE_H, overflow: 'hidden', boxSizing: 'border-box', background: '#ffffff', color: ink, fontFamily: CV_FONT, fontSize: hp(13), lineHeight: 1.5, letterSpacing: 0.4 }}>
-    <div style={{ position: 'absolute', top: M, right: M, bottom: M, left: M, display: 'grid', gridTemplateColumns: `minmax(0,1fr) ${SIDE}px`, gridTemplateRows: 'minmax(0,1fr)', columnGap: GAP }}>
+    <div style={{ position: 'absolute', top: M, right: M, bottom: M + FOOT, left: M, display: 'grid', gridTemplateColumns: `minmax(0,1fr) ${SIDE}px`, gridTemplateRows: 'minmax(0,1fr)', columnGap: GAP }}>
       <div style={{ overflow: 'hidden', minHeight: 0 }}><div data-flow="main">{main.map((u, i) => <div key={i}>{u}</div>)}</div></div>
       <div style={{ overflow: 'hidden', minHeight: 0 }}><div data-flow="side">{side.map((u, i) => <div key={i}>{u}</div>)}</div></div>
     </div>
+    <div style={{ position: 'absolute', left: M, right: M, bottom: M - 22, textAlign: 'center', fontStyle: 'italic', fontWeight: hc ? 400 : 300, fontSize: hp(11), letterSpacing: 0.3, color: hc ? '#000000' : '#8a8a8a' }}>{foot}</div>
   </div>
 );
 
@@ -122,7 +127,7 @@ export const CvDocument = forwardRef<HTMLDivElement, { model: CvModel; fontTick:
       {Array.from({ length: n }, (_, i) => {
         const [a, b] = mainR[i] ?? [main.length, main.length];
         const [c, d] = sideR[i] ?? [side.length, side.length];
-        return <div key={i} style={{ boxShadow: '0 4px 18px rgba(0,0,0,.18)' }}><Page ink={hc ? '#000000' : '#111111'} main={main.slice(a, b).map((u) => u.el)} side={side.slice(c, d).map((u) => u.el)} /></div>;
+        return <div key={i} style={{ boxShadow: '0 4px 18px rgba(0,0,0,.18)' }}><Page ink={hc ? '#000000' : '#111111'} hc={hc} foot={FOOTER[model.lang]} main={main.slice(a, b).map((u) => u.el)} side={side.slice(c, d).map((u) => u.el)} /></div>;
       })}
     </div>
   );
