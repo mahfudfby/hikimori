@@ -3,7 +3,7 @@
 //  - halaman HTML → network-first, fallback cache saat offline
 //  - gambar Cloudinary → stale-while-revalidate (kunjungan ulang instan)
 //  - Firebase/Firestore → TIDAK disentuh
-const VERSION = 'hikimori-v2';
+const VERSION = 'hikimori-v3'; // v3: cache gambar lama (respons opaque) dibuang
 const STATIC = VERSION + '-static';
 const IMG = VERSION + '-img';
 
@@ -29,7 +29,8 @@ self.addEventListener('fetch', (e) => {
   let url;
   try { url = new URL(req.url); } catch { return; }
 
-  if (url.hostname === 'res.cloudinary.com') {
+  // Hanya <img>: fetch() untuk unduhan butuh respons CORS asli, bukan salinan opaque dari cache gambar
+  if (url.hostname === 'res.cloudinary.com' && req.destination === 'image') {
     e.respondWith(
       caches.open(IMG).then((c) => c.match(req).then((hit) => {
         const net = fetch(req).then((res) => { putSafe(IMG, req, res.clone()); return res; }).catch(() => hit);
