@@ -1020,3 +1020,6 @@ textarea.input { resize: vertical; overflow: hidden; min-height: 2.6em; }
 .login-bg::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 1px; pointer-events: none;
   background: linear-gradient(90deg, transparent, rgba(158, 230, 242, .7), rgba(243, 180, 207, .7), transparent); }
 .login-bg > form { position: relative; z-index: 1; }
+
+/* html2canvas 1.4.1 mengukur baseline teks dengan gambar 1x1 ini; aturan global img { display:block } membuat teks di file ekspor CV turun & menimpa garis */
+img[src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"] { display: inline !important; }

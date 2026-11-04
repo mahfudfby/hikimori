@@ -110,10 +110,13 @@ const cvPos = (t: string) => t.replace(/Human Resources? Development(\s*\/\s*Gen
 const cvCompany = (t: string) => t.replace(/^(ARCHIMAX Architect)\s+Indonesia$/i, '$1');
 console.assert(cvPos('Human Resource Development / General Affairs') === 'HRD' && cvCompany('ARCHIMAX Architect Indonesia') === 'ARCHIMAX Architect' && cvCompany('PT. Richeese Kuliner Indonesia') === 'PT. Richeese Kuliner Indonesia', 'cvPos/cvCompany');
 
-// Narasi singkat: buang rincian dalam kurung dan anak kalimat penghubung; inti tiap butir pekerjaan tetap ada.
-const CUT = /\s*(?:,\s*(?:termasuk|serta|beserta|meliputi|mulai|sehingga|yang|dan juga|including|as well as|covering|from|which|so that)\b|\s(?:mulai dari|sehingga|guna|agar|so that|in order to)\s)/i;
+// Narasi singkat: buang sisipan bertanda pisah, rincian dalam kurung, dan anak kalimat penghubung; inti tiap butir pekerjaan tetap ada.
+const CUT = /\s*(?:,\s*(?:termasuk|serta|beserta|meliputi|mulai|hingga|sehingga|yang|seperti|dan juga|memastikan|menjaga|mengurangi|meningkatkan|mempercepat|including|such as|as well as|covering|from|which|so that|ensuring|keeping|reducing|improving)\b|\s(?:serta|beserta|termasuk|meliputi|mulai dari|hingga|sehingga|guna|agar|including|as well as|so that|in order to)\s)/i;
 export const shortLine = (t: string): string => {
-  let s = t.replace(/\s*\([^)]*\)/g, '').replace(/\s{2,}/g, ' ').trim();
+  let s = t
+    .replace(/\s*\([^)]*\)/g, '') // (rincian)
+    .replace(/\s+[—–]\s+[^—–]*?(?:\s+[—–]\s+|$)/g, ' ') // — sisipan —
+    .replace(/\s{2,}/g, ' ').trim();
   const m = CUT.exec(s);
   if (m && s.slice(0, m.index).trim().split(/\s+/).length >= 3) s = s.slice(0, m.index);
   return s.replace(/[\s,;:.]+$/, '');
@@ -126,7 +129,10 @@ export const shortenJobs = (m: CvModel): CvModel => ({
 console.assert(
   shortLine('Mengelola fasilitas dan operasional kantor harian, termasuk kebersihan, keamanan') === 'Mengelola fasilitas dan operasional kantor harian' &&
     shortLine('Menangani pengadaan barang (ATK, maket) mulai dari perbandingan harga') === 'Menangani pengadaan barang' &&
+    shortLine('Mengadministrasikan aset perusahaan — komputer, plotter — beserta jadwal perawatan') === 'Mengadministrasikan aset perusahaan' &&
+    shortLine('Memproses pembayaran rutin operasional kantor serta menyusun rekap') === 'Memproses pembayaran rutin operasional kantor' &&
     shortLine('Memproses payroll bulanan untuk 121 karyawan') === 'Memproses payroll bulanan untuk 121 karyawan' &&
+    shortLine('Menghitung iuran BPJS untuk 121 karyawan, memastikan kepatuhan penuh') === 'Menghitung iuran BPJS untuk 121 karyawan' &&
     shortLine('Cooked noodles to order, including wontons.') === 'Cooked noodles to order',
   'shortLine',
 );
