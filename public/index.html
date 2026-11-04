@@ -234,19 +234,19 @@
         }
 
         // Meteor: titik ledak disebar merata (grid acak) sampai ke tepi layar, arah datang acak
-        var CX = LITE ? 4 : 6, CY = LITE ? 4 : 5, M = [], cells = [], SPAN = LITE ? 1.0 : 1.3;
+        var CX = LITE ? 3 : 4, CY = LITE ? 3 : 3, M = [], cells = [], SPAN = LITE ? 1.0 : 1.3; // tidak terlalu ramai: 12 meteor (HP ringan 9)
         for (var gy = 0; gy < CY; gy++) for (var gx = 0; gx < CX; gx++) cells.push([gx, gy]);
         cells.sort(function () { return Math.random() - .5; });
         cells.forEach(function (c, i) {
           var ex = (c[0] + rnd(.08, .92)) / CX * W, ey = (c[1] + rnd(.08, .92)) / CY * H, a = rnd(0, 6.283), L = Math.max(W, H) * rnd(.5, .9);
           var ts = .1 + i / cells.length * SPAN + rnd(0, .12);
-          M.push({ sx: ex - Math.cos(a) * L, sy: ey - Math.sin(a) * L, ex: ex, ey: ey, ts: ts, te: ts + rnd(.45, .8), c: pick(), px: null, py: null, boom: 0 });
+          M.push({ sx: ex - Math.cos(a) * L, sy: ey - Math.sin(a) * L, ex: ex, ey: ey, ts: ts, te: ts + rnd(.7, 1.1), c: pick(), px: null, py: null, boom: 0 });
         });
         var S = [], F = [], P = []; // S: serpihan ledakan, F: kilatan cincin, P: serpihan yang memusat ke bentuk
         function explode(m, t) {
           F.push({ x: m.ex, y: m.ey, t0: t, c: m.c });
-          for (var k = 0, n = LITE ? 18 : 34; k < n; k++) {
-            var a = rnd(0, 6.283), sp = rnd(140, 820) * SC;
+          for (var k = 0, n = LITE ? 10 : 16; k < n; k++) { // ledakan lebih lembut
+            var a = rnd(0, 6.283), sp = rnd(90, 420) * SC;
             S.push({ x: m.ex, y: m.ey, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, t0: t, life: rnd(.6, 1.3), c: Math.random() < .2 ? '#fff' : Math.random() < .6 ? m.c : pick() });
           }
         }
@@ -319,7 +319,7 @@
             var m = M[n]; if (t < m.ts || m.boom) continue;
             k = Math.min(1, (t - m.ts) / (m.te - m.ts)); e = k * k;
             x = m.sx + (m.ex - m.sx) * e; y = m.sy + (m.ey - m.sy) * e;
-            if (m.px !== null) { line(m.px, m.py, x, y, 4 * SC + 1.5, m.c, .9); line(m.px, m.py, x, y, 1.4, '#fff', 1); }
+            if (m.px !== null) { line(m.px, m.py, x, y, 3 * SC + 1.2, m.c, .85); line(m.px, m.py, x, y, 1.4, '#fff', 1); }
             dot(x, y, 8 * SC + 2, m.c, .35);
             m.px = x; m.py = y;
             if (k >= 1) { m.boom = 1; explode(m, t); }
@@ -327,8 +327,8 @@
           F = F.filter(function (f) { // kilatan cincin ledakan
             var a = (t - f.t0) / .45; if (a >= 1) return false;
             ctx.globalAlpha = 1 - a; ctx.strokeStyle = f.c; ctx.lineWidth = 2.5 * (1 - a) + .5;
-            ctx.beginPath(); ctx.arc(f.x, f.y, 6 + 150 * SC * (1 - Math.pow(1 - a, 3)), 0, 6.283); ctx.stroke();
-            if (a < .3) dot(f.x, f.y, 22 * SC * (1 - a / .3) + 2, '#fff', .8 * (1 - a / .3));
+            ctx.beginPath(); ctx.arc(f.x, f.y, 6 + 90 * SC * (1 - Math.pow(1 - a, 3)), 0, 6.283); ctx.stroke();
+            if (a < .3) dot(f.x, f.y, 12 * SC * (1 - a / .3) + 2, '#fff', .6 * (1 - a / .3));
             return true;
           });
           var drag = Math.exp(-2.3 * dt);
