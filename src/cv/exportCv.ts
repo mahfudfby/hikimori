@@ -1,16 +1,17 @@
 // src/cv/exportCv.ts — font, PDF (gambar persis tampilan) dan cetak teks asli.
 import { PAGE_H, PAGE_W } from './CvDocument';
 
-/** Muat font Arimo (metrik = Arial) supaya tata letak sama di semua perangkat. Offline: pakai Arial. */
+/** Muat web font bermetrik sama dengan font standar (Arimo = Arial, Carlito = Calibri, Tinos = Times) + Montserrat
+ *  untuk judul template kreatif, supaya tata letak sama di semua perangkat. Offline: pakai font sistem. */
 export async function ensureFont(): Promise<void> {
   if (!document.getElementById('hk-cv-font')) {
     const l = document.createElement('link');
     l.id = 'hk-cv-font';
     l.rel = 'stylesheet';
-    l.href = 'https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&display=swap';
+    l.href = 'https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400;0,700;1,400&family=Carlito:ital,wght@0,400;0,700;1,400&family=Tinos:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@400;700&display=swap';
     document.head.appendChild(l);
   }
-  try { await Promise.all(['400 16px Arimo', '700 16px Arimo'].map((f) => document.fonts.load(f))); } catch { /* pakai font cadangan */ }
+  try { await Promise.all(['Arimo', 'Carlito', 'Tinos', 'Montserrat'].flatMap((n) => [`400 16px ${n}`, `700 16px ${n}`]).map((f) => document.fonts.load(f))); } catch { /* pakai font cadangan */ }
   await document.fonts.ready;
 }
 
