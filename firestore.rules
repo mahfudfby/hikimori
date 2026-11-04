@@ -3,12 +3,12 @@ rules_version = '2';
 // Publik boleh MEMBACA konten; hanya akun admin yang login boleh MENULIS.
 service cloud.firestore {
   match /databases/{database}/documents {
-    // admin@hikimori.app: akun login CMS yang sudah ada.
+    // admin@hikimori.app & mahfudfby@gmail.com: akun login CMS yang sudah terdaftar di Firebase Auth.
     // Email lain wajib terverifikasi, agar tidak bisa didaftarkan orang lain lebih dulu lewat Firebase Auth.
     function isAdmin() {
       return request.auth != null && (
-        request.auth.token.email == 'admin@hikimori.app'
-        || (request.auth.token.email in ['mahfudfby@gmail.com', 'mahfudfebry@hikimori.web.id']
+        request.auth.token.email in ['admin@hikimori.app', 'mahfudfby@gmail.com']
+        || (request.auth.token.email == 'mahfudfebry@hikimori.web.id'
             && request.auth.token.email_verified == true)
       );
     }
