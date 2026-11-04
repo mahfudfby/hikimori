@@ -48,8 +48,10 @@ const Loading: React.FC = () => (
 
 const Protected: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAdmin, loading } = useAuth();
+  const { pathname } = useLocation();
   if (loading) return <Loading />;
-  return isAdmin ? <>{children}</> : <Navigate to="/admin/login" replace />;
+  // Belum login: ke halaman login, lalu kembali ke halaman asal (mis. /cv) setelah berhasil masuk
+  return isAdmin ? <>{children}</> : <Navigate to="/admin/login" replace state={{ from: pathname }} />;
 };
 
 const NotFound: React.FC = () => {
@@ -89,7 +91,7 @@ const Shell: React.FC = () => {
           <Route path="/portofolio" element={<PortfolioPage />} />
           <Route path="/portofolio/:id" element={<PortfolioArticle />} />
           <Route path="/kontak" element={<ContactPage />} />
-          <Route path="/cv" element={<CvPage />} />
+          <Route path="/cv" element={<Protected><CvPage /></Protected>} />
           {/* URL lama tetap jalan */}
           <Route path="/about" element={<Navigate to="/profil" replace />} />
           <Route path="/services" element={<Navigate to="/layanan" replace />} />
