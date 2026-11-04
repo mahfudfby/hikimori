@@ -13,8 +13,10 @@ function clickDownload(href: string, name: string) {
 }
 
 export function saveFile(blob: Blob, name: string) {
-  // octet-stream: Safari iOS tetap MEMBUKA PDF di penampil walau ada atribut download; tipe biner memaksa unduh
-  const url = URL.createObjectURL(new Blob([blob], { type: 'application/octet-stream' }));
+  // octet-stream: Safari iOS tetap MEMBUKA PDF/JSON di penampil walau ada atribut download; tipe biner memaksa unduh.
+  // Gambar tetap bertipe aslinya (diunduh normal, dan Share menawarkan "Simpan Gambar").
+  const raw = blob.type.startsWith('image/') ? blob : new Blob([blob], { type: 'application/octet-stream' });
+  const url = URL.createObjectURL(raw);
   clickDownload(url, name);
   setTimeout(() => URL.revokeObjectURL(url), 60_000); // jangan langsung: Safari butuh waktu
 
@@ -25,11 +27,12 @@ export function saveFile(blob: Blob, name: string) {
 /** Unduh file dari URL (mis. CV PDF). Bila gagal diambil (CORS / offline), coba unduh langsung lewat link (tanpa pindah halaman). */
 export async function downloadUrl(href: string, fallbackName = 'file.pdf') {
   try {
-    const res = await fetch(href);
+    const res = await fetch(href, { mode: 'cors', cache: 'no-store' });
     if (!res.ok) throw new Error(String(res.status));
     const base = decodeURIComponent(new URL(href, window.location.href).pathname.split('/').pop() || '');
     saveFile(await res.blob(), /\.\w{2,5}$/.test(base) ? base : fallbackName);
   } catch {
-    clickDownload(href, fallbackName);
+    // Cloudinary: fl_attachment membuat server mengirim "Content-Disposition: attachment", jadi browser mengunduh, bukan membuka tab
+    clickDownload(/res\.cloudinary\.com\/.+\/upload\//.test(href) ? href.replace('/upload/', '/upload/fl_attachment/') : href, fallbackName);
   }
 }
