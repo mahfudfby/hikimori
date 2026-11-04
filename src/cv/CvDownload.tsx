@@ -14,7 +14,7 @@ import {
   DEFAULT_EXP_COUNT, SEC_DEFAULT, SEC_LABEL, buildModel, shortenJobs, certKey, defaultExpIds, defaultOnCert, expKey, isOn, missingTexts,
   type Choice, type SecKey,
 } from './cvModel';
-import { CvDocument, PAGE_W } from './CvDocument';
+import { CvDocument, PAGE_W, TEMPLATES, tplOf } from './CvDocument';
 import { ensureFont, exportJpegs, exportPdf, printText } from './exportCv';
 import { translateMissing, trCache } from './translate';
 
@@ -71,9 +71,9 @@ export const CvBuilder: React.FC = () => {
   const [retry, setRetry] = useState(0);
   const [tst, setTst] = useState<{ s: 'ok' | 'busy' | 'error'; msg: string }>({ s: 'ok', msg: '' });
   // src: sumber foto CV (foto profil situs / unggahan baru); short: narasi deskripsi kerja singkat
-  type Opts = { hc: boolean; hr: boolean; short: boolean; src: 'site' | 'upload' };
+  type Opts = { hc: boolean; hr: boolean; short: boolean; src: 'site' | 'upload'; tpl: string };
   const [opts, setOpts] = useState<Opts>(() => {
-    const def: Opts = { hc: false, hr: false, short: false, src: 'site' };
+    const def: Opts = { hc: false, hr: false, short: false, src: 'site', tpl: 'cr-replika' };
     try { return { ...def, ...JSON.parse(localStorage.getItem(LS_OPTS) || '{}') }; } catch { return def; }
   });
   type Kind = 'pdf' | 'pdfmin' | 'jpeg' | 'text';
@@ -162,6 +162,21 @@ export const CvBuilder: React.FC = () => {
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 16, alignItems: 'start' }}>
           <div style={{ display: 'grid', gap: 12, minWidth: 0 }}>
+            <div style={box} role="group" aria-label={t('Template CV', 'CV template')}>
+              <label className="small" htmlFor="cv-tpl"><strong>{t('Template CV', 'CV template')}</strong></label>
+              <select id="cv-tpl" className="input" value={opts.tpl} onChange={(e) => setOpts((o) => ({ ...o, tpl: e.target.value }))} style={{ minHeight: 44, fontSize: '0.95rem' }}>
+                <optgroup label={t('ATS-friendly (satu kolom, tanpa foto)', 'ATS-friendly (single column, no photo)')}>
+                  {TEMPLATES.filter((x) => x.kind === 'ats').map((x) => <option key={x.id} value={x.id}>{pick(x.name, siteLang)}</option>)}
+                </optgroup>
+                <optgroup label={t('Kreatif (desain, foto, warna)', 'Creative (design, photo, colour)')}>
+                  {TEMPLATES.filter((x) => x.kind === 'creative').map((x) => <option key={x.id} value={x.id}>{pick(x.name, siteLang)}</option>)}
+                </optgroup>
+              </select>
+              {tplOf(opts.tpl).kind === 'ats'
+                ? <span className="xs" style={{ color: 'var(--text-2)' }}>{t('ATS: untuk melamar lewat portal/sistem rekrutmen, ekspor dengan "PDF teks (ATS)" agar teksnya terbaca mesin. PDF gambar & JPEG tidak terbaca ATS. Foto tidak ditampilkan.', 'ATS: for job portals/recruiting systems, export with "Text PDF (ATS)" so machines can read the text. Image PDFs & JPEGs are not ATS-readable. No photo is shown.')}</span>
+                : <span className="xs muted">{t('Kreatif: untuk dikirim langsung ke HR / email / dicetak. Untuk portal lamaran online, pilih template ATS.', 'Creative: for sending directly to HR / email / print. For online application portals, choose an ATS template.')}</span>}
+            </div>
+
             <div style={box} role="group" aria-label={t('Bahasa CV', 'CV language')}>
               <strong className="small">{t('Bahasa CV', 'CV language')}</strong>
               <div className="seg" role="radiogroup">
@@ -272,7 +287,7 @@ export const CvBuilder: React.FC = () => {
             <div ref={wrapRef} style={{ width: '100%', overflow: 'hidden' }} aria-label={t('Pratinjau CV', 'CV preview')}>
               <div style={{ width: PAGE_W * fit.k, height: fit.h || undefined }}>
                 <div style={{ width: PAGE_W, transform: `scale(${fit.k})`, transformOrigin: 'top left' }}>
-                  <CvDocument ref={docRef} model={model} fontTick={fontTick} hc={opts.hc} />
+                  <CvDocument ref={docRef} model={model} fontTick={fontTick} hc={opts.hc} tpl={opts.tpl} />
                 </div>
               </div>
             </div>
