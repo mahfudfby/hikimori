@@ -4,6 +4,7 @@ import { useContent } from '../content/ContentContext';
 import { useLang } from '../contexts/LanguageContext';
 import { Icon, PageHero, useTitle, useHashTarget, Modal, Staged, Swipe, cld } from '../components/ui';
 import { pick, fmtRange } from '../content/derive';
+import { downloadUrl } from '../utils/saveFile';
 import type { Certificate, CertCategory } from '../content/types';
 
 const CAT: Record<CertCategory, { id: string; en: string; icon: string }> = {
@@ -98,6 +99,12 @@ const CertificatesPage: React.FC = () => {
           <h2 className="h-2 mt-16">{pick(view.name, lang)}</h2>
           <p className="muted">{view.issuer} · {fmtRange(view.year, lang)}{view.code ? ` · ${view.code}` : ''}</p>
           {pick(view.desc, lang) && <p className="muted mt-8">{pick(view.desc, lang)}</p>}
+          {view.imageUrl && (
+            <div className="row wrap gap-8 mt-16">
+              <button type="button" className="pill dark" onClick={() => downloadUrl(view.imageUrl, 'sertifikat-depan.jpg')}><Icon name="download" size={15} />{view.imageUrl2 ? t('Unduh halaman depan', 'Download front page') : t('Unduh dokumen', 'Download document')}</button>
+              {view.imageUrl2 && <button type="button" className="pill dark" onClick={() => downloadUrl(view.imageUrl2 as string, 'sertifikat-belakang.jpg')}><Icon name="download" size={15} />{t('Unduh halaman belakang', 'Download back page')}</button>}
+            </div>
+          )}
           <Units units={view.units} />
         </>)}
       </Modal>

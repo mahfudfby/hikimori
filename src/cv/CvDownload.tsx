@@ -11,7 +11,7 @@ import type { CertCategory } from '../content/types';
 import { Icon } from '../components/ui';
 import { saveFile } from '../utils/saveFile';
 import {
-  DEFAULT_EXP_COUNT, SEC_DEFAULT, SEC_LABEL, buildModel, certKey, defaultExpIds, defaultOnCert, expKey, isOn, missingTexts,
+  DEFAULT_EXP_COUNT, SEC_DEFAULT, SEC_LABEL, buildModel, shortenJobs, certKey, defaultExpIds, defaultOnCert, expKey, isOn, missingTexts,
   type Choice, type SecKey,
 } from './cvModel';
 import { CvDocument, PAGE_W } from './CvDocument';
@@ -59,6 +59,7 @@ export const CvBuilder: React.FC = () => {
       const d = c.toDataURL('image/jpeg', 0.9);
       URL.revokeObjectURL(url);
       setUpPhoto(d);
+      setOpts((o) => ({ ...o, src: 'upload' }));
       try { localStorage.setItem(LS_PHOTO, d); } catch { /* penyimpanan penuh: foto hanya berlaku di sesi ini */ }
     };
     img.onerror = () => { URL.revokeObjectURL(url); toast.error(t('File bukan gambar yang bisa dibaca.', 'That file is not a readable image.')); };
@@ -69,8 +70,11 @@ export const CvBuilder: React.FC = () => {
   const [ver, setVer] = useState(0);
   const [retry, setRetry] = useState(0);
   const [tst, setTst] = useState<{ s: 'ok' | 'busy' | 'error'; msg: string }>({ s: 'ok', msg: '' });
-  const [opts, setOpts] = useState<{ hc: boolean; hr: boolean }>(() => {
-    try { return { hc: false, hr: false, ...JSON.parse(localStorage.getItem(LS_OPTS) || '{}') }; } catch { return { hc: false, hr: false }; }
+  // src: sumber foto CV (foto profil situs / unggahan baru); short: narasi deskripsi kerja singkat
+  type Opts = { hc: boolean; hr: boolean; short: boolean; src: 'site' | 'upload' };
+  const [opts, setOpts] = useState<Opts>(() => {
+    const def: Opts = { hc: false, hr: false, short: false, src: 'site' };
+    try { return { ...def, ...JSON.parse(localStorage.getItem(LS_OPTS) || '{}') }; } catch { return def; }
   });
   type Kind = 'pdf' | 'pdfmin' | 'jpeg' | 'text';
   const [busy, setBusy] = useState<'' | Kind>('');
@@ -108,7 +112,10 @@ export const CvBuilder: React.FC = () => {
     return () => { live = false; clearTimeout(h); };
   }, [need, retry]);
 
-  const model = useMemo(() => buildModel(content, ch, lang, trCache(), upPhoto || photo), [content, ch, lang, photo, upPhoto, ver]); // eslint-disable-line react-hooks/exhaustive-deps
+  const model = useMemo(() => {
+    const m = buildModel(content, ch, lang, trCache(), opts.src === 'upload' && upPhoto ? upPhoto : photo);
+    return opts.short ? shortenJobs(m) : m;
+  }, [content, ch, lang, photo, upPhoto, ver, opts.src, opts.short]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Skala pratinjau mengikuti lebar kolom
   useLayoutEffect(() => {
@@ -207,14 +214,31 @@ export const CvBuilder: React.FC = () => {
 
             <div style={box} role="group" aria-label={t('Foto CV', 'CV photo')}>
               <strong className="small">{t('Foto CV', 'CV photo')}</strong>
-              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
-                <label className="pill dark" style={{ minHeight: 44, cursor: 'pointer' }}>
-                  <Icon name="image" size={16} />{upPhoto ? t('Ganti foto', 'Change photo') : t('Pilih foto (Upload)', 'Choose photo (Upload)')}
+              <div className="seg" role="radiogroup">
+                <button type="button" role="radio" aria-checked={opts.src === 'site'} className={opts.src === 'site' ? 'on' : ''} onClick={() => setOpts((o) => ({ ...o, src: 'site' }))}>{t('Foto profil web', 'Website profile photo')}</button>
+                <button type="button" role="radio" aria-checked={opts.src === 'upload'} className={opts.src === 'upload' ? 'on' : ''} onClick={() => setOpts((o) => ({ ...o, src: 'upload' }))}>{t('Upload foto baru', 'Upload new photo')}</button>
+              </div>
+              {opts.src === 'upload' && (<>
+                <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8, minHeight: 132, padding: 16, border: '2px dashed var(--line-2, #c9c4b6)', borderRadius: 16, cursor: 'pointer', textAlign: 'center', background: 'var(--surface-solid, #fff)' }}>
+                  {upPhoto
+                    ? <img src={upPhoto} alt="" style={{ width: 72, height: 96, objectFit: 'cover', borderRadius: 8 }} />
+                    : <Icon name="upload" size={30} />}
+                  <span style={{ fontSize: '1.05rem', fontWeight: 700 }}>{upPhoto ? t('Ganti foto (Choose File)', 'Change photo (Choose File)') : t('Pilih foto (Choose File)', 'Choose photo (Choose File)')}</span>
+                  <span className="xs muted">JPG / PNG / HEIC</span>
                   <input type="file" accept="image/*" style={{ display: 'none' }} onChange={(e) => { onFile(e.target.files?.[0]); e.target.value = ''; }} />
                 </label>
                 {upPhoto && <button type="button" style={mini} onClick={clearPhoto}>{t('Hapus foto unggahan', 'Remove uploaded photo')}</button>}
+              </>)}
+              <span className="xs muted">{t('Foto unggahan hanya dipakai di CV pada perangkat ini (tidak diunggah ke server). Pastikan bagian "Foto" di bawah aktif.', 'An uploaded photo is only used in the CV on this device (not uploaded to a server). Make sure the "Photo" section below is on.')}</span>
+            </div>
+
+            <div style={box} role="group" aria-label={t('Narasi deskripsi kerja', 'Job description style')}>
+              <strong className="small">{t('Narasi deskripsi kerja', 'Job description style')}</strong>
+              <div className="seg" role="radiogroup">
+                <button type="button" role="radio" aria-checked={!opts.short} className={!opts.short ? 'on' : ''} onClick={() => setOpts((o) => ({ ...o, short: false }))}>{t('Panjang (detail)', 'Long (detailed)')}</button>
+                <button type="button" role="radio" aria-checked={opts.short} className={opts.short ? 'on' : ''} onClick={() => setOpts((o) => ({ ...o, short: true }))}>{t('Singkat', 'Short')}</button>
               </div>
-              <span className="xs muted">{t('Foto hanya dipakai di CV pada perangkat ini (tidak diunggah ke server). Tanpa unggahan, dipakai foto situs; bila gagal dimuat, tampil inisial. Aktifkan bagian "Foto" di bawah.', 'The photo is only used in the CV on this device (not uploaded to a server). Without an upload, the site photo is used; if it fails to load, initials show. Enable the "Photo" section below.')}</span>
+              <span className="xs muted">{t('Singkat: kata penghubung dan rincian dalam kurung dibuang, poin-poin pekerjaan tetap lengkap.', 'Short: connecting phrases and details in brackets are removed; every job point stays.')}</span>
             </div>
 
             <div style={box} role="group" aria-label={t('Bagian CV', 'CV sections')}>
