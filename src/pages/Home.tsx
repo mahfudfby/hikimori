@@ -10,6 +10,7 @@ import {
 } from '../content/derive';
 import type { Experience, Certificate } from '../content/types';
 import { CvDownloadButton } from '../cv/CvButton';
+import { downloadUrl } from '../utils/saveFile';
 import { mailLink } from '../utils/mailLink';
 
 const SLIDE_MS = 6500;
@@ -260,13 +261,21 @@ const AgeCard: React.FC = () => {
  *  naik-turun untuk melihat yang sudah lewat. Isi digandakan → posisi dibungkus agar putaran tak pernah habis. */
 const useCreditRoll = (count: number) => {
   const ref = useRef<HTMLDivElement>(null);
+  // Jumlah salinan daftar: cukup untuk mengisi kartu + satu cadangan, agar daftar pendek pun tetap bisa bergulir terus
+  const [reps, setReps] = useState(2);
   useEffect(() => {
     const el = ref.current; if (!el || !count) return;
+    const one = () => (el.firstElementChild as HTMLElement | null)?.offsetHeight || 0;
+    const need = () => (one() ? Math.max(2, Math.ceil(el.clientHeight / one()) + 1) : 2);
+    if (need() !== reps) { setReps(need()); return; }
+    // Ukur ulang saat kartu berubah ukuran (kartu dimuat bertahap / layar diputar)
+    const ro = new ResizeObserver(() => { if (need() !== reps) setReps(need()); });
+    ro.observe(el);
     const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
     let pos = 0, last = 0, raf = 0, hold = false, resumeAt = 0;
-    const half = () => el.scrollHeight / 2;
-    const wrap = () => { // tetap di paruh pertama: atas ↔ bawah menyambung mulus
-      const h = half(); if (reduce || h <= el.clientHeight / 2) return;
+    const half = one; // satu putaran = tinggi satu salinan daftar
+    const wrap = () => { // tetap di salinan pertama: atas ↔ bawah menyambung mulus
+      const h = half(); if (reduce || !h || el.scrollHeight - el.clientHeight < h) return;
       if (el.scrollTop > h) el.scrollTop -= h; else if (el.scrollTop < 1) el.scrollTop += h - 1;
     };
     const onScroll = () => { wrap(); if (Math.abs(el.scrollTop - pos) > 1) pos = el.scrollTop; }; // gulir manual
@@ -290,20 +299,21 @@ const useCreditRoll = (count: number) => {
     if (!reduce) raf = requestAnimationFrame(tick);
     return () => {
       cancelAnimationFrame(raf);
+      ro.disconnect();
       el.removeEventListener('scroll', onScroll);
       el.removeEventListener('mouseenter', pause); el.removeEventListener('mouseleave', onLeave);
       el.removeEventListener('focusin', pause); el.removeEventListener('focusout', onLeave);
       el.removeEventListener('touchstart', pause); el.removeEventListener('touchend', onTouchEnd);
     };
-  }, [count]);
-  return ref;
+  }, [count, reps]);
+  return { ref, reps };
 };
 
 const AchievementsCard: React.FC = () => {
   const { content } = useContent();
   const { lang, t } = useLang();
   const list = content.achievements;
-  const roll = useCreditRoll(list.length);
+  const { ref: roll, reps } = useCreditRoll(list.length);
   const item = (a: typeof list[number], dup?: boolean) => {
     const [role, company] = (a.job || '').split(/\s+·\s+/); // "Posisi · Perusahaan" → dua baris
     return (
@@ -323,7 +333,7 @@ const AchievementsCard: React.FC = () => {
       {list.length === 0 ? <p className="xs faint">{t('Tambahkan pencapaian di CMS → Profil.', 'Add highlights in CMS → Profile.')}</p> : (
         <div className="ach-roll" ref={roll} tabIndex={0} aria-label={t('Daftar yang pernah ditangani', 'Previously handled list')}>
           <div className="ach-list">{list.map(a => item(a))}</div>
-          <div className="ach-list ach-dup" aria-hidden="true">{list.map(a => item(a, true))}</div>
+          {Array.from({ length: reps - 1 }, (_, k) => <div key={k} className="ach-list ach-dup" aria-hidden="true">{list.map(a => item(a, true))}</div>)}
         </div>
       )}
     </div>
@@ -504,6 +514,12 @@ const CertsCard: React.FC = () => {
           {doc.imageUrl2 && <img src={doc.imageUrl2} alt={`${pick(doc.name, lang)} (${t('belakang', 'back')})`} loading="lazy" decoding="async" style={{ width: '100%', borderRadius: 16, marginTop: 12 }} />}
           <h2 className="h-2 mt-16">{pick(doc.name, lang)}</h2>
           <p className="muted">{doc.issuer} · {fmtRange(doc.year, lang)}</p>
+          {doc.imageUrl && (
+            <div className="row wrap gap-8 mt-16">
+              <button type="button" className="pill dark" onClick={() => downloadUrl(doc.imageUrl, 'sertifikat-depan.jpg')}><Icon name="download" size={15} />{doc.imageUrl2 ? t('Unduh halaman depan', 'Download front page') : t('Unduh dokumen', 'Download document')}</button>
+              {doc.imageUrl2 && <button type="button" className="pill dark" onClick={() => downloadUrl(doc.imageUrl2 as string, 'sertifikat-belakang.jpg')}><Icon name="download" size={15} />{t('Unduh halaman belakang', 'Download back page')}</button>}
+            </div>
+          )}
         </>)}
       </Modal>
     </div>

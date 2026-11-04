@@ -110,6 +110,27 @@ const cvPos = (t: string) => t.replace(/Human Resources? Development(\s*\/\s*Gen
 const cvCompany = (t: string) => t.replace(/^(ARCHIMAX Architect)\s+Indonesia$/i, '$1');
 console.assert(cvPos('Human Resource Development / General Affairs') === 'HRD' && cvCompany('ARCHIMAX Architect Indonesia') === 'ARCHIMAX Architect' && cvCompany('PT. Richeese Kuliner Indonesia') === 'PT. Richeese Kuliner Indonesia', 'cvPos/cvCompany');
 
+// Narasi singkat: buang rincian dalam kurung dan anak kalimat penghubung; inti tiap butir pekerjaan tetap ada.
+const CUT = /\s*(?:,\s*(?:termasuk|serta|beserta|meliputi|mulai|sehingga|yang|dan juga|including|as well as|covering|from|which|so that)\b|\s(?:mulai dari|sehingga|guna|agar|so that|in order to)\s)/i;
+export const shortLine = (t: string): string => {
+  let s = t.replace(/\s*\([^)]*\)/g, '').replace(/\s{2,}/g, ' ').trim();
+  const m = CUT.exec(s);
+  if (m && s.slice(0, m.index).trim().split(/\s+/).length >= 3) s = s.slice(0, m.index);
+  return s.replace(/[\s,;:.]+$/, '');
+};
+/** Versi singkat: tanpa kalimat pembuka, tiap butir dipendekkan (jumlah butir tetap). */
+export const shortenJobs = (m: CvModel): CvModel => ({
+  ...m,
+  jobs: m.jobs.map((j) => ({ ...j, intro: [], bullets: (j.bullets.length ? j.bullets : j.intro).map(shortLine) })),
+});
+console.assert(
+  shortLine('Mengelola fasilitas dan operasional kantor harian, termasuk kebersihan, keamanan') === 'Mengelola fasilitas dan operasional kantor harian' &&
+    shortLine('Menangani pengadaan barang (ATK, maket) mulai dari perbandingan harga') === 'Menangani pengadaan barang' &&
+    shortLine('Memproses payroll bulanan untuk 121 karyawan') === 'Memproses payroll bulanan untuk 121 karyawan' &&
+    shortLine('Cooked noodles to order, including wontons.') === 'Cooked noodles to order',
+  'shortLine',
+);
+
 export function buildModel(c: SiteContent, ch: Choice, lang: Lang, map: Tmap, photo: string): CvModel {
   const s = ch.sec;
   const T = (b?: Bi) => biText(b, lang, map);
