@@ -126,6 +126,8 @@ export interface Profile {
   summary: Bi;
   /** Cerita panjang untuk halaman /profil — paragraf dipisah baris kosong */
   story: Bi;
+  /** Revisi teks Ringkasan/Biografi; lebih lama dari PROFILE_TEXT_REV = pakai teks bawaan */
+  textRev?: number;
   birthPlace: string;
   birthDate: string;
   birthYear: number;

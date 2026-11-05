@@ -4,7 +4,7 @@
 //   2. lalu berlangganan real-time ke Firestore `siteContent/main`.
 // CMS (/admin) menyimpan ke dokumen yang sama lewat saveContent().
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
-import { DEFAULT_CONTENT, SCHEMA_VERSION } from './defaults';
+import { DEFAULT_CONTENT, SCHEMA_VERSION, PROFILE_TEXT_REV } from './defaults';
 import type { SiteContent } from './types';
 import { getDb } from '../config/firebase';
 import { getDocRest } from './firestoreRest';
@@ -41,10 +41,20 @@ export const mergeContent = (saved: any, base: any = DEFAULT_CONTENT): any => {
   return saved === undefined || saved === null ? base : saved;
 };
 
+/** Gabung + teks Ringkasan/Biografi bawaan bila data tersimpan belum memuat revisi terbaru. */
+const mergeSaved = (saved: any): SiteContent => {
+  const out = mergeContent(saved) as SiteContent;
+  if ((saved?.profile?.textRev ?? 0) < PROFILE_TEXT_REV) {
+    const d = DEFAULT_CONTENT.profile;
+    out.profile = { ...out.profile, summary: d.summary, story: d.story, textRev: PROFILE_TEXT_REV };
+  }
+  return out;
+};
+
 const readCache = (): SiteContent => {
   try {
     const raw = localStorage.getItem(LS_KEY);
-    if (raw) return mergeContent(JSON.parse(raw));
+    if (raw) return mergeSaved(JSON.parse(raw));
   } catch {}
   return DEFAULT_CONTENT;
 };
@@ -71,7 +81,7 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
         setSynced(true);
         const v = doc?.value;
         if (!v) return;
-        const merged = mergeContent(v) as SiteContent;
+        const merged = mergeSaved(v);
         setContent(prev => (JSON.stringify(prev) === JSON.stringify(merged) ? prev : merged));
         try { localStorage.setItem(LS_KEY, JSON.stringify(merged)); } catch {}
       }).catch(err => { if (err?.name !== 'AbortError') { console.warn('[content] Firestore:', err.message); setSynced(true); } });
