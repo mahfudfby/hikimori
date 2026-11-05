@@ -169,7 +169,7 @@ Tetap publikasikan dan TIMPA versi tersebut?
         </Section>
         <Section title="Ringkasan & cerita" desc="Ringkasan tampil di kartu Summary dashboard; cerita panjang di /profil (pisahkan paragraf dengan baris kosong).">
           <BiField label="Ringkasan profesional" value={p.summary} onChange={v => setP({ summary: v })} area rows={5} />
-          <BiField label="Cerita saya" value={p.story} onChange={v => setP({ story: v })} area rows={10} />
+          <BiField label="Biografi" value={p.story} onChange={v => setP({ story: v })} area rows={10} />
         </Section>
         <Section title="Biodata pribadi" desc="Tahun lahir dipakai untuk bar Usia di dashboard.">
           <Grid cols={3}>

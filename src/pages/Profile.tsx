@@ -62,7 +62,7 @@ const Profile: React.FC = () => {
 
           <div className="stack gap-12">
             <Reveal className="card">
-              <span className="eyebrow">{t('Cerita saya', 'My story')}</span>
+              <span className="eyebrow">{t('Biografi', 'Biography')}</span>
               <div className="prose mt-16">{paragraphs(pick(p.story, lang)).map((x, i) => <p key={i}>{x}</p>)}</div>
             </Reveal>
 
