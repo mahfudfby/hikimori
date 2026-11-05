@@ -785,7 +785,7 @@ html.lite .logo-badge::after, html.lite .brand.brand-logo::after { animation: no
 .mag-dropcap > p:first-child::first-letter, .mag-dropcap > .mag-rich > p:first-child::first-letter { float: left; font-family: var(--serif); font-size: 4.2em; line-height: .82; padding: .06em .12em 0 0; font-weight: 700; color: var(--mag-gold); }
 .mag-lead { font-family: var(--serif); font-size: 1.3rem; line-height: 1.6; }
 .mag-text.mag-card { padding: 22px 24px; border-radius: 20px; background: var(--surface-solid); border: 1px solid var(--line-2); box-shadow: var(--shadow); }
-.mag-columns { column-count: 2; column-gap: 32px; column-rule: 1px solid var(--line-2); text-align: justify; hyphens: auto; }
+.mag-columns { column-count: 2; column-gap: 32px; column-rule: 1px solid var(--line-2); text-align: left; hyphens: auto; text-wrap: pretty; }
 .mag-note { border-left: 3px solid var(--mag-gold); padding: 6px 0 6px 18px; background: linear-gradient(90deg, rgba(201, 162, 74, .12), transparent 70%); border-radius: 0 12px 12px 0; }
 .mag-h2 { font-family: var(--serif); font-size: clamp(1.4rem, 2.8vw, 1.9rem); line-height: 1.2; margin: 8px 0 0; font-weight: 700; }
 .mag-quote { margin: 6px 0; padding: 18px 8px; border-top: 2px solid var(--text); border-bottom: 1px solid var(--line-2); font-family: var(--serif); font-size: clamp(1.25rem, 2.6vw, 1.7rem); line-height: 1.4; text-align: center; }
@@ -989,9 +989,11 @@ textarea.input { resize: vertical; overflow: hidden; min-height: 2.6em; }
 .award-list li { display: flex; gap: 12px; align-items: flex-start; }
 .award-ic { flex: 0 0 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: rgba(244, 203, 77, .25); color: var(--text); }
 
-/* Paragraf rapi di seluruh situs: rata kiri-kanan + pemenggalan otomatis (utils/autoHyphen), tanpa tanda pisah manual */
-:where(#root) :where(p, li, dd) { -webkit-hyphens: auto; hyphens: auto; overflow-wrap: break-word; }
-:where(#root) p { text-align: justify; }
+/* Paragraf rapi di seluruh situs: rata kiri (tanpa celah lebar antarkata) + pemenggalan otomatis hemat
+   (utils/autoHyphen: hanya kata >= 9 huruf; Inggris: kamus browser dengan batas yang sama), baris terakhir tidak tersisa satu kata */
+:where(#root) :where(p, li, dd) { -webkit-hyphens: auto; hyphens: auto; -webkit-hyphenate-limit-before: 3; -webkit-hyphenate-limit-after: 4; hyphenate-limit-chars: 9 3 4; overflow-wrap: break-word; text-wrap: pretty; }
+:where(#root) p { text-align: left; }
+:where(#root) :where(h1, h2, h3, .h-page, .h-card, .h-2, .h-sm) { text-wrap: balance; }
 :where(.center, .empty, .share-box, .mag-head, .mag-quote, .mag-figure, .mfe-empty) p { text-align: inherit; }
 
 /* Pernah Menangani: daftar bergulir naik seperti kredit akhir film (JS: useCreditRoll di Home.tsx) */

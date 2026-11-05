@@ -4,6 +4,19 @@
 import { hyphenate } from './richHtml';
 
 const SHY = String.fromCharCode(173);
+// Hemat tanda pisah: hanya kata >= 9 huruf yang dipenggal, minimal 3 huruf sebelum & 4 huruf sesudah titik penggal
+const MIN_WORD = 9, BEFORE = 3, AFTER = 4;
+const siteHyphenate = (text: string) => text.replace(/[a-zA-Z]{9,}/g, (w) => {
+  let out = '', pos = 0;
+  for (const ch of hyphenate(w)) {
+    if (ch === SHY) { if (pos >= BEFORE && w.length - pos >= AFTER) out += ch; } else { out += ch; pos++; }
+  }
+  return out;
+});
+{ // self-check: kata pendek utuh; penggalan kata panjang menyisakan >= 3 huruf di depan & >= 4 di belakang
+  const parts = siteHyphenate('operasional').split(SHY);
+  console.assert(siteHyphenate('kerja kantor') === 'kerja kantor' && parts.length > 1 && parts[0].length >= BEFORE && parts[parts.length - 1].length >= AFTER, 'siteHyphenate');
+}
 let queued = false;
 const run = () => {
   queued = false;
@@ -13,8 +26,8 @@ const run = () => {
     const w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
     for (let n = w.nextNode(); n; n = w.nextNode()) {
       const v = n.nodeValue || '';
-      if (v.includes(SHY) || !/[a-zA-Z]{6}/.test(v) || n.parentElement?.closest('a, code')) continue;
-      const h = hyphenate(v);
+      if (v.includes(SHY) || !new RegExp(`[a-zA-Z]{${MIN_WORD}}`).test(v) || n.parentElement?.closest('a, code')) continue;
+      const h = siteHyphenate(v);
       if (h !== v) n.nodeValue = h; // tulis hanya bila berubah, agar observer tidak berputar terus
     }
   });
