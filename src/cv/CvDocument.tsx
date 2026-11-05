@@ -180,7 +180,7 @@ function buildUnits(m: CvModel, hc: boolean, t: Tpl): { main: Unit[]; side: Unit
   const soft = (side?: boolean) => m.soft.length ? sec(L.soft, ats ? [[inline(m.soft)]] : [list(m.soft, side)], { tight: !ats, side }) : [];
   const tools = (side?: boolean) => m.tools.length ? sec(L.tools, ats ? [[inline(m.tools)]] : [list(m.tools, side)], { tight: !ats, side }) : [];
   const refs = (side?: boolean) => m.refs.length ? sec(L.references, m.refs.map((r) => [<div>
-    <div style={{ fontWeight: 700 }}>{r.name}</div>{r.role && <div style={{ fontWeight: LIGHT }}>{r.role}</div>}<div style={{ fontWeight: LIGHT }}>{r.company}</div>{r.note && <div style={{ color: side ? sideMuted : MUTED, fontSize: hp(B * .96) }}>{r.note}</div>}
+    <div style={{ fontWeight: 700 }}>{r.name}</div>{r.role && <div style={{ fontWeight: LIGHT }}>{r.role}</div>}<div style={{ fontWeight: LIGHT }}>{r.company}</div>{r.note && <div style={{ color: side ? sideMuted : MUTED, fontSize: hp(B * .96) }}>{String(r.note).split(/(\S*\/\S*)/).map((s, i) => i % 2 ? <span key={i} style={{ whiteSpace: 'nowrap' }}>{s}</span> : s)}</div>}
   </div>]), { side }) : [];
   const certs = (side?: boolean) => m.certs.length ? sec(L.certs, m.certs.map((c) => [
     ats

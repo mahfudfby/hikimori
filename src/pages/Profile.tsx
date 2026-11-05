@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { useContent } from '../content/ContentContext';
 import { useLang } from '../contexts/LanguageContext';
 import { Icon, PageHero, Reveal, useTitle, Bullets, cld, cldSet } from '../components/ui';
-import { pick, paragraphs, careerMonths, ageOf, waLink } from '../content/derive';
+import { pick, paragraphs, careerMonths, ageOf, waLink, fmtRange } from '../content/derive';
 import { CvDownloadButton } from '../cv/CvButton';
 import { mailLink } from '../utils/mailLink';
 
@@ -115,9 +115,24 @@ const Profile: React.FC = () => {
               </Reveal>
             )}
 
-            {content.organizations.length > 0 && (
+            {content.certificates.length > 0 && (
               <Reveal className="card dark">
-                <span className="eyebrow" style={{ color: 'var(--on-ink-dim)' }}>{t('Organisasi', 'Organizations')}</span>
+                <div className="row between gap-8">
+                  <span className="eyebrow" style={{ color: 'var(--on-ink-dim)' }}>{t('Sertifikat & Lisensi', 'Certificates & Licenses')}</span>
+                  <Link to="/sertifikat" className="pill sm" style={{ borderColor: 'var(--ink-2)', color: 'var(--on-ink)' }}>{t('Lihat semua', 'View all')} <Icon name="arrow" size={13} /></Link>
+                </div>
+                {content.certificates.map(c => (
+                  <Link key={c.id} to={`/sertifikat#${c.id}`} className="mt-16" style={{ display: 'block', color: 'inherit', textDecoration: 'none' }}>
+                    <div className="h-sm">{pick(c.name, lang)}</div>
+                    <div className="small muted">{c.issuer.split('—')[0].trim()}{c.year ? ` · ${fmtRange(c.year, lang)}` : ''}</div>
+                  </Link>
+                ))}
+              </Reveal>
+            )}
+
+            {content.organizations.length > 0 && (
+              <Reveal className="card">
+                <span className="eyebrow">{t('Organisasi', 'Organizations')}</span>
                 {content.organizations.map(o => (
                   <div key={o.id} className="mt-16">
                     <div className="h-sm">{pick(o.role, lang)}</div>
@@ -147,7 +162,7 @@ const Profile: React.FC = () => {
                 {content.references.map(r => (
                   <div key={r.id} className="row gap-12 mt-16">
                     <span className="icon-btn dark"><Icon name="user" /></span>
-                    <div className="grow"><div className="h-sm">{r.name}</div><div className="small muted">{pick(r.role, lang)} · {r.company}</div><div className="xs faint">{pick(r.note, lang)}</div></div>
+                    <div className="grow"><div className="h-sm">{r.name}</div><div className="small muted">{pick(r.role, lang)} · {r.company}</div><div className="xs faint">{/* nomor dokumen (mengandung "/") jangan dipotong di tanda "-" */}{pick(r.note, lang).split(/(\S*\/\S*)/).map((s, i) => i % 2 ? <span key={i} style={{ whiteSpace: 'nowrap' }}>{s}</span> : s)}</div></div>
                   </div>
                 ))}
               </Reveal>
