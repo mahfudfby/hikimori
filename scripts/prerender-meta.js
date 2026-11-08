@@ -114,7 +114,7 @@ fs.writeFileSync(path.join(build, 'sitemap.xml'),
   [...Object.keys(seo.routes).map(r => `  <url><loc>${SITE}${r === '/' ? '/' : r}</loc><lastmod>${today}</lastmod><priority>${r === '/' ? '1.0' : '0.8'}</priority></url>`),
     ...articles.map(a => `  <url><loc>${SITE}/portofolio/${a.id}</loc><lastmod>${a.lastmod || today}</lastmod><priority>0.7</priority></url>`)].join('\n') +
   `\n</urlset>\n`);
-fs.writeFileSync(path.join(build, 'robots.txt'), `User-agent: *\nAllow: /\nDisallow: /admin\n\nSitemap: ${SITE}/sitemap.xml\n`);
+fs.writeFileSync(path.join(build, 'robots.txt'), `User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /cv\n\nSitemap: ${SITE}/sitemap.xml\n`);
 
 console.log(`prerender-meta: ${count} halaman + ${articles.length} artikel + 404.html + sitemap.xml + robots.txt (${SITE})`);
 }
