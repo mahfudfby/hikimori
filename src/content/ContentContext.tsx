@@ -44,10 +44,16 @@ export const mergeContent = (saved: any, base: any = DEFAULT_CONTENT): any => {
 /** Gabung + teks Ringkasan/Biografi bawaan bila data tersimpan belum memuat revisi terbaru. */
 const mergeSaved = (saved: any): SiteContent => {
   const out = mergeContent(saved) as SiteContent;
-  if ((saved?.profile?.textRev ?? 0) < PROFILE_TEXT_REV) {
+  const rev = saved?.profile?.textRev ?? 0;
+  if (rev < 2) { // rev 2: Ringkasan & Biografi baru
     const d = DEFAULT_CONTENT.profile;
-    out.profile = { ...out.profile, summary: d.summary, story: d.story, textRev: PROFILE_TEXT_REV };
+    out.profile = { ...out.profile, summary: d.summary, story: d.story };
   }
+  if (rev < 3) { // rev 3: tahun lulus S.Kom. (hanya bila masih kosong / "—")
+    const yr = DEFAULT_CONTENT.education.journey.find(j => j.id === 'j4')?.year || '';
+    out.education = { ...out.education, journey: out.education.journey.map(j => j.id === 'j4' && (!j.year || j.year.trim() === '—') ? { ...j, year: yr } : j) };
+  }
+  if (rev < PROFILE_TEXT_REV) out.profile = { ...out.profile, textRev: PROFILE_TEXT_REV };
   return out;
 };
 

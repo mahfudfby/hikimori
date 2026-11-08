@@ -8,8 +8,8 @@ import type { SiteContent, Experience, Skill, Certificate } from './types';
 const bi = (id: string, en: string = id) => ({ id, en });
 
 export const SCHEMA_VERSION = 1;
-/** Naikkan bila teks Ringkasan/Biografi bawaan diperbarui: data live yang lebih lama memakai teks bawaan ini sampai dipublikasikan ulang dari CMS. */
-export const PROFILE_TEXT_REV = 2;
+/** Revisi data bawaan yang wajib tampil di live (lihat mergeSaved di ContentContext). Naikkan + tambah patch bila perlu. */
+export const PROFILE_TEXT_REV = 3;
 
 export const DEFAULT_CONTENT: SiteContent = {
   schema: SCHEMA_VERSION,
@@ -103,7 +103,7 @@ export const DEFAULT_CONTENT: SiteContent = {
       { id: 'j1', year: '2016', title: bi('Mulai berkarier di SDM', 'Started an HR career'), desc: bi('Human Resources Assistant di Dinas Kesehatan Nganjuk.', 'Human Resources Assistant at Nganjuk Health Office.') },
       { id: 'j2', year: '2018', title: bi('Merantau ke Malang', 'Moved to Malang'), desc: bi('Bekerja sambil menempuh kuliah Teknik Informatika kelas karyawan.', 'Worked while studying Informatics Engineering in an employee class.') },
       { id: 'j3', year: '—', title: bi('Aktif berorganisasi', 'Active in organizations'), desc: bi('Kepala Divisi Humas Internal Paguyuban Mahasiswa Nganjuk di Malang.', 'Head of Internal PR at the Nganjuk Students Association in Malang.') },
-      { id: 'j4', year: '—', title: bi('Lulus S.Kom.', 'Graduated S.Kom.'), desc: bi('Menyelesaikan studi dengan IPK 3.39.', 'Completed studies with a 3.39 GPA.') },
+      { id: 'j4', year: '2026', title: bi('Lulus S.Kom.', 'Graduated S.Kom.'), desc: bi('Menyelesaikan studi dengan IPK 3.39.', 'Completed studies with a 3.39 GPA.') },
       { id: 'j5', year: '2025', title: bi('Pelatihan CHRG', 'CHRG training'), desc: bi('Pelatihan Certified Human Resources Generalist: 4 unit kompetensi SKKNI MSDM, Cipta Innovasi Unggul.', 'Certified Human Resources Generalist training: 4 SKKNI HR competency units, Cipta Innovasi Unggul.') },
       { id: 'j6', year: '2026', title: bi('Sertifikasi BNSP CHRG', 'BNSP CHRG certification'), desc: bi('Certified Human Resources Generalist, berlaku 2026 s.d. 2029.', 'Certified Human Resources Generalist, valid 2026 to 2029.') },
     ],

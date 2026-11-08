@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /cv
+
+Sitemap: https://hikimori.web.id/sitemap.xml
