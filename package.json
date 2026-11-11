@@ -1,48 +1,49 @@
 {
-  "name": "hikimori-web",
-  "version": "2.0.0",
-  "private": true,
-  "dependencies": {
-    "firebase": "^10.7.0",
-    "html2canvas": "^1.4.1",
-    "jspdf": "^2.5.2",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-hot-toast": "^2.4.1",
-    "react-router-dom": "^6.21.0",
-    "react-scripts": "5.0.1",
-    "typescript": "^4.9.5"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "analyze": "npx source-map-explorer \"build/static/js/*.js\"",
-    "preview": "node scripts/serve-local.js",
-    "local": "react-scripts build && node scripts/prerender-meta.js && node scripts/serve-local.js",
-    "postbuild": "node scripts/prerender-meta.js"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "devDependencies": {
-    "@types/node": "^25.9.3",
-    "@types/react": "^18.2.0",
-    "@types/react-dom": "^18.2.0"
-  }
+    "name":  "hikimori-web",
+    "version":  "2.0.0",
+    "private":  true,
+    "dependencies":  {
+                         "firebase":  "^10.7.0",
+                         "html2canvas":  "^1.4.1",
+                         "jspdf":  "^2.5.2",
+                         "react":  "^18.2.0",
+                         "react-dom":  "^18.2.0",
+                         "react-hot-toast":  "^2.4.1",
+                         "react-router-dom":  "^6.21.0"
+                     },
+    "scripts":  {
+                    "start":  "react-scripts start",
+                    "build":  "react-scripts build",
+                    "test":  "react-scripts test",
+                    "eject":  "react-scripts eject",
+                    "analyze":  "npx source-map-explorer \"build/static/js/*.js\"",
+                    "preview":  "node scripts/serve-local.js",
+                    "local":  "react-scripts build \u0026\u0026 node scripts/prerender-meta.js \u0026\u0026 node scripts/serve-local.js",
+                    "postbuild":  "node scripts/prerender-meta.js",
+                    "deploy:rules":  "firebase deploy --only firestore:rules"
+                },
+    "eslintConfig":  {
+                         "extends":  [
+                                         "react-app"
+                                     ]
+                     },
+    "browserslist":  {
+                         "production":  [
+                                            "\u003e0.2%",
+                                            "not dead",
+                                            "not op_mini all"
+                                        ],
+                         "development":  [
+                                             "last 1 chrome version",
+                                             "last 1 firefox version",
+                                             "last 1 safari version"
+                                         ]
+                     },
+    "devDependencies":  {
+                            "@types/node":  "^25.9.3",
+                            "@types/react":  "^18.2.0",
+                            "@types/react-dom":  "^18.2.0",
+                            "typescript":  "^4.9.5",
+                            "react-scripts":  "5.0.1"
+                        }
 }

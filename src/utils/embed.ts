@@ -73,6 +73,8 @@ export function parseEmbed(raw: string, frameless = false): Embed | null {
     if (!m) return null;
     return { src: `https://www.instagram.com/${m[1] === 'p' || m[1] === 'tv' ? 'p' : 'reel'}/${m[2]}/embed/${frameless ? '' : 'captioned/'}`, ratio: frameless ? '4 / 5.2' : '4 / 5.9', kind: 'instagram' };
   }
+  // Embed web dari domain situs sendiri ditolak: iframe dengan allow-same-origin di origin yang sama bisa keluar dari sandbox
+  if (h === 'hikimori.web.id' || (typeof location !== 'undefined' && location.hostname && h === location.hostname.replace(/^(www\.|m\.)/, ''))) return null;
   return { src: u.href, ratio: '16 / 10', kind: 'web' };
 }
 

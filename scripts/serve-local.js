@@ -29,7 +29,7 @@ http.createServer((req, res) => {
   let rel;
   try { rel = decodeURIComponent((req.url || '/').split('?')[0]); } catch { rel = '/'; }
   let file = path.join(root, path.normalize(rel));
-  if (!file.startsWith(root)) file = path.join(root, 'index.html'); // cegah path traversal
+  if (file !== root && !file.startsWith(root + path.sep)) file = path.join(root, 'index.html'); // cegah path traversal (termasuk folder bersebelahan, mis. build-x)
   // Meniru vercel.json: redirect URL lama, folder → index.html, /admin → aplikasi, sisanya 404.html (status 404)
   const REDIRECT = { '/about': '/profil', '/services': '/layanan', '/portfolio': '/portofolio' };
   if (REDIRECT[rel]) { res.writeHead(308, { Location: REDIRECT[rel] }); return res.end(); }

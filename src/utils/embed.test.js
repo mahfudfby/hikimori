@@ -28,6 +28,8 @@ test('tiktok & instagram', () => {
 
 test('web & keamanan', () => {
   expect(parseEmbed('https://demo.hikimori.web.id/app')?.kind).toBe('web');
+    expect(parseEmbed('https://hikimori.web.id/admin')).toBeNull(); // domain situs sendiri ditolak
+    expect(parseEmbed('https://www.hikimori.web.id/')).toBeNull();
   expect(parseEmbed('http://insecure.test')).toBeNull();
   expect(parseEmbed('javascript:alert(1)')).toBeNull();
 });
