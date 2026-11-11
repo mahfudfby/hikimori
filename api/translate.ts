@@ -5,6 +5,9 @@
 //   2. Endpoint publik Google Translate (tanpa kunci; tidak resmi, kadang ditolak 429).
 //   3. MyMemory (tanpa kunci; kuota harian kecil, mutu lebih rendah).
 // shortcut: tanpa kunci resmi, kualitas & ketersediaan tidak dijamin; set GOOGLE_TRANSLATE_API_KEY bila sering gagal.
+// Wajib header `Authorization: Bearer <Firebase ID token>` milik admin (lihat api/_auth.ts).
+import { requireAdmin } from './_auth';
+
 const MAX_ITEMS = 300;
 const MAX_CHARS = 30000;
 
@@ -53,6 +56,9 @@ async function one(text: string, sl: string, tl: string): Promise<string> {
 
 export default async function handler(req: any, res: any) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+  // Hanya admin yang login (halaman /cv): tanpa ini endpoint menjadi proxy terjemahan gratis & kuota/tagihan bisa disalahgunakan.
+  const auth = await requireAdmin(req);
+  if (!auth.ok) return res.status(auth.status).json({ error: auth.error });
   const { q, sl = 'id', tl = 'en' } = req.body || {};
   if (!Array.isArray(q) || q.length > MAX_ITEMS || !q.every((s) => typeof s === 'string')) return res.status(400).json({ error: 'q harus array teks (maks 300).' });
   if (q.join('').length > MAX_CHARS) return res.status(400).json({ error: 'Teks terlalu panjang.' });
