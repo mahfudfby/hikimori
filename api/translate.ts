@@ -5,8 +5,30 @@
 //   2. Endpoint publik Google Translate (tanpa kunci; tidak resmi, kadang ditolak 429).
 //   3. MyMemory (tanpa kunci; kuota harian kecil, mutu lebih rendah).
 // shortcut: tanpa kunci resmi, kualitas & ketersediaan tidak dijamin; set GOOGLE_TRANSLATE_API_KEY bila sering gagal.
-// Wajib header `Authorization: Bearer <Firebase ID token>` milik admin (lihat api/_auth.ts).
-import { requireAdmin } from './_auth';
+// Wajib header `Authorization: Bearer <Firebase ID token>` milik admin yang sudah terverifikasi.
+const ADMIN_EMAILS = ['admin@hikimori.app', 'mahfudfby@gmail.com', 'mahfudfebry@hikimori.web.id'];
+const FIREBASE_API_KEY = process.env.FIREBASE_API_KEY || 'AIzaSyA2_CNohjlSmQN2phrYzVW47ghFWsqo8I8';
+
+async function requireAdmin(req: any): Promise<{ ok: true } | { ok: false; status: number; error: string }> {
+  const m = String(req.headers?.authorization || '').match(/^Bearer\s+([\w-]+\.[\w-]+\.[\w-]+)$/);
+  if (!m) return { ok: false, status: 401, error: 'Butuh login admin.' };
+  try {
+    const r = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${FIREBASE_API_KEY}`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ idToken: m[1] }),
+    });
+    if (!r.ok) return { ok: false, status: 401, error: 'Sesi login tidak valid atau kedaluwarsa.' };
+    const u = (await r.json())?.users?.[0];
+    if (!u) return { ok: false, status: 401, error: 'Sesi login tidak valid.' };
+    let admin: unknown;
+    try { admin = JSON.parse(u.customAttributes || '{}').admin; } catch {}
+    const email = String(u.email || '').toLowerCase();
+    if (admin !== true && !(u.emailVerified === true && ADMIN_EMAILS.includes(email)))
+      return { ok: false, status: 403, error: 'Akun ini tidak punya akses.' };
+    return { ok: true };
+  } catch {
+    return { ok: false, status: 401, error: 'Gagal memverifikasi login.' };
+  }
+}
 
 const MAX_ITEMS = 300;
 const MAX_CHARS = 30000;

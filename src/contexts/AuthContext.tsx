@@ -5,18 +5,20 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import type { User } from 'firebase/auth';
 import { getAuthInstance } from '../config/firebase';
-import { isAdminClaims } from '../config/admins';
+import { isAdminClaims, isAdminEmail } from '../config/admins';
 
 /** Username pendek → email akun Firebase admin. */
 const USERNAME_ALIAS: Record<string, string> = {
   mahfudfebry: 'mahfudfebry@hikimori.web.id',
 };
 const HINT_KEY = 'hk_admin_hint';
-const NOT_ADMIN = 'Akun ini tidak punya akses CMS (email harus terdaftar sebagai admin dan sudah terverifikasi).';
+const NOT_ADMIN = 'Akun ini tidak punya akses CMS.';
+export const UNVERIFIED_ADMIN_CODE = 'auth/unverified-admin';
+const UNVERIFIED_ADMIN_MSG = 'Email admin belum terverifikasi. Klik "Kirim Email Verifikasi" di bawah untuk mengirim link ke inbox admin.';
 
 /**
  * Akun boleh membuka CMS? Aturannya sama dengan Firestore Rules & /api/* (src/config/admins.ts):
- * custom claim `admin`, atau email admin yang sudah terverifikasi. Penjaga sebenarnya tetap Firestore Rules.
+ * custom claim `admin`, atau email di daftar ADMIN_EMAILS yang sudah terverifikasi.
  */
 const checkAdmin = async (u: User | null): Promise<boolean> => {
   if (!u) return false;
@@ -32,6 +34,7 @@ interface AuthContextType {
   login: (usernameOrEmail: string, password: string, remember?: boolean) => Promise<void>;
   loginGoogle: (remember?: boolean) => Promise<void>;
   resetPassword: (usernameOrEmail: string) => Promise<void>;
+  sendVerification: (usernameOrEmail: string, password: string) => Promise<boolean>;
   logout: () => Promise<void>;
   /** ID token user yang sedang login (untuk memanggil /api/* yang butuh admin). */
   getIdToken: () => Promise<string | null>;
@@ -79,10 +82,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       unsub = a.onAuthStateChanged(auth, async u => {
         const ok = await checkAdmin(u);
         if (!alive) return;
-        setUser(u);
+        setUser(ok ? u : null);
         setIsAdmin(ok);
         setLoading(false);
-        try { u ? localStorage.setItem(HINT_KEY, '1') : localStorage.removeItem(HINT_KEY); } catch {}
+        try { ok ? localStorage.setItem(HINT_KEY, '1') : localStorage.removeItem(HINT_KEY); } catch {}
       });
     }).catch(() => setLoading(false));
     return () => { alive = false; unsub?.(); };
@@ -91,7 +94,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Akun di luar daftar admin (atau email belum terverifikasi) langsung dikeluarkan lagi.
   const accept = useCallback(async (u: User) => {
     const [auth, a] = await authMod();
-    if (!(await checkAdmin(u))) { await a.signOut(auth); setUser(null); setIsAdmin(false); throw new Error(NOT_ADMIN); }
+    try { await u.reload(); } catch { /* abaikan bila gagal reload */ }
+    if (!(await checkAdmin(u))) {
+      // HANYA beri status unverified-admin bila email memang ada di daftar ADMIN_EMAILS:
+      // email random milik orang lain selalu ditolak dengan NOT_ADMIN dan tidak pernah ditawari tombol verifikasi.
+      const unverifiedAdmin = isAdminEmail(u.email) && !u.emailVerified;
+      await a.signOut(auth);
+      setUser(null);
+      setIsAdmin(false);
+      const err: any = new Error(unverifiedAdmin ? UNVERIFIED_ADMIN_MSG : NOT_ADMIN);
+      if (unverifiedAdmin) err.code = UNVERIFIED_ADMIN_CODE;
+      throw err;
+    }
+    try { await u.getIdToken(true); } catch { /* segarkan token agar email_verified terbaru ikut */ }
     setUser(u);
     setIsAdmin(true);
     try { localStorage.setItem(HINT_KEY, '1'); } catch {}
@@ -119,13 +134,53 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const resetPassword = useCallback(async (id: string) => {
     const email = toEmail(id);
     if (!email.includes('@')) throw new Error('Isi email akun dulu, lalu klik Lupa kata sandi.');
+    // Jangan izinkan pengiriman email reset ke alamat di luar daftar admin
+    if (!isAdminEmail(email)) return;
     const [auth, a] = await authMod();
     try { await a.sendPasswordResetEmail(auth, email); }
     catch (err: any) {
-      // Jangan bocorkan apakah email terdaftar: selain email tidak valid / jaringan, anggap terkirim
       if (['auth/invalid-email', 'auth/network-request-failed', 'auth/too-many-requests'].includes(err?.code)) throw new Error(friendlyError(err.code));
     }
   }, []);
+
+  /**
+   * Kirim link verifikasi HANYA untuk email yang ada di whitelist ADMIN_EMAILS DAN setelah password-nya terbukti benar.
+   * Mengembalikan `true` bila ternyata email sudah terverifikasi (langsung login), atau `false` bila email verifikasi dikirim.
+   */
+  const sendVerification = useCallback(async (id: string, password: string): Promise<boolean> => {
+    const email = toEmail(id);
+    if (!email.includes('@') || !password) throw new Error('Isi email dan password admin dulu.');
+    // Tolak keras email selain whitelist admin sebelum menyentuh Firebase
+    if (!isAdminEmail(email)) throw new Error(NOT_ADMIN);
+    const [auth, a] = await authMod();
+    let u: User;
+    try { u = (await a.signInWithEmailAndPassword(auth, email, password)).user; }
+    catch (err: any) { throw new Error(friendlyError(err?.code || 'unknown')); }
+    if (!isAdminEmail(u.email)) {
+      await a.signOut(auth);
+      throw new Error(NOT_ADMIN);
+    }
+    try {
+      await u.reload();
+      if (u.emailVerified) {
+        await accept(u);
+        return true;
+      }
+      await a.sendEmailVerification(u);
+    } catch (err: any) {
+      await a.signOut(auth);
+      setUser(null);
+      setIsAdmin(false);
+      if (err?.code === 'auth/too-many-requests') {
+        throw new Error('Link verifikasi baru saja dikirim. Cek kotak masuk / folder Spam, atau tunggu beberapa menit.');
+      }
+      throw new Error(err?.message || 'Gagal mengirim email verifikasi.');
+    }
+    await a.signOut(auth);
+    setUser(null);
+    setIsAdmin(false);
+    return false;
+  }, [accept]);
 
   const logout = useCallback(async () => {
     const [auth, a] = await authMod();
@@ -141,7 +196,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, isAdmin, loading, login, loginGoogle, resetPassword, logout, getIdToken }}>
+    <AuthContext.Provider value={{ user, isAdmin, loading, login, loginGoogle, resetPassword, sendVerification, logout, getIdToken }}>
       {children}
     </AuthContext.Provider>
   );

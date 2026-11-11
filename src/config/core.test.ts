@@ -1,5 +1,5 @@
 import { test, expect } from 'vitest';
-import { isAdminClaims, ADMIN_EMAILS } from './admins';
+import { isAdminClaims, isAdminEmail, ADMIN_EMAILS } from './admins';
 import { decode, decodeFields } from '../content/firestoreRest';
 import { mergeContent } from '../content/ContentContext';
 import {
@@ -19,18 +19,18 @@ import {
 } from '../content/derive';
 import type { Experience } from '../content/types';
 
-test('isAdminClaims: wajib custom claim admin atau email admin yang terverifikasi', () => {
+test('isAdminClaims & isAdminEmail: wajib custom claim admin atau email whitelist admin yang terverifikasi', () => {
   expect(isAdminClaims(null)).toBe(false);
   expect(isAdminClaims({})).toBe(false);
-  // Email admin tapi belum terverifikasi -> ditolak
   for (const email of ADMIN_EMAILS) {
+    expect(isAdminEmail(email)).toBe(true);
+    expect(isAdminEmail(email.toUpperCase())).toBe(true);
     expect(isAdminClaims({ email, emailVerified: false })).toBe(false);
     expect(isAdminClaims({ email, emailVerified: undefined })).toBe(false);
     expect(isAdminClaims({ email: email.toUpperCase(), emailVerified: true })).toBe(true);
   }
-  // Email bukan admin walau terverifikasi -> ditolak
+  expect(isAdminEmail('orang@lain.com')).toBe(false);
   expect(isAdminClaims({ email: 'orang@lain.com', emailVerified: true })).toBe(false);
-  // Custom claim admin: true -> diterima walau email lain / belum verifikasi
   expect(isAdminClaims({ email: 'orang@lain.com', emailVerified: false, admin: true })).toBe(true);
   expect(isAdminClaims({ email: 'orang@lain.com', emailVerified: true, admin: 'true' })).toBe(false);
 });

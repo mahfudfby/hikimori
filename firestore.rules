@@ -3,10 +3,7 @@ rules_version = '2';
 // Publik boleh MEMBACA konten; hanya akun admin yang login boleh MENULIS.
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Admin = custom claim `admin: true` (paling aman, diset lewat Admin SDK), ATAU email di daftar
-    // DAN sudah terverifikasi. Syarat terverifikasi berlaku untuk SEMUA email: tanpa itu, siapa pun bisa
-    // mendaftarkan email admin yang belum/tidak lagi ada lewat Firebase Auth lalu mendapat akses tulis.
-    // Daftar email ini harus sama dengan src/config/admins.ts.
+    // Admin = custom claim `admin: true` ATAU email admin yang sudah terverifikasi (email_verified == true).
     function isAdmin() {
       return request.auth != null && (
         request.auth.token.get('admin', false) == true
