@@ -28,3 +28,6 @@ yarn-error.log*
 
 .vercel
 .env*
+
+# kunci service account Firebase (scripts/set-admin-claim.js)
+service-account*.json

@@ -5,16 +5,25 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import type { User } from 'firebase/auth';
 import { getAuthInstance } from '../config/firebase';
+import { isAdminClaims } from '../config/admins';
 
 /** Username pendek → email akun Firebase admin. */
 const USERNAME_ALIAS: Record<string, string> = {
   mahfudfebry: 'mahfudfebry@hikimori.web.id',
 };
 const HINT_KEY = 'hk_admin_hint';
-/** Akun yang boleh membuka CMS. Penjaga sebenarnya tetap Firestore Rules (firestore.rules): samakan daftar ini dengannya. */
-const ADMIN_EMAILS = ['admin@hikimori.app', 'mahfudfby@gmail.com', 'mahfudfebry@hikimori.web.id'];
-const isAdminUser = (u: User | null) => !!u?.email && ADMIN_EMAILS.includes(u.email.toLowerCase());
-const NOT_ADMIN = 'Akun ini tidak punya akses CMS.';
+const NOT_ADMIN = 'Akun ini tidak punya akses CMS (email harus terdaftar sebagai admin dan sudah terverifikasi).';
+
+/**
+ * Akun boleh membuka CMS? Aturannya sama dengan Firestore Rules & /api/* (src/config/admins.ts):
+ * custom claim `admin`, atau email admin yang sudah terverifikasi. Penjaga sebenarnya tetap Firestore Rules.
+ */
+const checkAdmin = async (u: User | null): Promise<boolean> => {
+  if (!u) return false;
+  let admin: unknown;
+  try { admin = (await u.getIdTokenResult()).claims.admin; } catch { /* offline: pakai email saja */ }
+  return isAdminClaims({ email: u.email, emailVerified: u.emailVerified, admin });
+};
 
 interface AuthContextType {
   user: User | null;
@@ -24,6 +33,8 @@ interface AuthContextType {
   loginGoogle: (remember?: boolean) => Promise<void>;
   resetPassword: (usernameOrEmail: string) => Promise<void>;
   logout: () => Promise<void>;
+  /** ID token user yang sedang login (untuk memanggil /api/* yang butuh admin). */
+  getIdToken: () => Promise<string | null>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -44,37 +55,47 @@ const needsAuth = () => {
   try { return localStorage.getItem(HINT_KEY) === '1' || window.location.pathname.startsWith('/admin') || window.location.pathname.startsWith('/cv'); } catch { return false; }
 };
 
+const authMod = () => Promise.all([getAuthInstance(), import('firebase/auth')]);
+
+// Ingat saya = sesi tetap setelah browser ditutup; tanpa centang = keluar saat tab/browser ditutup.
+const begin = async (remember: boolean) => {
+  const [auth, a] = await authMod();
+  await a.setPersistence(auth, remember ? a.browserLocalPersistence : a.browserSessionPersistence);
+  return { auth, a };
+};
+
+const toEmail = (id: string) => { const key = id.trim().toLowerCase(); return USERNAME_ALIAS[key] || key; };
+
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(needsAuth);
 
   useEffect(() => {
     if (!needsAuth()) return;
     let unsub: (() => void) | undefined;
-    Promise.all([getAuthInstance(), import('firebase/auth')]).then(([auth, a]) => {
-      unsub = a.onAuthStateChanged(auth, u => {
+    let alive = true;
+    authMod().then(([auth, a]) => {
+      unsub = a.onAuthStateChanged(auth, async u => {
+        const ok = await checkAdmin(u);
+        if (!alive) return;
         setUser(u);
+        setIsAdmin(ok);
         setLoading(false);
         try { u ? localStorage.setItem(HINT_KEY, '1') : localStorage.removeItem(HINT_KEY); } catch {}
       });
     }).catch(() => setLoading(false));
-    return () => unsub?.();
+    return () => { alive = false; unsub?.(); };
   }, []);
 
-  // Ingat saya = sesi tetap setelah browser ditutup; tanpa centang = keluar saat tab/browser ditutup.
-  const begin = async (remember: boolean) => {
-    const [auth, a] = await Promise.all([getAuthInstance(), import('firebase/auth')]);
-    await a.setPersistence(auth, remember ? a.browserLocalPersistence : a.browserSessionPersistence);
-    return { auth, a };
-  };
-  // Akun di luar daftar admin langsung dikeluarkan lagi (mis. login Google dengan akun lain).
-  const accept = async (u: User) => {
-    const [auth, a] = await Promise.all([getAuthInstance(), import('firebase/auth')]);
-    if (!isAdminUser(u)) { await a.signOut(auth); setUser(null); throw new Error(NOT_ADMIN); }
+  // Akun di luar daftar admin (atau email belum terverifikasi) langsung dikeluarkan lagi.
+  const accept = useCallback(async (u: User) => {
+    const [auth, a] = await authMod();
+    if (!(await checkAdmin(u))) { await a.signOut(auth); setUser(null); setIsAdmin(false); throw new Error(NOT_ADMIN); }
     setUser(u);
+    setIsAdmin(true);
     try { localStorage.setItem(HINT_KEY, '1'); } catch {}
-  };
-  const toEmail = (id: string) => { const key = id.trim().toLowerCase(); return USERNAME_ALIAS[key] || key; };
+  }, []);
 
   const login = useCallback(async (id: string, password: string, remember = true) => {
     const { auth, a } = await begin(remember);
@@ -82,7 +103,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try { u = (await a.signInWithEmailAndPassword(auth, toEmail(id), password)).user; }
     catch (err: any) { throw new Error(friendlyError(err?.code || 'unknown')); }
     await accept(u);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [accept]);
 
   const loginGoogle = useCallback(async (remember = true) => {
     const { auth, a } = await begin(remember);
@@ -93,28 +114,34 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       throw new Error(friendlyError(err?.code || 'unknown'));
     }
     await accept(u);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [accept]);
 
   const resetPassword = useCallback(async (id: string) => {
     const email = toEmail(id);
     if (!email.includes('@')) throw new Error('Isi email akun dulu, lalu klik Lupa kata sandi.');
-    const [auth, a] = await Promise.all([getAuthInstance(), import('firebase/auth')]);
+    const [auth, a] = await authMod();
     try { await a.sendPasswordResetEmail(auth, email); }
     catch (err: any) {
       // Jangan bocorkan apakah email terdaftar: selain email tidak valid / jaringan, anggap terkirim
       if (['auth/invalid-email', 'auth/network-request-failed', 'auth/too-many-requests'].includes(err?.code)) throw new Error(friendlyError(err.code));
     }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []);
 
   const logout = useCallback(async () => {
-    const [auth, a] = await Promise.all([getAuthInstance(), import('firebase/auth')]);
+    const [auth, a] = await authMod();
     await a.signOut(auth);
     setUser(null);
+    setIsAdmin(false);
     try { localStorage.removeItem(HINT_KEY); localStorage.removeItem('hk_admin_session'); } catch {}
   }, []);
 
+  const getIdToken = useCallback(async () => {
+    const [auth] = await authMod();
+    return auth.currentUser ? auth.currentUser.getIdToken() : null;
+  }, []);
+
   return (
-    <AuthContext.Provider value={{ user, isAdmin: isAdminUser(user), loading, login, loginGoogle, resetPassword, logout }}>
+    <AuthContext.Provider value={{ user, isAdmin, loading, login, loginGoogle, resetPassword, logout, getIdToken }}>
       {children}
     </AuthContext.Provider>
   );
