@@ -21,9 +21,9 @@ URL lama `/about`, `/services` otomatis diarahkan ke halaman baru. Setiap kartu 
 
 ## Intro
 
-Monogram **HK** (SVG, sama dengan `src/components/LogoMark.tsx`) dirakit dari piksel → **cat air muncrat** dari logo → **berputar** jadi pusaran di tengah → cat membentuk huruf **H-I-K-I-M-O-R-I satu per satu** → huruf tajam muncul di atas cat lalu cat meresap. Semua di `public/index.html` (canvas 2D, tanpa library). HP: partikel 240 (desktop 640), resolusi 1×, durasi lebih singkat. Klik di mana saja untuk melewati; tidak tampil di `/admin`.
+Monogram **HK** (SVG, sama dengan `src/components/LogoMark.tsx`) dirakit dari piksel → **cat air muncrat** dari logo → **berputar** jadi pusaran di tengah → cat membentuk huruf **H-I-K-I-M-O-R-I satu per satu** → huruf tajam muncul di atas cat lalu cat meresap. Semua di `index.html` (canvas 2D, tanpa library). HP: partikel 240 (desktop 640), resolusi 1×, durasi lebih singkat. Klik di mana saja untuk melewati; tidak tampil di `/admin`.
 
-**Sekali per sesi:** intro penuh tampil saat pertama kali membuka situs; reload / kunjungan ulang di sesi (tab) yang sama memakai versi kilat ±1 detik. Untuk selalu menampilkan intro penuh, ganti `var QUICK = false; try { ... }` di `public/index.html` menjadi `var QUICK = false;`.
+**Sekali per sesi:** intro penuh tampil saat pertama kali membuka situs; reload / kunjungan ulang di sesi (tab) yang sama memakai versi kilat ±1 detik. Untuk selalu menampilkan intro penuh, ganti `var QUICK = false; try { ... }` di `index.html` menjadi `var QUICK = false;`.
 
 ## Dashboard
 
@@ -62,7 +62,7 @@ Monogram **HK** (SVG, sama dengan `src/components/LogoMark.tsx`) dirakit dari pi
 
 ```bash
 npm install
-npm start        # mode development: http://localhost:3000
+npm start        # mode development (Vite): http://localhost:3000
 npm run local    # build production + server lokal: http://localhost:5050
 npm run preview  # sajikan folder build yang sudah ada
 ```
@@ -112,3 +112,7 @@ src/
 ├── hooks/          ← usePortfolio
 └── index.css       ← design system
 ```
+
+## Tooling
+
+Build & dev server memakai **Vite** (sebelumnya Create React App): `npm start` / `npm run build` (keluaran di `build/`, aset di `build/static/`), tes dengan **Vitest** (`npm test`). Titik masuk HTML ada di `index.html` (root repo), file statis di `public/`.
