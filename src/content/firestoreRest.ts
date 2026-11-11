@@ -7,7 +7,7 @@ const API_KEY = 'AIzaSyA2_CNohjlSmQN2phrYzVW47ghFWsqo8I8';
 const BASE = `https://firestore.googleapis.com/v1/projects/${PROJECT}/databases/(default)/documents`;
 
 /** Ubah format nilai bertipe Firestore REST ({ stringValue: 'x' } dst.) menjadi JSON biasa. */
-const decode = (v: any): any => {
+export const decode = (v: any): any => {
   if (!v || typeof v !== 'object') return v;
   if ('stringValue' in v) return v.stringValue;
   if ('integerValue' in v) return Number(v.integerValue);
@@ -22,7 +22,7 @@ const decode = (v: any): any => {
   if ('mapValue' in v) return decodeFields(v.mapValue.fields);
   return null;
 };
-const decodeFields = (fields: Record<string, any> = {}) => {
+export const decodeFields = (fields: Record<string, any> = {}) => {
   const out: Record<string, any> = {};
   for (const k of Object.keys(fields)) out[k] = decode(fields[k]);
   return out;
