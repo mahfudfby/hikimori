@@ -472,17 +472,27 @@ const CertsCard: React.FC = () => {
   const [i, setI] = useState(0);
   const [doc, setDoc] = useState<{ name: string; sub: string; imageUrl?: string; imageUrl2?: string; file: string } | null>(null);
   const [hold, setHold] = useState(false); // berhenti saat disentuh kursor / fokus keyboard
+  const [pull, setPull] = useState(false); // animasi dokumen ditarik ke atas sebelum pop-up
   const n = slides.length;
   // ganti kartu otomatis tiap 3 detik; tidak jalan saat dokumen dibuka atau pengguna minta gerak dikurangi
   useEffect(() => {
-    if (n < 2 || hold || doc || window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
+    if (n < 2 || hold || pull || doc || window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
     const id = window.setInterval(() => setI(x => (x + 1) % n), 3000);
     return () => window.clearInterval(id);
-  }, [n, hold, doc]);
+  }, [n, hold, pull, doc]);
   // logo penerbit (bila diupload) menggantikan emoji di ikon bulat
   const ico = (logo: string | undefined, emoji: string) => logo ? <img src={cld(logo, 96)} alt="" className="ico-logo" decoding="async" /> : emoji;
   if (!slides.length) return null;
   const cur = slides[Math.min(i, slides.length - 1)];
+  const curDoc = cur.kind === 'ref'
+    ? { name: t('Surat Pengalaman Kerja', 'Work Experience Letter'), sub: `${pick(cur.r.note, lang)} · ${cur.r.company}`, imageUrl: cur.r.imageUrl, imageUrl2: cur.r.imageUrl2, file: 'surat-pengalaman-kerja' }
+    : { name: pick(cur.c.name, lang), sub: `${cur.c.issuer} · ${fmtRange(cur.c.year, lang)}`, imageUrl: cur.c.imageUrl, imageUrl2: cur.c.imageUrl2, file: 'sertifikat' };
+  const openDoc = () => {
+    if (pull) return;
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) { setDoc(curDoc); return; }
+    setPull(true);
+    window.setTimeout(() => { setDoc(curDoc); setPull(false); }, 420);
+  };
   const go = (d: number) => setI(x => (x + d + slides.length) % slides.length);
   const title = cur.kind === 'license' ? t('Lisensi', 'License') : cur.kind === 'cert' ? t('Sertifikat', 'Certificate') : t('Surat Pengalaman Kerja', 'Work Experience Letter');
   return (
@@ -490,10 +500,10 @@ const CertsCard: React.FC = () => {
       <div className="gold-ribbon">
         <button type="button" className="rib-btn" onClick={() => go(-1)} aria-label={t('Sebelumnya', 'Previous')} disabled={slides.length < 2}><Icon name="left" size={16} /></button>
         <div className="rib-title" aria-live={hold ? 'polite' : 'off'}>{title}<span className="rib-count">{Math.min(i, slides.length - 1) + 1}/{slides.length}</span></div>
-        <button type="button" className="rib-btn" onClick={() => go(1)} aria-label={t('Berikutnya', 'Next')} disabled={slides.length < 2}><Icon name="arrow" size={16} /></button>
+        <button type="button" className="rib-btn" onClick={() => go(1)} aria-label={t('Berikutnya', 'Next')} disabled={slides.length < 2}><Icon name="right" size={16} /></button>
       </div>
       <div className="cross-stack" data-dir={i % 2}>
-      <div key={i} className="card dark deck-card" style={{ height: '100%' }}>
+      <div key={i} className="card dark deck-card" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
         <div className="task-list">
           {cur.kind === 'ref' ? (
             <div className="task top">
@@ -506,11 +516,7 @@ const CertsCard: React.FC = () => {
               <span className="check" title={t('Terverifikasi', 'Verified')}><Icon name="check" size={12} /></span>
             </div>
           ) : null}
-          {cur.kind === 'ref' ? (
-            <button type="button" className="pill sm" onClick={() => setDoc({ name: t('Surat Pengalaman Kerja', 'Work Experience Letter'), sub: `${pick(cur.r.note, lang)} · ${cur.r.company}`, imageUrl: cur.r.imageUrl, imageUrl2: cur.r.imageUrl2, file: 'surat-pengalaman-kerja' })} style={{ margin: '2px 0 10px 44px', borderColor: 'var(--ink-2)', color: 'var(--on-ink)' }}>
-              <Icon name="eye" size={13} /> {t('Lihat Dokumen', 'View Document')}
-            </button>
-          ) : (<>
+          {cur.kind === 'ref' ? null : (<>
             <Link to={`/sertifikat#${cur.c.id}`} className="task top">
               <span className="ico" aria-hidden="true">{ico(cur.c.issuerLogo, cur.kind === 'license' ? '🪪' : cur.c.category === 'training' ? '🎓' : '📜')}</span>
               <span className="grow">
@@ -525,11 +531,17 @@ const CertsCard: React.FC = () => {
                 {cur.c.units.map((u, k) => <li key={k}>{pick(u, lang).split(' (M.')[0]}</li>)}
               </ul>
             )}
-            <button type="button" className="pill sm" onClick={() => setDoc({ name: pick(cur.c.name, lang), sub: `${cur.c.issuer} · ${fmtRange(cur.c.year, lang)}`, imageUrl: cur.c.imageUrl, imageUrl2: cur.c.imageUrl2, file: 'sertifikat' })} style={{ margin: '2px 0 10px 44px', borderColor: 'var(--ink-2)', color: 'var(--on-ink)' }}>
-              <Icon name="eye" size={13} /> {t('Lihat Dokumen', 'View Document')}
-            </button>
           </>)}
         </div>
+        {/* Halaman pertama dokumen mengintip dari bawah kartu; diklik → ditarik ke atas lalu tampil penuh sebagai pop-up */}
+        <button type="button" className={`doc-peek ${pull ? 'pull' : ''}`} onClick={openDoc} aria-label={`${t('Lihat dokumen', 'View document')}: ${curDoc.name}`}>
+          <span className="doc-paper">
+            {curDoc.imageUrl
+              ? <img src={cld(curDoc.imageUrl, 640)} alt="" loading="lazy" decoding="async" />
+              : <span className="doc-blank">{t('Dokumen belum diunggah', 'Document not uploaded yet')}</span>}
+          </span>
+          <span className="doc-peek-tag"><Icon name="eye" size={12} /> {t('Ketuk untuk lihat', 'Tap to view')}</span>
+        </button>
         <Link to={cur.kind === 'ref' ? '/profil' : '/sertifikat'} className="pill sm mt-16" style={{ borderColor: 'var(--ink-2)', color: 'var(--on-ink)' }}>
           {t('Lihat semua', 'View all')} <Icon name="arrow" size={13} />
         </Link>
