@@ -8,7 +8,7 @@ import { Icon, CardLink, CountUp, Reveal, Staged, isLite, cld, cldSet, Logo, Mod
 import {
   pick, monthsOf, fmtDuration, fmtPeriod, fmtRange, careerMonths, categoryShare, CATEGORY_LABEL, ageOf, lines, waLink, RELEVANT, relevantExp,
 } from '../content/derive';
-import type { Experience, Certificate } from '../content/types';
+import type { Experience, Certificate, Reference } from '../content/types';
 import { CvDownloadButton } from '../cv/CvButton';
 import { downloadUrl } from '../utils/saveFile';
 import { mailLink } from '../utils/mailLink';
@@ -460,51 +460,65 @@ const SummaryCard: React.FC = () => {
   );
 };
 
-/* ───────── Onboarding Task → Sertifikat & Lisensi (kartu gelap) ───────── */
+/* ───────── Sertifikat, Lisensi & Surat Pengalaman Kerja: pita emas + panah, satu kartu per dokumen ───────── */
+type DocSlide = { kind: 'license' | 'cert'; c: Certificate } | { kind: 'ref'; r: Reference };
 const CertsCard: React.FC = () => {
   const { content } = useContent();
   const { lang, t } = useLang();
-  const certs = content.certificates;
-  const lic = certs.filter(c => c.category === 'license').length;
+  const slides: DocSlide[] = [
+    ...content.certificates.map(c => ({ kind: c.category === 'license' ? 'license' as const : 'cert' as const, c })),
+    ...content.references.map(r => ({ kind: 'ref' as const, r })),
+  ];
+  const [i, setI] = useState(0);
   const [doc, setDoc] = useState<Certificate | null>(null);
+  if (!slides.length) return null;
+  const cur = slides[Math.min(i, slides.length - 1)];
+  const go = (d: number) => setI(x => (x + d + slides.length) % slides.length);
+  const title = cur.kind === 'license' ? t('Lisensi', 'License') : cur.kind === 'cert' ? t('Sertifikat', 'Certificate') : t('Surat Pengalaman Kerja', 'Work Experience Letter');
   return (
-    <div className="stack-tabs b-certs">
+    <div className="doc-deck">
+      <div className="gold-ribbon">
+        <button type="button" className="rib-btn" onClick={() => go(-1)} aria-label={t('Sebelumnya', 'Previous')} disabled={slides.length < 2}><Icon name="left" size={16} /></button>
+        <div className="rib-title" aria-live="polite">{title}<span className="rib-count">{Math.min(i, slides.length - 1) + 1}/{slides.length}</span></div>
+        <button type="button" className="rib-btn" onClick={() => go(1)} aria-label={t('Berikutnya', 'Next')} disabled={slides.length < 2}><Icon name="arrow" size={16} /></button>
+      </div>
+      <div className="stack-tabs">
       <div className="card dark" style={{ height: '100%' }}>
-        <div className="card-head" style={{ alignItems: 'center' }}>
-          <div>
-            <h2 className="h-card">{t('Sertifikat & Lisensi', 'Certificates & Licenses')}</h2>
-            <div className="xs muted" style={{ marginTop: 2 }}>
-              {[lic && `${lic} ${t('lisensi profesi', 'professional license')}`, certs.length - lic && `${certs.length - lic} ${t('pelatihan', 'trainings')}`].filter(Boolean).join(' · ')}
-            </div>
-          </div>
-          <span className="num-lg">{certs.length}</span>
-        </div>
         <div className="task-list">
-          {certs.slice(0, 6).map((c, i) => (
-            <React.Fragment key={c.id}>
-            <Link to={`/sertifikat#${c.id}`} className={`task ${i === 0 ? 'top' : ''}`}>
-              <span className="ico" aria-hidden="true">{c.category === 'license' ? '🪪' : c.category === 'training' ? '🎓' : '📜'}</span>
+          {cur.kind === 'ref' ? (
+            <div className="task top">
+              <span className="ico" aria-hidden="true">📄</span>
               <span className="grow">
-                <span className="t" style={{ display: 'block' }}>{pick(c.name, lang)}</span>
-                <span className="s">{c.issuer.split('—')[0].trim()} · {fmtRange(c.year, lang)}</span>
+                {/* nomor surat (mengandung "/") jangan dipotong di tanda "-" */}
+                <span className="t" style={{ display: 'block' }}>{pick(cur.r.note, lang).split(/(\S*\/\S*)/).map((s, k) => k % 2 ? <span key={k} style={{ whiteSpace: 'nowrap' }}>{s}</span> : s)}</span>
+                <span className="s">{cur.r.company} · {cur.r.name}, {pick(cur.r.role, lang)}</span>
+              </span>
+              <span className="check" title={t('Terverifikasi', 'Verified')}><Icon name="check" size={12} /></span>
+            </div>
+          ) : (<>
+            <Link to={`/sertifikat#${cur.c.id}`} className="task top">
+              <span className="ico" aria-hidden="true">{cur.kind === 'license' ? '🪪' : cur.c.category === 'training' ? '🎓' : '📜'}</span>
+              <span className="grow">
+                <span className="t" style={{ display: 'block' }}>{pick(cur.c.name, lang)}</span>
+                <span className="s">{cur.c.issuer.split('—')[0].trim()} · {fmtRange(cur.c.year, lang)}</span>
               </span>
               <span className="check" title={t('Lulus', 'Passed')}><Icon name="check" size={12} /></span>
             </Link>
             {/* Unit kompetensi (mis. 4 materi pelatihan CHRG) sebagai sub-daftar; kode unit disembunyikan agar ringkas */}
-            {(c.units || []).length > 0 && (
+            {(cur.c.units || []).length > 0 && (
               <ul className="cert-units">
-                {c.units.map((u, k) => <li key={k}>{pick(u, lang).split(' (M.')[0]}</li>)}
+                {cur.c.units.map((u, k) => <li key={k}>{pick(u, lang).split(' (M.')[0]}</li>)}
               </ul>
             )}
-            <button type="button" className="pill sm" onClick={() => setDoc(c)} style={{ margin: '2px 0 10px 44px', borderColor: 'var(--ink-2)', color: 'var(--on-ink)' }}>
+            <button type="button" className="pill sm" onClick={() => setDoc(cur.c)} style={{ margin: '2px 0 10px 44px', borderColor: 'var(--ink-2)', color: 'var(--on-ink)' }}>
               <Icon name="eye" size={13} /> {t('Lihat Dokumen', 'View Document')}
             </button>
-            </React.Fragment>
-          ))}
+          </>)}
         </div>
-        <Link to="/sertifikat" className="pill sm mt-16" style={{ borderColor: 'var(--ink-2)', color: 'var(--on-ink)' }}>
+        <Link to={cur.kind === 'ref' ? '/profil' : '/sertifikat'} className="pill sm mt-16" style={{ borderColor: 'var(--ink-2)', color: 'var(--on-ink)' }}>
           {t('Lihat semua', 'View all')} <Icon name="arrow" size={13} />
         </Link>
+      </div>
       </div>
       <Modal open={!!doc} onClose={() => setDoc(null)} label={doc ? pick(doc.name, lang) : ''}>
         {doc && (<>
