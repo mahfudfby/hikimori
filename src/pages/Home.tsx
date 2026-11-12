@@ -470,7 +470,9 @@ const CertsCard: React.FC = () => {
     ...content.references.map(r => ({ kind: 'ref' as const, r })),
   ];
   const [i, setI] = useState(0);
-  const [doc, setDoc] = useState<Certificate | null>(null);
+  const [doc, setDoc] = useState<{ name: string; sub: string; imageUrl?: string; imageUrl2?: string; file: string } | null>(null);
+  // logo penerbit (bila diupload) menggantikan emoji di ikon bulat
+  const ico = (logo: string | undefined, emoji: string) => logo ? <img src={cld(logo, 96)} alt="" className="ico-logo" decoding="async" /> : emoji;
   if (!slides.length) return null;
   const cur = slides[Math.min(i, slides.length - 1)];
   const go = (d: number) => setI(x => (x + d + slides.length) % slides.length);
@@ -487,7 +489,7 @@ const CertsCard: React.FC = () => {
         <div className="task-list">
           {cur.kind === 'ref' ? (
             <div className="task top">
-              <span className="ico" aria-hidden="true">📄</span>
+              <span className="ico" aria-hidden="true">{ico(cur.r.issuerLogo, '📄')}</span>
               <span className="grow">
                 {/* nomor surat (mengandung "/") jangan dipotong di tanda "-" */}
                 <span className="t" style={{ display: 'block' }}>{pick(cur.r.note, lang).split(/(\S*\/\S*)/).map((s, k) => k % 2 ? <span key={k} style={{ whiteSpace: 'nowrap' }}>{s}</span> : s)}</span>
@@ -495,9 +497,14 @@ const CertsCard: React.FC = () => {
               </span>
               <span className="check" title={t('Terverifikasi', 'Verified')}><Icon name="check" size={12} /></span>
             </div>
+          ) : null}
+          {cur.kind === 'ref' ? (
+            <button type="button" className="pill sm" onClick={() => setDoc({ name: t('Surat Pengalaman Kerja', 'Work Experience Letter'), sub: `${pick(cur.r.note, lang)} · ${cur.r.company}`, imageUrl: cur.r.imageUrl, imageUrl2: cur.r.imageUrl2, file: 'surat-pengalaman-kerja' })} style={{ margin: '2px 0 10px 44px', borderColor: 'var(--ink-2)', color: 'var(--on-ink)' }}>
+              <Icon name="eye" size={13} /> {t('Lihat Dokumen', 'View Document')}
+            </button>
           ) : (<>
             <Link to={`/sertifikat#${cur.c.id}`} className="task top">
-              <span className="ico" aria-hidden="true">{cur.kind === 'license' ? '🪪' : cur.c.category === 'training' ? '🎓' : '📜'}</span>
+              <span className="ico" aria-hidden="true">{ico(cur.c.issuerLogo, cur.kind === 'license' ? '🪪' : cur.c.category === 'training' ? '🎓' : '📜')}</span>
               <span className="grow">
                 <span className="t" style={{ display: 'block' }}>{pick(cur.c.name, lang)}</span>
                 <span className="s">{cur.c.issuer.split('—')[0].trim()} · {fmtRange(cur.c.year, lang)}</span>
@@ -510,7 +517,7 @@ const CertsCard: React.FC = () => {
                 {cur.c.units.map((u, k) => <li key={k}>{pick(u, lang).split(' (M.')[0]}</li>)}
               </ul>
             )}
-            <button type="button" className="pill sm" onClick={() => setDoc(cur.c)} style={{ margin: '2px 0 10px 44px', borderColor: 'var(--ink-2)', color: 'var(--on-ink)' }}>
+            <button type="button" className="pill sm" onClick={() => setDoc({ name: pick(cur.c.name, lang), sub: `${cur.c.issuer} · ${fmtRange(cur.c.year, lang)}`, imageUrl: cur.c.imageUrl, imageUrl2: cur.c.imageUrl2, file: 'sertifikat' })} style={{ margin: '2px 0 10px 44px', borderColor: 'var(--ink-2)', color: 'var(--on-ink)' }}>
               <Icon name="eye" size={13} /> {t('Lihat Dokumen', 'View Document')}
             </button>
           </>)}
@@ -520,18 +527,18 @@ const CertsCard: React.FC = () => {
         </Link>
       </div>
       </div>
-      <Modal open={!!doc} onClose={() => setDoc(null)} label={doc ? pick(doc.name, lang) : ''}>
+      <Modal open={!!doc} onClose={() => setDoc(null)} label={doc ? doc.name : ''}>
         {doc && (<>
           {doc.imageUrl
-            ? <img src={doc.imageUrl} alt={`${pick(doc.name, lang)}${doc.imageUrl2 ? ` (${t('depan', 'front')})` : ''}`} decoding="async" style={{ width: '100%', borderRadius: 16 }} />
+            ? <img src={doc.imageUrl} alt={`${doc.name}${doc.imageUrl2 ? ` (${t('depan', 'front')})` : ''}`} decoding="async" style={{ width: '100%', borderRadius: 16 }} />
             : <div className="empty">{t('Dokumen belum diunggah. Tambahkan lewat CMS.', 'Document not uploaded yet. Add it in the CMS.')}</div>}
-          {doc.imageUrl2 && <img src={doc.imageUrl2} alt={`${pick(doc.name, lang)} (${t('belakang', 'back')})`} loading="lazy" decoding="async" style={{ width: '100%', borderRadius: 16, marginTop: 12 }} />}
-          <h2 className="h-2 mt-16">{pick(doc.name, lang)}</h2>
-          <p className="muted">{doc.issuer} · {fmtRange(doc.year, lang)}</p>
+          {doc.imageUrl2 && <img src={doc.imageUrl2} alt={`${doc.name} (${t('belakang', 'back')})`} loading="lazy" decoding="async" style={{ width: '100%', borderRadius: 16, marginTop: 12 }} />}
+          <h2 className="h-2 mt-16">{doc.name}</h2>
+          <p className="muted">{doc.sub}</p>
           {doc.imageUrl && (
             <div className="row wrap gap-8 mt-16">
-              <button type="button" className="pill dark" onClick={() => downloadUrl(doc.imageUrl, 'sertifikat-depan.jpg')}><Icon name="download" size={15} />{doc.imageUrl2 ? t('Unduh halaman depan', 'Download front page') : t('Unduh dokumen', 'Download document')}</button>
-              {doc.imageUrl2 && <button type="button" className="pill dark" onClick={() => downloadUrl(doc.imageUrl2 as string, 'sertifikat-belakang.jpg')}><Icon name="download" size={15} />{t('Unduh halaman belakang', 'Download back page')}</button>}
+              <button type="button" className="pill dark" onClick={() => downloadUrl(doc.imageUrl as string, `${doc.file}-depan.jpg`)}><Icon name="download" size={15} />{doc.imageUrl2 ? t('Unduh halaman depan', 'Download front page') : t('Unduh dokumen', 'Download document')}</button>
+              {doc.imageUrl2 && <button type="button" className="pill dark" onClick={() => downloadUrl(doc.imageUrl2 as string, `${doc.file}-belakang.jpg`)}><Icon name="download" size={15} />{t('Unduh halaman belakang', 'Download back page')}</button>}
             </div>
           )}
         </>)}

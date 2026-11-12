@@ -71,6 +71,8 @@ export interface Certificate {
   /** halaman belakang (opsional), untuk blanko bolak-balik */
   imageUrl2?: string;
   credentialUrl: string;
+  /** logo badan penyelenggara / penerbit (opsional), tampil di ikon bulat kartu */
+  issuerLogo?: string;
   desc: Bi;
   /** Unit kompetensi / materi yang dipelajari (tampil sebagai daftar di kartu sertifikat) */
   units: Bi[];
@@ -112,6 +114,11 @@ export interface Reference {
   role: Bi;
   company: string;
   note: Bi;
+  /** logo perusahaan penerbit surat (opsional) */
+  issuerLogo?: string;
+  /** scan surat keterangan kerja: halaman depan & belakang (opsional) */
+  imageUrl?: string;
+  imageUrl2?: string;
 }
 
 export interface Profile {

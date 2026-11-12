@@ -288,6 +288,7 @@ Tetap publikasikan dan TIMPA versi tersebut?
               <BiField label="Keterangan" value={c.desc} onChange={v => up({ desc: v })} area rows={2} />
               <BiPoints label="Unit kompetensi / materi yang dipelajari" value={c.units || []} onChange={v => up({ units: v })} addLabel="Tambah materi" hint="Satu unit per poin (boleh sertakan kode, mis. Menyusun Uraian Jabatan (M.70SDM01.010.2)). Tampil sebagai daftar di kartu sertifikat & dashboard." />
               <Text label="Link verifikasi (opsional)" value={c.credentialUrl} onChange={v => up({ credentialUrl: v })} />
+              <ImageInput label="Logo badan penyelenggara / penerbit (opsional)" value={c.issuerLogo || ''} onChange={v => up({ issuerLogo: v })} />
               <ImageInput label="Gambar sertifikat (halaman depan)" value={c.imageUrl} onChange={v => up({ imageUrl: v })} />
               <ImageInput label="Gambar halaman belakang (opsional, untuk blanko bolak-balik)" value={c.imageUrl2 || ''} onChange={v => up({ imageUrl2: v })} />
             </>)} />
@@ -343,14 +344,17 @@ Tetap publikasikan dan TIMPA versi tersebut?
           <BiField label="Status ketersediaan" value={draft.contact.availability} onChange={v => set('contact', { ...draft.contact, availability: v })} />
           <BiField label="Template pesan WhatsApp" value={draft.contact.waTemplate} onChange={v => set('contact', { ...draft.contact, waTemplate: v })} area rows={2} />
         </Section>
-        <Section title="Referensi kerja">
+        <Section title="Referensi & surat keterangan kerja" desc="Tampil sebagai kartu “Surat Pengalaman Kerja” di dashboard. Upload scan surat agar bisa dilihat pengunjung.">
           <ListEditor<Reference> items={draft.references} onChange={v => set('references', v)} addLabel="Tambah referensi"
             create={() => ({ id: uid('r'), name: '', role: eb(), company: '', note: eb() })}
             title={r => `${r.name} — ${r.company}`}
             render={(r, up) => (<>
               <Grid><Text label="Nama" value={r.name} onChange={v => up({ name: v })} /><Text label="Perusahaan" value={r.company} onChange={v => up({ company: v })} /></Grid>
               <BiField label="Jabatan" value={r.role} onChange={v => up({ role: v })} />
-              <BiField label="Catatan" value={r.note} onChange={v => up({ note: v })} />
+              <BiField label="Catatan / nomor surat" value={r.note} onChange={v => up({ note: v })} />
+              <ImageInput label="Logo perusahaan penerbit surat (opsional)" value={r.issuerLogo || ''} onChange={v => up({ issuerLogo: v })} />
+              <ImageInput label="Scan surat keterangan kerja (halaman depan)" value={r.imageUrl || ''} onChange={v => up({ imageUrl: v })} />
+              <ImageInput label="Halaman belakang / lampiran (opsional)" value={r.imageUrl2 || ''} onChange={v => up({ imageUrl2: v })} />
             </>)} />
         </Section>
       </>);
