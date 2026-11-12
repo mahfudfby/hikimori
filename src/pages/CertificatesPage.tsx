@@ -76,7 +76,10 @@ const CertificatesPage: React.FC = () => {
                   <span className="xs muted">{fmtRange(c.year, lang)}</span>
                 </div>
                 <h2 className="h-card mt-8">{pick(c.name, lang)}</h2>
-                <div className="small muted mt-8">{c.issuer}</div>
+                <div className="row gap-8 mt-8" style={{ alignItems: 'center' }}>
+                  {c.issuerLogo && <img className="issuer-logo" src={cld(c.issuerLogo, 96)} alt="" loading="lazy" decoding="async" />}
+                  <div className="small muted">{c.issuer}</div>
+                </div>
                 {c.code && <div className="xs faint">{t('Kode unit', 'Unit code')}: {c.code}</div>}
                 {pick(c.desc, lang) && <p className="small muted mt-8">{pick(c.desc, lang)}</p>}
                 <Units units={c.units} dark={c.category === 'license'} />
@@ -97,7 +100,7 @@ const CertificatesPage: React.FC = () => {
             : <div className="empty">{t('Gambar sertifikat belum diunggah. Tambahkan lewat CMS.', 'No certificate image yet. Add one in the CMS.')}</div>}
           {view.imageUrl2 && <img src={view.imageUrl2} alt={`${pick(view.name, lang)} (${t('belakang', 'back')})`} loading="lazy" style={{ width: '100%', borderRadius: 16, marginTop: 12 }} />}
           <h2 className="h-2 mt-16">{pick(view.name, lang)}</h2>
-          <p className="muted">{view.issuer} · {fmtRange(view.year, lang)}{view.code ? ` · ${view.code}` : ''}</p>
+          <p className="muted row gap-8" style={{ alignItems: 'center' }}>{view.issuerLogo && <img className="issuer-logo" src={cld(view.issuerLogo, 96)} alt="" decoding="async" />}<span>{view.issuer} · {fmtRange(view.year, lang)}{view.code ? ` · ${view.code}` : ''}</span></p>
           {pick(view.desc, lang) && <p className="muted mt-8">{pick(view.desc, lang)}</p>}
           {view.imageUrl && (
             <div className="row wrap gap-8 mt-16">

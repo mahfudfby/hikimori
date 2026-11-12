@@ -471,6 +471,14 @@ const CertsCard: React.FC = () => {
   ];
   const [i, setI] = useState(0);
   const [doc, setDoc] = useState<{ name: string; sub: string; imageUrl?: string; imageUrl2?: string; file: string } | null>(null);
+  const [hold, setHold] = useState(false); // berhenti saat disentuh kursor / fokus keyboard
+  const n = slides.length;
+  // ganti kartu otomatis tiap 3 detik; tidak jalan saat dokumen dibuka atau pengguna minta gerak dikurangi
+  useEffect(() => {
+    if (n < 2 || hold || doc || window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
+    const id = window.setInterval(() => setI(x => (x + 1) % n), 3000);
+    return () => window.clearInterval(id);
+  }, [n, hold, doc]);
   // logo penerbit (bila diupload) menggantikan emoji di ikon bulat
   const ico = (logo: string | undefined, emoji: string) => logo ? <img src={cld(logo, 96)} alt="" className="ico-logo" decoding="async" /> : emoji;
   if (!slides.length) return null;
@@ -478,14 +486,14 @@ const CertsCard: React.FC = () => {
   const go = (d: number) => setI(x => (x + d + slides.length) % slides.length);
   const title = cur.kind === 'license' ? t('Lisensi', 'License') : cur.kind === 'cert' ? t('Sertifikat', 'Certificate') : t('Surat Pengalaman Kerja', 'Work Experience Letter');
   return (
-    <div className="doc-deck">
+    <div className="doc-deck" onMouseEnter={() => setHold(true)} onMouseLeave={() => setHold(false)} onFocus={() => setHold(true)} onBlur={() => setHold(false)}>
       <div className="gold-ribbon">
         <button type="button" className="rib-btn" onClick={() => go(-1)} aria-label={t('Sebelumnya', 'Previous')} disabled={slides.length < 2}><Icon name="left" size={16} /></button>
-        <div className="rib-title" aria-live="polite">{title}<span className="rib-count">{Math.min(i, slides.length - 1) + 1}/{slides.length}</span></div>
+        <div className="rib-title" aria-live={hold ? 'polite' : 'off'}>{title}<span className="rib-count">{Math.min(i, slides.length - 1) + 1}/{slides.length}</span></div>
         <button type="button" className="rib-btn" onClick={() => go(1)} aria-label={t('Berikutnya', 'Next')} disabled={slides.length < 2}><Icon name="arrow" size={16} /></button>
       </div>
-      <div className="stack-tabs">
-      <div className="card dark" style={{ height: '100%' }}>
+      <div className="cross-stack" data-dir={i % 2}>
+      <div key={i} className="card dark deck-card" style={{ height: '100%' }}>
         <div className="task-list">
           {cur.kind === 'ref' ? (
             <div className="task top">
