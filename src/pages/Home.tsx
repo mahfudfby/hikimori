@@ -482,6 +482,9 @@ const CertsCard: React.FC = () => {
   }, [n, hold, pull, doc]);
   // logo penerbit (bila diupload) menggantikan emoji di ikon bulat
   const ico = (logo: string | undefined, emoji: string) => logo ? <img src={cld(logo, 96)} alt="" className="ico-logo" decoding="async" /> : emoji;
+  // logo SKK: upload sendiri, kalau kosong pakai logo pengalaman kerja yang menautkan surat ini / perusahaan yang sama
+  const refLogo = (r: Reference) => r.issuerLogo || content.experience.find(e => e.refId === r.id)?.logoUrl
+    || content.experience.find(e => e.logoUrl && e.company.trim().toLowerCase() === r.company.trim().toLowerCase())?.logoUrl;
   if (!slides.length) return null;
   const cur = slides[Math.min(i, slides.length - 1)];
   const curDoc = cur.kind === 'ref'
@@ -507,7 +510,7 @@ const CertsCard: React.FC = () => {
         <div className="task-list">
           {cur.kind === 'ref' ? (
             <div className="task top">
-              <span className="ico" aria-hidden="true">{ico(cur.r.issuerLogo, '📄')}</span>
+              <span className="ico" aria-hidden="true">{ico(refLogo(cur.r), '📄')}</span>
               <span className="grow">
                 {/* nomor surat (mengandung "/") jangan dipotong di tanda "-" */}
                 <span className="t" style={{ display: 'block' }}>{pick(cur.r.note, lang).split(/(\S*\/\S*)/).map((s, k) => k % 2 ? <span key={k} style={{ whiteSpace: 'nowrap' }}>{s}</span> : s)}</span>
