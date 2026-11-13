@@ -337,7 +337,7 @@ button { cursor: pointer; }
 @keyframes deckIn { from { opacity: 0; transform: translateY(16px) rotate(var(--rot)) scale(.94); } to { opacity: 1; transform: none; } }
 /* Pratinjau dokumen: bagian atas halaman pertama mengintip dari bawah kartu */
 .doc-peek { position: relative; display: block; width: 100%; height: 132px; margin-top: auto; padding: 0; border: 0; background: none; cursor: pointer; overflow: hidden; border-radius: 16px 16px 0 0; }
-.doc-paper { position: absolute; left: 10%; right: 10%; top: 22px; height: 320px; border-radius: 10px 10px 0 0; background: #fff; overflow: hidden;
+.doc-paper { position: absolute; left: 3%; right: 3%; top: 22px; height: 420px; border-radius: 10px 10px 0 0; background: #fff; overflow: hidden;
   box-shadow: 0 -8px 22px -6px rgba(0,0,0,.55); transform: rotate(-1.5deg); transition: transform .35s cubic-bezier(.2,.8,.2,1), opacity .35s; }
 .doc-paper img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
 .doc-blank { display: flex; justify-content: center; padding-top: 34px; font-size: .75rem; color: #8a8a85;
