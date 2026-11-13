@@ -3,11 +3,37 @@ import React, { useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useContent } from '../content/ContentContext';
 import { useLang } from '../contexts/LanguageContext';
-import { Icon, PageHero, Reveal, useTitle, useHashTarget, Logo, Staged } from '../components/ui';
+import { Icon, PageHero, Reveal, useTitle, useHashTarget, Logo, Staged, Modal } from '../components/ui';
+import { downloadUrl } from '../utils/saveFile';
 import { pick, monthsOf, fmtDuration, fmtPeriod, rangeSep, careerMonths, categoryShare, CATEGORY_LABEL, sortExp, lines, careerGaps, calendarSpanMonths, fmtYM } from '../content/derive';
-import type { Experience, ExpCategory } from '../content/types';
+import type { Experience, ExpCategory, Reference } from '../content/types';
 
-const ExpCard: React.FC<{ e: Experience; max: number; on: boolean }> = ({ e, max, on }) => {
+/// Surat Keterangan Kerja: tombol di kartu pengalaman + pop-up scan surat & unduhan
+const SkkButton: React.FC<{ r: Reference }> = ({ r }) => {
+  const { lang, t } = useLang();
+  const [show, setShow] = useState(false);
+  const title = t('Surat Keterangan Kerja', 'Employment Reference Letter');
+  return (<>
+    <button type="button" className="pill sm dark mt-16" onClick={() => setShow(true)}>
+      <Icon name="eye" size={13} />{title}
+    </button>
+    <Modal open={show} onClose={() => setShow(false)} label={`${title} — ${r.company}`}>
+      {r.imageUrl ? <img src={r.imageUrl} alt={`${title} ${r.company}${r.imageUrl2 ? ` (${t('depan', 'front')})` : ''}`} style={{ width: '100%', borderRadius: 16 }} />
+        : <div className="empty">{t('Scan surat belum diunggah.', 'No scan uploaded yet.')}</div>}
+      {r.imageUrl2 && <img src={r.imageUrl2} alt={`${title} ${r.company} (${t('belakang', 'back')})`} loading="lazy" style={{ width: '100%', borderRadius: 16, marginTop: 12 }} />}
+      <h2 className="h-2 mt-16">{title}</h2>
+      <p className="muted">{r.company}{pick(r.note, lang) ? ` · ${pick(r.note, lang)}` : ''}</p>
+      {r.imageUrl && (
+        <div className="row wrap gap-8 mt-16">
+          <button type="button" className="pill dark" onClick={() => downloadUrl(r.imageUrl as string, 'surat-pengalaman-kerja-depan.jpg')}><Icon name="download" size={15} />{r.imageUrl2 ? t('Unduh halaman depan', 'Download front page') : t('Unduh dokumen', 'Download document')}</button>
+          {r.imageUrl2 && <button type="button" className="pill dark" onClick={() => downloadUrl(r.imageUrl2 as string, 'surat-pengalaman-kerja-belakang.jpg')}><Icon name="download" size={15} />{t('Unduh halaman belakang', 'Download back page')}</button>}
+        </div>
+      )}
+    </Modal>
+  </>);
+};
+
+const ExpCard: React.FC<{ e: Experience; max: number; on: boolean; skk?: Reference }> = ({ e, max, on, skk }) => {
   const { lang, t } = useLang();
   const [open, setOpen] = useState(on);
   const m = monthsOf(e.start, e.end);
@@ -43,6 +69,7 @@ const ExpCard: React.FC<{ e: Experience; max: number; on: boolean }> = ({ e, max
           </button>
         )}
         {e.tags.length > 0 && <div className="row wrap gap-8 mt-16">{e.tags.map(tg => <span key={tg} className="chip">{tg}</span>)}</div>}
+        {skk && <SkkButton r={skk} />}
       </div>
     </div>
   );
@@ -60,6 +87,9 @@ const ExperiencePage: React.FC = () => {
   const max = Math.max(1, ...all.map(e => monthsOf(e.start, e.end)));
   const share = categoryShare(all);
   const companies = new Set(all.map(e => e.company)).size;
+  /// SKK per pengalaman: yang dipilih di CMS (refId), atau yang nama perusahaannya sama
+  const skkOf = (e: Experience) => content.references.find(r => r.id === e.refId)
+    || content.references.find(r => r.company.trim().toLowerCase() === e.company.trim().toLowerCase());
 
   // Kelompokkan per tahun mulai untuk penanda di timeline
   let lastYear = '';
@@ -94,7 +124,7 @@ const ExperiencePage: React.FC = () => {
                   return (
                     <React.Fragment key={e.id}>
                       {showYear && <div className="eyebrow" style={{ margin: '18px 0 8px' }}>{y}</div>}
-                      <Staged minHeight={220} eager={hash === e.id}><ExpCard e={e} max={max} on={hash === e.id} /></Staged>
+                      <Staged minHeight={220} eager={hash === e.id}><ExpCard e={e} max={max} on={hash === e.id} skk={skkOf(e)} /></Staged>
                     </React.Fragment>
                   );
                 })}
