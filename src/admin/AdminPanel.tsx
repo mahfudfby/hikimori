@@ -219,6 +219,8 @@ Tetap publikasikan dan TIMPA versi tersebut?
                 <Select label="Kategori" value={e.category} onChange={v => up({ category: v as Experience['category'] })} options={(Object.keys(CATEGORY_LABEL) as Experience['category'][]).map(k => ({ value: k, label: CATEGORY_LABEL[k].id }))} />
               </Grid>
               <ImageInput label="Logo perusahaan" value={e.logoUrl} onChange={v => up({ logoUrl: v })} />
+              <Select label="Surat Keterangan Kerja" value={e.refId || ''} onChange={v => up({ refId: v })}
+                options={[{ value: '', label: '— Tidak ada —' }, ...draft.references.map(r => ({ value: r.id, label: `${r.company} — ${pick(r.note, 'id')}` }))]} />
               <Tags label="Tag / kata kunci" value={e.tags} onChange={v => up({ tags: v })} />
               <BiBulletText label="Deskripsi pekerjaan" value={e.desc} onChange={v => up({ desc: v })} addLabel="Tambah poin deskripsi" hint="Satu tugas per poin. Tanda • ditambahkan otomatis." />
             </>)} />

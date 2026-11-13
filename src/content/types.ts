@@ -20,6 +20,8 @@ export interface Experience {
   type: string;
   category: ExpCategory;
   logoUrl: string;
+  /** id Surat Keterangan Kerja (dari daftar referensi) untuk pengalaman ini */
+  refId?: string;
   tags: string[];
   /** Deskripsi kerja; baris diawali "•" tampil sebagai bullet */
   desc: Bi;
