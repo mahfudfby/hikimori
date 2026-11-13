@@ -1,6 +1,6 @@
 // src/utils/cloudinaryUpload.ts
 // Upload bertanda tangan (signed) lewat /api/cloudinary-sign (khusus admin login). Bila server belum dikonfigurasi
-// (501 / env belum di-set), pakai preset unsigned lama sebagai cadangan.
+// atau sedang error (5xx), pakai preset unsigned lama sebagai cadangan.
 import { CLOUDINARY_CONFIG } from '../config/services';
 import { getAuthInstance } from '../config/firebase';
 
@@ -21,7 +21,8 @@ export const uploadToCloudinary = async (file: File): Promise<string> => {
         formData.append('allowed_formats', s.allowedFormats);
         formData.append('signature', s.signature);
         signed = true;
-      } else if (r.status !== 501 && r.status !== 404) {
+      } else if (r.status === 401 || r.status === 403) {
+        // Hanya penolakan akses yang menghentikan upload; server error (5xx/404/501) jatuh ke preset unsigned
         throw new Error('Tanda tangan upload ditolak');
       }
     }
