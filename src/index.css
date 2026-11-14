@@ -192,7 +192,9 @@ button { cursor: pointer; }
 .chip.yellow { background: var(--yellow); border-color: var(--yellow); color: var(--on-yellow); }
 
 /* ───────── Navbar ───────── */
-.nav { position: sticky; top: 0; z-index: 50; padding: 14px 0 6px; }
+.nav { position: sticky; top: 0; z-index: 50; padding: 14px 0 8px;
+  /* Latar buram supaya kartu yang digulir tidak tampak menumpuk di belakang navbar */
+  background: color-mix(in srgb, var(--page-b) 82%, transparent); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
 .nav-inner { display: flex; align-items: center; gap: 12px; }
 .brand {
   display: inline-flex; align-items: center; gap: 10px; height: 46px; padding: 0 18px 0 6px;
@@ -771,6 +773,8 @@ html.lite .reveal { transform: translateY(8px); }
 @media (prefers-reduced-motion: reduce) { .logo-badge::after, .brand.brand-logo::after { animation: none; } }
 html.lite .logo-badge::after, html.lite .brand.brand-logo::after { animation: none; }
 @media (max-width: 480px) { .brand.brand-logo { padding: 0 12px; } .brand.brand-logo img { height: 26px !important; } }
+.brand-name { font-size: 1.02rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text); }
+@media (max-width: 1100px) { .brand-name { display: none; } }
 
 /* Dialog "File siap" (iOS: Bagikan → Simpan ke File) */
 .share-sheet { position: fixed; inset: 0; z-index: 80; display: flex; align-items: flex-end; justify-content: center; padding: 16px; background: rgba(0,0,0,.55); }
@@ -1035,17 +1039,12 @@ textarea.input { resize: vertical; overflow: hidden; min-height: 2.6em; }
 :where(#root) :where(h1, h2, h3, .h-page, .h-card, .h-2, .h-sm) { text-wrap: balance; }
 :where(.center, .empty, .share-box, .mag-head, .mag-quote, .mag-figure, .mfe-empty) p { text-align: inherit; }
 
-/* Pernah Menangani: daftar bergulir naik seperti kredit akhir film (JS: useCreditRoll di Home.tsx) */
+/* Pernah Menangani: daftar KPI statis (maks. 4), angka di atas, keterangan di bawah */
 .b-onboard { display: flex; flex-direction: column; }
-.ach-roll { position: relative; flex: 1 1 0; min-height: 300px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; outline: none; contain: size; /* isi tidak ikut menentukan tinggi kartu */
-  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 88%, transparent); mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 88%, transparent); }
-.ach-roll::-webkit-scrollbar { display: none; }
-.ach-roll .ach-list { gap: 0; }
-.ach-roll .ach-item, .ach-roll .ach-item:last-child { padding: 12px 0; border-bottom: 1px solid var(--line); border-radius: 10px; transition: background .2s, padding .2s; }
-.ach-roll .ach-item:hover { background: var(--surface-solid); padding-left: 10px; padding-right: 10px; }
-.ach-job { display: flex; flex-direction: column; align-self: flex-start; margin-top: 4px; padding: 4px 10px; border-radius: 10px; border: 1px solid var(--line-2); background: var(--surface-solid); font-size: .68rem; line-height: 1.35; color: var(--text-2); }
-.ach-job b { font-weight: 600; color: var(--text); }
-@media (prefers-reduced-motion: reduce) { .ach-roll { -webkit-mask-image: none; mask-image: none; } .ach-dup { display: none; } }
+ul.ach-list { list-style: none; margin: 0; padding: 0; gap: 0; }
+ul.ach-list .ach-item { padding: 12px 0; }
+ul.ach-list .ach-v { font-size: 1.6rem; font-weight: 300; letter-spacing: -0.02em; line-height: 1.1; }
+.ach-job { font-size: .72rem; line-height: 1.35; color: var(--text-3, var(--text-2)); margin-top: 2px; }
 
 /* CMS di ponsel: bar aksi ringkas, tidak transparan (isi form tidak tembus), tombol satu baris penuh */
 @media (max-width: 680px) {
@@ -1064,3 +1063,12 @@ textarea.input { resize: vertical; overflow: hidden; min-height: 2.6em; }
 
 /* html2canvas 1.4.1 mengukur baseline teks dengan gambar 1x1 ini; aturan global img { display:block } membuat teks di file ekspor CV turun & menimpa garis */
 img[src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"] { display: inline !important; }
+
+/* Ikon garis pengganti emoji (logo perusahaan kosong, kategori sertifikat) */
+.logo-box .logo-ico { color: var(--text-3); }
+.dur-top .logo-box .logo-ico { width: 36px; height: 36px; }
+.task .ico { color: var(--on-ink); }
+
+/* Tombol aksi utama di bawah nama (Unduh CV / Hubungi) */
+.hero-cta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+

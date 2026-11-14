@@ -74,7 +74,7 @@ test('derive: pick, format tanggal, durasi, dan masa kerja tanpa hitung ganda', 
   expect(fmtRange('2022 - 2025', 'id')).toBe('2022 s.d. 2025');
   expect(fmtPeriod('2023-10', '2024-01', 'en')).toBe('Oct 2023 to Jan 2024');
   expect(fmtDuration(14, 'id')).toBe('1 Tahun 2 Bulan');
-  expect(fmtDuration(14, 'en', true)).toBe('1y 2m');
+  expect(fmtDuration(14, 'en', true)).toBe('1 yr 2 mo');
 
   const exps = [
     { start: '2022-01', end: '2022-06' }, // 6 bln

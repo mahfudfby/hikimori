@@ -40,72 +40,24 @@
     <!-- Font Inter (47 KB) hanya untuk desktop. HP memakai font sistem (Roboto / San Francisco) → lebih cepat & tanpa teks loncat -->
     <script>if(!document.documentElement.classList.contains('lite')){var l=document.createElement('link');l.rel='stylesheet';l.href='https://fonts.googleapis.com/css2?family=Inter:wght@300..700&display=swap';document.head.appendChild(l);}</script>
 
-    <!-- ═══ Intro futuristik minimalis (motion graphic, slow-motion, warna lembut): hujan meteor pink/saber/cyan/biru meledak memenuhi layar → serpihannya memusat jadi logo HK, HIKIMORI & nama ═══ -->
+    <!-- ═══ Intro minimalis (±1,5 dtk, tampil di setiap reload): logo → HIKIMORI → nama, lalu tirai terbuka ═══ -->
     <style>
-      #intro{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;overflow:hidden;color:#EEF4FA;font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;cursor:pointer;--cy:#9EE6F2;--mg:#F3B4CF;--lv:#BCAEF6;--yl:#F4D58A;--ez:cubic-bezier(.22,1,.36,1)}
-      #intro .pane{position:absolute;left:0;right:0;height:50.5%;background:#0C0E18;overflow:hidden;transition:transform 1.5s cubic-bezier(.76,0,.24,1)}
-      #intro .pane.t{top:0;background:radial-gradient(110% 90% at 50% 100%,rgba(188,174,246,.14),transparent 62%),#0C0E18}
-      #intro .pane.b{bottom:0;perspective:320px;background:radial-gradient(110% 80% at 50% 0%,rgba(158,230,242,.11),transparent 62%),#0C0E18}
-      #intro .pane.t::after,#intro .pane.b::before{content:"";position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(158,230,242,.7),rgba(243,180,207,.7),transparent);z-index:1;transform:scaleX(0);animation:cyDraw 2.4s var(--ez) .3s forwards}
-      #intro .pane.t::after{bottom:0}#intro .pane.b::before{top:0}
-      /* Lantai grid lembut, bergerak sangat pelan */
-      #intro .floor{position:absolute;left:-50%;right:-50%;top:0;height:100%;transform-origin:50% 0;transform:rotateX(-58deg);
-        background-image:linear-gradient(rgba(158,230,242,.2) 1px,transparent 1px),linear-gradient(90deg,rgba(188,174,246,.16) 1px,transparent 1px);
-        background-size:48px 48px;-webkit-mask:linear-gradient(to top,#000 15%,transparent 95%);mask:linear-gradient(to top,#000 15%,transparent 95%);opacity:0;animation:hkFade 2.4s ease .6s forwards,cyFloor 6s linear infinite}
-      #intro canvas{position:absolute;inset:0;width:100%;height:100%;transition:opacity 1.2s ease}
-      #intro canvas.dry{opacity:0;transition:opacity 1.6s ease}
-      #intro .stage{position:relative;display:flex;flex-direction:column;align-items:center;gap:clamp(18px,3.4vh,30px);transition:transform 1.5s var(--ez),opacity 1s ease}
-      /* Logo HK: bayangan abu 90° 60% + bingkai garis tipis emas berkilau (sama dengan logo situs) */
-      #intro .mark{width:clamp(180px,34vw,300px);position:relative;padding:14px 22px;border-radius:22px;box-sizing:content-box}
-      #intro .mark img{position:relative;z-index:1;display:block;width:100%;height:auto;filter:drop-shadow(0 6px 6px rgba(128,128,128,.6))}
-      #intro .mark::after{content:"";opacity:0;position:absolute;inset:0;border-radius:inherit;padding:1.5px;pointer-events:none;z-index:1;background:linear-gradient(110deg,#8a6414 0%,#d9a92e 22%,#f6dc85 38%,#fffbe6 46%,#f6dc85 54%,#c9971c 70%,#8a6414 100%);background-size:250% 100%;animation:hkFade 1.6s ease .9s forwards,goldGlare 6s ease-in-out infinite;-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
-      #intro .mark .box{opacity:0;transform:scale(.9);filter:blur(12px);animation:cySoft 1.8s var(--ez) .25s forwards}
-      /* Cincin cahaya mengembang pelan di belakang logo */
-      #intro .mark .ring{position:absolute;left:50%;top:50%;width:150%;aspect-ratio:1;border-radius:50%;border:1px solid rgba(158,230,242,.45);transform:translate(-50%,-50%) scale(.3);opacity:0;animation:cyRing 4.8s var(--ez) .5s infinite}
-      #intro .mark .ring.r2{border-color:rgba(243,180,207,.4);animation-delay:2.1s}
-      #intro .mark .tag{position:absolute;left:2px;top:-1.8em;z-index:1;font:400 .6rem/1 ui-monospace,Consolas,monospace;letter-spacing:.24em;color:rgba(158,230,242,.8);opacity:0;animation:hkFade 1.4s ease 1.4s forwards}
-      /* HIKIMORI: muncul pelan dari kabur ke tajam, cahaya lembut */
-      #intro .word{display:flex;font-weight:700;font-size:clamp(2.4rem,9.5vw,5rem);letter-spacing:.24em;margin-right:-.24em;line-height:1;position:relative}
-      #intro .word span{display:inline-block;padding:.06em 0;position:relative}
-      #intro .word i{display:inline-block;font-style:normal;opacity:0;transform:translateY(.25em);filter:blur(10px);color:#EEF4FA;text-shadow:0 0 22px rgba(158,230,242,.5);transition:opacity 1.3s ease,transform 1.6s var(--ez),filter 1.4s ease,text-shadow 2s ease}
-      #intro .word i.on{opacity:1;transform:none;filter:none;text-shadow:0 0 18px rgba(158,230,242,.28)}
-      #intro .word i.y.on{color:var(--yl);text-shadow:0 0 18px rgba(244,213,138,.35)}
-      #intro .line{width:min(320px,60vw);height:1px;background:linear-gradient(90deg,transparent,var(--cy),var(--mg),transparent);transform:scaleX(0);transition:transform 1.6s var(--ez)}
-      #intro .sub{display:flex;font:700 clamp(.95rem,3.9vw,1.25rem)/1 ui-monospace,Consolas,monospace;letter-spacing:.3em;margin-right:-.3em;text-transform:uppercase;color:rgba(238,244,250,.72)}#intro .sub span{display:inline-block;padding:.1em 0;min-width:.5em}#intro .sub i{display:inline-block;font-style:normal;opacity:0;filter:blur(6px);transition:opacity 1s ease,filter 1.1s ease}#intro .sub i.on{opacity:1;filter:none}
-      #intro .word i,#intro .sub i{will-change:opacity,filter,transform}
-      #intro .sub{--z:1.28;transition:transform 2.6s cubic-bezier(.16,1,.3,1)}#intro .sub.wave{transform:scale(var(--z))}@media (max-width:480px){#intro .sub{--z:1.14}}
-      #intro .sub.wave i{animation:nmGlint 1.1s ease-in-out calc(var(--i) * 45ms) both}
-      @keyframes nmGlint{45%{color:#fff;text-shadow:0 0 6px #fff,0 0 18px rgba(244,213,138,.95),0 0 32px rgba(158,230,242,.6)}100%{color:#F4F8FC;text-shadow:0 0 12px rgba(158,230,242,.45)}}
-      #intro .stage.done .line{transform:scaleX(1)}
-      /* HUD minimal di sudut */
-      #intro .hud{position:absolute;inset:clamp(14px,3vw,28px);pointer-events:none;font:400 .58rem/1.8 ui-monospace,Consolas,monospace;letter-spacing:.16em;color:rgba(158,230,242,.55);text-transform:uppercase;opacity:0;animation:hkFade 1.6s ease .4s forwards}
-      #intro .hud i{position:absolute;width:18px;height:18px;border:1px solid rgba(158,230,242,.5)}
-      #intro .hud i:nth-child(1){left:0;top:0;border-right:0;border-bottom:0}#intro .hud i:nth-child(2){right:0;top:0;border-left:0;border-bottom:0}
-      #intro .hud i:nth-child(3){left:0;bottom:0;border-right:0;border-top:0}#intro .hud i:nth-child(4){right:0;bottom:0;border-left:0;border-top:0}
-      #intro .hud .tl{position:absolute;left:30px;top:1px}#intro .hud .tr{position:absolute;right:30px;top:1px;text-align:right;color:rgba(243,180,207,.6)}
-      #intro .hud .tl em{font-style:normal;display:block;opacity:0;transform:translateX(-6px);transition:opacity 1s ease,transform 1s var(--ez)}#intro .hud .tl em.on{opacity:1;transform:none}
-      #intro .load{position:absolute;bottom:clamp(44px,8vh,70px);width:min(280px,62vw);font:400 .58rem/1 ui-monospace,Consolas,monospace;letter-spacing:.22em;color:rgba(238,244,250,.5);text-transform:uppercase;opacity:0;animation:hkFade 1.4s ease .8s forwards}
-      #intro .load .irow{display:flex;justify-content:space-between}
-      #intro .load .ibar{height:1px;margin-top:9px;background:rgba(158,230,242,.14);overflow:hidden}
-      #intro .load .ibar b{display:block;width:100%;height:100%;transform:scaleX(0);transform-origin:0 50%;background:linear-gradient(90deg,var(--mg),var(--lv),var(--cy))}
-      #intro .skip{position:absolute;bottom:18px;font:400 .58rem/1 ui-monospace,Consolas,monospace;letter-spacing:.22em;text-transform:uppercase;color:rgba(238,244,250,.3);opacity:0;animation:hkFade 1.4s ease 1.8s forwards}
+      #intro{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;overflow:hidden;color:#EEF4FA;font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;cursor:pointer;--ez:cubic-bezier(.22,1,.36,1)}
+      #intro .pane{position:absolute;left:0;right:0;height:50.5%;background:#0C0E18;transition:transform .9s cubic-bezier(.76,0,.24,1)}
+      #intro .pane.t{top:0}#intro .pane.b{bottom:0}
+      #intro .stage{position:relative;display:flex;flex-direction:column;align-items:center;gap:clamp(14px,2.6vh,22px);transition:transform .9s var(--ez),opacity .5s ease}
+      #intro .mark{width:clamp(120px,22vw,180px);height:auto;opacity:0;transform:scale(.92);animation:inUp .7s var(--ez) .05s forwards}
+      #intro .word{font-weight:600;font-size:clamp(1.6rem,5.5vw,2.6rem);letter-spacing:.32em;margin-right:-.32em;line-height:1;opacity:0;animation:inUp .7s var(--ez) .25s forwards}
+      #intro .word b{color:#F4D58A;font-weight:600}
+      #intro .line{width:min(220px,50vw);height:1px;background:linear-gradient(90deg,transparent,rgba(238,244,250,.6),transparent);transform:scaleX(0);animation:draw .8s var(--ez) .45s forwards}
+      #intro .sub{font:500 clamp(.72rem,2.6vw,.85rem)/1 ui-monospace,Consolas,monospace;letter-spacing:.3em;margin-right:-.3em;text-transform:uppercase;color:rgba(238,244,250,.6);opacity:0;animation:inUp .7s var(--ez) .6s forwards}
       #intro.out .pane.t{transform:translateY(-101%)}#intro.out .pane.b{transform:translateY(101%)}
-      #intro.out .stage{transform:scale(1.06);opacity:0}
-      #intro.out canvas,#intro.out .hud,#intro.out .load,#intro.out .skip{opacity:0!important;transition:opacity .8s ease}
+      #intro.out .stage{transform:scale(1.04);opacity:0}
       #intro.out{pointer-events:none}
-      #intro.mt .mark .box{animation-delay:var(--lg)}#intro.mt .mark::after{animation-delay:calc(var(--lg) + .6s),0s}#intro.mt .mark .ring{animation-delay:calc(var(--lg) + .3s)}#intro.mt .mark .ring.r2{animation-delay:calc(var(--lg) + 1.9s)}#intro.mt .mark .tag{animation-delay:calc(var(--lg) + 1s)}
       html.intro-lock,html.intro-lock body{overflow:hidden}
-      @keyframes hkFade{to{opacity:1}}
-      @keyframes goldGlare{0%,100%{background-position:100% 0}50%{background-position:0 0}}
-      @keyframes cyDraw{to{transform:scaleX(1)}}
-      @keyframes cyFloor{to{background-position:0 48px,0 0}}
-      @keyframes cySoft{to{opacity:1;transform:none;filter:none}}
-      @keyframes cyRing{0%{opacity:0;transform:translate(-50%,-50%) scale(.3)}25%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) scale(1.25)}}
-      html.lite #intro .mark .ring.r2{display:none}
-      /* Versi kilat (reload di sesi yang sama): tanpa partikel, logo & kata langsung tampil */
-      #intro.quick .mark .box,#intro.quick .mark::after{animation-duration:.5s;animation-delay:0s!important}
-      #intro.quick .word i{transition-duration:.5s}#intro.quick .skip,#intro.quick .load,#intro.quick .ring{display:none}
-      @media (prefers-reduced-motion:reduce){#intro *,#intro *::before,#intro *::after{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition-duration:.2s!important}}
+      @keyframes inUp{to{opacity:1;transform:none}}
+      @keyframes draw{to{transform:scaleX(1)}}
+      @media (prefers-reduced-motion:reduce){#intro *{animation-duration:.01ms!important;animation-delay:0s!important;transition-duration:.2s!important}}
     </style>
 
     <script type="application/ld+json">
@@ -126,231 +78,32 @@
   <body>
     <noscript>Aktifkan JavaScript untuk membuka situs ini.</noscript>
     <div id="intro" role="presentation" aria-hidden="true">
-      <div class="pane t"></div><div class="pane b"><div class="floor"></div></div>
-      <canvas id="intro-paint"></canvas>
-      <div class="hud">
-        <i></i><i></i><i></i><i></i>
-        <div class="tl" id="intro-log"><em>HK // system</em><em>profile .. ready</em><em>interface .. ready</em></div>
-        <div class="tr">online<br><span id="intro-clock">00:00</span></div>
-      </div>
-      <div class="stage" id="intro-stage">
-        <div class="mark">
-          <span class="ring"></span><span class="ring r2"></span>
-          <span class="tag">// identity verified</span>
-          <!-- Ikon HK (potongan logo Cloudinary, sama dengan src/components/LogoMark.tsx) -->
-          <img id="intro-mark" class="box" alt="" width="361" height="160" src="https://res.cloudinary.com/dl4pyan8v/image/upload/c_crop,x_15,y_245,w_860,h_410/e_trim/f_auto,q_auto,h_320/v1793385513/1EF88D88-4DEB-4541-A073-0ED603FFF1CA_hyknub.png" />
-        </div>
-        <div class="word" id="intro-word"></div>
+      <div class="pane t"></div><div class="pane b"></div>
+      <div class="stage">
+        <!-- Ikon HK (potongan logo Cloudinary, sama dengan src/components/LogoMark.tsx) -->
+        <img class="mark" alt="" width="361" height="160" src="https://res.cloudinary.com/dl4pyan8v/image/upload/c_crop,x_15,y_245,w_860,h_410/e_trim/f_auto,q_auto,h_320/v1793385513/1EF88D88-4DEB-4541-A073-0ED603FFF1CA_hyknub.png" />
+        <div class="word">HIKI<b>M</b>ORI</div>
         <div class="line"></div>
-        <div class="sub" id="intro-sub"></div>
+        <div class="sub">Mahfud Febry Styanto</div>
       </div>
-      <div class="load"><div class="irow"><span>Loading</span><span id="intro-pct">0%</span></div><div class="ibar"><b id="intro-bar"></b></div></div>
-      <div class="skip">klik untuk lewati</div>
     </div>
     <script>
       (function () {
         var el = document.getElementById('intro'); if (!el) return;
         if (location.pathname.indexOf('/admin') === 0) { el.parentNode.removeChild(el); return; }
         var root = document.documentElement; root.classList.add('intro-lock');
-        var LITE = root.classList.contains('lite');
         var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-        // Intro penuh hanya sekali per sesi; reload / kunjungan ulang di sesi yang sama = versi kilat (±1 detik)
-        var QUICK = false;
-        try { QUICK = sessionStorage.getItem('hk_intro_seen') === '1'; sessionStorage.setItem('hk_intro_seen', '1'); } catch (e) {}
-        if (QUICK) el.classList.add('quick');
-
-        /* ── Huruf HIKIMORI (disembunyikan; muncul saat partikel selesai menyusunnya) ── */
-        var TXT = 'HIKIMORI', w = document.getElementById('intro-word'), letters = [];
-        for (var i = 0; i < TXT.length; i++) {
-          var s = document.createElement('span'), c = document.createElement('i');
-          c.textContent = TXT[i]; if (i === 4) c.className = 'y';
-          s.appendChild(c); w.appendChild(s); letters.push(c);
-        }
-        // Nama per huruf (ikut dibentuk serpihan meteor)
-        var NAME = 'Mahfud Febry Styanto', sub = document.getElementById('intro-sub'), nameEls = [];
-        for (var n0 = 0; n0 < NAME.length; n0++) {
-          var s2 = document.createElement('span'), c2 = document.createElement('i');
-          c2.textContent = NAME[n0] === ' ' ? ' ' : NAME[n0]; c2.style.setProperty("--i", n0); s2.appendChild(c2); sub.appendChild(s2); nameEls.push(c2);
-        }
-        var stage = document.getElementById('intro-stage');
-        var d0 = new Date(), pad = function (n) { return (n < 10 ? '0' : '') + n; };
-        document.getElementById('intro-clock').textContent = pad(d0.getHours()) + ':' + pad(d0.getMinutes());
-
-        /* ── Timeline slow-motion (detik) ── */
-        var T = LITE
-          ? { logo: 2.1, letter0: 2.2, step: .2, form: .75, fade: .9 }
-          : { logo: 2.6, letter0: 2.7, step: .26, form: .9, fade: 1.1 };
-        var lastOn = T.letter0 + (TXT.length - 1) * T.step + T.form;
-        var letterOn = letters.map(function (_, i) { return T.letter0 + i * T.step + T.form * .7; });
-        var nameOn = nameEls.map(function (_, j) { return lastOn + .1 + j * (LITE ? .025 : .035); });
-        var nameEnd = nameOn[nameOn.length - 1];
-        var MIN = reduce ? 500 : QUICK ? 1000 : Math.round((nameEnd + 3.6) * 1000); // nama tajam (1,1 dtk) → zoom pelan + kilau kiri→kanan (±2,5 dtk) → masuk web
-        var t0 = performance.now(), ready = false, done = false, running = true;
-
+        // Tampil di setiap reload; minimal 1,4 dtk agar logo & nama sempat terbaca
+        var MIN = reduce ? 300 : 1400, t0 = performance.now(), ready = false, done = false, scheduled = false;
         function close() {
           if (done) return; done = true;
           el.classList.add('out'); root.classList.remove('intro-lock');
-          setTimeout(function () { running = false; el.parentNode && el.parentNode.removeChild(el); }, 1600);
+          setTimeout(function () { el.parentNode && el.parentNode.removeChild(el); }, 1000);
         }
-        var scheduled = false;
         function tryClose() { if (ready && !scheduled) { scheduled = true; setTimeout(close, Math.max(0, MIN - (performance.now() - t0))); } }
         window.__hkIntroDone = function () { ready = true; tryClose(); };
         el.addEventListener('click', close);
-        setTimeout(close, 11000); // pengaman bila JS aplikasi gagal dimuat
-
-        // Log HUD + bar loading (naik halus sampai 100% tepat saat kata selesai)
-        var logs = document.getElementById('intro-log').children, bar = document.getElementById('intro-bar'), pct = document.getElementById('intro-pct');
-        function hud(t) {
-          var k = Math.min(1, t / lastOn), e = 1 - Math.pow(1 - k, 3);
-          bar.style.transform = 'scaleX(' + e + ')'; pct.textContent = Math.round(e * 100) + '%';
-          for (var j = 0; j < logs.length; j++) if (t > .6 + j * (lastOn / (logs.length + 1))) logs[j].classList.add('on');
-        }
-        if (reduce || QUICK) { hud(lastOn); letters.concat(nameEls).forEach(function (l) { l.classList.add('on'); }); stage.classList.add('done'); return; }
-
-        /* ════════ Hujan meteor: melesat dari luar layar, meledak memenuhi layar, serpihannya memusat jadi logo, HIKIMORI & nama (canvas 2D) ════════ */
-        var cv = document.getElementById('intro-paint'), ctx = cv.getContext('2d');
-        var DPR = Math.min(window.devicePixelRatio || 1, LITE ? 1 : 1.5), W = 0, H = 0;
-        function rnd(a, b) { return a + Math.random() * (b - a); }
-        function size() { W = innerWidth; H = innerHeight; cv.width = W * DPR; cv.height = H * DPR; ctx.setTransform(DPR, 0, 0, DPR, 0, 0); ctx.lineCap = 'round'; }
-        size();
-        var COL = ['#FF6FB5', '#C77DFF', '#4FF0FF', '#4C8DFF']; // pink, saber (ungu laser), cyan, biru
-        function pick() { return COL[(Math.random() * COL.length) | 0]; }
-        var SC = Math.min(1, Math.max(.5, Math.min(W, H) / 800)); // HP: meteor & serpihan lebih kecil
-        el.style.setProperty('--lg', (T.logo - .3) + 's'); // logo baru muncul saat serpihan memusat
-        el.classList.add('mt');
-
-        // Titik-titik bentuk satu huruf (sampling dari canvas kecil), dibatasi maksimal `cap` titik
-        function sample(el, ch, cap) {
-          var span = el.parentNode, r = span.getBoundingClientRect(), cs = getComputedStyle(el);
-          var fs = parseFloat(cs.fontSize), ow = Math.ceil(r.width), oh = Math.ceil(r.height);
-          if (!ow || !oh || ch === ' ') return { pts: [], st: 1, sp: span };
-          var o = document.createElement('canvas'); o.width = ow; o.height = oh; var g = o.getContext('2d');
-          g.font = cs.fontWeight + ' ' + fs + 'px ' + cs.fontFamily; g.textAlign = 'center'; g.textBaseline = 'middle';
-          g.fillStyle = '#fff'; g.fillText(ch, ow / 2, oh / 2 + fs * .04);
-          var d = g.getImageData(0, 0, ow, oh).data, pts = [], st = Math.max(1, Math.round(fs / 22));
-          for (var y = 0; y < oh; y += st) for (var x = 0; x < ow; x += st) if (d[(y * ow + x) * 4 + 3] > 110) pts.push([x, y]);
-          for (var k = pts.length - 1; k > 0; k--) { var j = (Math.random() * (k + 1)) | 0, tp = pts[k]; pts[k] = pts[j]; pts[j] = tp; }
-          return { pts: pts.slice(0, cap), st: st, sp: span };
-        }
-
-        // Meteor: titik ledak disebar merata (grid acak) sampai ke tepi layar, arah datang acak
-        var CX = LITE ? 3 : 4, CY = LITE ? 3 : 3, M = [], cells = [], SPAN = LITE ? 1.0 : 1.3; // tidak terlalu ramai: 12 meteor (HP ringan 9)
-        for (var gy = 0; gy < CY; gy++) for (var gx = 0; gx < CX; gx++) cells.push([gx, gy]);
-        cells.sort(function () { return Math.random() - .5; });
-        cells.forEach(function (c, i) {
-          var ex = (c[0] + rnd(.08, .92)) / CX * W, ey = (c[1] + rnd(.08, .92)) / CY * H, a = rnd(0, 6.283), L = Math.max(W, H) * rnd(.5, .9);
-          var ts = .1 + i / cells.length * SPAN + rnd(0, .12);
-          M.push({ sx: ex - Math.cos(a) * L, sy: ey - Math.sin(a) * L, ex: ex, ey: ey, ts: ts, te: ts + rnd(.7, 1.1), c: pick(), px: null, py: null, boom: 0 });
-        });
-        var S = [], F = [], P = []; // S: serpihan ledakan, F: kilatan cincin, P: serpihan yang memusat ke bentuk
-        function explode(m, t) {
-          F.push({ x: m.ex, y: m.ey, t0: t, c: m.c });
-          for (var k = 0, n = LITE ? 10 : 16; k < n; k++) { // ledakan lebih lembut
-            var a = rnd(0, 6.283), sp = rnd(90, 420) * SC;
-            S.push({ x: m.ex, y: m.ey, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, t0: t, life: rnd(.6, 1.3), c: Math.random() < .2 ? '#fff' : Math.random() < .6 ? m.c : pick() });
-          }
-        }
-        // Serpihan memusat: berangkat dari titik ledakan yang sudah terjadi, tiba di titik bentuk tepat waktu `arr`
-        var CDUR = LITE ? 1.1 : 1.3;
-        function launch(t, arr, sp, ox, oy, r) {
-          var b = M.filter(function (m) { return m.te <= t; }); if (!b.length) b = M;
-          var m = b[(Math.random() * b.length) | 0], sx = m.ex + rnd(-90, 90) * SC, sy = m.ey + rnd(-90, 90) * SC;
-          var rr = sp ? sp.getBoundingClientRect() : { left: 0, top: 0 }, tx = rr.left + ox, ty = rr.top + oy;
-          P.push({ sp: sp, ox: ox, oy: oy, sx: sx, sy: sy, cx: (sx + tx) / 2 + rnd(-220, 220) * SC, cy: (sy + ty) / 2 + rnd(-220, 220) * SC,
-            s: t, d: Math.max(.3, arr - t), r: r, c: pick(), px: sx, py: sy });
-        }
-        var groups = [], mk = document.getElementById('intro-mark');
-        groups.push({ at: T.logo - CDUR, build: function (t) { // logo
-          var r = mk.getBoundingClientRect();
-          for (var k = 0, n = LITE ? 70 : 150; k < n; k++) {
-            var a = rnd(0, 6.283), q = Math.sqrt(Math.random());
-            launch(t, T.logo, null, r.left + r.width / 2 + Math.cos(a) * q * r.width / 2, r.top + r.height / 2 + Math.sin(a) * q * r.height / 2, rnd(1, 2.2) * SC + .3);
-          }
-        } });
-        letterOn.forEach(function (at, i) { // HIKIMORI
-          groups.push({ at: at - .15 - CDUR, build: function (t) {
-            sample(letters[i], TXT[i], LITE ? 28 : 46).pts.forEach(function (q, _, a) { launch(t, at - .15, letters[i].parentNode, q[0], q[1], rnd(1.2, 2.2) * SC + .4); });
-          } });
-        });
-        nameOn.forEach(function (at, j) { // nama
-          groups.push({ at: at - .1 - CDUR * .8, build: function (t) {
-            sample(nameEls[j], NAME[j].toUpperCase(), LITE ? 10 : 20).pts.forEach(function (q) { launch(t, at - .1, nameEls[j].parentNode, q[0], q[1], rnd(.7, 1.1)); });
-          } });
-        });
-
-        var last = 0, fid = 0, ZR = { left: 0, top: 0 };
-        // Ringan: garis & titik dikumpulkan per warna/alfa/tebal lalu digambar sekali per kelompok (bukan ribuan stroke per frame).
-        // Mode 'lighter' bersifat aditif, jadi urutan gambar tidak mengubah hasil.
-        var LB = {}, DB = {};
-        function line(x0, y0, x1, y1, w, c, a) { var k = c + a + '|' + w, b = LB[k] || (LB[k] = { c: c, a: a, w: w, s: [] }); b.s.push(x0, y0, x1, y1); }
-        function dot(x, y, r, c, a) { var k = c + a, b = DB[k] || (DB[k] = { c: c, a: a, s: [] }); b.s.push(x, y, r); }
-        function flush() {
-          var k, b, q, i;
-          for (k in LB) { b = LB[k]; q = b.s; ctx.globalAlpha = b.a; ctx.strokeStyle = b.c; ctx.lineWidth = b.w; ctx.beginPath(); for (i = 0; i < q.length; i += 4) { ctx.moveTo(q[i], q[i + 1]); ctx.lineTo(q[i + 2], q[i + 3]); } ctx.stroke(); }
-          for (k in DB) { b = DB[k]; q = b.s; ctx.globalAlpha = b.a; ctx.fillStyle = b.c; ctx.beginPath(); for (i = 0; i < q.length; i += 3) { ctx.moveTo(q[i] + q[i + 2], q[i + 1]); ctx.arc(q[i], q[i + 1], q[i + 2], 0, 6.283); } ctx.fill(); }
-          LB = {}; DB = {};
-        }
-        // Posisi huruf diukur hanya bila dibutuhkan, paling banyak sekali per frame
-        function rectOf(sp) { if (sp._f !== fid) { sp._f = fid; sp._r = sp.getBoundingClientRect(); } return sp._r; }
-        var slowN = 0, nF = 0;
-
-        function frame(now) {
-          if (!running) return;
-          var t = (now - t0) / 1000, dt = last ? Math.min(.05, (now - last) / 1000) : .016; last = now; fid++;
-          // Perangkat lambat (frame > 26 ms di 40 frame awal): resolusi kanvas turun ke 1x, animasi tetap sama
-          if (DPR > 1 && nF < 40) { nF++; if (dt > .026) slowN++; if (nF === 40 && slowN > 20) { DPR = 1; size(); } }
-          hud(t);
-          for (var gi = 0; gi < groups.length; gi++) if (!groups[gi].done && t >= groups[gi].at) { groups[gi].done = 1; groups[gi].build(t); }
-
-          // Huruf & nama muncul tepat saat serpihan selesai memusat di bentuknya
-          for (var i = 0; i < letters.length; i++) if (t >= letterOn[i]) letters[i].classList.add('on');
-          if (t >= lastOn && !stage.classList.contains('done')) stage.classList.add('done');
-          for (var j = 0; j < nameEls.length; j++) if (t >= nameOn[j]) nameEls[j].classList.add('on');
-          if (t >= nameEnd + .35 && !cv.classList.contains('dry')) cv.classList.add('dry'); // cahaya surut, teks tajam tersisa
-          if (t >= nameEnd + 1.1 && !sub.classList.contains("wave")) sub.classList.add("wave"); // efek penutup: nama membesar slow-motion, kilau cahaya menyapu kiri → kanan
-          // Kanvas sudah memudar penuh (transisi .dry 1,6 dtk): berhenti menggambar; zoom & kilau nama tetap jalan lewat CSS
-          if (t >= nameEnd + .35 + 1.7) { running = false; ctx.clearRect(0, 0, W, H); return; }
-
-          // Gambar lama memudar pelan → ekor cahaya
-          ctx.globalCompositeOperation = 'destination-out'; ctx.globalAlpha = 1; ctx.fillStyle = 'rgba(0,0,0,.24)'; ctx.fillRect(0, 0, W, H);
-          ctx.globalCompositeOperation = 'lighter';
-          var n, k, e, x, y;
-          for (n = 0; n < M.length; n++) { // meteor melesat (makin cepat), meledak di tujuan
-            var m = M[n]; if (t < m.ts || m.boom) continue;
-            k = Math.min(1, (t - m.ts) / (m.te - m.ts)); e = k * k;
-            x = m.sx + (m.ex - m.sx) * e; y = m.sy + (m.ey - m.sy) * e;
-            if (m.px !== null) { line(m.px, m.py, x, y, 3 * SC + 1.2, m.c, .85); line(m.px, m.py, x, y, 1.4, '#fff', 1); }
-            dot(x, y, 8 * SC + 2, m.c, .35);
-            m.px = x; m.py = y;
-            if (k >= 1) { m.boom = 1; explode(m, t); }
-          }
-          F = F.filter(function (f) { // kilatan cincin ledakan
-            var a = (t - f.t0) / .45; if (a >= 1) return false;
-            ctx.globalAlpha = 1 - a; ctx.strokeStyle = f.c; ctx.lineWidth = 2.5 * (1 - a) + .5;
-            ctx.beginPath(); ctx.arc(f.x, f.y, 6 + 90 * SC * (1 - Math.pow(1 - a, 3)), 0, 6.283); ctx.stroke();
-            if (a < .3) dot(f.x, f.y, 12 * SC * (1 - a / .3) + 2, '#fff', .6 * (1 - a / .3));
-            return true;
-          });
-          var drag = Math.exp(-2.3 * dt);
-          S = S.filter(function (s) { // serpihan terlempar sampai tepi layar
-            var a = (t - s.t0) / s.life; if (a >= 1) return false;
-            s.vx *= drag; s.vy = s.vy * drag + 70 * dt;
-            var nx = s.x + s.vx * dt, ny = s.y + s.vy * dt;
-            line(s.x, s.y, nx, ny, 1.8 * SC + .4, s.c, Math.ceil((1 - a) * 10) / 10); // alfa dibulatkan 0,1 agar bisa dikelompokkan
-            s.x = nx; s.y = ny; return true;
-          });
-          for (n = 0; n < P.length; n++) { // serpihan memusat (kurva bezier, pelan → cepat → pelan)
-            var p = P[n], r = p.sp ? rectOf(p.sp) : ZR, tx = r.left + p.ox, ty = r.top + p.oy;
-            k = Math.min(1, (t - p.s) / p.d); e = k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
-            var u = 1 - e; x = u * u * p.sx + 2 * u * e * p.cx + e * e * tx; y = u * u * p.sy + 2 * u * e * p.cy + e * e * ty;
-            if (k < 1) line(p.px, p.py, x, y, Math.round(p.r * 3.2) / 2, p.c, .9); else dot(x, y, p.r, p.c, .8); // tebal dibulatkan 0,5 px
-            p.px = x; p.py = y;
-          }
-          flush();
-          ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
-          requestAnimationFrame(frame);
-        }
-        requestAnimationFrame(frame);
+        setTimeout(close, 6000); // pengaman bila JS aplikasi gagal dimuat
       })();
     </script>
     <div id="root"></div>

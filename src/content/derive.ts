@@ -41,7 +41,7 @@ export const fmtPeriod = (start: string, end: string, lang: Lang): string => {
 export const fmtDuration = (months: number, lang: Lang, short = false): string => {
   const y = Math.floor(months / 12), m = months % 12;
   if (short) {
-    const parts = [y ? `${y}${lang === 'en' ? 'y' : 'th'}` : '', m ? `${m}${lang === 'en' ? 'm' : 'bln'}` : ''];
+    const parts = [y ? `${y} ${lang === 'en' ? 'yr' : 'thn'}` : '', m ? `${m} ${lang === 'en' ? 'mo' : 'bln'}` : ''];
     return parts.filter(Boolean).join(' ') || '0';
   }
   const yl = lang === 'en' ? (y > 1 ? 'Years' : 'Year') : 'Tahun';

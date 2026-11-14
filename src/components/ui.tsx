@@ -190,11 +190,11 @@ export const Bullets: React.FC<{ text: string; className?: string }> = ({ text, 
   return <ul className={className}>{rows.map((r, i) => <li key={i}>{r.replace(/^[•-]\s*/, '')}</li>)}</ul>;
 };
 
-export const Logo: React.FC<{ src?: string; alt: string; fallback?: string }> = ({ src, alt, fallback = '🏢' }) => {
+export const Logo: React.FC<{ src?: string; alt: string; fallback?: string /* nama ikon */ }> = ({ src, alt, fallback = 'briefcase' }) => {
   const [failed, setFailed] = useState(false);
   return (
     <div className="logo-box">
-      {src && !failed ? <img src={src} alt={alt} loading="lazy" decoding="async" onError={() => setFailed(true)} /> : <span aria-hidden="true">{fallback}</span>}
+      {src && !failed ? <img src={src} alt={alt} loading="lazy" decoding="async" onError={() => setFailed(true)} /> : <Icon name={fallback} size={24} className="logo-ico" />}
     </div>
   );
 };

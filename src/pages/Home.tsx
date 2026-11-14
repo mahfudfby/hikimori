@@ -33,6 +33,10 @@ const DashTop: React.FC = () => {
       <div style={{ minWidth: 0 }}>
         <h1 className="h-hero">{nameMain}{nameDeg && <span className="hero-deg">{nameDeg}</span>}</h1>
         <p className="hero-sub">{pick(content.profile.title, lang)} · {content.profile.location.split(',')[0]}</p>
+        <div className="hero-cta">
+          <CvDownloadButton className="pill dark" label={t('Unduh CV', 'Download CV')} />
+          <a className="pill white" href={waLink(content, lang)} target="_blank" rel="noreferrer"><Icon name="chat" size={16} />{t('Hubungi', 'Contact')}</a>
+        </div>
         <div className="xs faint mt-24">{t('Komposisi pengalaman profesional', 'Professional experience mix')}</div>
         <div className="dash-pills mt-8" style={{ ['--cols' as any]: share.map(s => `${Math.max(2, Math.round(s.pct / 7))}fr`).join(' ') }}>
           {share.map((s, i) => (
@@ -45,7 +49,7 @@ const DashTop: React.FC = () => {
       </div>
       <div className="dash-stats">
         {[
-          { icon: 'briefcase', v: years, d: 1, l: t('Th. profesional', 'Years pro') },
+          { icon: 'briefcase', v: years, d: 1, l: t('Tahun profesional', 'Professional years') },
           { icon: 'users', v: relevant.length, d: 0, l: t('Posisi', 'Positions') },
           { icon: 'award', v: content.certificates.length, d: 0, l: t('Sertifikat', 'Certificates') },
         ].map(s => (
@@ -104,8 +108,8 @@ const ProgressCard: React.FC<{ exps: Experience[]; idx: number; onPick: (i: numb
         <CardLink to="/pengalaman" label={t('Detail pengalaman', 'Experience details')} />
       </div>
       <div className="row gap-12">
-        <span className="num-lg">{(total / 12).toFixed(1)} <span style={{ fontSize: '1.1rem' }}>{t('th', 'y')}</span></span>
-        <span className="xs muted" style={{ lineHeight: 1.3 }} title={t('Periode menganggur tidak dihitung', 'Unemployed periods are excluded')}>{t('Masa kerja efektif', 'Effective work time')}<br />{t('tanpa jeda', 'excluding gaps')}</span>
+        <span className="num-lg">{(total / 12).toFixed(1)} <span style={{ fontSize: '1.1rem' }}>{t('tahun', 'years')}</span></span>
+        <span className="xs muted" style={{ lineHeight: 1.3 }} title={t('Periode menganggur tidak dihitung', 'Unemployed periods are excluded')}>{t('Total masa kerja', 'Total work time')}<br />{t('semua bidang', 'all fields')}</span>
         {cur?.location && (
           <a key={cur.id} className="prog-pill" href={`https://maps.google.com/?q=${encodeURIComponent(`${cur.company} ${cur.location}`)}`} target="_blank" rel="noopener noreferrer"
             title={`${t('Lokasi kerja', 'Work location')}: ${cur.company}, ${cur.location}`}>
@@ -237,7 +241,7 @@ const AgeCard: React.FC = () => {
     <div className="card b-onboard">
       <div className="card-head" style={{ alignItems: 'center' }}>
         <h2 className="h-card">{t('Usia', 'Age')}</h2>
-        <span className="num-lg">{age || '—'}<span style={{ fontSize: '1rem' }}> {t('th', 'y')}</span></span>
+        <span className="num-lg">{age || '—'}<span style={{ fontSize: '1rem' }}> {t('tahun', 'years')}</span></span>
       </div>
       <div className="age-labels" style={{ ['--split' as any]: '1fr' }}>
         <span>{by || '—'}</span><span style={{ textAlign: 'center' }}>{now}</span><span>∞</span>
@@ -257,73 +261,11 @@ const AgeCard: React.FC = () => {
 };
 
 /* ───────── Pencapaian: angka-angka yang menjual (pengganti kartu Usia, bisa diatur di CMS) ───────── */
-/** Gulir otomatis pelan ke atas (kredit film). Kursor / sentuh / fokus = berhenti; roda mouse & geser jari = gulir manual
- *  naik-turun untuk melihat yang sudah lewat. Isi digandakan → posisi dibungkus agar putaran tak pernah habis. */
-const useCreditRoll = (count: number) => {
-  const ref = useRef<HTMLDivElement>(null);
-  // Jumlah salinan daftar: cukup untuk mengisi kartu + satu cadangan, agar daftar pendek pun tetap bisa bergulir terus
-  const [reps, setReps] = useState(2);
-  useEffect(() => {
-    const el = ref.current; if (!el || !count) return;
-    const one = () => (el.firstElementChild as HTMLElement | null)?.offsetHeight || 0;
-    const need = () => (one() ? Math.max(2, Math.ceil(el.clientHeight / one()) + 1) : 2);
-    if (need() !== reps) { setReps(need()); return; }
-    // Ukur ulang saat kartu berubah ukuran (kartu dimuat bertahap / layar diputar)
-    const ro = new ResizeObserver(() => { if (need() !== reps) setReps(need()); });
-    ro.observe(el);
-    const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-    let pos = 0, last = 0, raf = 0, hold = false, resumeAt = 0;
-    const half = one; // satu putaran = tinggi satu salinan daftar
-    const wrap = () => { // tetap di salinan pertama: atas ↔ bawah menyambung mulus
-      const h = half(); if (reduce || !h || el.scrollHeight - el.clientHeight < h) return;
-      if (el.scrollTop > h) el.scrollTop -= h; else if (el.scrollTop < 1) el.scrollTop += h - 1;
-    };
-    const onScroll = () => { wrap(); if (Math.abs(el.scrollTop - pos) > 1) pos = el.scrollTop; }; // gulir manual
-    const pause = () => { hold = true; };
-    const resume = (ms = 0) => { hold = false; resumeAt = performance.now() + ms; };
-    const onLeave = () => resume(); const onTouchEnd = () => resume(2500);
-    const tick = (now: number) => {
-      const dt = last ? Math.min(.1, (now - last) / 1000) : 0; last = now;
-      if (!hold && now >= resumeAt && document.visibilityState === 'visible') {
-        const h = half();
-        pos += (h / (count * 4.5)) * dt; // 4,5 detik per baris
-        if (pos >= h) pos -= h;
-        el.scrollTop = pos;
-      }
-      raf = requestAnimationFrame(tick);
-    };
-    el.addEventListener('scroll', onScroll, { passive: true });
-    el.addEventListener('mouseenter', pause); el.addEventListener('mouseleave', onLeave);
-    el.addEventListener('focusin', pause); el.addEventListener('focusout', onLeave);
-    el.addEventListener('touchstart', pause, { passive: true }); el.addEventListener('touchend', onTouchEnd, { passive: true });
-    if (!reduce) raf = requestAnimationFrame(tick);
-    return () => {
-      cancelAnimationFrame(raf);
-      ro.disconnect();
-      el.removeEventListener('scroll', onScroll);
-      el.removeEventListener('mouseenter', pause); el.removeEventListener('mouseleave', onLeave);
-      el.removeEventListener('focusin', pause); el.removeEventListener('focusout', onLeave);
-      el.removeEventListener('touchstart', pause); el.removeEventListener('touchend', onTouchEnd);
-    };
-  }, [count, reps]);
-  return { ref, reps };
-};
-
+const MAX_ACH = 4;
 const AchievementsCard: React.FC = () => {
   const { content } = useContent();
   const { lang, t } = useLang();
-  const list = content.achievements;
-  const { ref: roll, reps } = useCreditRoll(list.length);
-  const item = (a: typeof list[number], dup?: boolean) => {
-    const [role, company] = (a.job || '').split(/\s+·\s+/); // "Posisi · Perusahaan" → dua baris
-    return (
-      <div className="ach-item" key={(dup ? 'b' : 'a') + a.id}>
-        <span className="ach-l">{pick(a.label, lang)}</span>
-        <span className="ach-v">{a.value}</span>
-        {a.job && <span className="ach-job"><b>{role}</b>{company && <span>{company}</span>}</span>}
-      </div>
-    );
-  };
+  const list = content.achievements.slice(0, MAX_ACH);
   return (
     <div className="card b-onboard">
       <div className="card-head" style={{ alignItems: 'center' }}>
@@ -331,10 +273,18 @@ const AchievementsCard: React.FC = () => {
         <CardLink to="/pengalaman" label={t('Lihat pengalaman', 'See experience')} />
       </div>
       {list.length === 0 ? <p className="xs faint">{t('Tambahkan pencapaian di CMS → Profil.', 'Add highlights in CMS → Profile.')}</p> : (
-        <div className="ach-roll" ref={roll} tabIndex={0} aria-label={t('Daftar yang pernah ditangani', 'Previously handled list')}>
-          <div className="ach-list">{list.map(a => item(a))}</div>
-          {Array.from({ length: reps - 1 }, (_, k) => <div key={k} className="ach-list ach-dup" aria-hidden="true">{list.map(a => item(a, true))}</div>)}
-        </div>
+        <ul className="ach-list">
+          {list.map(a => {
+            const [role, company] = (a.job || '').split(/\s+·\s+/); // "Posisi · Perusahaan"
+            return (
+              <li className="ach-item" key={a.id}>
+                <span className="ach-v">{a.value}</span>
+                <span className="ach-l">{pick(a.label, lang)}</span>
+                {a.job && <span className="ach-job">{role}{company && <> · {company}</>}</span>}
+              </li>
+            );
+          })}
+        </ul>
       )}
     </div>
   );
@@ -480,8 +430,8 @@ const CertsCard: React.FC = () => {
     const id = window.setInterval(() => setI(x => (x + 1) % n), 3000);
     return () => window.clearInterval(id);
   }, [n, hold, pull, doc]);
-  // logo penerbit (bila diupload) menggantikan emoji di ikon bulat
-  const ico = (logo: string | undefined, emoji: string) => logo ? <img src={cld(logo, 96)} alt="" className="ico-logo" decoding="async" /> : emoji;
+  // logo penerbit (bila diupload) menggantikan ikon garis di ikon bulat
+  const ico = (logo: string | undefined, icon: string) => logo ? <img src={cld(logo, 96)} alt="" className="ico-logo" decoding="async" /> : <Icon name={icon} size={17} />;
   // logo SKK: upload sendiri, kalau kosong pakai logo pengalaman kerja yang menautkan surat ini / perusahaan yang sama
   const refLogo = (r: Reference) => r.issuerLogo || content.experience.find(e => e.refId === r.id)?.logoUrl
     || content.experience.find(e => e.logoUrl && e.company.trim().toLowerCase() === r.company.trim().toLowerCase())?.logoUrl;
@@ -510,7 +460,7 @@ const CertsCard: React.FC = () => {
         <div className="task-list">
           {cur.kind === 'ref' ? (
             <div className="task top">
-              <span className="ico" aria-hidden="true">{ico(refLogo(cur.r), '📄')}</span>
+              <span className="ico" aria-hidden="true">{ico(refLogo(cur.r), 'briefcase')}</span>
               <span className="grow">
                 {/* nomor surat (mengandung "/") jangan dipotong di tanda "-" */}
                 <span className="t" style={{ display: 'block' }}>{pick(cur.r.note, lang).split(/(\S*\/\S*)/).map((s, k) => k % 2 ? <span key={k} style={{ whiteSpace: 'nowrap' }}>{s}</span> : s)}</span>
@@ -521,7 +471,7 @@ const CertsCard: React.FC = () => {
           ) : null}
           {cur.kind === 'ref' ? null : (<>
             <Link to={`/sertifikat#${cur.c.id}`} className="task top">
-              <span className="ico" aria-hidden="true">{ico(cur.c.issuerLogo, cur.kind === 'license' ? '🪪' : cur.c.category === 'training' ? '🎓' : '📜')}</span>
+              <span className="ico" aria-hidden="true">{ico(cur.c.issuerLogo, cur.kind === 'license' ? 'award' : cur.c.category === 'training' ? 'cap' : 'check')}</span>
               <span className="grow">
                 <span className="t" style={{ display: 'block' }}>{pick(cur.c.name, lang)}</span>
                 <span className="s">{cur.c.issuer.split('—')[0].trim()} · {fmtRange(cur.c.year, lang)}</span>
@@ -577,6 +527,7 @@ const FolioCard: React.FC = () => {
   const list = items.slice().sort((a, b) => Number(b.featured) - Number(a.featured) || a.order - b.order).slice(0, 10);
   // Pita digandakan agar putaran mulus tanpa lompatan
   const loop = list.length > 1 ? [...list, ...list] : list;
+  if (!loading && list.length === 0) return null; // kartu kosong terkesan belum jadi: sembunyikan sampai ada proyek
   return (
     <div className="card b-folio no-tilt">
       <div className="card-head">
@@ -585,7 +536,6 @@ const FolioCard: React.FC = () => {
         <CardLink to="/portofolio" label={t('Lihat semua', 'See all')} />
       </div>
       {loading ? <div className="skeleton" style={{ height: 210 }} />
-        : list.length === 0 ? <div className="empty">{t('Proyek segera ditambahkan.', 'Projects coming soon.')}</div>
         : (
           <div className="folio-view">
             <div className="folio-track" style={{ animationDuration: `${Math.max(20, list.length * 6)}s`, animationName: list.length > 1 ? undefined : 'none' }}>

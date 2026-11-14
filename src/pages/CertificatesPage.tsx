@@ -8,9 +8,9 @@ import { downloadUrl } from '../utils/saveFile';
 import type { Certificate, CertCategory } from '../content/types';
 
 const CAT: Record<CertCategory, { id: string; en: string; icon: string }> = {
-  license: { id: 'Lisensi', en: 'License', icon: '🪪' },
-  training: { id: 'Pelatihan', en: 'Training', icon: '🎓' },
-  cert: { id: 'Sertifikat', en: 'Certificate', icon: '📜' },
+  license: { id: 'Lisensi', en: 'License', icon: 'award' },
+  training: { id: 'Pelatihan', en: 'Training', icon: 'cap' },
+  cert: { id: 'Sertifikat', en: 'Certificate', icon: 'check' },
 };
 
 /** Unit kompetensi / materi yang dipelajari dalam satu sertifikat. */
@@ -69,7 +69,7 @@ const CertificatesPage: React.FC = () => {
                 <button onClick={() => setView(c)} style={{ border: 0, background: 'none', padding: 0, textAlign: 'left' }} aria-label={t('Lihat sertifikat', 'View certificate')}>
                   {c.imageUrl
                     ? <img className="thumb" src={cld(c.imageUrl, 640)} alt={pick(c.name, lang)} loading="lazy" decoding="async" />
-                    : <div className="thumb row" style={{ justifyContent: 'center', fontSize: '2.6rem', background: c.category === 'license' ? 'var(--ink-2)' : 'var(--surface-strong)' }}>{CAT[c.category].icon}</div>}
+                    : <div className="thumb row" style={{ justifyContent: 'center', background: c.category === 'license' ? 'var(--ink-2)' : 'var(--surface-strong)', color: c.category === 'license' ? 'var(--on-ink)' : 'var(--text-2)' }}><Icon name={CAT[c.category].icon} size={40} /></div>}
                 </button>
                 <div className="row between gap-8 mt-16">
                   <span className={`chip ${c.category === 'license' ? 'yellow' : ''}`}>{pick(CAT[c.category], lang)}</span>

@@ -30,7 +30,7 @@ const EducationPage: React.FC = () => {
               return (
                 <div key={it.id} className="card dark">
                   <div className="row gap-12">
-                    <Logo src={it.logoUrl} alt={it.school} fallback="🎓" />
+                    <Logo src={it.logoUrl} alt={it.school} fallback="cap" />
                     <div className="grow"><div className="eyebrow" style={{ color: 'var(--on-ink-dim)' }}>{pick(it.level, lang)}</div><div className="h-card">{pick(it.major, lang)}</div></div>
                   </div>
                   <div className="small mt-16">{it.school}</div>
