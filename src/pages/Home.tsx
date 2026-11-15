@@ -578,36 +578,39 @@ const CertsCard: React.FC = () => {
   );
 };
 
-/* ───────── Slideshow portofolio: pita kartu bergerak otomatis, berhenti saat disentuh kursor ───────── */
+/* ───────── Slideshow portofolio: kartu (gambar header + deskripsi singkat) bergerak ke samping, berhenti saat disentuh ───────── */
 const FolioCard: React.FC = () => {
   const { items, loading } = usePortfolio();
   const { t } = useLang();
   const list = items.slice().sort((a, b) => Number(b.featured) - Number(a.featured) || a.order - b.order).slice(0, 10);
   // Pita digandakan agar putaran mulus tanpa lompatan
   const loop = list.length > 1 ? [...list, ...list] : list;
-  if (!loading && list.length === 0) return null; // kartu kosong terkesan belum jadi: sembunyikan sampai ada proyek
   return (
-    <div className="card b-folio no-tilt">
+    <Reveal className="card b-folio no-tilt" style={{ marginBottom: 'clamp(16px,2.4vw,28px)' }}>
       <div className="card-head">
         <div><h2 className="h-card">{t('Portofolio', 'Portfolio')}</h2>
           <div className="xs faint">{list.length ? `${items.length} ${t('proyek', 'projects')}` : t('Kumpulan karya & proyek', 'Selected work & projects')}</div></div>
         <CardLink to="/portofolio" label={t('Lihat semua', 'See all')} />
       </div>
-      {loading ? <div className="skeleton" style={{ height: 210 }} />
+      {loading ? <div className="skeleton" style={{ height: 260 }} />
+        : list.length === 0 ? <div className="empty">{t('Proyek segera ditambahkan.', 'Projects coming soon.')}</div>
         : (
           <div className="folio-view">
-            <div className="folio-track" style={{ animationDuration: `${Math.max(20, list.length * 6)}s`, animationName: list.length > 1 ? undefined : 'none' }}>
+            <div className="folio-track" style={{ animationDuration: `${Math.max(24, list.length * 7)}s`, animationName: list.length > 1 ? undefined : 'none' }}>
               {loop.map((p, i) => (
                 <Link key={`${p.id}-${i}`} to={`/portofolio/${p.id}`} className="folio-slide" aria-hidden={i >= list.length || undefined} tabIndex={i >= list.length ? -1 : undefined}>
-                  <div className="folio-img">{p.imageUrl ? <img src={cld(p.imageUrl, 480)} alt={i < list.length ? p.title : ''} loading="lazy" decoding="async" /> : <Icon name="grid" />}</div>
-                  <span className="dur-2">{p.title}</span>
-                  <span className="dur-3">{[p.category, p.client, p.year].filter(Boolean).join(' · ')}</span>
+                  <div className="folio-img">{p.imageUrl ? <img src={cld(p.imageUrl, 640)} alt={i < list.length ? p.title : ''} loading="lazy" decoding="async" /> : <Icon name="grid" />}</div>
+                  <div className="folio-body">
+                    <span className="folio-meta">{[p.category, p.year].filter(Boolean).join(' · ')}</span>
+                    <span className="folio-title">{p.title}</span>
+                    {(p.description || p.subtitle) && <span className="folio-desc">{p.description || p.subtitle}</span>}
+                  </div>
                 </Link>
               ))}
             </div>
           </div>
         )}
-    </div>
+    </Reveal>
   );
 };
 
@@ -637,9 +640,10 @@ const Home: React.FC = () => {
           <Staged className="b-bio" minHeight={220}><BioCard /></Staged>
           <Staged className="b-summary" minHeight={360}><SummaryCard /></Staged>
           <Staged className="b-certs" minHeight={420}><CertsCard /></Staged>
-          <Staged className="b-folio" minHeight={300}><FolioCard /></Staged>
         </div>
       </div>
+
+      <FolioCard />
 
       <Reveal className="card dark row wrap between gap-16" style={{ padding: 'clamp(20px,3vw,32px)' }}>
         <div style={{ maxWidth: 560 }}>
