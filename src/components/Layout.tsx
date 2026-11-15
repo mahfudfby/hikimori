@@ -22,6 +22,9 @@ export const NAV = [
   { to: '/kontak', id: 'Kontak', en: 'Contact' },
 ];
 
+/** Menu atas desktop: ringkas (6). Halaman lain tetap terjangkau lewat footer, menu HP & sub-menu Profil. */
+export const NAV_TOP = ['/', '/profil', '/pengalaman', '/sertifikat', '/portofolio', '/kontak'];
+
 export const Navbar: React.FC = () => {
   const { content } = useContent();
   const { lang, toggle: toggleLang } = useLang();
@@ -41,7 +44,7 @@ export const Navbar: React.FC = () => {
         </Link>
 
         <nav className="nav-links" aria-label="Main">
-          {NAV.map(n => (
+          {NAV.filter(n => NAV_TOP.includes(n.to)).map(n => (
             <NavLink key={n.to} to={n.to} end={n.to === '/'} className={({ isActive }) => (isActive ? 'active' : '')}>
               {({ isActive }) => <>{isActive && <i className="nav-bg" />}<span>{lang === 'en' ? n.en : n.id}</span></>}
             </NavLink>
@@ -55,9 +58,9 @@ export const Navbar: React.FC = () => {
           <button className="icon-btn nav-opt" onClick={toggleTheme} aria-label={mode === 'dark' ? (lang === 'en' ? 'Light mode' : 'Mode terang') : (lang === 'en' ? 'Dark mode' : 'Mode gelap')}>
             <Icon name={mode === 'dark' ? 'sun' : 'moon'} />
           </button>
-          <Link to={isAdmin ? '/admin' : '/admin/login'} className="icon-btn nav-opt" aria-label="Admin" title={isAdmin ? 'CMS' : 'Login'}>
-            <Icon name={isAdmin ? 'gear' : 'user'} />
-          </Link>
+          {isAdmin && (
+            <Link to="/admin" className="icon-btn nav-opt" aria-label="Admin" title="CMS"><Icon name="gear" /></Link>
+          )}
           <button className="icon-btn dark nav-burger" onClick={() => setOpen(o => !o)} aria-expanded={open} aria-label="Menu">
             <Icon name={open ? 'close' : 'menu'} />
           </button>
@@ -73,7 +76,7 @@ export const Navbar: React.FC = () => {
           {/* Layar sempit: tema & admin pindah ke sini supaya navbar muat */}
           <div className="nav-sheet-tools">
             <button className="pill" onClick={toggleTheme}><Icon name={mode === 'dark' ? 'sun' : 'moon'} size={16} />{mode === 'dark' ? (lang === 'en' ? 'Light mode' : 'Mode terang') : (lang === 'en' ? 'Dark mode' : 'Mode gelap')}</button>
-            <Link to={isAdmin ? '/admin' : '/admin/login'} className="pill"><Icon name={isAdmin ? 'gear' : 'user'} size={16} />{isAdmin ? 'CMS' : 'Login'}</Link>
+            {isAdmin && <Link to="/admin" className="pill"><Icon name="gear" size={16} />CMS</Link>}
           </div>
         </nav>
       )}
@@ -99,7 +102,7 @@ export const Footer: React.FC = () => {
           <div className="row gap-8">
             {p.email && <a className="icon-btn sm" href={mailLink(p.email)} aria-label="Email"><Icon name="mail" size={15} /></a>}
             {p.whatsapp && <a className="icon-btn sm" href={`https://wa.me/${p.whatsapp}`} target="_blank" rel="noreferrer" aria-label="WhatsApp"><Icon name="chat" size={15} /></a>}
-            {p.socials.linkedin && <a className="icon-btn sm" href={`https://linkedin.com/in/${p.socials.linkedin}`} target="_blank" rel="noreferrer" aria-label="LinkedIn"><Icon name="link" size={15} /></a>}
+            {p.socials.linkedin && <a className="icon-btn sm" href={`https://linkedin.com/in/${p.socials.linkedin}`} target="_blank" rel="noreferrer" aria-label="LinkedIn"><Icon name="linkedin" size={15} /></a>}
           </div>
         </div>
       </div>

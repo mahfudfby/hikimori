@@ -47,6 +47,13 @@ const DashTop: React.FC = () => {
           ))}
         </div>
       </div>
+      <div className="dash-side">
+        <div className="dash-badges">
+          {content.profile.openToWork && <span className="chip yellow">● {pick(content.contact.availability, lang)}</span>}
+          {content.profile.socials.linkedin && (
+            <a className="pill white sm" href={`https://linkedin.com/in/${content.profile.socials.linkedin}`} target="_blank" rel="noopener noreferrer"><Icon name="linkedin" size={15} />LinkedIn</a>
+          )}
+        </div>
       <div className="dash-stats">
         {[
           { icon: 'briefcase', v: years, d: 1, l: t('Tahun profesional', 'Professional years') },
@@ -61,6 +68,7 @@ const DashTop: React.FC = () => {
             <span className="num-xl"><CountUp to={s.v} decimals={s.d} /></span>
           </div>
         ))}
+      </div>
       </div>
     </section>
   );
@@ -130,7 +138,7 @@ const ProgressCard: React.FC<{ exps: Experience[]; idx: number; onPick: (i: numb
               <span className="ghost" />
               <span className="stick" style={{ height: `${h * 0.62}%` }} />
               <span className="dot" />
-              <span className="lab">'{(e.start || '').slice(2, 4)}</span>
+              <span className="lab">{on || i === Math.max(0, exps.length - MAX_BARS) || (e.start || '').slice(0, 4) !== (exps[i - 1]?.start || '').slice(0, 4) ? `'${(e.start || '').slice(2, 4)}` : ' '}</span>
             </button>
           );
         })}

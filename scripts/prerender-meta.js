@@ -37,6 +37,9 @@ const page = (route, meta, extraHead = '') => {
   doc = setMeta(doc, 'property', 'og:description', meta.description);
   doc = setMeta(doc, 'property', 'og:url', url);
   doc = setMeta(doc, 'property', 'og:image', image);
+  doc = setMeta(doc, 'name', 'twitter:image', image);
+  // ukuran 1200x630 hanya berlaku untuk kartu bawaan; gambar artikel ukurannya lain
+  if (meta.image) doc = doc.replace(/\s*<meta property="og:image:(?:width|height)"[^>]*>/g, '');
   if (meta.type) doc = setMeta(doc, 'property', 'og:type', meta.type);
   if (meta.keywords) doc = setMeta(doc, 'name', 'keywords', meta.keywords);
   doc = setMeta(doc, 'name', 'twitter:title', meta.title);

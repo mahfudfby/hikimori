@@ -724,8 +724,8 @@ html.lite .reveal { transform: translateY(8px); }
 .dur-3 { font-size: 0.78rem; line-height: 1.4; color: var(--text-3); display: flex; flex-direction: column; }
 /* perusahaan / periode / jenis kontrak: selalu 3 baris */
 .dur-3 > span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-/* judul maks. 2 baris agar tinggi kartu sama di semua slide */
-.dur-2 { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+/* judul maks. 3 baris (jabatan panjang tetap terbaca) */
+.dur-2 { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
 .dur-box .slide-prog { margin: 10px 0 0; }
 @keyframes foldOpen { from { opacity: 0; transform: perspective(800px) rotateX(-75deg); } to { opacity: 1; transform: none; } }
 .job-desc li { animation: slideUpIn 0.8s var(--ease-slow) both; }
@@ -1072,3 +1072,10 @@ img[src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAA
 /* Tombol aksi utama di bawah nama (Unduh CV / Hubungi) */
 .hero-cta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
 
+
+/* Hero kanan: status tersedia + LinkedIn di atas angka besar */
+.dash-side { display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between; gap: 18px; align-self: stretch; }
+.dash-badges { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+@media (max-width: 1180px) { .dash-side { align-items: stretch; } .dash-badges { justify-content: flex-start; order: -1; } }
+/* durasi tetap satu baris ("1 thn 3 bln") */
+.dur-1 { white-space: nowrap; font-size: clamp(1.45rem, 2vw, 1.85rem); }

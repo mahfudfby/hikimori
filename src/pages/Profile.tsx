@@ -32,6 +32,13 @@ const Profile: React.FC = () => {
             <CvDownloadButton className="pill dark" label={t('Unduh CV', 'Download CV')} />
           </div>} />
 
+        {/* Sub-menu: halaman yang tidak lagi tampil di navbar atas */}
+        <nav className="row wrap gap-8" style={{ marginBottom: 18 }} aria-label={t('Bagian profil', 'Profile sections')}>
+          <Link to="/pendidikan" className="pill white sm"><Icon name="cap" size={14} />{t('Pendidikan', 'Education')}</Link>
+          <Link to="/keahlian" className="pill white sm"><Icon name="tool" size={14} />{t('Keahlian', 'Skills')}</Link>
+          <Link to="/layanan" className="pill white sm"><Icon name="layers" size={14} />{t('Layanan', 'Services')}</Link>
+        </nav>
+
         <div className="split">
           <div className="stack gap-12 sticky">
             <div className="card photo-card" style={{ minHeight: 420 }}>

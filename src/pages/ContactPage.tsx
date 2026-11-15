@@ -43,7 +43,7 @@ const ContactPage: React.FC = () => {
     { icon: 'mail', label: 'Email', value: p.email, href: mailLink(p.email) },
     { icon: 'chat', label: 'WhatsApp', value: p.phone, href: `https://wa.me/${p.whatsapp}` },
     { icon: 'map', label: t('Lokasi', 'Location'), value: p.location, href: `https://maps.google.com/?q=${encodeURIComponent(p.location)}` },
-    p.socials.linkedin && { icon: 'link', label: 'LinkedIn', value: p.socials.linkedin, href: `https://linkedin.com/in/${p.socials.linkedin}` },
+    p.socials.linkedin && { icon: 'linkedin', label: 'LinkedIn', value: p.socials.linkedin, href: `https://linkedin.com/in/${p.socials.linkedin}` },
   ].filter(Boolean) as { icon: string; label: string; value: string; href: string }[];
 
   return (
