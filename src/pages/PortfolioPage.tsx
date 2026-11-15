@@ -2,6 +2,7 @@
 import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { usePortfolio } from '../hooks/usePortfolio';
+import FolioCover from '../components/FolioCover';
 import { useContent } from '../content/ContentContext';
 import { useLang } from '../contexts/LanguageContext';
 import { Icon, PageHero, Reveal, useTitle, cld } from '../components/ui';
@@ -40,7 +41,7 @@ const PortfolioPage: React.FC = () => {
             {list.map((p, i) => (
               <Reveal key={p.id} delay={(i % 6) * 40}>
                 <Link to={`/portofolio/${p.id}`} className={`card hoverable stack ${p.featured ? 'dark' : ''}`} style={{ width: '100%', textAlign: 'left', height: '100%', color: 'inherit', textDecoration: 'none' }}>
-                  {p.imageUrl ? <img className="thumb" src={cld(p.imageUrl, 640)} alt={p.title} loading="lazy" decoding="async" /> : <div className="thumb row" style={{ justifyContent: 'center' }}><Icon name="image" size={32} /></div>}
+                  <FolioCover item={p} className="thumb" alt={p.title} />
                   <div className="row between gap-8 mt-16">
                     <span className={`chip ${p.featured ? 'yellow' : ''}`}>{p.category || '—'}</span>
                     <span className="xs muted">{p.year}</span>

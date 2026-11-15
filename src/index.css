@@ -1086,3 +1086,10 @@ img[src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAA
 @media (max-width: 1180px) { .dash-side { align-items: stretch; } .dash-badges { justify-content: flex-start; order: -1; } }
 /* durasi tetap satu baris ("1 thn 3 bln") */
 .dur-1 { white-space: nowrap; font-size: clamp(1.45rem, 2vw, 1.85rem); }
+
+/* Sampul portofolio tanpa header: logo perusahaan / logo Hikimori di tengah, tidak dipotong */
+.folio-cover { width: 100%; height: 100%; object-fit: cover; }
+.folio-logo { display: flex; align-items: center; justify-content: center; box-sizing: border-box; width: 100%; height: 100%; padding: 10% 16%; background: var(--surface-strong); overflow: hidden; }
+.folio-logo img { width: 100%; height: 100%; object-fit: contain; }
+.folio-logo.hk { background: #0C0E18; } /* logo Hikimori dirancang untuk latar gelap */
+.thumb.folio-logo { aspect-ratio: 4 / 3; height: auto; }

@@ -10,6 +10,7 @@ import {
 } from '../content/derive';
 import type { Experience, Certificate, Reference } from '../content/types';
 import { CvDownloadButton } from '../cv/CvButton';
+import FolioCover from '../components/FolioCover';
 import { downloadUrl } from '../utils/saveFile';
 import { mailLink } from '../utils/mailLink';
 
@@ -599,7 +600,7 @@ const FolioCard: React.FC = () => {
             <div className="folio-track" style={{ animationDuration: `${Math.max(24, list.length * 7)}s`, animationName: list.length > 1 ? undefined : 'none' }}>
               {loop.map((p, i) => (
                 <Link key={`${p.id}-${i}`} to={`/portofolio/${p.id}`} className="folio-slide" aria-hidden={i >= list.length || undefined} tabIndex={i >= list.length ? -1 : undefined}>
-                  <div className="folio-img">{p.imageUrl ? <img src={cld(p.imageUrl, 640)} alt={i < list.length ? p.title : ''} loading="lazy" decoding="async" /> : <Icon name="grid" />}</div>
+                  <div className="folio-img"><FolioCover item={p} className="folio-cover" alt={i < list.length ? p.title : ''} /></div>
                   <div className="folio-body">
                     <span className="folio-meta">{[p.category, p.year].filter(Boolean).join(' · ')}</span>
                     <span className="folio-title">{p.title}</span>
