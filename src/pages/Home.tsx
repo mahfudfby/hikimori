@@ -33,10 +33,6 @@ const DashTop: React.FC = () => {
       <div style={{ minWidth: 0 }}>
         <h1 className="h-hero">{nameMain}{nameDeg && <span className="hero-deg">{nameDeg}</span>}</h1>
         <p className="hero-sub">{pick(content.profile.title, lang)} · {content.profile.location.split(',')[0]}</p>
-        <div className="hero-cta">
-          <CvDownloadButton className="pill dark" label={t('Unduh CV', 'Download CV')} />
-          <a className="pill white" href={waLink(content, lang)} target="_blank" rel="noreferrer"><Icon name="chat" size={16} />{t('Hubungi', 'Contact')}</a>
-        </div>
         <div className="xs faint mt-24">{t('Komposisi pengalaman profesional', 'Professional experience mix')}</div>
         <div className="dash-pills mt-8" style={{ ['--cols' as any]: share.map(s => `${Math.max(2, Math.round(s.pct / 7))}fr`).join(' ') }}>
           {share.map((s, i) => (
@@ -269,11 +265,73 @@ const AgeCard: React.FC = () => {
 };
 
 /* ───────── Pencapaian: angka-angka yang menjual (pengganti kartu Usia, bisa diatur di CMS) ───────── */
-const MAX_ACH = 4;
+/** Gulir otomatis pelan ke atas (kredit film). Kursor / sentuh / fokus = berhenti; roda mouse & geser jari = gulir manual
+ *  naik-turun untuk melihat yang sudah lewat. Isi digandakan → posisi dibungkus agar putaran tak pernah habis. */
+const useCreditRoll = (count: number) => {
+  const ref = useRef<HTMLDivElement>(null);
+  // Jumlah salinan daftar: cukup untuk mengisi kartu + satu cadangan, agar daftar pendek pun tetap bisa bergulir terus
+  const [reps, setReps] = useState(2);
+  useEffect(() => {
+    const el = ref.current; if (!el || !count) return;
+    const one = () => (el.firstElementChild as HTMLElement | null)?.offsetHeight || 0;
+    const need = () => (one() ? Math.max(2, Math.ceil(el.clientHeight / one()) + 1) : 2);
+    if (need() !== reps) { setReps(need()); return; }
+    // Ukur ulang saat kartu berubah ukuran (kartu dimuat bertahap / layar diputar)
+    const ro = new ResizeObserver(() => { if (need() !== reps) setReps(need()); });
+    ro.observe(el);
+    const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    let pos = 0, last = 0, raf = 0, hold = false, resumeAt = 0;
+    const half = one; // satu putaran = tinggi satu salinan daftar
+    const wrap = () => { // tetap di salinan pertama: atas ↔ bawah menyambung mulus
+      const h = half(); if (reduce || !h || el.scrollHeight - el.clientHeight < h) return;
+      if (el.scrollTop > h) el.scrollTop -= h; else if (el.scrollTop < 1) el.scrollTop += h - 1;
+    };
+    const onScroll = () => { wrap(); if (Math.abs(el.scrollTop - pos) > 1) pos = el.scrollTop; }; // gulir manual
+    const pause = () => { hold = true; };
+    const resume = (ms = 0) => { hold = false; resumeAt = performance.now() + ms; };
+    const onLeave = () => resume(); const onTouchEnd = () => resume(2500);
+    const tick = (now: number) => {
+      const dt = last ? Math.min(.1, (now - last) / 1000) : 0; last = now;
+      if (!hold && now >= resumeAt && document.visibilityState === 'visible') {
+        const h = half();
+        pos += (h / (count * 4.5)) * dt; // 4,5 detik per baris
+        if (pos >= h) pos -= h;
+        el.scrollTop = pos;
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    el.addEventListener('scroll', onScroll, { passive: true });
+    el.addEventListener('mouseenter', pause); el.addEventListener('mouseleave', onLeave);
+    el.addEventListener('focusin', pause); el.addEventListener('focusout', onLeave);
+    el.addEventListener('touchstart', pause, { passive: true }); el.addEventListener('touchend', onTouchEnd, { passive: true });
+    if (!reduce) raf = requestAnimationFrame(tick);
+    return () => {
+      cancelAnimationFrame(raf);
+      ro.disconnect();
+      el.removeEventListener('scroll', onScroll);
+      el.removeEventListener('mouseenter', pause); el.removeEventListener('mouseleave', onLeave);
+      el.removeEventListener('focusin', pause); el.removeEventListener('focusout', onLeave);
+      el.removeEventListener('touchstart', pause); el.removeEventListener('touchend', onTouchEnd);
+    };
+  }, [count, reps]);
+  return { ref, reps };
+};
+
 const AchievementsCard: React.FC = () => {
   const { content } = useContent();
   const { lang, t } = useLang();
-  const list = content.achievements.slice(0, MAX_ACH);
+  const list = content.achievements;
+  const { ref: roll, reps } = useCreditRoll(list.length);
+  const item = (a: typeof list[number], dup?: boolean) => {
+    const [role, company] = (a.job || '').split(/\s+·\s+/); // "Posisi · Perusahaan" → dua baris
+    return (
+      <div className="ach-item" key={(dup ? 'b' : 'a') + a.id}>
+        <span className="ach-l">{pick(a.label, lang)}</span>
+        <span className="ach-v">{a.value}</span>
+        {a.job && <span className="ach-job"><b>{role}</b>{company && <span>{company}</span>}</span>}
+      </div>
+    );
+  };
   return (
     <div className="card b-onboard">
       <div className="card-head" style={{ alignItems: 'center' }}>
@@ -281,18 +339,10 @@ const AchievementsCard: React.FC = () => {
         <CardLink to="/pengalaman" label={t('Lihat pengalaman', 'See experience')} />
       </div>
       {list.length === 0 ? <p className="xs faint">{t('Tambahkan pencapaian di CMS → Profil.', 'Add highlights in CMS → Profile.')}</p> : (
-        <ul className="ach-list">
-          {list.map(a => {
-            const [role, company] = (a.job || '').split(/\s+·\s+/); // "Posisi · Perusahaan"
-            return (
-              <li className="ach-item" key={a.id}>
-                <span className="ach-v">{a.value}</span>
-                <span className="ach-l">{pick(a.label, lang)}</span>
-                {a.job && <span className="ach-job">{role}{company && <> · {company}</>}</span>}
-              </li>
-            );
-          })}
-        </ul>
+        <div className="ach-roll" ref={roll} tabIndex={0} aria-label={t('Daftar yang pernah ditangani', 'Previously handled list')}>
+          <div className="ach-list">{list.map(a => item(a))}</div>
+          {Array.from({ length: reps - 1 }, (_, k) => <div key={k} className="ach-list ach-dup" aria-hidden="true">{list.map(a => item(a, true))}</div>)}
+        </div>
       )}
     </div>
   );
@@ -600,7 +650,7 @@ const Home: React.FC = () => {
         <div className="row wrap gap-8">
           <a className="pill yellow lg" href={waLink(content, lang)} target="_blank" rel="noreferrer"><Icon name="chat" />{t('Chat WhatsApp', 'Chat on WhatsApp')}</a>
           <Link className="pill lg" to="/kontak" style={{ borderColor: 'var(--ink-2)', color: 'var(--on-ink)' }}><Icon name="mail" />{t('Kontak', 'Contact')}</Link>
-          <CvDownloadButton className="pill lg" label="CV" style={{ borderColor: 'var(--ink-2)', color: 'var(--on-ink)' }} />
+          <CvDownloadButton className="pill lg" label={t('Unduh CV', 'Download CV')} style={{ borderColor: 'var(--ink-2)', color: 'var(--on-ink)' }} />
         </div>
       </Reveal>
     </main>

@@ -1039,12 +1039,17 @@ textarea.input { resize: vertical; overflow: hidden; min-height: 2.6em; }
 :where(#root) :where(h1, h2, h3, .h-page, .h-card, .h-2, .h-sm) { text-wrap: balance; }
 :where(.center, .empty, .share-box, .mag-head, .mag-quote, .mag-figure, .mfe-empty) p { text-align: inherit; }
 
-/* Pernah Menangani: daftar KPI statis (maks. 4), angka di atas, keterangan di bawah */
+/* Pernah Menangani: daftar bergulir naik seperti kredit akhir film (JS: useCreditRoll di Home.tsx) */
 .b-onboard { display: flex; flex-direction: column; }
-ul.ach-list { list-style: none; margin: 0; padding: 0; gap: 0; }
-ul.ach-list .ach-item { padding: 12px 0; }
-ul.ach-list .ach-v { font-size: 1.6rem; font-weight: 300; letter-spacing: -0.02em; line-height: 1.1; }
-.ach-job { font-size: .72rem; line-height: 1.35; color: var(--text-3, var(--text-2)); margin-top: 2px; }
+.ach-roll { position: relative; flex: 1 1 0; min-height: 300px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; outline: none; contain: size; /* isi tidak ikut menentukan tinggi kartu */
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 88%, transparent); mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 88%, transparent); }
+.ach-roll::-webkit-scrollbar { display: none; }
+.ach-roll .ach-list { gap: 0; }
+.ach-roll .ach-item, .ach-roll .ach-item:last-child { padding: 12px 0; border-bottom: 1px solid var(--line); border-radius: 10px; transition: background .2s, padding .2s; }
+.ach-roll .ach-item:hover { background: var(--surface-solid); padding-left: 10px; padding-right: 10px; }
+.ach-job { display: flex; flex-direction: column; align-self: flex-start; margin-top: 4px; padding: 4px 10px; border-radius: 10px; border: 1px solid var(--line-2); background: var(--surface-solid); font-size: .68rem; line-height: 1.35; color: var(--text-2); }
+.ach-job b { font-weight: 600; color: var(--text); }
+@media (prefers-reduced-motion: reduce) { .ach-roll { -webkit-mask-image: none; mask-image: none; } .ach-dup { display: none; } }
 
 /* CMS di ponsel: bar aksi ringkas, tidak transparan (isi form tidak tembus), tombol satu baris penuh */
 @media (max-width: 680px) {
@@ -1069,8 +1074,6 @@ img[src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAA
 .dur-top .logo-box .logo-ico { width: 36px; height: 36px; }
 .task .ico { color: var(--on-ink); }
 
-/* Tombol aksi utama di bawah nama (Unduh CV / Hubungi) */
-.hero-cta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
 
 
 /* Hero kanan: status tersedia + LinkedIn di atas angka besar */
