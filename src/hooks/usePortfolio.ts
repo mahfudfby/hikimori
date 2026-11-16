@@ -54,6 +54,15 @@ export interface PortfolioItem {
 
 const fsMod = () => import('firebase/firestore');
 
+/** Backup: semua proyek (baca publik via REST). */
+export const listPortfolio = () => listCollectionRest('portfolio');
+
+/** Pulihkan dari backup: tulis ulang tiap proyek dengan id aslinya (yang id-nya sama ditimpa). */
+export const restorePortfolio = async (items: PortfolioItem[]) => {
+  const [db, fs] = await Promise.all([getDb(), fsMod()]);
+  await Promise.all(items.map(({ id, ...rest }) => fs.setDoc(fs.doc(db, 'portfolio', id), rest)));
+};
+
 const normalize = (v: any, id: string): PortfolioItem =>
   ({ tags: [], featured: false, order: 0, link: '', subtitle: '', videoUrl: '', blocks: [], hashtags: [], seoTitle: '', seoDesc: '', keywords: [], ...v, id } as PortfolioItem);
 

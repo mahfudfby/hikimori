@@ -19,7 +19,7 @@ export const CvDownloadButton: React.FC<{ className?: string; label?: string; st
   if (!/^(https:\/\/|\/(?!\/))/i.test(file)) return null; // kosong / bukan https / bukan jalur lokal: jangan tampilkan tombol buntu
   const local = file.startsWith('/') && !file.startsWith('//');
   return (
-    <a href={file} className={className} style={style}
+    <a href={file} className={className} style={style} data-track="Unduh CV"
       {...(local ? { download: '' } : { target: '_blank', rel: 'noopener noreferrer' })}>
       {body}
     </a>

@@ -15,6 +15,7 @@ import { pick, monthsOf, fmtDuration, CATEGORY_LABEL } from '../content/derive';
 import type { SiteContent, Experience, Certificate, Skill, Service, Education, JourneyStep, Organization, Reference, Tool, ProcessStep, Achievement, Award } from '../content/types';
 import { Text, Select, Toggle, BiField, BiLines, BiPoints, BiBulletText, Tags, ImageInput, ListEditor, Grid, Section, EditPageActions, uid } from './fields';
 import PortfolioAdmin from './PortfolioAdmin';
+import { listPortfolio, restorePortfolio } from '../hooks/usePortfolio';
 
 const DRAFT_KEY = 'hk_cms_draft';
 const eb = () => ({ id: '', en: '' });
@@ -367,15 +368,22 @@ Tetap publikasikan dan TIMPA versi tersebut?
       default: return (
         <Section title="Backup, import & reset">
           <div className="row wrap gap-8">
-            <button className="pill dark" onClick={() => {
-              const blob = new Blob([JSON.stringify(draft, null, 2)], { type: 'application/json' });
-              saveFile(blob, `hikimori-konten-${new Date().toISOString().slice(0, 10)}.json`);
+            <button className="pill dark" onClick={async () => {
+              let portfolio: unknown[] = [];
+              try { portfolio = await listPortfolio(); } catch { toast.error('Portofolio gagal diambil: backup hanya berisi konten'); }
+              const blob = new Blob([JSON.stringify({ ...draft, portfolio }, null, 2)], { type: 'application/json' });
+              saveFile(blob, `hikimori-backup-${new Date().toISOString().slice(0, 10)}.json`);
             }}><Icon name="download" size={15} />Unduh backup (.json)</button>
             <label className="pill" style={{ cursor: 'pointer' }}><Icon name="upload" size={15} />Import backup
               <input type="file" accept="application/json" hidden onChange={async e => {
                 const f = e.target.files?.[0]; if (!f) return;
-                try { const data = JSON.parse(await f.text()); setDraft(mergeContent(data)); setRev(r => r + 1); toast.success('Backup dimuat ke draft — tekan Publikasikan untuk menyimpan'); }
-                catch { toast.error('File tidak valid'); }
+                try {
+                  const { portfolio, ...data } = JSON.parse(await f.text());
+                  if (Array.isArray(portfolio) && portfolio.length && window.confirm(`Backup berisi ${portfolio.length} proyek portofolio. Pulihkan sekarang? Proyek dengan id yang sama akan ditimpa dan langsung live.`)) {
+                    await restorePortfolio(portfolio); toast.success(`${portfolio.length} proyek portofolio dipulihkan`);
+                  }
+                  setDraft(mergeContent(data)); setRev(r => r + 1);toast.success('Backup dimuat ke draft — tekan Publikasikan untuk menyimpan'); }
+                catch (err: any) { toast.error(err instanceof SyntaxError ? 'File tidak valid' : `Gagal memulihkan: ${err?.message || err}`); }
                 e.target.value = '';
               }} />
             </label>
@@ -383,7 +391,7 @@ Tetap publikasikan dan TIMPA versi tersebut?
               if (window.confirm('Ganti seluruh draft dengan konten bawaan? (Belum tersimpan sampai kamu Publikasikan)')) { setDraft({ ...DEFAULT_CONTENT }); setRev(r => r + 1); }
             }}><Icon name="trash" size={15} />Reset ke bawaan</button>
           </div>
-          <p className="xs muted">Backup berisi seluruh konten teks & link gambar (portofolio disimpan terpisah di koleksi Firestore “portfolio”).</p>
+          <p className="xs muted">Backup berisi seluruh konten teks, link gambar, dan semua artikel portofolio. Import: konten masuk ke draft (live setelah Publikasikan); portofolio dipulihkan langsung setelah konfirmasi.</p>
           <div className="stack gap-8" style={{ borderTop: '1px dashed var(--line-2)', paddingTop: 16 }}>
             <div className="row between wrap gap-8">
               <div><div className="h-sm">Riwayat publikasi</div><div className="xs muted">Setiap kali Publikasikan, versinya disimpan otomatis. Pulihkan = muat ke draft (belum live sampai dipublikasikan).</div></div>
