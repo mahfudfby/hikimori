@@ -1121,7 +1121,8 @@ html.cms-page-open, html.cms-page-open body { overflow: hidden; }
   .cms-item.paged .cms-edit-btn { margin-left: auto; }
 }
 .modal-backdrop { animation: modalFade 200ms var(--ease-out) both; }
-.modal-backdrop.closing { animation: modalFade 200ms var(--ease-out) reverse both; pointer-events: none; }
+.modal-backdrop.closing { animation: modalFadeOut 200ms var(--ease-out) both; pointer-events: none; }
 .modal-backdrop.closing > .card { animation: modalOut 200ms var(--ease-out) both; }
 @keyframes modalFade { from { opacity: 0; } }
+@keyframes modalFadeOut { to { opacity: 0; } }
 @keyframes modalOut { to { opacity: 0; transform: translateY(8px) scale(0.97); } }
