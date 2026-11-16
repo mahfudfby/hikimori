@@ -222,6 +222,14 @@ export const useTitle = (title: string) => {
 };
 
 export const Modal: React.FC<{ open: boolean; onClose: () => void; children: React.ReactNode; label: string }> = ({ open, onClose, children, label }) => {
+  const [shown, setShown] = useState(open); const [closing, setClosing] = useState(false);
+  useEffect(() => {
+    if (open) { setShown(true); setClosing(false); return; }
+    if (!shown) return;
+    setClosing(true);
+    const id = window.setTimeout(() => { setShown(false); setClosing(false); }, 200);
+    return () => window.clearTimeout(id);
+  }, [open]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (!open) return;
     const k = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
@@ -229,10 +237,10 @@ export const Modal: React.FC<{ open: boolean; onClose: () => void; children: Rea
     const prev = document.body.style.overflow; document.body.style.overflow = 'hidden';
     return () => { document.removeEventListener('keydown', k); document.body.style.overflow = prev; };
   }, [open, onClose]);
-  if (!open) return null;
+  if (!shown) return null;
   // Portal ke <body>: di dalam halaman beranimasi (transform) posisi fixed terjebak di bawah Navbar/footer
   return createPortal(
-    <div role="dialog" aria-modal="true" aria-label={label} onClick={onClose}
+    <div role="dialog" aria-modal="true" aria-label={label} onClick={onClose} className={`modal-backdrop${closing ? ' closing' : ''}`}
       style={{ position: 'fixed', inset: 0, zIndex: 100, background: 'rgba(20,18,12,0.55)', backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
       <div className="card solid page-in" onClick={e => e.stopPropagation()} style={{ width: 'min(860px, 100%)', maxHeight: '90vh', overflow: 'auto' }}>
         <div className="row" style={{ justifyContent: 'flex-end' }}><button className="icon-btn" onClick={onClose} aria-label="Close"><Icon name="close" /></button></div>
