@@ -6,7 +6,7 @@ import { Icon } from '../components/ui';
 import { parseEmbed, isTikTokShort, resolveTikTok, mediaKind } from '../utils/embed';
 import { MediaFrameEditor } from './MediaFrameEditor';
 import { RichEditor } from './RichEditor';
-import { Text, Area, Tags, ImageInput, Toggle, Grid, Section, Select, ListEditor, uid } from './fields';
+import { Text, Area, Tags, ImageInput, Toggle, Grid, Section, Select, ListEditor, EditPage, closeEditPage, uid } from './fields';
 
 type Draft = Omit<PortfolioItem, 'id'> & { id?: string };
 const EMPTY: Draft = { title: '', subtitle: '', videoUrl: '', blocks: [], category: '', description: '', imageUrl: '', tags: [], hashtags: [], seoTitle: '', seoDesc: '', keywords: [], client: '', year: String(new Date().getFullYear()), link: '', featured: false, order: 0 };
@@ -175,7 +175,7 @@ const PortfolioAdmin: React.FC = () => {
       const { id, ...data } = edit;
       if (id) await updateItem(id, data); else await addItem({ ...data, order: items.length });
       toast.success('Proyek tersimpan & live');
-      setEdit(null);
+      closeEditPage(() => setEdit(null));
     } catch (e: any) { toast.error('Gagal: ' + (e?.code || e?.message)); }
     finally { setBusy(false); }
   };
@@ -186,8 +186,10 @@ const PortfolioAdmin: React.FC = () => {
     catch { toast.error('Gagal mengurutkan'); }
   };
 
-  if (edit) return (
-    <Section title={edit.id ? 'Edit proyek' : 'Proyek baru'} actions={<button className="pill sm" onClick={() => setEdit(null)}>Batal</button>}>
+  const editor = edit && (
+    <EditPage title={edit.title || (edit.id ? 'Edit proyek' : 'Proyek baru')} sub="Portofolio" onClose={() => setEdit(null)}
+      actions={<button className="pill dark sm" onClick={save} disabled={busy}><Icon name="save" size={14} />{busy ? 'Menyimpan…' : 'Simpan'}</button>}>
+    <Section title={edit.id ? 'Edit proyek' : 'Proyek baru'} actions={<button className="pill sm" onClick={() => closeEditPage(() => setEdit(null))}>Batal</button>}>
       <Grid>
         <Text label="Judul / headline" value={edit.title} onChange={v => setEdit({ ...edit, title: v })} />
         <Text label="Kategori (mis. HR, IT Support, Desain)" value={edit.category} onChange={v => setEdit({ ...edit, category: v })} />
@@ -227,9 +229,11 @@ const PortfolioAdmin: React.FC = () => {
       <Toggle label="Unggulan (tampil paling depan & kartu gelap)" value={edit.featured} onChange={v => setEdit({ ...edit, featured: v })} />
       <div className="row gap-8"><button className="pill dark" onClick={save} disabled={busy}><Icon name="save" size={15} />{busy ? 'Menyimpan…' : 'Simpan proyek'}</button></div>
     </Section>
+    </EditPage>
   );
 
-  return (
+  return (<>
+    {editor}
     <Section title="Portofolio" desc="Proyek disimpan langsung ke Firestore — tidak perlu menekan Publikasikan."
       actions={<button className="pill dark sm" onClick={() => setEdit({ ...EMPTY })}><Icon name="plus" size={14} />Proyek baru</button>}>
       {loading ? <div className="spinner" /> : error ? <div className="empty">{error}</div> : items.length === 0 ? <div className="empty">Belum ada proyek.</div> : (
@@ -248,7 +252,7 @@ const PortfolioAdmin: React.FC = () => {
         </div>
       )}
     </Section>
-  );
+  </>);
 };
 
 export default PortfolioAdmin;

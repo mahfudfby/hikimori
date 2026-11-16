@@ -202,7 +202,7 @@ Tetap publikasikan dan TIMPA versi tersebut?
       case 'exp': return (
         <Section title="Pengalaman kerja" desc="Tampil di grafik Progress & slideshow Deskripsi Kerja (dashboard) dan /pengalaman. Baris diawali “•” = bullet."
           actions={<button className="pill sm" onClick={() => set('experience', [...draft.experience].sort((a, b) => (b.start || '').localeCompare(a.start || '')))}>Urutkan terbaru</button>}>
-          <ListEditor<Experience> items={draft.experience} onChange={v => set('experience', v)} addLabel="Tambah pengalaman"
+          <ListEditor<Experience> items={draft.experience} page="Pengalaman kerja" onChange={v => set('experience', v)} addLabel="Tambah pengalaman"
             create={() => ({ id: uid('e'), position: eb(), company: '', industry: eb(), location: '', start: '', end: '', type: 'Full-time', category: 'other', logoUrl: '', tags: [], desc: eb() })}
             title={e => <>{pick(e.position, 'id')} <span className="faint">· {e.company} · {fmtDuration(monthsOf(e.start, e.end), 'id', true)}</span></>}
             render={(e, up) => (<>
@@ -276,7 +276,7 @@ Tetap publikasikan dan TIMPA versi tersebut?
 
       case 'cert': return (
         <Section title="Sertifikat & lisensi" desc="Kategori “Lisensi” diberi tanda centang kuning di kartu dashboard. Upload gambar agar bisa dipreview pengunjung.">
-          <ListEditor<Certificate> items={draft.certificates} onChange={v => set('certificates', v)} addLabel="Tambah sertifikat"
+          <ListEditor<Certificate> items={draft.certificates} page="Sertifikat & lisensi" onChange={v => set('certificates', v)} addLabel="Tambah sertifikat"
             create={() => ({ id: uid('c'), name: eb(), issuer: '', code: '', category: 'training', year: '', imageUrl: '', imageUrl2: '', credentialUrl: '', desc: eb(), units: [] })}
             title={c => <>{pick(c.name, 'id')} <span className="faint">· {c.year}</span></>}
             render={(c, up) => (<>
@@ -347,7 +347,7 @@ Tetap publikasikan dan TIMPA versi tersebut?
           <BiField label="Template pesan WhatsApp" value={draft.contact.waTemplate} onChange={v => set('contact', { ...draft.contact, waTemplate: v })} area rows={2} />
         </Section>
         <Section title="Referensi & surat keterangan kerja" desc="Tampil sebagai kartu “Surat Pengalaman Kerja” di dashboard. Upload scan surat agar bisa dilihat pengunjung.">
-          <ListEditor<Reference> items={draft.references} onChange={v => set('references', v)} addLabel="Tambah referensi"
+          <ListEditor<Reference> items={draft.references} page="Referensi / SKK" onChange={v => set('references', v)} addLabel="Tambah referensi"
             create={() => ({ id: uid('r'), name: '', role: eb(), company: '', note: eb() })}
             title={r => `${r.name} — ${r.company}`}
             render={(r, up) => (<>

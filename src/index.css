@@ -1093,3 +1093,21 @@ img[src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAA
 .folio-logo img { width: 100%; height: 100%; object-fit: contain; }
 .folio-logo.hk { background: #0C0E18; } /* logo Hikimori dirancang untuk latar gelap */
 .thumb.folio-logo { aspect-ratio: 4 / 3; height: auto; }
+
+/* CMS: halaman edit terpisah (layar penuh) untuk satu item */
+html.cms-page-open, html.cms-page-open body { overflow: hidden; }
+.cms-page { position: fixed; inset: 0; z-index: 300; display: flex; flex-direction: column; background: var(--page-b); }
+.cms-page-head { display: flex; align-items: center; gap: 10px; padding: calc(10px + env(safe-area-inset-top)) clamp(12px, 3vw, 28px) 10px; border-bottom: 1px solid var(--line); background: color-mix(in srgb, var(--page-b) 92%, transparent); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+.cms-page-title { font-weight: 600; font-size: 1rem; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cms-page-sub { text-transform: uppercase; letter-spacing: .06em; font-size: .66rem; }
+.cms-page-body { flex: 1; overflow-y: auto; overscroll-behavior: contain; padding: 18px clamp(12px, 3vw, 28px) calc(60px + env(safe-area-inset-bottom)); }
+.cms-page-body > * { max-width: 860px; margin-left: auto; margin-right: auto; }
+.cms-page-form { margin: 0 auto; border: 0; background: none; padding: 0; }
+.cms-edit-btn { flex: 0 0 auto; pointer-events: none; }
+@media (max-width: 560px) { .cms-page-head .row.gap-4 .xs { display: none; } }
+/* Layar sempit: judul item satu baris penuh, tombol Edit/urut/hapus di bawahnya */
+@media (max-width: 560px) {
+  .cms-item.paged > .row { flex-wrap: wrap; }
+  .cms-item.paged .cms-item-head { flex: 1 1 100%; }
+  .cms-item.paged .cms-edit-btn { margin-left: auto; }
+}

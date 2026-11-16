@@ -1,5 +1,6 @@
 // src/admin/fields.tsx — komponen form CMS (tanpa coding: semua konten diedit lewat ini).
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import toast from 'react-hot-toast';
 import { Icon } from '../components/ui';
 import { uploadToCloudinary } from '../utils/cloudinaryUpload';
@@ -168,8 +169,51 @@ export const ImageInput: React.FC<{ label: string; value: string; onChange: (v: 
   );
 };
 
+/** Tutup halaman edit lewat riwayat (sekaligus membuang entri Back-nya); tanpa entri → panggil fallback. */
+export const closeEditPage = (fallback: () => void) => { if (window.history.state?.cmsEdit) window.history.back(); else fallback(); };
+
+/** Halaman edit terpisah (layar penuh) untuk satu item. Tombol Back HP/browser = kembali ke daftar.
+ *  Isi tetap tersimpan ke draf yang sama (autosave), jadi tidak ada yang hilang saat kembali. */
+export const EditPage: React.FC<{ title: React.ReactNode; sub?: React.ReactNode; onClose: () => void; actions?: React.ReactNode; nav?: { prev?: () => void; next?: () => void; pos: string }; children: React.ReactNode }> =
+  ({ title, sub, onClose, actions, nav, children }) => {
+    const closeRef = useRef(onClose); closeRef.current = onClose;
+    useEffect(() => {
+      // satu entri riwayat per halaman edit → tombol Back menutup halaman, bukan keluar dari CMS (cek state: aman di StrictMode)
+      if (!window.history.state?.cmsEdit) window.history.pushState({ ...window.history.state, cmsEdit: true }, '');
+      const onPop = () => { if (!window.history.state?.cmsEdit) closeRef.current(); };
+      window.addEventListener('popstate', onPop);
+      const root = document.documentElement; root.classList.add('cms-page-open');
+
+      return () => { window.removeEventListener('popstate', onPop); root.classList.remove('cms-page-open'); };
+    }, []);
+    const back = () => closeEditPage(onClose);
+    const bodyRef = useRef<HTMLDivElement>(null);
+    useEffect(() => { if (bodyRef.current) bodyRef.current.scrollTop = 0; }, [nav?.pos]);
+    return createPortal(
+      <div className="cms-page" role="dialog" aria-modal="true">
+        <header className="cms-page-head">
+          <button type="button" className="icon-btn" onClick={back} aria-label="Kembali ke daftar"><Icon name="left" size={18} /></button>
+          <div className="grow" style={{ minWidth: 0 }}>
+            <div className="cms-page-title">{title}</div>
+            {sub && <div className="xs muted cms-page-sub">{sub}</div>}
+          </div>
+          {nav && (
+            <div className="row gap-4">
+              <button type="button" className="icon-btn sm" onClick={nav.prev} disabled={!nav.prev} aria-label="Item sebelumnya"><Icon name="left" size={14} /></button>
+              <span className="xs faint" style={{ minWidth: 34, textAlign: 'center' }}>{nav.pos}</span>
+              <button type="button" className="icon-btn sm" onClick={nav.next} disabled={!nav.next} aria-label="Item berikutnya"><Icon name="right" size={14} /></button>
+            </div>
+          )}
+          {actions ?? <button type="button" className="pill dark sm" onClick={back}><Icon name="check" size={14} />Selesai</button>}
+        </header>
+        <div className="cms-page-body" ref={bodyRef}>{children}</div>
+      </div>,
+      document.body,
+    );
+  };
+
 /** Editor daftar generik: tambah, hapus, duplikat, urutkan naik/turun, buka-tutup item. */
-export function ListEditor<T extends { id: string }>({ items, onChange, create, title, render, addLabel = 'Tambah', extraAdd = [] }: {
+export function ListEditor<T extends { id: string }>({ items, onChange, create, title, render, addLabel = 'Tambah', extraAdd = [], page }: {
   items: T[];
   onChange: (items: T[]) => void;
   create: () => T;
@@ -178,6 +222,8 @@ export function ListEditor<T extends { id: string }>({ items, onChange, create, 
   addLabel?: string;
   /** tombol tambah lain (mis. per jenis blok); item baru langsung terbuka */
   extraAdd?: { label: string; icon: string; create: () => T }[];
+  /** isi item dibuka di halaman edit terpisah (layar penuh), bukan dilipat di dalam daftar */
+  page?: string;
 }) {
   const [open, setOpen] = useState<string | null>(null);
   const add = (n: T) => { onChange([...items, n]); setOpen(n.id); };
@@ -188,14 +234,14 @@ export function ListEditor<T extends { id: string }>({ items, onChange, create, 
   return (
     <div className="stack gap-8">
       {items.map((it, i) => {
-        const isOpen = open === it.id;
+        const isOpen = !page && open === it.id;
         return (
-          <div key={it.id} className={`cms-item${isOpen ? ' open' : ''}`}>
+          <div key={it.id} className={`cms-item${isOpen ? ' open' : ''}${page ? ' paged' : ''}`}>
             <div className="row gap-8">
-              <button type="button" className="grow row gap-8 cms-item-head" onClick={() => setOpen(isOpen ? null : it.id)} aria-expanded={isOpen}>
+              <button type="button" className="grow row gap-8 cms-item-head" onClick={() => setOpen(isOpen ? null : it.id)} aria-expanded={page ? undefined : isOpen}>
                 <span className="xs faint" style={{ width: 22 }}>{i + 1}</span>
                 <span className="grow small" style={{ textAlign: 'left', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{title(it, i) || <em className="faint">(tanpa judul)</em>}</span>
-                <Icon name={isOpen ? 'up' : 'down'} size={15} />
+                {page ? <span className="pill sm dark cms-edit-btn"><Icon name="gear" size={13} />Edit</span> : <Icon name={isOpen ? 'up' : 'down'} size={15} />}
               </button>
               <button type="button" className="icon-btn sm" onClick={() => move(i, -1)} disabled={i === 0} aria-label="Naik"><Icon name="up" size={14} /></button>
               <button type="button" className="icon-btn sm" onClick={() => move(i, 1)} disabled={i === items.length - 1} aria-label="Turun"><Icon name="down" size={14} /></button>
@@ -206,6 +252,17 @@ export function ListEditor<T extends { id: string }>({ items, onChange, create, 
           </div>
         );
       })}
+      {page && open && (() => {
+        const i = items.findIndex(x => x.id === open);
+        if (i < 0) return null;
+        const it = items[i];
+        return (
+          <EditPage title={title(it, i) || `${page} baru`} sub={page} onClose={() => setOpen(null)}
+            nav={{ pos: `${i + 1}/${items.length}`, prev: i > 0 ? () => setOpen(items[i - 1].id) : undefined, next: i < items.length - 1 ? () => setOpen(items[i + 1].id) : undefined }}>
+            <div className="cms-item-body cms-page-form">{render(it, patch => onChange(items.map(x => (x.id === it.id ? { ...x, ...patch } : x))))}</div>
+          </EditPage>
+        );
+      })()}
       <div className="row wrap gap-8">
         <button type="button" className="pill" onClick={() => add(create())}><Icon name="plus" size={15} />{addLabel}</button>
         {extraAdd.map(x => <button key={x.label} type="button" className="pill sm" onClick={() => add(x.create())}><Icon name={x.icon} size={13} />{x.label}</button>)}
