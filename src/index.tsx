@@ -5,6 +5,7 @@ import './index.css';
 import './utils/autosize';
 import './utils/autoHyphen';
 import App from './App';
+import { inject } from '@vercel/analytics';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
@@ -17,6 +18,9 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
 const introDone = () => (window as any).__hkIntroDone?.();
 requestAnimationFrame(() => requestAnimationFrame(introDone));
 setTimeout(introDone, 300);
+
+// Vercel Web Analytics (tanpa cookie): hitung kunjungan & halaman yang dibaca. Hanya production; halaman CMS tidak dihitung.
+if (import.meta.env.PROD) inject({ mode: 'production', beforeSend: e => (new URL(e.url).pathname.startsWith('/admin') ? null : e) });
 
 // Service worker (cache aset statis) — hanya di production build.
 if ('serviceWorker' in navigator && import.meta.env.PROD) {

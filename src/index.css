@@ -1108,7 +1108,7 @@ html.cms-page-open, html.cms-page-open body { overflow: hidden; }
 @keyframes cmsPageInWide { from { opacity: 0; transform: translateX(24px); } }
 .cms-page-head { display: flex; align-items: center; gap: 10px; padding: calc(10px + env(safe-area-inset-top)) clamp(12px, 3vw, 28px) 10px; border-bottom: 1px solid var(--line); background: color-mix(in srgb, var(--page-b) 92%, transparent); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
 .cms-page-title { font-weight: 600; font-size: 1rem; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.cms-page-sub { text-transform: uppercase; letter-spacing: .06em; font-size: .66rem; }
+.cms-page-sub { text-transform: uppercase; letter-spacing: .06em; font-size: .66rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .cms-page-body { flex: 1; overflow-y: auto; overscroll-behavior: contain; padding: 18px clamp(12px, 3vw, 28px) calc(60px + env(safe-area-inset-bottom)); }
 .cms-page-body > * { max-width: 860px; margin-left: auto; margin-right: auto; }
 .cms-page-form { margin: 0 auto; border: 0; background: none; padding: 0; }
@@ -1126,3 +1126,6 @@ html.cms-page-open, html.cms-page-open body { overflow: hidden; }
 @keyframes modalFade { from { opacity: 0; } }
 @keyframes modalFadeOut { to { opacity: 0; } }
 @keyframes modalOut { to { opacity: 0; transform: translateY(8px) scale(0.97); } }
+/* Tombol Publikasikan di header halaman edit: ringkas (ikon saja) di layar sempit */
+.cms-pub-btn { flex: 0 0 auto; }
+@media (max-width: 560px) { .cms-pub-btn span { display: none; } .cms-pub-btn { padding-left: 10px; padding-right: 10px; } }

@@ -1,5 +1,5 @@
 // src/admin/fields.tsx — komponen form CMS (tanpa coding: semua konten diedit lewat ini).
-import React, { useEffect, useRef, useState } from 'react';
+import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import toast from 'react-hot-toast';
 import { Icon } from '../components/ui';
@@ -169,6 +169,9 @@ export const ImageInput: React.FC<{ label: string; value: string; onChange: (v: 
   );
 };
 
+/** Tombol tambahan di header halaman edit (mis. Publikasikan dari AdminPanel), dipasang lewat Provider. */
+export const EditPageActions = createContext<React.ReactNode>(null);
+
 /** Tutup halaman edit lewat riwayat (sekaligus membuang entri Back-nya); tanpa entri → panggil fallback. */
 export const closeEditPage = (fallback: () => void) => { if (window.history.state?.cmsEdit) window.history.back(); else fallback(); };
 
@@ -177,6 +180,7 @@ export const closeEditPage = (fallback: () => void) => { if (window.history.stat
 export const EditPage: React.FC<{ title: React.ReactNode; sub?: React.ReactNode; onClose: () => void; actions?: React.ReactNode; nav?: { prev?: () => void; next?: () => void; pos: string }; children: React.ReactNode }> =
   ({ title, sub, onClose, actions, nav, children }) => {
     const closeRef = useRef(onClose); closeRef.current = onClose;
+    const extra = useContext(EditPageActions);
     useEffect(() => {
       // satu entri riwayat per halaman edit → tombol Back menutup halaman, bukan keluar dari CMS (cek state: aman di StrictMode)
       if (!window.history.state?.cmsEdit) window.history.pushState({ ...window.history.state, cmsEdit: true }, '');
@@ -204,7 +208,7 @@ export const EditPage: React.FC<{ title: React.ReactNode; sub?: React.ReactNode;
               <button type="button" className="icon-btn sm" onClick={nav.next} disabled={!nav.next} aria-label="Item berikutnya"><Icon name="right" size={14} /></button>
             </div>
           )}
-          {actions ?? <button type="button" className="pill dark sm" onClick={back}><Icon name="check" size={14} />Selesai</button>}
+          {actions ?? <>{extra}<button type="button" className="pill dark sm" onClick={back}><Icon name="check" size={14} />Selesai</button></>}
         </header>
         <div className="cms-page-body" ref={bodyRef}>{children}</div>
       </div>,

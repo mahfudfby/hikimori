@@ -13,7 +13,7 @@ import { saveFile } from '../utils/saveFile';
 import LogoMark from '../components/LogoMark';
 import { pick, monthsOf, fmtDuration, CATEGORY_LABEL } from '../content/derive';
 import type { SiteContent, Experience, Certificate, Skill, Service, Education, JourneyStep, Organization, Reference, Tool, ProcessStep, Achievement, Award } from '../content/types';
-import { Text, Select, Toggle, BiField, BiLines, BiPoints, BiBulletText, Tags, ImageInput, ListEditor, Grid, Section, uid } from './fields';
+import { Text, Select, Toggle, BiField, BiLines, BiPoints, BiBulletText, Tags, ImageInput, ListEditor, Grid, Section, EditPageActions, uid } from './fields';
 import PortfolioAdmin from './PortfolioAdmin';
 
 const DRAFT_KEY = 'hk_cms_draft';
@@ -148,7 +148,7 @@ Tetap publikasikan dan TIMPA versi tersebut?
           <Toggle label="Kartu dashboard: tampilkan bar Usia (mati = kartu Pernah Menangani)" value={p.showAgeCard} onChange={v => setP({ showAgeCard: v })} />
         </Section>
         <Section title="Pernah Menangani" desc="Angka-angka yang menjual — tampil bergulir di kartu Pernah Menangani di dashboard dan di halaman /profil. Isi angka singkat (mis. 121, -50%, 4j → <1j).">
-          <ListEditor<Achievement> items={draft.achievements} onChange={v => set('achievements', v)} addLabel="Tambah data"
+          <ListEditor<Achievement> items={draft.achievements} page="Pernah Menangani" onChange={v => set('achievements', v)} addLabel="Tambah data"
             create={() => ({ id: uid('a'), value: '', label: eb() })}
             title={a => <>{a.value} <span className="faint">· {pick(a.label, 'id')}</span></>}
             render={(a, up) => (<>
@@ -233,7 +233,7 @@ Tetap publikasikan dan TIMPA versi tersebut?
           <BiField label="Cerita pendidikan" value={draft.education.story} onChange={v => set('education', { ...draft.education, story: v })} area rows={9} />
         </Section>
         <Section title="Riwayat pendidikan" desc="Item pertama tampil di kartu Pendidikan dashboard.">
-          <ListEditor<Education> items={draft.education.items} onChange={v => set('education', { ...draft.education, items: v })} addLabel="Tambah pendidikan"
+          <ListEditor<Education> items={draft.education.items} page="Pendidikan" onChange={v => set('education', { ...draft.education, items: v })} addLabel="Tambah pendidikan"
             create={() => ({ id: uid('ed'), level: eb(), school: '', major: eb(), location: '', start: '', end: '', gpa: '', logoUrl: '', note: eb(), story: eb(), thesis: eb(), courses: [], highlights: [] })}
             title={e => `${pick(e.level, 'id')} ${pick(e.major, 'id')} — ${e.school}`}
             render={(e, up) => (<>
@@ -263,7 +263,7 @@ Tetap publikasikan dan TIMPA versi tersebut?
             </>)} />
         </Section>
         <Section title="Organisasi" desc="Tampil di /profil dan /pendidikan.">
-          <ListEditor<Organization> items={draft.organizations} onChange={v => set('organizations', v)} addLabel="Tambah organisasi"
+          <ListEditor<Organization> items={draft.organizations} page="Organisasi" onChange={v => set('organizations', v)} addLabel="Tambah organisasi"
             create={() => ({ id: uid('o'), name: eb(), role: eb(), period: '', points: [] })}
             title={o => `${pick(o.role, 'id')} — ${pick(o.name, 'id')}`}
             render={(o, up) => (<>
@@ -437,7 +437,13 @@ Tetap publikasikan dan TIMPA versi tersebut?
           {dirty && <button className="pill sm" onClick={discard}>Buang</button>}
           <button className="pill dark" onClick={publish} disabled={!dirty || saving}><Icon name="save" size={15} />{saving ? 'Menyimpan…' : 'Publikasikan'}</button>
         </div>
-        <div key={rev} className="stack gap-16 page-in">{body}</div>
+        {/* Publikasikan juga tersedia di header halaman edit terpisah */}
+        <EditPageActions.Provider value={
+          <button type="button" className="pill sm cms-pub-btn" onClick={publish} disabled={!dirty || saving} title={dirty ? 'Publikasikan semua perubahan' : 'Semua perubahan sudah dipublikasikan'}>
+            <Icon name="save" size={14} /><span>{saving ? 'Menyimpan…' : dirty ? 'Publikasikan' : 'Terpublikasi'}</span>
+          </button>}>
+          <div key={rev} className="stack gap-16 page-in">{body}</div>
+        </EditPageActions.Provider>
       </div>
     </div>
   );

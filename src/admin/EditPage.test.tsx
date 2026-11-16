@@ -2,7 +2,7 @@ import { test, expect, beforeAll } from 'vitest';
 import React, { useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { ListEditor } from './fields';
+import { ListEditor, EditPageActions } from './fields';
 
 beforeAll(() => { (globalThis as any).IS_REACT_ACT_ENVIRONMENT = true; });
 
@@ -39,4 +39,16 @@ test('ListEditor page: klik item membuka halaman edit terpisah, navigasi & Back 
   await act(async () => { (Array.from(host.querySelectorAll('button')).find(b => b.textContent?.includes('Tambah')) as HTMLButtonElement).click(); });
   expect(document.querySelector('.cms-page')).not.toBeNull();
   await act(async () => root.unmount());
+});
+
+test('EditPageActions: tombol tambahan (Publikasikan) tampil di header halaman edit', async () => {
+  const host = document.createElement('div'); document.body.appendChild(host);
+  const root = createRoot(host);
+  await act(async () => root.render(<EditPageActions.Provider value={<button>PUB</button>}><Harness /></EditPageActions.Provider>));
+  await act(async () => { (host.querySelector('.cms-item-head') as HTMLButtonElement).click(); });
+  const btns = Array.from(document.querySelectorAll('.cms-page-head button')).map(b => b.textContent);
+  expect(btns).toContain('PUB');
+  expect(btns.some(t => t?.includes('Selesai'))).toBe(true);
+  await act(async () => root.unmount());
+  window.history.back(); await wait();
 });
