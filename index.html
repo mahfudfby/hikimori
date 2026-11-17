@@ -45,10 +45,10 @@
     <script>if(!document.documentElement.classList.contains('lite')){var l=document.createElement('link');l.rel='stylesheet';l.href='https://fonts.googleapis.com/css2?family=Inter:wght@300..700&display=swap';document.head.appendChild(l);}</script>
 
     <!-- Catatan: jangan animasikan filter/blur pada logo — Safari iOS merendernya jadi kotak putih. -->
-    <!-- ═══ Intro "lensa auto-focus" (±5 dtk, tiap reload): bracket cetak biru maju-mundur mencari fokus → kunci → logo zoom & berkilau.
+    <!-- ═══ Intro "lensa auto-focus" (±5,6 dtk, tiap reload): bracket cetak biru maju-mundur mencari fokus → kunci → logo zoom & berkilau.
          Ringan: hanya CSS transform/opacity, tanpa canvas, tanpa animasi filter. ═══ -->
     <style>
-      #intro{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;overflow:hidden;color:#EEF4FA;font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;cursor:pointer;--ez:cubic-bezier(.22,1,.36,1);--gold:#F4D58A;--gold2:#C9971C;--cy:#9EE6F2;--lock:1.85s}
+      #intro{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;overflow:hidden;color:#EEF4FA;font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;cursor:pointer;--ez:cubic-bezier(.22,1,.36,1);--gold:#F4D58A;--gold2:#C9971C;--cy:#9EE6F2;--lock:2.4s}
       #intro .pane{position:absolute;top:0;bottom:0;width:50.5%;background:#0A0C14;overflow:hidden;transition:transform 1s cubic-bezier(.76,0,.24,1)}
       #intro .pane.l{left:0}#intro .pane.r{right:0}
       /* aurora tipis: pita cahaya lembut yang melayang (gradien sudah lembut, tanpa filter) */
@@ -72,7 +72,7 @@
       #intro .stage{position:relative;display:flex;flex-direction:column;align-items:center;gap:clamp(12px,2.4vh,20px);transition:transform 1s var(--ez),opacity .6s ease}
       /* ── Bidikan: bracket mencari fokus (maju-mundur meredam) lalu mengunci ── */
       #intro .emblem{position:relative;width:clamp(180px,32vw,240px);aspect-ratio:1;display:grid;place-items:center}
-      #intro .focus{position:absolute;inset:0;transform:scale(1.7);opacity:0;animation:hkIn .35s ease .15s forwards,hunt 1.7s cubic-bezier(.45,0,.2,1) .15s forwards}
+      #intro .focus{position:absolute;inset:0;transform:scale(1.55);opacity:0;animation:hkIn .6s ease .15s forwards,hunt 2.25s linear .15s forwards}
       #intro .focus b{position:absolute;width:22%;height:22%;border:2px solid var(--gold);opacity:.75;animation:lockFlash .5s ease var(--lock) forwards}
       #intro .focus b:nth-child(1){left:0;top:0;border-right:0;border-bottom:0;border-top-left-radius:4px}
       #intro .focus b:nth-child(2){right:0;top:0;border-left:0;border-bottom:0;border-top-right-radius:4px}
@@ -89,23 +89,23 @@
       #intro .af::after{content:"";position:absolute;left:0;top:0;white-space:nowrap;color:var(--gold);opacity:0;animation:hkIn .2s ease var(--lock) forwards}
       #intro .af.locked::before{content:""}#intro .af.locked::after{content:"AF ● LOCK"}
       /* logo: samar saat dicari, lalu zoom maju setelah terkunci dan berkilau */
-      #intro .mark{position:relative;width:62%;overflow:hidden;opacity:0;transform:scale(.86);animation:seek 1.6s ease .25s forwards,zoomIn 1s cubic-bezier(.2,1.25,.35,1) var(--lock) forwards}
+      #intro .mark{position:relative;width:62%;overflow:hidden;opacity:0;transform:scale(.86);animation:seek 2.1s ease .25s forwards,zoomIn 1s cubic-bezier(.2,1.25,.35,1) var(--lock) forwards}
       #intro .mark img{display:block;width:100%;height:auto}
       #intro .mark::after{content:"";position:absolute;inset:-20% -60%;background:linear-gradient(105deg,transparent 40%,rgba(255,244,200,.8) 50%,transparent 60%);opacity:0;animation:glint 1s ease-in-out calc(var(--lock) + .55s) forwards}
       /* wordmark: tiap huruf naik dari balik masker */
       #intro .word{display:flex;font-weight:700;font-size:clamp(1.9rem,7vw,3.2rem);letter-spacing:.3em;margin-right:-.3em;line-height:1}
       #intro .word span{display:inline-block;overflow:hidden;padding:.08em 0}
-      #intro .word i{display:inline-block;font-style:normal;transform:translateY(110%);animation:rise .75s var(--ez) calc(2.2s + var(--i) * 60ms) forwards}
+      #intro .word i{display:inline-block;font-style:normal;transform:translateY(110%);animation:rise .75s var(--ez) calc(2.75s + var(--i) * 60ms) forwards}
       #intro .word i.g{color:var(--gold);text-shadow:0 0 18px rgba(244,213,138,.35)}
-      #intro .line{width:min(300px,62vw);height:1px;background:linear-gradient(90deg,transparent,var(--gold),var(--cy),transparent);transform:scaleX(0);animation:draw .9s var(--ez) 2.8s forwards}
+      #intro .line{width:min(300px,62vw);height:1px;background:linear-gradient(90deg,transparent,var(--gold),var(--cy),transparent);transform:scaleX(0);animation:draw .9s var(--ez) 3.35s forwards}
       /* nama: muncul (tanpa gerak huruf), lalu zoom halus + silau emas di akhir */
       #intro .sub{display:flex;font:600 clamp(.78rem,3vw,1rem)/1 ui-monospace,Consolas,monospace;letter-spacing:.32em;margin-right:-.32em;text-transform:uppercase}
-      #intro .sub{--z:1.4;transform-origin:50% 50%;will-change:transform;backface-visibility:hidden;transform:translateZ(0);animation:nameZoom 1.6s cubic-bezier(.16,1,.3,1) 3.75s forwards}@media (max-width:480px){#intro .sub{--z:1.16}}
-      #intro .sub i{display:inline-block;font-style:normal;min-width:.45em;opacity:0;animation:hkIn .5s ease calc(3s + var(--i) * 25ms) forwards,nameGlint .9s ease-in-out calc(3.9s + var(--i) * 40ms) both}
-      #intro .role{font-size:clamp(.7rem,2.5vw,.82rem);letter-spacing:.18em;text-transform:uppercase;color:rgba(238,244,250,.55);opacity:0;animation:hkIn .8s ease 3.55s forwards}
+      #intro .sub{--z:1.4;transform-origin:50% 50%;will-change:transform;backface-visibility:hidden;transform:translateZ(0);animation:nameZoom 1.6s cubic-bezier(.16,1,.3,1) 4.3s forwards}@media (max-width:480px){#intro .sub{--z:1.16}}
+      #intro .sub i{display:inline-block;font-style:normal;min-width:.45em;opacity:0;animation:hkIn .5s ease calc(3.55s + var(--i) * 25ms) forwards,nameGlint .9s ease-in-out calc(4.45s + var(--i) * 40ms) both}
+      #intro .role{font-size:clamp(.7rem,2.5vw,.82rem);letter-spacing:.18em;text-transform:uppercase;color:rgba(238,244,250,.55);opacity:0;animation:hkIn .8s ease 4.1s forwards}
       /* bilah progres bawah */
       #intro .prog{position:absolute;left:50%;bottom:clamp(36px,7vh,60px);width:min(220px,54vw);height:2px;margin-left:calc(min(220px,54vw) / -2);background:rgba(158,230,242,.12);border-radius:2px;overflow:hidden;opacity:0;animation:hkIn .6s ease .4s forwards}
-      #intro .prog b{display:block;height:100%;background:linear-gradient(90deg,var(--gold2),var(--gold),var(--cy));transform:scaleX(0);transform-origin:0 50%;animation:draw 4.6s cubic-bezier(.4,0,.2,1) .2s forwards}
+      #intro .prog b{display:block;height:100%;background:linear-gradient(90deg,var(--gold2),var(--gold),var(--cy));transform:scaleX(0);transform-origin:0 50%;animation:draw 5.2s cubic-bezier(.4,0,.2,1) .2s forwards}
       #intro .seam{position:absolute;top:0;bottom:0;left:50%;width:2px;margin-left:-1px;background:linear-gradient(180deg,transparent,var(--gold),transparent);opacity:0;pointer-events:none}
       /* keluar: tirai terbelah kiri-kanan, kilat emas di sambungan */
       #intro.out .pane.l{transform:translateX(-101%)}#intro.out .pane.r{transform:translateX(101%)}
@@ -116,8 +116,8 @@
       html.intro-lock,html.intro-lock body{overflow:hidden}
       @keyframes hkIn{to{opacity:1}}
       @keyframes hudIn{from{opacity:0;transform:scale(1.6)}to{opacity:1;transform:none}}
-      /* maju-mundur meredam seperti lensa auto-focus "hunting", berhenti tepat 1 */
-      @keyframes hunt{0%{transform:scale(1.7)}22%{transform:scale(.82)}40%{transform:scale(1.22)}56%{transform:scale(.9)}70%{transform:scale(1.08)}82%{transform:scale(.97)}92%{transform:scale(1.015)}100%{transform:scale(1)}}
+      /* lensa mencari fokus: satu tarikan maju-mundur yang pelan & halus, tanpa memantul, berhenti tepat 1 */
+      @keyframes hunt{0%{transform:scale(1.55);animation-timing-function:cubic-bezier(.45,0,.25,1)}48%{transform:scale(.93);animation-timing-function:cubic-bezier(.45,0,.25,1)}80%{transform:scale(1.035);animation-timing-function:cubic-bezier(.4,0,.2,1)}100%{transform:scale(1)}}
       @keyframes lockFlash{0%{opacity:.75;border-color:var(--gold)}30%{opacity:1;border-color:#FFF4C8;box-shadow:0 0 12px rgba(244,213,138,.6)}100%{opacity:1;border-color:var(--gold);box-shadow:none}}
       @keyframes afBlink{50%{opacity:.2}}
       /* logo "mencari": samar, sedikit naik-turun skalanya mengikuti bracket */
@@ -193,10 +193,10 @@
         }
         split('intro-word', 'HIKIMORI', 4);
         split('intro-sub', 'Mahfud Febry Styanto', -1);
-        // Label lensa berganti "AF ● LOCK" saat bracket mengunci (sinkron dengan --lock 1,85 dtk)
-        setTimeout(function () { var af = document.getElementById('intro-af'); af && af.classList.add('locked'); }, reduce ? 0 : 1850);
+        // Label lensa berganti "AF ● LOCK" saat bracket mengunci (sinkron dengan --lock 2,4 dtk)
+        setTimeout(function () { var af = document.getElementById('intro-af'); af && af.classList.add('locked'); }, reduce ? 0 : 2400);
         // Tampil di setiap reload; minimal ±5 dtk agar seluruh rangkaian sempat terlihat
-        var MIN = reduce ? 400 : 5000, t0 = performance.now(), ready = false, done = false, scheduled = false;
+        var MIN = reduce ? 400 : 5600, t0 = performance.now(), ready = false, done = false, scheduled = false;
         function close() {
           if (done) return; done = true;
           el.classList.add('out'); root.classList.remove('intro-lock');
@@ -205,7 +205,7 @@
         function tryClose() { if (ready && !scheduled) { scheduled = true; setTimeout(close, Math.max(0, MIN - (performance.now() - t0))); } }
         window.__hkIntroDone = function () { ready = true; tryClose(); };
         el.addEventListener('click', close);
-        setTimeout(close, 9000); // pengaman bila JS aplikasi gagal dimuat
+        setTimeout(close, 10000); // pengaman bila JS aplikasi gagal dimuat
       })();
     </script>
     <div id="root"></div>
