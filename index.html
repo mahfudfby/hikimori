@@ -31,6 +31,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin />
+    <!-- logo navbar = elemen LCP (Lighthouse) -->
+    <link rel="preload" as="image" href="https://res.cloudinary.com/dl4pyan8v/image/upload/c_crop,x_15,y_245,w_860,h_410/e_trim/f_auto,q_auto,h_56/v1793385513/1EF88D88-4DEB-4541-A073-0ED603FFF1CA_hyknub.png" imagesrcset="https://res.cloudinary.com/dl4pyan8v/image/upload/c_crop,x_15,y_245,w_860,h_410/e_trim/f_auto,q_auto,h_56/v1793385513/1EF88D88-4DEB-4541-A073-0ED603FFF1CA_hyknub.png 2x, https://res.cloudinary.com/dl4pyan8v/image/upload/c_crop,x_15,y_245,w_860,h_410/e_trim/f_auto,q_auto,h_84/v1793385513/1EF88D88-4DEB-4541-A073-0ED603FFF1CA_hyknub.png 3x" fetchpriority="high" />
     <!-- Foto profil = elemen LCP dashboard -->
     <link rel="preload" as="image" media="(max-width: 680px)" href="https://res.cloudinary.com/dl4pyan8v/image/upload/f_auto,q_auto,w_540/v1783866519/Mahfudfebry_casual_oj8r1d.png" imagesrcset="https://res.cloudinary.com/dl4pyan8v/image/upload/f_auto,q_auto,w_360/v1783866519/Mahfudfebry_casual_oj8r1d.png 360w, https://res.cloudinary.com/dl4pyan8v/image/upload/f_auto,q_auto,w_540/v1783866519/Mahfudfebry_casual_oj8r1d.png 540w" imagesizes="92vw" fetchpriority="high" />
     <link rel="preload" as="image" media="(min-width: 681px)" href="https://res.cloudinary.com/dl4pyan8v/image/upload/f_auto,q_auto,w_640/v1783866519/Mahfudfebry_casual_oj8r1d.png" imagesrcset="https://res.cloudinary.com/dl4pyan8v/image/upload/f_auto,q_auto,w_640/v1783866519/Mahfudfebry_casual_oj8r1d.png 640w, https://res.cloudinary.com/dl4pyan8v/image/upload/f_auto,q_auto,w_900/v1783866519/Mahfudfebry_casual_oj8r1d.png 900w" imagesizes="(max-width: 1180px) 46vw, 300px" fetchpriority="high" />
@@ -59,7 +61,9 @@
       #intro .aur i:nth-child(2){top:52%;background:linear-gradient(90deg,transparent 5%,rgba(158,230,242,.14) 35%,rgba(188,174,246,.10) 55%,rgba(201,151,28,.10) 75%,transparent 95%);transform:rotate(10deg);animation:float2 11s ease-in-out infinite alternate}
       #intro .aur i:nth-child(3){top:30%;height:20vh;background:linear-gradient(90deg,transparent 10%,rgba(244,213,138,.10) 45%,rgba(158,230,242,.08) 60%,transparent 90%);transform:rotate(-4deg);animation:float3 13s ease-in-out infinite alternate}
       /* grid cetak biru, memudar ke tepi */
-      #intro .grid{position:absolute;inset:0;pointer-events:none;opacity:0;background:linear-gradient(rgba(158,230,242,.07) 1px,transparent 1px) 0 0/44px 44px,linear-gradient(90deg,rgba(158,230,242,.07) 1px,transparent 1px) 0 0/44px 44px;-webkit-mask:radial-gradient(circle at 50% 50%,#000 0,transparent 62%);mask:radial-gradient(circle at 50% 50%,#000 0,transparent 62%);animation:hkIn 1s ease .05s forwards,gridPan 6s linear infinite}
+      #intro .grid{position:absolute;inset:0;overflow:hidden;pointer-events:none;opacity:0;-webkit-mask:radial-gradient(circle at 50% 50%,#000 0,transparent 62%);mask:radial-gradient(circle at 50% 50%,#000 0,transparent 62%);animation:hkIn 1s ease .05s forwards}
+      /* garis grid di lapisan sendiri yang digeser via transform (komposit GPU, tanpa repaint layar penuh tiap frame) */
+      #intro .grid::before{content:"";position:absolute;top:-44px;left:-44px;right:0;bottom:0;background:linear-gradient(rgba(158,230,242,.07) 1px,transparent 1px) 0 0/44px 44px,linear-gradient(90deg,rgba(158,230,242,.07) 1px,transparent 1px) 0 0/44px 44px;will-change:transform;animation:gridPan 6s linear infinite}
       /* sudut HUD layar */
       #intro .hud{position:absolute;inset:clamp(14px,3vw,28px);pointer-events:none}
       #intro .hud i{position:absolute;width:22px;height:22px;border:1px solid rgba(244,213,138,.5);opacity:0;animation:hudIn .7s var(--ez) forwards}
@@ -130,7 +134,7 @@
       @keyframes nameZoom{to{transform:translateZ(0) scale(var(--z))}}
       @keyframes nameGlint{0%,100%{color:inherit;text-shadow:none}50%{color:#FFF4C8;text-shadow:0 0 14px rgba(244,213,138,.7)}}
       @keyframes seam{0%{opacity:0}30%{opacity:1}100%{opacity:0}}
-      @keyframes gridPan{to{background-position:0 44px,44px 0}}
+      @keyframes gridPan{to{transform:translate(44px,44px)}}
       @keyframes float1{0%{transform:rotate(-14deg) translate(-6%,0) scaleY(1)}50%{transform:rotate(-10deg) translate(2%,4vh) scaleY(1.25)}100%{transform:rotate(-16deg) translate(8%,-2vh) scaleY(.9)}}
       @keyframes float2{0%{transform:rotate(10deg) translate(6%,0) scaleY(1)}50%{transform:rotate(6deg) translate(-3%,-5vh) scaleY(1.3)}100%{transform:rotate(12deg) translate(-8%,2vh) scaleY(.85)}}
       @keyframes float3{0%{transform:rotate(-4deg) translate(0,0)}100%{transform:rotate(3deg) translate(-6%,6vh) scaleY(1.4)}}
@@ -140,15 +144,52 @@
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "Person",
-      "name": "Mahfud Febry Styanto",
-      "honorificSuffix": "S.Kom., CHRG",
-      "jobTitle": "Human Resources & Administration",
-      "url": "https://hikimori.web.id",
-      "email": "mailto:Mahfudfebrys@gmail.com",
-      "address": { "@type": "PostalAddress", "addressLocality": "Nganjuk", "addressRegion": "Jawa Timur", "addressCountry": "ID" },
-      "alumniOf": { "@type": "CollegeOrUniversity", "name": "Institut Teknologi & Bisnis ASIA Malang" },
-      "knowsAbout": ["Payroll Administration", "IT Troubleshooting", "KPI Analysis", "General Affairs", "BPJS", "Human Resources"]
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "https://hikimori.web.id/#website",
+          "url": "https://hikimori.web.id/",
+          "name": "Hikimori — Mahfud Febry Styanto",
+          "inLanguage": ["id-ID", "en-US"],
+          "publisher": { "@id": "https://hikimori.web.id/#person" }
+        },
+        {
+          "@type": "ProfilePage",
+          "@id": "https://hikimori.web.id/#profilepage",
+          "url": "https://hikimori.web.id/",
+          "name": "Mahfud Febry Styanto, S.Kom., CHRG | Human Resources & Administration",
+          "isPartOf": { "@id": "https://hikimori.web.id/#website" },
+          "mainEntity": { "@id": "https://hikimori.web.id/#person" }
+        },
+        {
+          "@type": "Person",
+          "@id": "https://hikimori.web.id/#person",
+          "name": "Mahfud Febry Styanto",
+          "honorificSuffix": "S.Kom., CHRG",
+          "jobTitle": "Human Resources & Administration",
+          "url": "https://hikimori.web.id/",
+          "image": "https://res.cloudinary.com/dl4pyan8v/image/upload/f_auto,q_auto,w_900/v1783866519/Mahfudfebry_casual_oj8r1d.png",
+          "email": "mailto:Mahfudfebrys@gmail.com",
+          "address": { "@type": "PostalAddress", "addressLocality": "Nganjuk", "addressRegion": "Jawa Timur", "addressCountry": "ID" },
+          "alumniOf": { "@type": "CollegeOrUniversity", "name": "Institut Teknologi & Bisnis ASIA Malang" },
+          "hasCredential": {
+            "@type": "EducationalOccupationalCredential",
+            "name": "Certified Human Resources Generalist (CHRG)",
+            "credentialCategory": "certification",
+            "recognizedBy": { "@type": "Organization", "name": "Badan Nasional Sertifikasi Profesi (BNSP)" }
+          },
+          "knowsAbout": ["Human Resources", "Payroll Administration", "BPJS", "General Affairs", "IT Support", "IT Troubleshooting", "KPI Analysis"],
+          "knowsLanguage": ["id", "en"],
+          "sameAs": [
+            "https://www.linkedin.com/in/mahfud-febry-styanto",
+            "https://id.jobstreet.com/id/profiles/xT4NqdPjhP",
+            "https://www.ibenews.id/author/10521/Mahfud-Febry-Styanto",
+            "https://www.instagram.com/mahfudfebry",
+            "https://www.threads.net/@mahfudfebry",
+            "https://www.tiktok.com/@mahfudfebry"
+          ]
+        }
+      ]
     }
     </script>
   </head>

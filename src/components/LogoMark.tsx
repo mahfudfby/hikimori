@@ -11,12 +11,12 @@ export const LOGO_MARK = (h: number) => `${BASE}/c_crop,x_15,y_245,w_860,h_410/e
 
 const RATIO = { full: 535 / 120, mark: 361 / 160 };
 
-const LogoMark: React.FC<{ height?: number; className?: string; title?: string; variant?: 'full' | 'mark'; bare?: boolean }> =
-  ({ height = 28, className, title = 'Hikimori', variant = 'full', bare }) => {
+const LogoMark: React.FC<{ height?: number; className?: string; title?: string; variant?: 'full' | 'mark'; bare?: boolean; priority?: boolean }> =
+  ({ height = 28, className, title = 'Hikimori', variant = 'full', bare, priority }) => {
     const url = variant === 'full' ? LOGO_FULL : LOGO_MARK;
     const img = (
       <img src={url(height * 2)} srcSet={`${url(height * 2)} 2x, ${url(height * 3)} 3x`} alt={title}
-        height={height} width={Math.round(height * RATIO[variant])} decoding="async" style={{ display: 'block', height, width: 'auto' }} />
+        height={height} width={Math.round(height * RATIO[variant])} {...(priority ? { fetchpriority: 'high' } : { decoding: 'async' as const })} style={{ display: 'block', height, width: 'auto' }} />
     );
     return bare ? img : <span className={`logo-badge ${className || ''}`}>{img}</span>;
   };

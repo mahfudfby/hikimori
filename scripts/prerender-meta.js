@@ -49,6 +49,19 @@ const page = (route, meta, extraHead = '') => {
   return doc;
 };
 
+// Remah roti (BreadcrumbList) untuk halaman turunan: Beranda > Bagian > (Artikel)
+const crumbName = t => String(t).split(/ — | \| /)[0].trim();
+function breadcrumb(route, meta) {
+  const items = [{ name: 'Beranda', item: SITE + '/' }];
+  const parts = route.split('/').filter(Boolean);
+  const section = seo.routes['/' + parts[0]];
+  if (parts.length > 1 && section) items.push({ name: crumbName(section.title), item: SITE + '/' + parts[0] });
+  items.push({ name: crumbName(meta.title), item: SITE + route });
+  const ld = { '@context': 'https://schema.org', '@type': 'BreadcrumbList',
+    itemListElement: items.map((x, i) => ({ '@type': 'ListItem', position: i + 1, ...x })) };
+  return `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>`;
+}
+
 // ---------- Artikel portofolio dari Firestore ----------
 const FIRESTORE = 'https://firestore.googleapis.com/v1/projects/hikimori-18d47/databases/(default)/documents/portfolio?pageSize=300';
 const val = v => v == null ? undefined : 'stringValue' in v ? v.stringValue : 'integerValue' in v ? Number(v.integerValue)
@@ -94,7 +107,7 @@ let count = 0;
 for (const [route, meta] of Object.entries(seo.routes)) {
   const out = route === '/' ? path.join(build, 'index.html') : path.join(build, route.slice(1), 'index.html');
   fs.mkdirSync(path.dirname(out), { recursive: true });
-  fs.writeFileSync(out, page(route, meta));
+  fs.writeFileSync(out, page(route, meta, route === '/' ? '' : breadcrumb(route, meta)));
   count++;
 }
 
@@ -108,7 +121,8 @@ const articles = await loadArticles();
 for (const a of articles) {
   const out = path.join(build, 'portofolio', a.id, 'index.html');
   fs.mkdirSync(path.dirname(out), { recursive: true });
-  fs.writeFileSync(out, page(`/portofolio/${a.id}`, a.meta));
+  const route = `/portofolio/${a.id}`;
+  fs.writeFileSync(out, page(route, a.meta, breadcrumb(route, a.meta)));
 }
 
 const today = new Date().toISOString().slice(0, 10);
@@ -117,6 +131,10 @@ fs.writeFileSync(path.join(build, 'sitemap.xml'),
   [...Object.keys(seo.routes).map(r => `  <url><loc>${SITE}${r === '/' ? '/' : r}</loc><lastmod>${today}</lastmod><priority>${r === '/' ? '1.0' : '0.8'}</priority></url>`),
     ...articles.map(a => `  <url><loc>${SITE}/portofolio/${a.id}</loc><lastmod>${a.lastmod || today}</lastmod><priority>0.7</priority></url>`)].join('\n') +
   `\n</urlset>\n`);
+// llms.txt: ringkasan situs untuk crawler AI (mereka tidak menjalankan JS SPA)
+fs.writeFileSync(path.join(build, 'llms.txt'), `# ${seo.routes['/'].title}\n\n> ${seo.routes['/'].description}\n\n## Halaman\n\n` +
+  Object.entries(seo.routes).filter(([r]) => r !== '/').map(([r, m]) => `- [${crumbName(m.title)}](${SITE}${r}): ${m.description}`).join('\n') + '\n' +
+  (articles.length ? `\n## Portofolio\n\n${articles.map(a => `- [${a.meta.title}](${SITE}/portofolio/${a.id}): ${a.meta.description}`).join('\n')}\n` : ''));
 fs.writeFileSync(path.join(build, 'robots.txt'), `User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /cv\n\nSitemap: ${SITE}/sitemap.xml\n`);
 
 console.log(`prerender-meta: ${count} halaman + ${articles.length} artikel + 404.html + sitemap.xml + robots.txt (${SITE})`);

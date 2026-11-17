@@ -39,7 +39,7 @@ export const Navbar: React.FC = () => {
       <div className="shell nav-inner">
         <Link to="/" className="brand brand-logo" aria-label={`Hikimori — ${content.profile.name}`}>
           {/* Ikon HK saja + teks: tagline kecil di logo penuh tidak terbaca di ukuran navbar */}
-          <LogoMark height={28} bare variant="mark" />
+          <LogoMark height={28} bare variant="mark" priority />
           <span className="brand-name">Hikimori</span>
         </Link>
 
