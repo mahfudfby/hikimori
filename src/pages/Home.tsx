@@ -30,7 +30,7 @@ const DashTop: React.FC = () => {
   const [nameMain, ...deg] = content.profile.name.split(',');
   const nameDeg = deg.join(',').trim();
   return (
-    <section className="dash-top">
+    <section className="dash-top parallax-hero">
       <div style={{ minWidth: 0 }}>
         <h1 className="h-hero">{nameMain}{nameDeg && <span className="hero-deg">{nameDeg}</span>}</h1>
         <p className="hero-sub">{pick(content.profile.title, lang)} · {content.profile.location.split(',')[0]}</p>

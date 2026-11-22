@@ -20,7 +20,10 @@ const readInitialMode = (): Mode => {
     const saved = localStorage.getItem(LS_THEME);
     if (saved === 'light' || saved === 'dark') return saved;
   } catch {}
-  return 'light'; // default: putih/navy/cyan sesuai arahan
+  if (typeof window !== 'undefined' && window.matchMedia?.('(prefers-color-scheme: dark)').matches) {
+    return 'dark';
+  }
+  return 'light';
 };
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {

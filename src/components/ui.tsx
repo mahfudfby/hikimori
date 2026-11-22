@@ -143,7 +143,7 @@ export const cldSet = (url: string, widths: number[]) =>
 
 /* ───────── Header halaman detail ───────── */
 export const PageHero: React.FC<{ crumb: string; title: React.ReactNode; lead?: React.ReactNode; aside?: React.ReactNode }> = ({ crumb, title, lead, aside }) => (
-  <header className="page-hero">
+  <header className="page-hero parallax-hero">
     <div>
       <nav className="crumb" aria-label="breadcrumb"><Link to="/">Home</Link><span>/</span><span>{crumb}</span></nav>
       <h1 className="h-page">{title}</h1>

@@ -7,6 +7,8 @@ import { ThemeProvider } from './contexts/ThemeContext';
 import { ContentProvider } from './content/ContentContext';
 import { Navbar, Footer, Floaters } from './components/Layout';
 import { useCursorFx } from './components/ui';
+import { useScrollFx } from './hooks/useScrollFx';
+import AmbientParallax from './components/AmbientParallax';
 import ShareSheet from './components/ShareSheet';
 import Home from './pages/Home';
 import seo from './seo/routes.json';
@@ -74,9 +76,11 @@ const Shell: React.FC = () => {
   const { pathname } = useLocation();
   const isAdmin = pathname.startsWith('/admin');
   useCursorFx(!isAdmin);
+  useScrollFx(!isAdmin);
   useEffect(() => { if (!window.location.hash) window.scrollTo(0, 0); setHeadMeta(pathname); }, [pathname]);
   return (
     <>
+      {!isAdmin && <AmbientParallax />}
       {!isAdmin && <Navbar />}
       <ShareSheet />
       <Suspense fallback={<Loading />}>

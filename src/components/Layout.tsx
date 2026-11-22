@@ -66,6 +66,7 @@ export const Navbar: React.FC = () => {
           </button>
         </div>
       </div>
+      <div className="scroll-progress-line" aria-hidden="true" />
       {open && (
         <nav className="nav-sheet" aria-label="Mobile">
           {NAV.map(n => (
