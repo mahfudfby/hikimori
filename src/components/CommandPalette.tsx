@@ -91,14 +91,15 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ open, onClose })
 
     // 2. Proyek Portofolio
     portfolioItems.forEach(item => {
+      const targetSlug = item.slug || item.id;
       list.push({
         id: `folio-${item.id}`,
         category: 'portfolio',
         categoryLabel: t('Karya Portofolio', 'Portfolio Work'),
         title: item.title,
-        subtitle: [item.category, item.year, item.client].filter(Boolean).join(' · '),
+        subtitle: [item.category, item.year, item.client, targetSlug ? `/${targetSlug}` : ''].filter(Boolean).join(' · '),
         icon: 'image',
-        perform: () => navigate(`/portofolio/${item.id}`),
+        perform: () => navigate(`/portofolio/${targetSlug}`),
       });
     });
 

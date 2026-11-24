@@ -48,6 +48,8 @@ export interface PortfolioItem {
   seoDesc: string;
   /** Kata kunci (meta keywords), tampil di akhir artikel */
   keywords: string[];
+  /** Slug URL mandiri artikel (mis. 'sistem-informasi-hr'); kosong = pakai id */
+  slug?: string;
   featured: boolean;
   order: number;
 }
@@ -64,7 +66,7 @@ export const restorePortfolio = async (items: PortfolioItem[]) => {
 };
 
 const normalize = (v: any, id: string): PortfolioItem =>
-  ({ tags: [], featured: false, order: 0, link: '', subtitle: '', videoUrl: '', blocks: [], hashtags: [], seoTitle: '', seoDesc: '', keywords: [], ...v, id } as PortfolioItem);
+  ({ tags: [], featured: false, order: 0, link: '', subtitle: '', videoUrl: '', blocks: [], hashtags: [], seoTitle: '', seoDesc: '', keywords: [], slug: v.slug || '', ...v, id } as PortfolioItem);
 
 /**
  * Publik (default): sekali baca via Firestore REST — tanpa SDK, ringan di HP.

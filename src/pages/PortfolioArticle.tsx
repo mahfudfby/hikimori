@@ -29,7 +29,7 @@ const PortfolioArticle: React.FC = () => {
   const { content } = useContent();
   const { t, lang } = useLang();
   const p = content.profile;
-  const post = items.find(i => i.id === id);
+  const post = items.find(i => (i.slug && i.slug === id) || i.id === id);
   useTitle(`${post?.seoTitle || post?.title || t('Portofolio', 'Portfolio')} — ${p.name}`);
   // SEO: deskripsi & kata kunci halaman artikel, dikembalikan saat keluar
   useEffect(() => {
@@ -76,7 +76,10 @@ const PortfolioArticle: React.FC = () => {
   }, [post, blocks]);
   const readTime = Math.max(1, Math.ceil(wordCount / 180));
 
-  const shareUrl = typeof window !== 'undefined' ? window.location.href : `https://hikimori.web.id/portofolio/${post.id}`;
+  const shareSlug = post.slug || post.id;
+  const shareUrl = typeof window !== 'undefined'
+    ? `${window.location.origin}/portofolio/${shareSlug}`
+    : `https://hikimori.web.id/portofolio/${shareSlug}`;
   const shareTitle = `${post.title} — ${p.name}`;
 
   const copyLink = async () => {
@@ -215,7 +218,7 @@ const PortfolioArticle: React.FC = () => {
               <ol className="mag-recs">
                 {recs.map((r, i) => (
                   <li key={r.id}>
-                    <Link to={`/portofolio/${r.id}`}>
+                    <Link to={`/portofolio/${r.slug || r.id}`}>
                       {r.imageUrl ? <img src={cld(r.imageUrl, 240)} alt="" loading="lazy" /> : <span className="mag-rec-n">{String(i + 1).padStart(2, '0')}</span>}
                       <span><span className="xs muted">{r.category}</span><span className="mag-rec-t">{r.title}</span></span>
                     </Link>

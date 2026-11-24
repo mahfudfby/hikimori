@@ -40,7 +40,7 @@ const PortfolioPage: React.FC = () => {
           <div className="grid-3">
             {list.map((p, i) => (
               <Reveal key={p.id} delay={(i % 6) * 40}>
-                <Link to={`/portofolio/${p.id}`} className={`card hoverable stack ${p.featured ? 'dark' : ''}`} style={{ width: '100%', textAlign: 'left', height: '100%', color: 'inherit', textDecoration: 'none' }}>
+                <Link to={`/portofolio/${p.slug || p.id}`} className={`card hoverable stack ${p.featured ? 'dark' : ''}`} style={{ width: '100%', textAlign: 'left', height: '100%', color: 'inherit', textDecoration: 'none' }}>
                   <FolioCover item={p} className="thumb" alt={p.title} />
                   <div className="row between gap-8 mt-16">
                     <span className={`chip ${p.featured ? 'yellow' : ''}`}>{p.category || '—'}</span>

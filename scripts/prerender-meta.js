@@ -75,11 +75,13 @@ function articleMeta(doc) {
   if (!/^[\w-]{1,100}$/.test(id)) return null; // dipakai sebagai nama folder
   const f = val({ mapValue: { fields: doc.fields || {} } });
   if (!f.title) return null;
+  const slug = f.slug && /^[\w-]{1,100}$/.test(f.slug) ? f.slug : '';
   let image = /^https:\/\//.test(f.imageUrl || '') ? f.imageUrl : '';
   // pratinjau share ideal 1200×630
   if (image.includes('res.cloudinary.com/') && image.includes('/upload/')) image = image.replace('/upload/', '/upload/c_fill,w_1200,h_630,f_jpg,q_auto/');
   return {
     id,
+    slug,
     lastmod: String(doc.updateTime || '').slice(0, 10),
     meta: {
       title: `${clip(f.seoTitle || f.title, 70)} — Hikimori`,
@@ -119,22 +121,26 @@ fs.writeFileSync(path.join(build, '404.html'), page('/404', {
 
 const articles = await loadArticles();
 for (const a of articles) {
-  const out = path.join(build, 'portofolio', a.id, 'index.html');
-  fs.mkdirSync(path.dirname(out), { recursive: true });
-  const route = `/portofolio/${a.id}`;
-  fs.writeFileSync(out, page(route, a.meta, breadcrumb(route, a.meta)));
+  const targets = a.slug ? [a.slug, a.id] : [a.id];
+  const primaryRoute = `/portofolio/${a.slug || a.id}`;
+  const htmlContent = page(primaryRoute, a.meta, breadcrumb(primaryRoute, a.meta));
+  for (const t of targets) {
+    const out = path.join(build, 'portofolio', t, 'index.html');
+    fs.mkdirSync(path.dirname(out), { recursive: true });
+    fs.writeFileSync(out, htmlContent);
+  }
 }
 
 const today = new Date().toISOString().slice(0, 10);
 fs.writeFileSync(path.join(build, 'sitemap.xml'),
   `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
   [...Object.keys(seo.routes).map(r => `  <url><loc>${SITE}${r === '/' ? '/' : r}</loc><lastmod>${today}</lastmod><priority>${r === '/' ? '1.0' : '0.8'}</priority></url>`),
-    ...articles.map(a => `  <url><loc>${SITE}/portofolio/${a.id}</loc><lastmod>${a.lastmod || today}</lastmod><priority>0.7</priority></url>`)].join('\n') +
+    ...articles.map(a => `  <url><loc>${SITE}/portofolio/${a.slug || a.id}</loc><lastmod>${a.lastmod || today}</lastmod><priority>0.7</priority></url>`)].join('\n') +
   `\n</urlset>\n`);
 // llms.txt: ringkasan situs untuk crawler AI (mereka tidak menjalankan JS SPA)
 fs.writeFileSync(path.join(build, 'llms.txt'), `# ${seo.routes['/'].title}\n\n> ${seo.routes['/'].description}\n\n## Halaman\n\n` +
   Object.entries(seo.routes).filter(([r]) => r !== '/').map(([r, m]) => `- [${crumbName(m.title)}](${SITE}${r}): ${m.description}`).join('\n') + '\n' +
-  (articles.length ? `\n## Portofolio\n\n${articles.map(a => `- [${a.meta.title}](${SITE}/portofolio/${a.id}): ${a.meta.description}`).join('\n')}\n` : ''));
+  (articles.length ? `\n## Portofolio\n\n${articles.map(a => `- [${a.meta.title}](${SITE}/portofolio/${a.slug || a.id}): ${a.meta.description}`).join('\n')}\n` : ''));
 fs.writeFileSync(path.join(build, 'robots.txt'), `User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /cv\n\nSitemap: ${SITE}/sitemap.xml\n`);
 
 console.log(`prerender-meta: ${count} halaman + ${articles.length} artikel + 404.html + sitemap.xml + robots.txt (${SITE})`);

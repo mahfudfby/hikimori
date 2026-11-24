@@ -12,10 +12,12 @@ import { Text, Area, Tags, ImageInput, Toggle, Grid, Section, Select, ListEditor
 import { uploadToCloudinary } from '../utils/cloudinaryUpload';
 import { ArticleBlocks, Media } from '../components/Article';
 import { hyphenate } from '../utils/richHtml';
+import { slugify } from '../utils/slug';
 
 type Draft = Omit<PortfolioItem, 'id'> & { id?: string };
 const EMPTY: Draft = {
   title: '',
+  slug: '',
   subtitle: '',
   videoUrl: '',
   blocks: [],
@@ -403,7 +405,9 @@ const PortfolioAdmin: React.FC = () => {
     setBusy(true);
     try {
       const { id, ...data } = edit;
-      if (id) await updateItem(id, data); else await addItem({ ...data, order: items.length });
+      const cleanSlug = slugify(data.slug || data.title);
+      const payload = { ...data, slug: cleanSlug };
+      if (id) await updateItem(id, payload); else await addItem({ ...payload, order: items.length });
       // Bersihkan draf lokal setelah tersimpan
       try { localStorage.removeItem(`${DRAFT_PREFIX}${id || 'new'}`); } catch {}
       setDraftSavedAt(null);
@@ -564,6 +568,28 @@ const PortfolioAdmin: React.FC = () => {
                 <Text label="Klien / perusahaan" value={edit.client} onChange={v => setEdit({ ...edit, client: v })} />
                 <Text label="Tahun" value={edit.year} onChange={v => setEdit({ ...edit, year: v })} />
               </Grid>
+              <div className="field">
+                <div className="row between" style={{ alignItems: 'center' }}>
+                  <span>Slug URL Mandiri (SEO Clean Link)</span>
+                  <button
+                    type="button"
+                    className="pill sm ghost"
+                    onClick={() => setEdit({ ...edit, slug: slugify(edit.title) })}
+                    title="Buat slug otomatis dari judul"
+                  >
+                    Auto dari Judul
+                  </button>
+                </div>
+                <input
+                  className="input"
+                  value={edit.slug || ''}
+                  placeholder="mis. sistem-informasi-hr (kosong = otomatis dari judul)"
+                  onChange={e => setEdit({ ...edit, slug: slugify(e.target.value) })}
+                />
+                <small className="xs faint">
+                  Tautan mandiri artikel: <strong>/portofolio/{edit.slug || slugify(edit.title) || '(slug)'}</strong>
+                </small>
+              </div>
               <Text label="Sub-judul artikel" value={edit.subtitle} onChange={v => setEdit({ ...edit, subtitle: v })} hint="Tampil di bawah headline." />
               <Area label="Ringkasan (kartu daftar portofolio)" value={edit.description} onChange={v => setEdit({ ...edit, description: v })} rows={3} />
               <Tags label="Tag" value={edit.tags} onChange={v => setEdit({ ...edit, tags: v })} />
@@ -611,7 +637,7 @@ const PortfolioAdmin: React.FC = () => {
                 <Text label={`Judul SEO (${(edit.seoTitle || edit.title).length}/60)`} value={edit.seoTitle} onChange={v => setEdit({ ...edit, seoTitle: v })} hint="Judul di hasil Google & share card. Kosong = judul artikel." />
                 <Area label={`Deskripsi SEO (${(edit.seoDesc || edit.description).length}/160)`} value={edit.seoDesc} onChange={v => setEdit({ ...edit, seoDesc: v })} rows={2} hint="Ringkasan di hasil Google. Kosong = ringkasan kartu." />
                 <div className="seo-preview" aria-label="Pratinjau hasil Google">
-                  <small className="xs faint">hikimori.web.id › portofolio</small>
+                  <small className="xs faint">hikimori.web.id › portofolio › {edit.slug || slugify(edit.title) || 'artikel'}</small>
                   <strong>{(edit.seoTitle || edit.title || 'Judul artikel').slice(0, 70)}</strong>
                   <p className="xs">{(edit.seoDesc || edit.description || 'Deskripsi artikel…').slice(0, 170)}</p>
                 </div>
@@ -716,10 +742,11 @@ const PortfolioAdmin: React.FC = () => {
                 <div className="xs muted">
                   <span className="chip xs mr-6">{it.category || '—'}</span>
                   {it.year} {it.client && `· ${it.client}`} · {it.blocks.length} blok
+                  {it.slug && <span className="faint"> · /{it.slug}</span>}
                 </div>
               </div>
 
-              <a className="icon-btn sm" href={`/portofolio/${it.id}`} target="_blank" rel="noreferrer" aria-label="Lihat artikel" title="Lihat artikel langsung">
+              <a className="icon-btn sm" href={`/portofolio/${it.slug || it.id}`} target="_blank" rel="noreferrer" aria-label="Lihat artikel" title="Lihat artikel langsung">
                 <Icon name="eye" size={14} />
               </a>
 

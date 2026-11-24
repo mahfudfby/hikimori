@@ -599,7 +599,7 @@ const FolioCard: React.FC = () => {
           <div className="folio-view">
             <div className="folio-track" style={{ animationDuration: `${Math.max(24, list.length * 7)}s`, animationName: list.length > 1 ? undefined : 'none' }}>
               {loop.map((p, i) => (
-                <Link key={`${p.id}-${i}`} to={`/portofolio/${p.id}`} className="folio-slide" aria-hidden={i >= list.length || undefined} tabIndex={i >= list.length ? -1 : undefined}>
+                <Link key={`${p.id}-${i}`} to={`/portofolio/${p.slug || p.id}`} className="folio-slide" aria-hidden={i >= list.length || undefined} tabIndex={i >= list.length ? -1 : undefined}>
                   <div className="folio-img"><FolioCover item={p} className="folio-cover" alt={i < list.length ? p.title : ''} /></div>
                   <div className="folio-body">
                     <span className="folio-meta">{[p.category, p.year].filter(Boolean).join(' · ')}</span>

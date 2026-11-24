@@ -100,3 +100,21 @@ test('Portfolio autosave draft format & recovery verification', () => {
   localStorage.removeItem(draftKey);
   expect(localStorage.getItem(draftKey)).toBeNull();
 });
+
+test('Portfolio slug resolution: artikel dapat diakses lewat slug mandiri atau id asli', () => {
+  const items = [
+    { id: 'p001', slug: 'sistem-informasi-hr', title: 'Sistem Informasi HR' },
+    { id: 'p002', slug: 'redesain-web-arsitektur', title: 'Redesain Web Arsitektur' },
+    { id: 'p003', slug: '', title: 'Proyek Legacy Tanpa Slug' },
+  ];
+
+  // Cari lewat slug
+  const findBySlug = (key: string) => items.find(i => (i.slug && i.slug === key) || i.id === key);
+
+  expect(findBySlug('sistem-informasi-hr')?.id).toBe('p001');
+  expect(findBySlug('redesain-web-arsitektur')?.id).toBe('p002');
+  // Fallback ke id untuk link lama
+  expect(findBySlug('p001')?.title).toBe('Sistem Informasi HR');
+  expect(findBySlug('p003')?.title).toBe('Proyek Legacy Tanpa Slug');
+  expect(findBySlug('tidak-ada')).toBeUndefined();
+});
