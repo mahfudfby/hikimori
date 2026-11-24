@@ -135,27 +135,57 @@ export const Tags: React.FC<{ label: string; value: string[]; onChange: (v: stri
   );
 };
 
-/** Gambar: tempel URL atau upload ke Cloudinary. */
+/** Gambar: tempel URL atau upload ke Cloudinary, dukung drag-and-drop & paste gambar (Ctrl+V). */
 export const ImageInput: React.FC<{ label: string; value: string; onChange: (v: string) => void; round?: boolean }> = ({ label, value, onChange, round }) => {
   const [busy, setBusy] = useState(false);
+  const [dragOver, setDragOver] = useState(false);
+
   const upload = async (f?: File) => {
     if (!f) return;
     if (!/^image\/(jpeg|png|webp|gif|avif|svg\+xml)$/.test(f.type)) { toast.error('Hanya file gambar (JPG, PNG, WebP, GIF, AVIF, SVG)'); return; }
     if (f.size > 5 * 1024 * 1024) { toast.error('Maksimal 5 MB'); return; }
     setBusy(true);
-    try { const url = await uploadToCloudinary(f); onChange(url); toast.success('Gambar terunggah'); }
-    catch { toast.error('Upload gagal — cek koneksi / preset Cloudinary'); }
-    finally { setBusy(false); }
+    try {
+      const url = await uploadToCloudinary(f);
+      onChange(url);
+      toast.success('Gambar terunggah');
+    } catch {
+      toast.error('Upload gagal — cek koneksi / preset Cloudinary');
+    } finally {
+      setBusy(false);
+    }
   };
+
+  const onDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragOver(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) upload(file);
+  };
+
+  const onPaste = (e: React.ClipboardEvent) => {
+    const file = e.clipboardData.files?.[0];
+    if (file && /^image\//.test(file.type)) {
+      e.preventDefault();
+      upload(file);
+    }
+  };
+
   return (
-    <div className="field">
-      <span>{label}</span>
+    <div
+      className={`field cms-img-field${dragOver ? ' drag-over' : ''}`}
+      onDragOver={e => { e.preventDefault(); setDragOver(true); }}
+      onDragLeave={() => setDragOver(false)}
+      onDrop={onDrop}
+      onPaste={onPaste}
+    >
+      {label && <span>{label}</span>}
       <div className="row gap-12" style={{ alignItems: 'flex-start' }}>
-        <div className="logo-box" style={{ width: 72, height: 72, flexBasis: 72, borderRadius: round ? '50%' : 16 }}>
+        <div className={`logo-box${dragOver ? ' drag-active' : ''}`} style={{ width: 72, height: 72, flexBasis: 72, borderRadius: round ? '50%' : 16 }}>
           {value ? <img src={value} alt="" style={{ objectFit: 'cover', padding: 0 }} /> : <Icon name="image" />}
         </div>
         <div className="grow stack gap-8">
-          <input className="input" value={value} placeholder="https://…" onChange={e => onChange(e.target.value)} />
+          <input className="input" value={value} placeholder="https://… atau seret gambar / paste (Ctrl+V)" onChange={e => onChange(e.target.value)} />
           <div className="row gap-8">
             <label className="pill sm dark" style={{ cursor: 'pointer' }}>
               <Icon name="upload" size={13} />{busy ? 'Mengunggah…' : 'Upload'}
@@ -216,7 +246,7 @@ export const EditPage: React.FC<{ title: React.ReactNode; sub?: React.ReactNode;
     );
   };
 
-/** Editor daftar generik: tambah, hapus, duplikat, urutkan naik/turun, buka-tutup item. */
+/** Editor daftar generik: tambah, hapus, duplikat, urutkan naik/turun, buka-tutup item, sisipkan. */
 export function ListEditor<T extends { id: string }>({ items, onChange, create, title, render, addLabel = 'Tambah', extraAdd = [], page }: {
   items: T[];
   onChange: (items: T[]) => void;
@@ -229,40 +259,82 @@ export function ListEditor<T extends { id: string }>({ items, onChange, create, 
   /** isi item dibuka di halaman edit terpisah (layar penuh), bukan dilipat di dalam daftar */
   page?: string;
 }) {
-  const [open, setOpen] = useState<string | null>(null);
-  const add = (n: T) => { onChange([...items, n]); setOpen(n.id); };
+  const [openPageId, setOpenPageId] = useState<string | null>(null);
+  const [openMap, setOpenMap] = useState<Record<string, boolean>>({});
+
+  const add = (n: T) => {
+    onChange([...items, n]);
+    if (page) setOpenPageId(n.id);
+    else setOpenMap(m => ({ ...m, [n.id]: true }));
+  };
+
+  const insertAfter = (i: number, n: T) => {
+    const next = [...items];
+    next.splice(i + 1, 0, n);
+    onChange(next);
+    if (page) setOpenPageId(n.id);
+    else setOpenMap(m => ({ ...m, [n.id]: true }));
+  };
+
   const move = (i: number, d: number) => {
     const j = i + d; if (j < 0 || j >= items.length) return;
     const next = [...items]; [next[i], next[j]] = [next[j], next[i]]; onChange(next);
   };
+
+  const toggleOpen = (id: string) => {
+    if (page) {
+      setOpenPageId(openPageId === id ? null : id);
+    } else {
+      setOpenMap(m => ({ ...m, [id]: !m[id] }));
+    }
+  };
+
+  const openAll = () => {
+    const m: Record<string, boolean> = {};
+    items.forEach(it => { m[it.id] = true; });
+    setOpenMap(m);
+  };
+
+  const closeAll = () => setOpenMap({});
+
   return (
     <div className="stack gap-8">
+      {!page && items.length > 2 && (
+        <div className="row between gap-8" style={{ padding: '0 4px' }}>
+          <span className="xs muted">{items.length} item</span>
+          <div className="row gap-8">
+            <button type="button" className="pill sm ghost" onClick={openAll}>Buka semua</button>
+            <button type="button" className="pill sm ghost" onClick={closeAll}>Ciutkan semua</button>
+          </div>
+        </div>
+      )}
       {items.map((it, i) => {
-        const isOpen = !page && open === it.id;
+        const isOpen = !page && !!openMap[it.id];
         return (
           <div key={it.id} className={`cms-item${isOpen ? ' open' : ''}${page ? ' paged' : ''}`}>
             <div className="row gap-8">
-              <button type="button" className="grow row gap-8 cms-item-head" onClick={() => setOpen(isOpen ? null : it.id)} aria-expanded={page ? undefined : isOpen}>
+              <button type="button" className="grow row gap-8 cms-item-head" onClick={() => toggleOpen(it.id)} aria-expanded={page ? undefined : isOpen}>
                 <span className="xs faint" style={{ width: 22 }}>{i + 1}</span>
                 <span className="grow small" style={{ textAlign: 'left', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{title(it, i) || <em className="faint">(tanpa judul)</em>}</span>
                 {page ? <span className="pill sm dark cms-edit-btn"><Icon name="gear" size={13} />Edit</span> : <Icon name={isOpen ? 'up' : 'down'} size={15} />}
               </button>
-              <button type="button" className="icon-btn sm" onClick={() => move(i, -1)} disabled={i === 0} aria-label="Naik"><Icon name="up" size={14} /></button>
-              <button type="button" className="icon-btn sm" onClick={() => move(i, 1)} disabled={i === items.length - 1} aria-label="Turun"><Icon name="down" size={14} /></button>
-              <button type="button" className="icon-btn sm" aria-label="Duplikat" onClick={() => { const c = { ...JSON.parse(JSON.stringify(it)), id: uid() }; const n = [...items]; n.splice(i + 1, 0, c); onChange(n); }}><Icon name="copy" size={14} /></button>
-              <button type="button" className="icon-btn sm" aria-label="Hapus" onClick={() => { if (window.confirm('Hapus item ini?')) onChange(items.filter(x => x.id !== it.id)); }}><Icon name="trash" size={14} /></button>
+              <button type="button" className="icon-btn sm" onClick={() => move(i, -1)} disabled={i === 0} aria-label="Naik" title="Pindah ke atas"><Icon name="up" size={14} /></button>
+              <button type="button" className="icon-btn sm" onClick={() => move(i, 1)} disabled={i === items.length - 1} aria-label="Turun" title="Pindah ke bawah"><Icon name="down" size={14} /></button>
+              <button type="button" className="icon-btn sm" aria-label="Sisipkan setelah ini" title="Sisipkan blok baru setelah ini" onClick={() => insertAfter(i, create())}><Icon name="plus" size={14} /></button>
+              <button type="button" className="icon-btn sm" aria-label="Duplikat" title="Duplikat item" onClick={() => { const c = { ...JSON.parse(JSON.stringify(it)), id: uid() }; const n = [...items]; n.splice(i + 1, 0, c); onChange(n); }}><Icon name="copy" size={14} /></button>
+              <button type="button" className="icon-btn sm" aria-label="Hapus" title="Hapus item" onClick={() => { if (window.confirm('Hapus item ini?')) onChange(items.filter(x => x.id !== it.id)); }}><Icon name="trash" size={14} /></button>
             </div>
             {isOpen && <div className="cms-item-body">{render(it, patch => onChange(items.map(x => (x.id === it.id ? { ...x, ...patch } : x))))}</div>}
           </div>
         );
       })}
-      {page && open && (() => {
-        const i = items.findIndex(x => x.id === open);
+      {page && openPageId && (() => {
+        const i = items.findIndex(x => x.id === openPageId);
         if (i < 0) return null;
         const it = items[i];
         return (
-          <EditPage title={title(it, i) || `${page} baru`} sub={page} onClose={() => setOpen(null)}
-            nav={{ pos: `${i + 1}/${items.length}`, prev: i > 0 ? () => setOpen(items[i - 1].id) : undefined, next: i < items.length - 1 ? () => setOpen(items[i + 1].id) : undefined }}>
+          <EditPage title={title(it, i) || `${page} baru`} sub={page} onClose={() => setOpenPageId(null)}
+            nav={{ pos: `${i + 1}/${items.length}`, prev: i > 0 ? () => setOpenPageId(items[i - 1].id) : undefined, next: i < items.length - 1 ? () => setOpenPageId(items[i + 1].id) : undefined }}>
             <div className="cms-item-body cms-page-form">{render(it, patch => onChange(items.map(x => (x.id === it.id ? { ...x, ...patch } : x))))}</div>
           </EditPage>
         );

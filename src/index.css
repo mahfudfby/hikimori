@@ -1296,3 +1296,107 @@ html.cms-page-open, html.cms-page-open body { overflow: hidden; }
 /* Tombol Publikasikan di header halaman edit: ringkas (ikon saja) di layar sempit */
 .cms-pub-btn { flex: 0 0 auto; }
 @media (max-width: 560px) { .cms-pub-btn span { display: none; } .cms-pub-btn { padding-left: 10px; padding-right: 10px; } }
+
+/* ───────── CMS Portofolio Lanjutan: Drag-over, Live Preview, Split View, Autosave ───────── */
+.cms-img-field.drag-over, .cms-photos-field.drag-over {
+  border: 1px dashed var(--yellow) !important;
+  background: color-mix(in srgb, var(--yellow) 8%, var(--surface-solid)) !important;
+  border-radius: 14px;
+}
+.logo-box.drag-active {
+  border: 2px dashed var(--yellow) !important;
+  transform: scale(1.05);
+  transition: transform 0.2s;
+}
+
+.dot-green {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #2b8a3e;
+  box-shadow: 0 0 6px rgba(43, 138, 62, 0.6);
+}
+
+.cms-draft-alert {
+  padding: 12px 16px;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--yellow) 14%, var(--surface-solid));
+  border: 1px solid var(--yellow);
+  align-items: center;
+}
+
+.cms-stats-bar {
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: var(--surface-solid);
+  border: 1px solid var(--line-2);
+  align-items: center;
+}
+
+/* Container Editor & Live Preview */
+.cms-editor-container { width: 100%; }
+.cms-editor-container.mode-edit .cms-preview-pane { display: none; }
+.cms-editor-container.mode-preview .cms-editor-pane { display: none; }
+
+.cms-page-body > .cms-editor-container.mode-split,
+.cms-page-body > .cms-editor-container.mode-preview {
+  max-width: 1560px;
+}
+
+/* Split View di layar lebar (>= 1024px) */
+@media (min-width: 1024px) {
+  .cms-editor-container.mode-split {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    gap: 24px;
+    align-items: start;
+  }
+  .cms-editor-container.mode-split .cms-preview-pane {
+    position: sticky;
+    top: 10px;
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+    border-radius: 20px;
+    border: 1px solid var(--line-2);
+    box-shadow: var(--shadow);
+    background: var(--page-b);
+  }
+}
+@media (max-width: 1023px) {
+  .cms-editor-container.mode-split {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .desktop-only { display: none !important; }
+}
+
+/* Frame Pratinjau: Desktop vs Mobile 390px */
+.cms-preview-frame { width: 100%; transition: max-width 0.3s ease; }
+.cms-preview-frame.desktop-wide { width: 100%; }
+.cms-preview-frame.mobile-390 {
+  max-width: 390px;
+  margin: 12px auto;
+  border-radius: 36px;
+  border: 8px solid #222;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+  background: var(--page-b);
+}
+.cms-preview-frame.mobile-390 .mag-head .mag-title { font-size: 1.45rem; }
+.cms-preview-inner {
+  padding: clamp(12px, 2vw, 24px);
+  background: var(--surface-solid);
+  border-radius: 18px;
+}
+
+:root[data-theme='dark'] .cms-draft-alert {
+  background: rgba(245, 205, 83, 0.12);
+  border-color: rgba(245, 205, 83, 0.4);
+}
+:root[data-theme='dark'] .cms-preview-frame.mobile-390 {
+  border-color: #08090D;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
