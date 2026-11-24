@@ -49,6 +49,9 @@ const P: Record<string, React.ReactNode> = {
   tool: <path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z" />,
   linkedin: <><rect x="3" y="3" width="18" height="18" rx="3" /><path d="M7.5 10.5V17M7.5 7.5v.01M11.5 17v-6.5M11.5 13.5c0-1.7 1-3 2.6-3s2.4 1.1 2.4 3V17" /></>,
   link: <path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1" />,
+  search: <><circle cx="11" cy="11" r="7.5" /><path d="m21 21-4.35-4.35" /></>,
+  whatsapp: <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />,
+  twitter: <path d="M4 4l11.5 16h4.5L8.5 4zM4 20l6.5-7.5M13.5 11.5L20 4" />,
 };
 
 export const Icon: React.FC<{ name: keyof typeof P | string; size?: number; className?: string; fill?: boolean }> = ({ name, size = 18, className, fill }) => (

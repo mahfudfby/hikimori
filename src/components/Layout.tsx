@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { Icon } from './ui';
 import LogoMark from './LogoMark';
+import { CommandPalette } from './CommandPalette';
 import { useContent } from '../content/ContentContext';
 import { useLang } from '../contexts/LanguageContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -27,61 +28,100 @@ export const NAV_TOP = ['/', '/profil', '/pengalaman', '/sertifikat', '/portofol
 
 export const Navbar: React.FC = () => {
   const { content } = useContent();
-  const { lang, toggle: toggleLang } = useLang();
+  const { lang, toggle: toggleLang, t } = useLang();
   const { mode, toggle: toggleTheme } = useTheme();
   const { isAdmin } = useAuth();
   const [open, setOpen] = useState(false);
+  const [cmdOpen, setCmdOpen] = useState(false);
   const loc = useLocation();
   useEffect(() => setOpen(false), [loc.pathname]);
 
+  // Global Ctrl+K / Cmd+K listener
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setCmdOpen(o => !o);
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
   return (
-    <header className="nav no-print">
-      <div className="shell nav-inner">
-        <Link to="/" className="brand brand-logo" aria-label={`Hikimori — ${content.profile.name}`}>
-          {/* Ikon HK saja + teks: tagline kecil di logo penuh tidak terbaca di ukuran navbar */}
-          <LogoMark height={28} bare variant="mark" priority />
-          <span className="brand-name">Hikimori</span>
-        </Link>
+    <>
+      <CommandPalette open={cmdOpen} onClose={() => setCmdOpen(false)} />
+      <header className="nav no-print">
+        <div className="shell nav-inner">
+          <Link to="/" className="brand brand-logo" aria-label={`Hikimori — ${content.profile.name}`}>
+            {/* Ikon HK saja + teks: tagline kecil di logo penuh tidak terbaca di ukuran navbar */}
+            <LogoMark height={28} bare variant="mark" priority />
+            <span className="brand-name">Hikimori</span>
+          </Link>
 
-        <nav className="nav-links" aria-label="Main">
-          {NAV.filter(n => NAV_TOP.includes(n.to)).map(n => (
-            <NavLink key={n.to} to={n.to} end={n.to === '/'} className={({ isActive }) => (isActive ? 'active' : '')}>
-              {({ isActive }) => <>{isActive && <i className="nav-bg" />}<span>{lang === 'en' ? n.en : n.id}</span></>}
-            </NavLink>
-          ))}
-        </nav>
+          <nav className="nav-links" aria-label="Main">
+            {NAV.filter(n => NAV_TOP.includes(n.to)).map(n => (
+              <NavLink key={n.to} to={n.to} end={n.to === '/'} className={({ isActive }) => (isActive ? 'active' : '')}>
+                {({ isActive }) => <>{isActive && <i className="nav-bg" />}<span>{lang === 'en' ? n.en : n.id}</span></>}
+              </NavLink>
+            ))}
+          </nav>
 
-        <div className="nav-tools">
-          <button className="pill white" onClick={toggleLang} aria-label={`${lang.toUpperCase()} — ${lang === 'en' ? 'ganti ke Bahasa Indonesia' : 'switch to English'}`} title="ID / EN">
-            <Icon name="globe" size={16} />{lang.toUpperCase()}
-          </button>
-          <button className="icon-btn nav-opt" onClick={toggleTheme} aria-label={mode === 'dark' ? (lang === 'en' ? 'Light mode' : 'Mode terang') : (lang === 'en' ? 'Dark mode' : 'Mode gelap')}>
-            <Icon name={mode === 'dark' ? 'sun' : 'moon'} />
-          </button>
-          {isAdmin && (
-            <Link to="/admin" className="icon-btn nav-opt" aria-label="Admin" title="CMS"><Icon name="gear" /></Link>
-          )}
-          <button className="icon-btn dark nav-burger" onClick={() => setOpen(o => !o)} aria-expanded={open} aria-label="Menu">
-            <Icon name={open ? 'close' : 'menu'} />
-          </button>
-        </div>
-      </div>
-      <div className="scroll-progress-line" aria-hidden="true" />
-      {open && (
-        <nav className="nav-sheet" aria-label="Mobile">
-          {NAV.map(n => (
-            <NavLink key={n.to} to={n.to} end={n.to === '/'} className={({ isActive }) => (isActive ? 'active' : '')}>
-              {pick({ id: n.id, en: n.en }, lang)}
-            </NavLink>
-          ))}
-          {/* Layar sempit: tema & admin pindah ke sini supaya navbar muat */}
-          <div className="nav-sheet-tools">
-            <button className="pill" onClick={toggleTheme}><Icon name={mode === 'dark' ? 'sun' : 'moon'} size={16} />{mode === 'dark' ? (lang === 'en' ? 'Light mode' : 'Mode terang') : (lang === 'en' ? 'Dark mode' : 'Mode gelap')}</button>
-            {isAdmin && <Link to="/admin" className="pill"><Icon name="gear" size={16} />CMS</Link>}
+          <div className="nav-tools">
+            <button
+              type="button"
+              className="pill white nav-search-btn"
+              onClick={() => setCmdOpen(true)}
+              aria-label={t('Pencarian cepat (Ctrl+K)', 'Quick search (Ctrl+K)')}
+              title="Ctrl + K"
+            >
+              <Icon name="search" size={15} />
+              <span className="nav-search-label">{t('Cari', 'Search')}</span>
+              <kbd className="nav-kbd">⌘K</kbd>
+            </button>
+            <button
+              type="button"
+              className="icon-btn nav-opt nav-search-mobile"
+              onClick={() => setCmdOpen(true)}
+              aria-label={t('Cari', 'Search')}
+              title="Ctrl + K"
+            >
+              <Icon name="search" />
+            </button>
+            <button className="pill white" onClick={toggleLang} aria-label={`${lang.toUpperCase()} — ${lang === 'en' ? 'ganti ke Bahasa Indonesia' : 'switch to English'}`} title="ID / EN">
+              <Icon name="globe" size={16} />{lang.toUpperCase()}
+            </button>
+            <button className="icon-btn nav-opt" onClick={toggleTheme} aria-label={mode === 'dark' ? (lang === 'en' ? 'Light mode' : 'Mode terang') : (lang === 'en' ? 'Dark mode' : 'Mode gelap')}>
+              <Icon name={mode === 'dark' ? 'sun' : 'moon'} />
+            </button>
+            {isAdmin && (
+              <Link to="/admin" className="icon-btn nav-opt" aria-label="Admin" title="CMS"><Icon name="gear" /></Link>
+            )}
+            <button className="icon-btn dark nav-burger" onClick={() => setOpen(o => !o)} aria-expanded={open} aria-label="Menu">
+              <Icon name={open ? 'close' : 'menu'} />
+            </button>
           </div>
-        </nav>
-      )}
-    </header>
+        </div>
+        <div className="scroll-progress-line" aria-hidden="true" />
+        {open && (
+          <nav className="nav-sheet" aria-label="Mobile">
+            {NAV.map(n => (
+              <NavLink key={n.to} to={n.to} end={n.to === '/'} className={({ isActive }) => (isActive ? 'active' : '')}>
+                {pick({ id: n.id, en: n.en }, lang)}
+              </NavLink>
+            ))}
+            {/* Layar sempit: tema & admin pindah ke sini supaya navbar muat */}
+            <div className="nav-sheet-tools">
+              <button type="button" className="pill" onClick={() => { setOpen(false); setCmdOpen(true); }}>
+                <Icon name="search" size={16} />{t('Pencarian cepat (Ctrl+K)', 'Quick search (Ctrl+K)')}
+              </button>
+              <button className="pill" onClick={toggleTheme}><Icon name={mode === 'dark' ? 'sun' : 'moon'} size={16} />{mode === 'dark' ? (lang === 'en' ? 'Light mode' : 'Mode terang') : (lang === 'en' ? 'Dark mode' : 'Mode gelap')}</button>
+              {isAdmin && <Link to="/admin" className="pill"><Icon name="gear" size={16} />CMS</Link>}
+            </div>
+          </nav>
+        )}
+      </header>
+    </>
   );
 };
 

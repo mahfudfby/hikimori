@@ -1,7 +1,8 @@
 // src/pages/PortfolioArticle.tsx — /portofolio/:id : artikel proyek gaya majalah/koran.
 // Headline → sub-judul → hero banner → isi blok. Kiri: kontak + ornamen. Kanan: rekomendasi baca.
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import { usePortfolio, ArticleBlock } from '../hooks/usePortfolio';
 import { useContent } from '../content/ContentContext';
 import { useLang } from '../contexts/LanguageContext';
@@ -63,13 +64,65 @@ const PortfolioArticle: React.FC = () => {
   const recs = items.filter(i => i.id !== post.id).sort((a, b) => Number(b.featured) - Number(a.featured) || a.order - b.order).slice(0, 4);
   const hero = post.videoUrl || post.imageUrl;
 
+  // Perhitungan estimasi waktu baca
+  const wordCount = useMemo(() => {
+    const text = [
+      post.title,
+      post.subtitle,
+      post.description,
+      ...blocks.map(b => (b.text || '') + ' ' + (b.caption || '')),
+    ].join(' ').replace(/<[^>]*>/g, ' ');
+    return text.trim().split(/\s+/).filter(Boolean).length;
+  }, [post, blocks]);
+  const readTime = Math.max(1, Math.ceil(wordCount / 180));
+
+  const shareUrl = typeof window !== 'undefined' ? window.location.href : `https://hikimori.web.id/portofolio/${post.id}`;
+  const shareTitle = `${post.title} — ${p.name}`;
+
+  const copyLink = async () => {
+    try {
+      if (navigator?.clipboard?.writeText) {
+        await navigator.clipboard.writeText(shareUrl);
+      } else {
+        const input = document.createElement('input');
+        input.value = shareUrl;
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand('copy');
+        document.body.removeChild(input);
+      }
+      toast.success(t('Tautan artikel disalin!', 'Article link copied!'));
+    } catch {
+      toast.error(t('Gagal menyalin tautan.', 'Failed to copy link.'));
+    }
+  };
+
+  const nativeShare = async () => {
+    if (typeof navigator !== 'undefined' && navigator.share) {
+      try {
+        await navigator.share({
+          title: shareTitle,
+          text: post.subtitle || post.description || shareTitle,
+          url: shareUrl,
+        });
+      } catch (err: any) {
+        if (err?.name !== 'AbortError') copyLink();
+      }
+    } else {
+      copyLink();
+    }
+  };
+
   return (
     <main className="shell shell-wide page-in">
       <div className="frame mag">
         <article className="mag-article" lang="id">
           <nav className="crumb" aria-label="breadcrumb"><Link to="/">Home</Link><span>/</span><Link to="/portofolio">{t('Portofolio', 'Portfolio')}</Link></nav>
           <header className="mag-head">
-            <div className="mag-kicker">{[post.category, post.year].filter(Boolean).join(' · ')}</div>
+            <div className="mag-kicker">
+              {[post.category, post.year].filter(Boolean).join(' · ')}
+              <span className="mag-readtime"> · ⏱️ {readTime} {t('menit baca', 'min read')}</span>
+            </div>
             <h1 className="mag-title">{hyphenate(post.title)}</h1>
             {post.subtitle && <p className="mag-sub">{hyphenate(post.subtitle)}</p>}
             <div className="mag-byline">
@@ -82,6 +135,54 @@ const PortfolioArticle: React.FC = () => {
           <footer className="mag-foot">
             {post.tags?.length > 0 && <div className="row wrap gap-8">{post.tags.map(tg => <span key={tg} className="chip">{tg}</span>)}</div>}
             {post.link && <a className="pill dark mt-16" href={post.link} target="_blank" rel="noopener noreferrer"><Icon name="external" size={15} />{t('Buka proyek', 'Open project')}</a>}
+
+            {/* Bagikan artikel */}
+            <div className="mag-share-card mt-24">
+              <div className="row between wrap gap-12" style={{ alignItems: 'center' }}>
+                <div>
+                  <span className="small" style={{ fontWeight: 600 }}>{t('Bagikan karya ini', 'Share this work')}</span>
+                  <p className="xs muted mt-2">{t('Kirim ke rekan kerja atau bagikan ke media sosial', 'Share with colleagues or post to social media')}</p>
+                </div>
+                <div className="row wrap gap-8" style={{ alignItems: 'center' }}>
+                  <a
+                    className="pill sm"
+                    href={`https://api.whatsapp.com/send?text=${encodeURIComponent(shareTitle + '\n' + shareUrl)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title="Bagikan ke WhatsApp"
+                  >
+                    <Icon name="whatsapp" size={14} /> WhatsApp
+                  </a>
+                  <a
+                    className="pill sm"
+                    href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title="Bagikan ke LinkedIn"
+                  >
+                    <Icon name="linkedin" size={14} /> LinkedIn
+                  </a>
+                  <a
+                    className="pill sm"
+                    href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareTitle)}&url=${encodeURIComponent(shareUrl)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title="Bagikan ke X"
+                  >
+                    <Icon name="twitter" size={14} /> X
+                  </a>
+                  <button type="button" className="pill sm ghost" onClick={copyLink} title={t('Salin tautan', 'Copy link')}>
+                    <Icon name="link" size={14} /> {t('Salin', 'Copy')}
+                  </button>
+                  {typeof navigator !== 'undefined' && typeof navigator.share === 'function' && (
+                    <button type="button" className="pill sm dark" onClick={nativeShare} title={t('Bagikan', 'Share')}>
+                      <Icon name="spark" size={14} /> {t('Bagikan…', 'Share…')}
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+
             {(post.hashtags?.length > 0 || post.keywords?.length > 0) && (
               <div className="mag-meta">
                 {post.hashtags?.length > 0 && <p className="mag-hashtags">{post.hashtags.map(h => <span key={h}>#{h}</span>)}</p>}

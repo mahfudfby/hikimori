@@ -1400,3 +1400,190 @@ html.cms-page-open, html.cms-page-open body { overflow: hidden; }
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.08);
 }
 
+/* ───────── Artikel Portofolio: Waktu Baca & Share Card ───────── */
+.mag-readtime { opacity: 0.85; font-weight: 500; font-size: 0.82rem; }
+.mag-share-card {
+  padding: 18px 22px;
+  border-radius: 18px;
+  background: var(--surface-solid);
+  border: 1px solid var(--line-2);
+  box-shadow: var(--shadow);
+}
+:root[data-theme='dark'] .mag-share-card {
+  background: rgba(22, 24, 32, 0.78);
+  border-color: rgba(245, 205, 83, 0.2);
+}
+
+/* ───────── Navbar Quick Search Button ───────── */
+.nav-search-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  height: 38px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.nav-search-btn .nav-kbd {
+  font-size: 0.68rem;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: var(--line);
+  color: var(--text-2);
+  font-family: inherit;
+  font-weight: 600;
+  border: 1px solid var(--line-2);
+}
+.nav-search-mobile { display: none; }
+@media (max-width: 860px) {
+  .nav-search-btn { display: none !important; }
+  .nav-search-mobile { display: inline-flex !important; }
+}
+
+/* ───────── Command Palette (Ctrl + K / Cmd + K) ───────── */
+.cmd-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: clamp(24px, 12vh, 100px);
+  padding-inline: 16px;
+  background: rgba(0, 0, 0, 0.55);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  animation: cmdBackdropIn 0.2s var(--ease-out) both;
+}
+@keyframes cmdBackdropIn { from { opacity: 0; } to { opacity: 1; } }
+
+.cmd-modal {
+  width: min(94vw, 620px);
+  max-height: 75vh;
+  border-radius: 22px;
+  background: var(--surface-solid);
+  border: 1px solid var(--line-2);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.38), 0 0 0 1px var(--line);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: cmdModalIn 0.22s var(--ease-out) both;
+}
+@keyframes cmdModalIn {
+  from { opacity: 0; transform: translateY(-16px) scale(0.97); }
+  to { opacity: 1; transform: none; }
+}
+
+:root[data-theme='dark'] .cmd-modal {
+  background: #12141C;
+  border-color: rgba(245, 205, 83, 0.24);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(245, 205, 83, 0.15);
+}
+
+.cmd-header {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--line-2);
+  background: var(--surface-strong);
+}
+.cmd-search-ico { color: var(--text-2); flex-shrink: 0; }
+.cmd-input {
+  border: 0;
+  outline: none;
+  background: transparent;
+  font-size: 1.05rem;
+  font-family: var(--font);
+  color: var(--text);
+  width: 100%;
+}
+.cmd-esc-badge {
+  font-size: 0.68rem;
+  padding: 3px 6px;
+  border-radius: 6px;
+  background: var(--line);
+  color: var(--text-2);
+  border: 1px solid var(--line-2);
+  font-family: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.cmd-list {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 8px 10px 12px;
+  max-height: 400px;
+}
+.cmd-category-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 10px 10px 4px;
+  font-weight: 600;
+}
+.cmd-item {
+  padding: 10px 12px;
+  border-radius: 14px;
+  cursor: pointer;
+  align-items: center;
+  transition: background 0.15s ease, transform 0.12s ease;
+  user-select: none;
+}
+.cmd-item:hover, .cmd-item.active {
+  background: color-mix(in srgb, var(--yellow) 14%, var(--surface-strong));
+  transform: translateX(2px);
+}
+:root[data-theme='dark'] .cmd-item:hover,
+:root[data-theme='dark'] .cmd-item.active {
+  background: rgba(245, 205, 83, 0.15);
+  box-shadow: inset 3px 0 0 var(--yellow);
+}
+
+.cmd-item-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  display: grid;
+  place-items: center;
+  background: var(--line);
+  color: var(--text);
+  flex-shrink: 0;
+}
+.cmd-item-title {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cmd-item-sub {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cmd-item-arrow {
+  color: var(--text-2);
+  opacity: 0;
+  transition: opacity 0.15s, transform 0.15s;
+}
+.cmd-item:hover .cmd-item-arrow, .cmd-item.active .cmd-item-arrow {
+  opacity: 1;
+  transform: translateX(2px);
+}
+
+.cmd-footer {
+  padding: 10px 18px;
+  border-top: 1px solid var(--line-2);
+  background: var(--surface-strong);
+}
+.cmd-footer kbd {
+  background: var(--line);
+  border: 1px solid var(--line-2);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-family: inherit;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+
