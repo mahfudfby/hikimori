@@ -92,7 +92,7 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
         try { localStorage.setItem(LS_KEY, JSON.stringify(merged)); } catch {}
       }).catch(err => { if (err?.name !== 'AbortError') { console.warn('[content] Firestore:', err.message); setSynced(true); } });
     };
-    const w = window as any;
+    const w = window;
     const id = w.requestIdleCallback ? w.requestIdleCallback(load, { timeout: LITE ? 3000 : 2000 }) : setTimeout(load, LITE ? 1200 : 600);
     let last = Date.now();
     const onVisible = () => { if (document.visibilityState === 'visible' && Date.now() - last > 60000) { last = Date.now(); load(); } };

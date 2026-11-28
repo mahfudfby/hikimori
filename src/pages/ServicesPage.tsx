@@ -11,7 +11,7 @@ const ServicesPage: React.FC = () => {
   const { lang, t } = useLang();
   useTitle(`${t('Layanan', 'Services')} — ${content.profile.name}`);
   return (
-    <main className="shell page-in">
+    <main id="main" tabIndex={-1} className="shell page-in">
       <div className="frame">
         <PageHero crumb={t('Layanan', 'Services')} title={t('Yang bisa saya bantu', 'How I can help')}
           lead={t('Dari pengelolaan SDM hingga dukungan IT, layanan yang lahir dari pengalaman langsung di lapangan.', 'From people management to IT support, services grounded in hands-on field experience.')}

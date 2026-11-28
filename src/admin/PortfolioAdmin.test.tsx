@@ -1,7 +1,7 @@
 import { test, expect, beforeAll } from 'vitest';
 import React, { useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { act } from 'react';
+import { act } from 'react-dom/test-utils';
 import { ListEditor } from './fields';
 
 beforeAll(() => {

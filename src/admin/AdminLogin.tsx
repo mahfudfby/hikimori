@@ -4,6 +4,7 @@ import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth, UNVERIFIED_ADMIN_CODE } from '../contexts/AuthContext';
 import { Icon } from '../components/ui';
 import LogoMark from '../components/LogoMark';
+import { asErr } from '../utils/errors';
 
 const REMEMBER_KEY = 'hk_admin_remember';
 
@@ -30,7 +31,7 @@ const AdminLogin: React.FC = () => {
     setErr(''); setInfo(''); setBusy(kind);
     if (kind !== 'verify') setNeedVerify(false);
     try { await fn(); ok?.(); }
-    catch (x: any) {
+    catch (raw) { const x = asErr(raw);
       if (x?.code === UNVERIFIED_ADMIN_CODE) setNeedVerify(true);
       if (x?.message) setErr(x.message);
     }
@@ -50,11 +51,11 @@ const AdminLogin: React.FC = () => {
   });
 
   return (
-    <div className="login-bg">
+    <main id="main" className="login-bg">
       <form onSubmit={submit} className="card solid stack gap-16" style={{ width: 'min(420px, 100%)', padding: 28 }}>
         <div className="row wrap gap-12">
           <LogoMark height={32} />
-          <div style={{ minWidth: 0 }}><div className="h-card">Content Manager</div><div className="xs muted">Masuk untuk mengelola isi situs</div></div>
+          <div style={{ minWidth: 0 }}><h1 className="h-card">Content Manager</h1><div className="xs muted">Masuk untuk mengelola isi situs</div></div>
         </div>
         <label className="field"><span>Username atau email</span>
           <input className="input" value={id} onChange={e => { setId(e.target.value); setNeedVerify(false); }} autoComplete="username" required autoFocus />
@@ -92,7 +93,7 @@ const AdminLogin: React.FC = () => {
         </button>
         <Link to="/" className="xs muted center">← Kembali ke situs</Link>
       </form>
-    </div>
+    </main>
   );
 };
 

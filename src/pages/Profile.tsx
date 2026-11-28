@@ -24,7 +24,7 @@ const Profile: React.FC = () => {
   ].filter(Boolean) as { label: string; href: string }[];
 
   return (
-    <main className="shell page-in">
+    <main id="main" tabIndex={-1} className="shell page-in">
       <div className="frame">
         <PageHero crumb={t('Profil', 'Profile')} title={p.name} lead={pick(p.tagline, lang)}
           aside={<div className="row wrap gap-8">

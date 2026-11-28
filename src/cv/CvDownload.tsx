@@ -17,6 +17,7 @@ import {
 import { CvDocument, PAGE_W, TEMPLATES, tplOf } from './CvDocument';
 import { ensureFont, exportJpegs, exportPdf, printText } from './exportCv';
 import { translateMissing, trCache } from './translate';
+import { asErr } from '../utils/errors';
 
 const LS_CHOICE = 'hk_cv_choice_v1';
 const LS_OPTS = 'hk_cv_opts_v1';
@@ -149,7 +150,7 @@ export const CvBuilder: React.FC = () => {
         toast.success(t(`${imgs.length} gambar JPEG resolusi tinggi diunduh.`, `${imgs.length} high-resolution JPEG image(s) downloaded.`));
       }
       else { await printText(pages(), fileName); toast.success(t('Pilih "Simpan sebagai PDF" di jendela cetak.', 'Choose "Save as PDF" in the print window.')); }
-    } catch (e: any) {
+    } catch (raw) { const e = asErr(raw);
       toast.error(`${t('Gagal membuat CV', 'Could not create CV')}: ${e?.message || ''}`);
     } finally { setBusy(''); }
   };

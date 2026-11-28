@@ -17,7 +17,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
 
 // Tutup intro (public/index.html) setelah frame pertama aplikasi siap.
 // rAF = saat frame pertama tergambar; timer = cadangan bila rAF ditahan browser (tab latar / pane tersembunyi).
-const introDone = () => (window as any).__hkIntroDone?.();
+const introDone = () => window.__hkIntroDone?.();
 requestAnimationFrame(() => requestAnimationFrame(introDone));
 setTimeout(introDone, 300);
 

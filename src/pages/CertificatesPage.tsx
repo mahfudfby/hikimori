@@ -44,7 +44,7 @@ const CertificatesPage: React.FC = () => {
   const count = (c: CertCategory) => certs.filter(x => x.category === c).length;
 
   return (
-    <main className="shell page-in">
+    <main id="main" tabIndex={-1} className="shell page-in">
       <div className="frame">
         <PageHero crumb={t('Sertifikat', 'Certificates')} title={t('Sertifikat & lisensi', 'Certificates & licenses')}
           lead={t('Kompetensi yang sudah diuji dan diakui, lisensi profesi BNSP, pelatihan berbasis SKKNI, dan sertifikasi lainnya.', 'Tested and recognized competencies, BNSP professional licenses, SKKNI-based training, and other certifications.')}

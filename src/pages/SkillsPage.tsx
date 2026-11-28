@@ -16,7 +16,7 @@ const SkillsPage: React.FC = () => {
   const groups = Array.from(new Set(content.tools.map(tl => tl.group || t('Lainnya', 'Other'))));
 
   return (
-    <main className="shell page-in">
+    <main id="main" tabIndex={-1} className="shell page-in">
       <div className="frame">
         <PageHero crumb={t('Keahlian', 'Skills')} title={t('Keahlian & tools', 'Skills & tools')}
           lead={t('Kemampuan teknis dan interpersonal yang saya bangun dari pengalaman lintas divisi.', 'Technical and interpersonal abilities built through cross-division experience.')}

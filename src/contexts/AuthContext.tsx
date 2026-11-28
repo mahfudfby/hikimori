@@ -6,6 +6,7 @@ import React, { createContext, useContext, useEffect, useState, useCallback } fr
 import type { User } from 'firebase/auth';
 import { getAuthInstance } from '../config/firebase';
 import { isAdminClaims, isAdminEmail } from '../config/admins';
+import { asErr } from '../utils/errors';
 
 /** Username pendek → email akun Firebase admin. */
 const USERNAME_ALIAS: Record<string, string> = {
@@ -102,9 +103,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       await a.signOut(auth);
       setUser(null);
       setIsAdmin(false);
-      const err: any = new Error(unverifiedAdmin ? UNVERIFIED_ADMIN_MSG : NOT_ADMIN);
-      if (unverifiedAdmin) err.code = UNVERIFIED_ADMIN_CODE;
-      throw err;
+      throw Object.assign(new Error(unverifiedAdmin ? UNVERIFIED_ADMIN_MSG : NOT_ADMIN), unverifiedAdmin ? { code: UNVERIFIED_ADMIN_CODE } : {});
     }
     try { await u.getIdToken(true); } catch { /* segarkan token agar email_verified terbaru ikut */ }
     setUser(u);
@@ -116,7 +115,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const { auth, a } = await begin(remember);
     let u: User;
     try { u = (await a.signInWithEmailAndPassword(auth, toEmail(id), password)).user; }
-    catch (err: any) { throw new Error(friendlyError(err?.code || 'unknown')); }
+    catch (raw) { const err = asErr(raw); throw new Error(friendlyError(err?.code || 'unknown')); }
     await accept(u);
   }, [accept]);
 
@@ -124,7 +123,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const { auth, a } = await begin(remember);
     let u: User;
     try { u = (await a.signInWithPopup(auth, new a.GoogleAuthProvider())).user; }
-    catch (err: any) {
+    catch (raw) { const err = asErr(raw);
       if (err?.code === 'auth/popup-closed-by-user' || err?.code === 'auth/cancelled-popup-request') throw new Error('');
       throw new Error(friendlyError(err?.code || 'unknown'));
     }
@@ -138,8 +137,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (!isAdminEmail(email)) return;
     const [auth, a] = await authMod();
     try { await a.sendPasswordResetEmail(auth, email); }
-    catch (err: any) {
-      if (['auth/invalid-email', 'auth/network-request-failed', 'auth/too-many-requests'].includes(err?.code)) throw new Error(friendlyError(err.code));
+    catch (raw) { const err = asErr(raw);
+      if (['auth/invalid-email', 'auth/network-request-failed', 'auth/too-many-requests'].includes(err.code ?? '')) throw new Error(friendlyError(err.code ?? 'unknown'));
     }
   }, []);
 
@@ -155,7 +154,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [auth, a] = await authMod();
     let u: User;
     try { u = (await a.signInWithEmailAndPassword(auth, email, password)).user; }
-    catch (err: any) { throw new Error(friendlyError(err?.code || 'unknown')); }
+    catch (raw) { const err = asErr(raw); throw new Error(friendlyError(err?.code || 'unknown')); }
     if (!isAdminEmail(u.email)) {
       await a.signOut(auth);
       throw new Error(NOT_ADMIN);
@@ -167,7 +166,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return true;
       }
       await a.sendEmailVerification(u);
-    } catch (err: any) {
+    } catch (raw) { const err = asErr(raw);
       await a.signOut(auth);
       setUser(null);
       setIsAdmin(false);

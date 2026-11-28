@@ -348,7 +348,7 @@ export function ListEditor<T extends { id: string }>({ items, onChange, create, 
 }
 
 export const Grid: React.FC<{ children: React.ReactNode; cols?: number }> = ({ children, cols = 2 }) => (
-  <div className="cms-grid" style={{ ['--cols' as any]: cols }}>{children}</div>
+  <div className="cms-grid" style={{ '--cols': cols }}>{children}</div>
 );
 
 export const Section: React.FC<{ title: string; desc?: string; children: React.ReactNode; actions?: React.ReactNode }> = ({ title, desc, children, actions }) => (

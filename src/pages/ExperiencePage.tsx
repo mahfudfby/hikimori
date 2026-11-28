@@ -95,7 +95,7 @@ const ExperiencePage: React.FC = () => {
   let lastYear = '';
 
   return (
-    <main className="shell page-in">
+    <main id="main" tabIndex={-1} className="shell page-in">
       <div className="frame">
         <PageHero crumb={t('Pengalaman', 'Experience')}
           title={<>{t('Perjalanan', 'Career')}<br />{t('karier', 'journey')}</>}

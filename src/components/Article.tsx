@@ -156,7 +156,7 @@ export const Block: React.FC<{ b: ArticleBlock; title: string }> = ({ b, title }
     ) : <Slideshow urls={b.urls} caption={b.caption} alt={b.caption || title} ratio={b.ratio} style={fig} />;
     case 'media': return (
       <div className={`mag-split ${b.side === 'left' ? 'media-left' : ''}`}
-        style={{ ['--split' as any]: b.side === 'left' ? `${widthOf(b)}% minmax(0, 1fr)` : `minmax(0, 1fr) ${widthOf(b)}%` }}>
+        style={{ '--split': b.side === 'left' ? `${widthOf(b)}% minmax(0, 1fr)` : `minmax(0, 1fr) ${widthOf(b)}%` }}>
         <div className="mag-split-text"><ArticleText text={b.text} /></div>
         <figure className="mag-figure"><FitMedia url={b.url} alt={b.caption || title} fit={fitOf(b)} height={b.height} frameless={b.style === 'frameless'} />{b.caption && b.style !== 'frameless' && <figcaption>{hyphenate(b.caption)}</figcaption>}</figure>
       </div>

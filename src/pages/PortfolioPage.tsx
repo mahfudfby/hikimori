@@ -17,7 +17,7 @@ const PortfolioPage: React.FC = () => {
   const list = (cat === 'all' ? items : items.filter(i => i.category === cat)).slice().sort((a, b) => Number(b.featured) - Number(a.featured) || a.order - b.order);
 
   return (
-    <main className="shell page-in">
+    <main id="main" tabIndex={-1} className="shell page-in">
       <div className="frame">
         <PageHero crumb={t('Portofolio', 'Portfolio')} title={t('Karya & proyek', 'Work & projects')}
           lead={t('Kumpulan proyek, sistem, dan karya yang pernah saya kerjakan.', 'A collection of projects, systems and work I have delivered.')}

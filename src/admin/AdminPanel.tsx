@@ -16,6 +16,7 @@ import type { SiteContent, Experience, Certificate, Skill, Service, Education, J
 import { Text, Select, Toggle, BiField, BiLines, BiPoints, BiBulletText, Tags, ImageInput, ListEditor, Grid, Section, EditPageActions, uid } from './fields';
 import PortfolioAdmin from './PortfolioAdmin';
 import { listPortfolio, restorePortfolio } from '../hooks/usePortfolio';
+import { asErr } from '../utils/errors';
 
 const DRAFT_KEY = 'hk_cms_draft';
 const eb = () => ({ id: '', en: '' });
@@ -87,7 +88,7 @@ Tetap publikasikan dan TIMPA versi tersebut?
       touched.current = false;
       localStorage.removeItem(DRAFT_KEY);
       toast.success('Tersimpan & dipublikasikan ✓');
-    } catch (e: any) {
+    } catch (raw) { const e = asErr(raw);
       const msg = String(e?.code || e?.message || e);
       toast.error(msg.includes('permission') ? 'Ditolak Firestore — cek Firestore Rules (lihat README) & pastikan login.' : 'Gagal menyimpan: ' + msg, { duration: 6000 });
     } finally { setSaving(false); }
@@ -383,7 +384,7 @@ Tetap publikasikan dan TIMPA versi tersebut?
                     await restorePortfolio(portfolio); toast.success(`${portfolio.length} proyek portofolio dipulihkan`);
                   }
                   setDraft(mergeContent(data)); setRev(r => r + 1);toast.success('Backup dimuat ke draft — tekan Publikasikan untuk menyimpan'); }
-                catch (err: any) { toast.error(err instanceof SyntaxError ? 'File tidak valid' : `Gagal memulihkan: ${err?.message || err}`); }
+                catch (raw) { const err = asErr(raw); toast.error(err instanceof SyntaxError ? 'File tidak valid' : `Gagal memulihkan: ${err?.message || err}`); }
                 e.target.value = '';
               }} />
             </label>
@@ -398,7 +399,7 @@ Tetap publikasikan dan TIMPA versi tersebut?
               <button className="pill sm" disabled={histBusy} onClick={async () => {
                 setHistBusy(true);
                 try { setHistory(await listHistory(15)); }
-                catch (e: any) { toast.error('Gagal memuat riwayat: ' + (e?.code || e?.message)); }
+                catch (raw) { const e = asErr(raw); toast.error('Gagal memuat riwayat: ' + (e?.code || e?.message)); }
                 finally { setHistBusy(false); }
               }}>{histBusy ? 'Memuat…' : history ? 'Muat ulang' : 'Tampilkan riwayat'}</button>
             </div>

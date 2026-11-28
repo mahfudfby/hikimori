@@ -59,7 +59,7 @@ const Protected: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 const NotFound: React.FC = () => {
   const { t } = useLang();
   return (
-    <main className="shell page-in">
+    <main id="main" tabIndex={-1} className="shell page-in">
       <div className="frame center" style={{ padding: '80px 20px' }}>
         <div className="num-xl" style={{ fontSize: 'clamp(5rem,16vw,9rem)' }}>404</div>
         <p className="muted mt-16">{t('Halaman yang kamu cari tidak ditemukan.', "The page you're looking for doesn't exist.")}</p>

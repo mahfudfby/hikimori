@@ -104,7 +104,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ open, onClose })
     });
 
     // 3. Riwayat Kerja
-    (content.exp || []).forEach(exp => {
+    (content.experience || []).forEach(exp => {
       list.push({
         id: `exp-${exp.id}`,
         category: 'exp',

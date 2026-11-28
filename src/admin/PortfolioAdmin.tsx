@@ -13,6 +13,7 @@ import { uploadToCloudinary } from '../utils/cloudinaryUpload';
 import { ArticleBlocks, Media } from '../components/Article';
 import { hyphenate } from '../utils/richHtml';
 import { slugify } from '../utils/slug';
+import { asErr } from '../utils/errors';
 
 type Draft = Omit<PortfolioItem, 'id'> & { id?: string };
 const EMPTY: Draft = {
@@ -414,7 +415,7 @@ const PortfolioAdmin: React.FC = () => {
       setRecoveredDraft(null);
       toast.success('Proyek tersimpan & live');
       closeEditPage(() => setEdit(null));
-    } catch (e: any) {
+    } catch (raw) { const e = asErr(raw);
       toast.error('Gagal: ' + (e?.code || e?.message));
     } finally {
       setBusy(false);

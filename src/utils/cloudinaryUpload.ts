@@ -3,6 +3,7 @@
 // atau sedang error (5xx), pakai preset unsigned lama sebagai cadangan.
 import { CLOUDINARY_CONFIG } from '../config/services';
 import { getAuthInstance } from '../config/firebase';
+import { asErr } from './errors';
 
 export const uploadToCloudinary = async (file: File): Promise<string> => {
   const formData = new FormData();
@@ -26,7 +27,7 @@ export const uploadToCloudinary = async (file: File): Promise<string> => {
         throw new Error('Tanda tangan upload ditolak');
       }
     }
-  } catch (e: any) {
+  } catch (raw) { const e = asErr(raw);
     if (e?.message === 'Tanda tangan upload ditolak') throw e;
   }
   if (!signed) formData.append('upload_preset', CLOUDINARY_CONFIG.uploadPreset);

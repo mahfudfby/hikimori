@@ -15,7 +15,7 @@ const EducationPage: React.FC = () => {
   const period = (s: string, e: string) => [s && (fmtYM(s, lang) || s), e && (fmtYM(e, lang) || e)].filter(Boolean).join(rangeSep(lang));
 
   return (
-    <main className="shell page-in">
+    <main id="main" tabIndex={-1} className="shell page-in">
       <div className="frame">
         <PageHero crumb={t('Pendidikan', 'Education')} title={t('Pendidikan & pembelajaran', 'Education & learning')} lead={pick(ed.intro, lang)}
           aside={main && <div className="row gap-24">

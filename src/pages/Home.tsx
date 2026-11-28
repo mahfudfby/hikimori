@@ -35,7 +35,7 @@ const DashTop: React.FC = () => {
         <h1 className="h-hero">{nameMain}{nameDeg && <span className="hero-deg">{nameDeg}</span>}</h1>
         <p className="hero-sub">{pick(content.profile.title, lang)} · {content.profile.location.split(',')[0]}</p>
         <div className="xs faint mt-24">{t('Komposisi pengalaman profesional', 'Professional experience mix')}</div>
-        <div className="dash-pills mt-8" style={{ ['--cols' as any]: share.map(s => `${Math.max(2, Math.round(s.pct / 7))}fr`).join(' ') }}>
+        <div className="dash-pills mt-8" style={{ '--cols': share.map(s => `${Math.max(2, Math.round(s.pct / 7))}fr`).join(' ') }}>
           {share.map((s, i) => (
             <div key={s.key} style={{ minWidth: 0 }}>
               <div className="lbl">{pick(CATEGORY_LABEL[s.key], lang)}</div>
@@ -198,7 +198,7 @@ const TrackerCard: React.FC<{ exp?: Experience; idx: number; count: number; play
               onAnimationEnd={() => playing && next()} />
           </div>
         </div>
-        {desc.length ? <ul className="job-desc">{desc.map((d, i) => <li key={i}>{d.text}</li>)}</ul>
+        {desc.length ? <ul className="job-desc" tabIndex={0} aria-label={t('Daftar deskripsi kerja (dapat digulir)', 'Job description list (scrollable)')}>{desc.map((d, i) => <li key={i}>{d.text}</li>)}</ul>
           : <p className="job-desc faint">{t('Deskripsi belum diisi.', 'No description yet.')}</p>}
         <div className="row between mt-16">
           <div className="row gap-8">
@@ -248,7 +248,7 @@ const AgeCard: React.FC = () => {
         <h2 className="h-card">{t('Usia', 'Age')}</h2>
         <span className="num-lg">{age || '—'}<span style={{ fontSize: '1rem' }}> {t('tahun', 'years')}</span></span>
       </div>
-      <div className="age-labels" style={{ ['--split' as any]: '1fr' }}>
+      <div className="age-labels" style={{ '--split': '1fr' }}>
         <span>{by || '—'}</span><span style={{ textAlign: 'center' }}>{now}</span><span>∞</span>
       </div>
       <div className="age-track">
@@ -629,7 +629,7 @@ const Home: React.FC = () => {
   useEffect(() => { document.title = `${content.profile.name} | ${pick(content.profile.title, lang)}`; }, [content.profile, lang]);
 
   return (
-    <main className="shell page-in">
+    <main id="main" tabIndex={-1} className="shell page-in">
       <div className="frame">
         <DashTop />
         <div className="bento">

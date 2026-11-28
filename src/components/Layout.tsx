@@ -51,11 +51,12 @@ export const Navbar: React.FC = () => {
   return (
     <>
       <CommandPalette open={cmdOpen} onClose={() => setCmdOpen(false)} />
-      <header className="nav no-print">
+      <a className="skip-link" href="#main">{t('Lewati ke konten utama', 'Skip to main content')}</a>
+    <header className="nav no-print">
         <div className="shell nav-inner">
           <Link to="/" className="brand brand-logo" aria-label={`Hikimori — ${content.profile.name}`}>
             {/* Ikon HK saja + teks: tagline kecil di logo penuh tidak terbaca di ukuran navbar */}
-            <LogoMark height={28} bare variant="mark" priority />
+            <LogoMark height={28} bare variant="mark" priority title="" />
             <span className="brand-name">Hikimori</span>
           </Link>
 
@@ -72,7 +73,7 @@ export const Navbar: React.FC = () => {
               type="button"
               className="pill white nav-search-btn"
               onClick={() => setCmdOpen(true)}
-              aria-label={t('Pencarian cepat (Ctrl+K)', 'Quick search (Ctrl+K)')}
+              aria-label={t('Cari (Ctrl+K)', 'Search (Ctrl+K)')}
               title="Ctrl + K"
             >
               <Icon name="search" size={15} />
@@ -168,5 +169,5 @@ export const Floaters: React.FC = () => {
 };
 
 export const PageShell: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <main className="shell page-in">{children}</main>
+  <main id="main" tabIndex={-1} className="shell page-in">{children}</main>
 );

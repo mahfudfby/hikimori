@@ -83,7 +83,7 @@ const pump = () => {
     // beri waktu React merender blok ini, baru lanjut ke blok berikutnya
     setTimeout(() => { pumping = false; pump(); }, STAGE_GAP);
   };
-  const w = window as any;
+  const w = window;
   w.requestIdleCallback ? w.requestIdleCallback(run, { timeout: 400 }) : setTimeout(run, 16);
 };
 

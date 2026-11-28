@@ -63,7 +63,7 @@ export const MediaFrameEditor: React.FC<{ b: ArticleBlock; up: (p: Partial<Artic
         )}
       </div>
       <small className="xs faint">Seret tepi kiri/kanan = lebar, tepi bawah = tinggi, sudut kanan bawah = keduanya. {b.type === 'media' && 'Lebar = porsi media di samping teks.'}</small>
-      <div className="cms-grid" style={{ ['--cols' as any]: 3 }}>
+      <div className="cms-grid" style={{ '--cols': 3 }}>
         <label className="field"><span>Rasio kotak</span>
           <select className="input" value={custom ? 'custom' : ratio} onChange={e => up({ ratio: e.target.value === 'custom' ? ratio : e.target.value })}>
             {RATIOS.map(r => <option key={r.value} value={r.value}>{r.label}</option>)}

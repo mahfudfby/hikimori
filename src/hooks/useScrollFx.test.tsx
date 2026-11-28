@@ -2,7 +2,7 @@
 import { test, expect, beforeEach, afterEach, vi, beforeAll, describe } from 'vitest';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { act } from 'react';
+import { act } from 'react-dom/test-utils';
 import { useScrollFx } from './useScrollFx';
 
 beforeAll(() => {

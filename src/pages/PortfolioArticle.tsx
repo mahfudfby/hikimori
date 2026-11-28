@@ -11,6 +11,7 @@ import { Icon, useTitle, cld } from '../components/ui';
 import { ArticleBlocks, Media } from '../components/Article';
 import { hyphenate } from '../utils/richHtml';
 import { mailLink } from '../utils/mailLink';
+import { asErr } from '../utils/errors';
 
 const Ornament: React.FC = () => (
   <div className="mag-ornament" aria-hidden="true">
@@ -50,9 +51,9 @@ const PortfolioArticle: React.FC = () => {
     return () => undo.forEach(u => typeof u === 'function' && u());
   }, [post]);
 
-  if (loading) return <main className="shell page-in"><div className="frame"><div className="skeleton" style={{ height: 520 }} /></div></main>;
+  if (loading) return <main id="main" tabIndex={-1} className="shell page-in"><div className="frame"><div className="skeleton" style={{ height: 520 }} /></div></main>;
   if (error || !post) return (
-    <main className="shell page-in"><div className="frame center" style={{ padding: '80px 20px' }}>
+    <main id="main" tabIndex={-1} className="shell page-in"><div className="frame center" style={{ padding: '80px 20px' }}>
       <p className="muted">{error ? t('Gagal memuat artikel.', 'Failed to load the article.') : t('Artikel tidak ditemukan.', 'Article not found.')}</p>
       <Link to="/portofolio" className="pill dark mt-16">{t('Kembali ke portofolio', 'Back to portfolio')}</Link>
     </div></main>
@@ -108,7 +109,7 @@ const PortfolioArticle: React.FC = () => {
           text: post.subtitle || post.description || shareTitle,
           url: shareUrl,
         });
-      } catch (err: any) {
+      } catch (raw) { const err = asErr(raw);
         if (err?.name !== 'AbortError') copyLink();
       }
     } else {
@@ -117,7 +118,7 @@ const PortfolioArticle: React.FC = () => {
   };
 
   return (
-    <main className="shell shell-wide page-in">
+    <main id="main" tabIndex={-1} className="shell shell-wide page-in">
       <div className="frame mag">
         <article className="mag-article" lang="id">
           <nav className="crumb" aria-label="breadcrumb"><Link to="/">Home</Link><span>/</span><Link to="/portofolio">{t('Portofolio', 'Portfolio')}</Link></nav>

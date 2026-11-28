@@ -47,7 +47,7 @@ const ContactPage: React.FC = () => {
   ].filter(Boolean) as { icon: string; label: string; value: string; href: string }[];
 
   return (
-    <main className="shell page-in">
+    <main id="main" tabIndex={-1} className="shell page-in">
       <div className="frame">
         <PageHero crumb={t('Kontak', 'Contact')} title={pick(content.contact.headline, lang)} lead={pick(content.contact.sub, lang)}
           aside={p.openToWork ? <span className="chip yellow">● {pick(content.contact.availability, lang)}</span> : undefined} />

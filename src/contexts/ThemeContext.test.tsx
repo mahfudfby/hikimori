@@ -2,7 +2,7 @@
 import { test, expect, beforeAll } from 'vitest';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { act } from 'react';
+import { act } from 'react-dom/test-utils';
 import { ThemeProvider, useTheme } from './ThemeContext';
 
 beforeAll(() => {

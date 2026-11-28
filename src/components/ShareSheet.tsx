@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useLang } from '../contexts/LanguageContext';
 import { SHARE_EVENT } from '../utils/saveFile';
 import { Icon } from './ui';
+import { asErr } from '../utils/errors';
 
 const ShareSheet: React.FC = () => {
   const { t } = useLang();
@@ -33,7 +34,7 @@ const ShareSheet: React.FC = () => {
       const all = navigator.canShare?.({ files }) ? files : files.slice(-1);
       await navigator.share({ files: all, title: all[0].name });
       close();
-    } catch (err: any) {
+    } catch (raw) { const err = asErr(raw);
       if (err?.name === 'AbortError') return; // pengunjung menutup lembar share
       setError(err?.message || t('Gagal membagikan file.', 'Sharing failed.'));
     }
